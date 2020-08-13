@@ -55,6 +55,10 @@ class HomeFragment : Fragment() {
         signupBtn.setOnClickListener {
             findNavController().navigate(R.id.signupFragment)
         }
+
+        loginBtn.setOnClickListener {
+            findNavController().navigate(R.id.loginFragment)
+        }
     }
 
 }

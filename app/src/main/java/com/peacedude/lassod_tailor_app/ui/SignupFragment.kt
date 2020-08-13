@@ -50,8 +50,6 @@ class SignupFragment : Fragment() {
             signupBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
             signupBtn.setTextColor(resources.getColor(R.color.colorPrimary))
         })
-
-        val appBar = signup_appbar.findViewById<AppBarLayout>(R.id.appbar)
         val toolbar = signup_appbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
 
         val navController = Navigation.findNavController(signup_appbar)

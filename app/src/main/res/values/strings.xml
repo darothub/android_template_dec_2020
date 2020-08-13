@@ -13,4 +13,8 @@
     <string name="phone_number">Phone number</string>
     <string name="password">Password</string>
     <string name="continue_text">Continue</string>
+    <string name="wlecome_back">Welcome back</string>
+    <string name="login_tocontinue">Login to continue</string>
+    <string name="new_user">New user? Sign up for free</string>
+    <string name="forgot_password">Forgot password</string>
 </resources>
