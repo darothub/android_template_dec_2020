@@ -25,6 +25,9 @@
             android:theme="@style/AppThemeActivity"
             tools:ignore="AllowBackup">
         </activity>
+        <activity android:name=".ui.BaseActivity">
+
+        </activity>
     </application>
 
 </manifest>

@@ -1,29 +1,30 @@
 package com.peacedude.lassod_tailor_app.ui
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.navigation.fragment.findNavController
+import android.widget.Toolbar
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.appbar.AppBarLayout
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buildVersion
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlin.math.sign
+import kotlinx.android.synthetic.main.fragment_home.signup_btn
+import kotlinx.android.synthetic.main.fragment_signup.*
 
 
 /**
  * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
+ * Use the [SignupFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment() {
+class SignupFragment : Fragment() {
 
-    lateinit var loginBtn:Button
-    lateinit var signupBtn:Button
-
+    lateinit var signupBtn: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,15 +35,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_signup, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        loginBtn = login_btn.findViewById(R.id.btn)
-        loginBtn.text = getString(R.string.login)
         signupBtn = signup_btn.findViewById(R.id.btn)
-        signupBtn.text = getString(R.string.signup)
+        signupBtn.text = getString(R.string.continue_text)
 
         buildVersion({
             signupBtn.setBackgroundColor(resources.getColor(R.color.colorAccent, requireActivity().theme))
@@ -52,9 +51,12 @@ class HomeFragment : Fragment() {
             signupBtn.setTextColor(resources.getColor(R.color.colorPrimary))
         })
 
-        signupBtn.setOnClickListener {
-            findNavController().navigate(R.id.signupFragment)
-        }
+        val appBar = signup_appbar.findViewById<AppBarLayout>(R.id.appbar)
+        val toolbar = signup_appbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
+
+        val navController = Navigation.findNavController(signup_appbar)
+
+        NavigationUI.setupWithNavController(toolbar, navController)
     }
 
 }
