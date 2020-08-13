@@ -1,6 +1,9 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.os.Build
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +12,7 @@ import android.widget.Button
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.buildVersion
+import com.peacedude.lassod_tailor_app.helpers.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.signup_btn
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -24,10 +27,20 @@ import kotlinx.android.synthetic.main.fragment_signup.*
 class LoginFragment : Fragment() {
 
     lateinit var loginBtn: Button
+
+    val newUserText: String by lazy {
+        getString(R.string.new_user)
+    }
+    val spannableString: SpannableString by lazy {
+        newUserText.setAsSpannable()
+    }
+    var textColor = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +69,32 @@ class LoginFragment : Fragment() {
             loginBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
             loginBtn.setTextColor(resources.getColor(R.color.colorPrimary))
         })
+
+        setupSignUpLink()
+    }
+
+    /**
+     * Spannable sign-up link
+     *
+     */
+    private fun setupSignUpLink() {
+        val textLen: Int by lazy {
+            newUserText.length
+        }
+        val start = 10
+        val end = textLen
+        buildVersion({
+            textColor = resources.getColor(R.color.colorAccent, requireContext().theme)
+        },{
+            textColor = resources.getColor(R.color.colorAccent)
+        })
+        spannableString.enableClickOnSubstring(start, end) {
+            goto(R.id.signupFragment)
+        }
+        spannableString.setColorToSubstring(textColor, start, end)
+        spannableString.removeUnderLine(start, end)
+        new_user.text = spannableString
+        new_user.movementMethod = LinkMovementMethod.getInstance()
     }
 
 
