@@ -12,7 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:replace="android:fullBackupContent">
-        <activity android:name=".ui.ProfileActivity"></activity>
+        <activity android:name=".ui.ProfileActivity"
+            android:theme="@style/ProfileActivityTheme"
+            tools:ignore="AllowBackup"
+            >
+
+        </activity>
         <activity android:name=".ui.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +28,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/AppThemeActivity"
-            tools:ignore="AllowBackup"></activity>
+            tools:ignore="AllowBackup" />
         <activity android:name=".ui.BaseActivity"></activity>
     </application>
 
