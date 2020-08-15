@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -71,6 +72,9 @@ class LoginFragment : Fragment() {
         })
 
         setupSignUpLink()
+        loginBtn.setOnClickListener {
+            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+        }
     }
 
     /**

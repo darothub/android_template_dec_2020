@@ -17,4 +17,7 @@
     <string name="login_tocontinue">Login to continue</string>
     <string name="new_user">New user? Sign up for free</string>
     <string name="forgot_password">Forgot Password?</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
