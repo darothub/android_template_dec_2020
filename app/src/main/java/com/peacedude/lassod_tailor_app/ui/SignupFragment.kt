@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.*
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup.*
 
 
@@ -21,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Use the [SignupFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SignupFragment : Fragment() {
+class SignupFragment : DaggerFragment() {
 
     lateinit var continueBtn: Button
     private val loginAviseText: String by lazy {
