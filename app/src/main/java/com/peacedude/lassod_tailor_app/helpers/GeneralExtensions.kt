@@ -12,3 +12,11 @@ inline fun buttonTransactions(funct1:()->Unit, funct2:()->Unit){
     funct1()
     funct2()
 }
+/**
+ * Get any name
+ *
+ * @return
+ */
+fun Any.getName(): String {
+    return this::class.qualifiedName!!
+}

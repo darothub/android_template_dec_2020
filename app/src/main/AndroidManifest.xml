@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.peacedude.lassod_tailor_app">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".di.BaseApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"

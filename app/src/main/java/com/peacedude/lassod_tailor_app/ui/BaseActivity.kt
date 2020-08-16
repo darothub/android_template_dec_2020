@@ -3,8 +3,9 @@ package com.peacedude.lassod_tailor_app.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.peacedude.lassod_tailor_app.R
+import dagger.android.support.DaggerAppCompatActivity
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     //

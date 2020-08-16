@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.MainActivityModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.SignupFragmentModule
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.ui.MainActivity
@@ -18,11 +19,10 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@Module(includes = [ActivityStaticModule::class])
+@Module(includes = [ActivityStaticModule::class, MainActivityModule::class])
 abstract class ActivityBuilderModule {
     @ContributesAndroidInjector(
         modules = [
-            SignupFragmentModule::class
 
         ]
     )
@@ -70,7 +70,7 @@ open class ActivityStaticModule {
     @Singleton
     @Provides
     fun provideSharedPreference(context: Context): SharedPreferences {
-        return context.getSharedPreferences("anapfoundation", Context.MODE_PRIVATE)
+        return context.getSharedPreferences("lassod", Context.MODE_PRIVATE)
     }
 
     @Singleton
