@@ -20,4 +20,8 @@
     <string name="edit_profile">Edit profile</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="resources">Resources</string>
+    <string name="clients">Clients</string>
+    <string name="subscription">Subscription</string>
+    <string name="logout">Logout</string>
 </resources>

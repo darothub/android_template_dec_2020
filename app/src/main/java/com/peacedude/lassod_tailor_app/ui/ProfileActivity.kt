@@ -13,20 +13,24 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        setSupportActionBar(profile_toolbar)
+//        setSupportActionBar(profile_toolbar)
+//
+//        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, profile_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+//        drawer_layout.addDrawerListener(actionBarDrawerToggle)
+//        actionBarDrawerToggle.syncState()
 
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, profile_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(actionBarDrawerToggle)
-        actionBarDrawerToggle.syncState()
+        menu_icon.setOnClickListener {
+            drawer_layout.openDrawer(drawer_view, true)
+        }
     }
 
     override fun onBackPressed() {
-        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
-            drawer_layout.closeDrawer(GravityCompat.START)
-        }
-        else{
-            super.onBackPressed()
-        }
+//        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
+//            drawer_layout.closeDrawer(GravityCompat.START)
+//        }
+//        else{
+//            super.onBackPressed()
+//        }
 
     }
 }

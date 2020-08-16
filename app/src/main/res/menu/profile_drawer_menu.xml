@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+<!--    <group android:checkableBehavior="single">-->
+<!--        <item android:id="@+id/client"-->
+<!--            android:icon="@drawable/ic_contacts_24px"-->
+<!--            android:title="@string/clients"/>-->
+<!--        <item android:id="@+id/resources"-->
+<!--            android:icon="@drawable/theaters_24px"-->
+<!--            android:title="@string/resources"/>-->
+<!--        <item android:id="@+id/subscription"-->
+<!--            android:icon="@drawable/ic_shopping_cart_24px"-->
+<!--            android:title="@string/subscription"/>-->
+<!--        <item android:id="@+id/logout"-->
+<!--            android:icon="@drawable/ic_power_settings_new_24px"-->
+<!--            android:title="@string/logout"/>-->
+<!--    </group>-->
+    <item android:id="@+id/client"
+        android:icon="@drawable/ic_contacts_24px"
+        android:actionLayout="@layout/drawer_item"
+        android:title="@string/clients"/>
+
+<!--    <item android:id="@+id/item" android:title="">-->
+<!--    -->
+<!--    </item>-->
+<!--    <item  android:title="">-->
+<!--        <menu>-->
+<!--            <item android:id="@+id/resources"-->
+<!--                android:icon="@drawable/theaters_24px"-->
+<!--                android:title="@string/resources"/>-->
+<!--        </menu>-->
+<!--    </item>-->
+<!--    <item  android:title="">-->
+<!--        <menu>-->
+<!--            <item android:id="@+id/subscription"-->
+<!--                android:icon="@drawable/ic_shopping_cart_24px"-->
+<!--                android:title="@string/subscription"/>-->
+<!--        </menu>-->
+<!--    </item>-->
+<!--    <item  android:title="">-->
+<!--        <menu>-->
+<!--            <item android:id="@+id/logout"-->
+<!--                android:icon="@drawable/ic_power_settings_new_24px"-->
+<!--                android:title="@string/logout"/>-->
+<!--        </menu>-->
+<!--    </item>-->
+
+</menu>
