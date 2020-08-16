@@ -24,4 +24,5 @@
     <string name="clients">Clients</string>
     <string name="subscription">Subscription</string>
     <string name="logout">Logout</string>
+    <string name="hi">Hi -----</string>
 </resources>

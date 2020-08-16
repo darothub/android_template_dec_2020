@@ -35,6 +35,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/menu_icon" />
+                <ImageView
+                    android:id="@+id/profile_pix_image"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    app:srcCompat="@drawable/profile_image"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_gravity="start|center"
+                    />
+
+                <TextView
+                    android:id="@+id/hi_user_name"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:text="@string/hi"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_gravity="start|center"
+                    />
 
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
