@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ProfileActivity"
-    android:fitsSystemWindows="true"
     android:background="@color/colorAccent"
+    android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -32,8 +32,8 @@
 
                 <ImageView
                     android:id="@+id/menu_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
                     app:srcCompat="@drawable/menu_icon" />
                 <ImageView
                     android:id="@+id/profile_pix_image"
@@ -57,6 +57,32 @@
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+        <fragment
+            android:id="@+id/fragment2"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toTopOf="@id/bottomNav"
+            android:layout_weight="1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/nav_graph2"
+            />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNav"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/colorAccent"
+            android:layout_gravity="top"
+            app:menu="@menu/bottom_menu" />
+
+    </LinearLayout>
+
 
     <include
         android:id="@+id/drawer_view"

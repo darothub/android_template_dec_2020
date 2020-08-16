@@ -37,17 +37,19 @@
             app:layout_constraintEnd_toEndOf="@id/profile_image"
             android:textColor="@color/colorPrimary"/>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/edit_profile_btn"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textColor="@color/colorAccent"
             android:layout_marginTop="20dp"
             android:text="@string/edit_profile"
-            app:cornerRadius="@dimen/_10sdp"
+            android:background="@drawable/rounded_corner_background_primary"
             app:layout_constraintTop_toBottomOf="@id/profile_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:textAllCaps="false"
+            android:padding="@dimen/_10sdp"
 
             />
         <View

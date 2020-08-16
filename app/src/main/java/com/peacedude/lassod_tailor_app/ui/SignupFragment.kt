@@ -50,10 +50,11 @@ class SignupFragment : Fragment() {
         val continueBtnBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         buttonTransactions({
             continueBtn = continue_btn.findViewById(R.id.btn)
+            val customDialog = CustomDialogFragment()
 
             continueBtn.setOnClickListener {
-                val customDialog = CustomDialogFragment()
                 customDialog.show(parentFragmentManager, "My dialog")
+                customDialog.dialog?.setCanceledOnTouchOutside(false)
             }
         },{
             continueBtn.background = continueBtnBackgroundDrawable

@@ -54,7 +54,7 @@
         <com.alimuzaffar.lib.pin.PinEntryEditText
             android:id="@+id/txt_pin_entry"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:cursorVisible="false"
             android:digits="1234567890"
             android:inputType="number"
