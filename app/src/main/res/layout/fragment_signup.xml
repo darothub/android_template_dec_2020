@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
+    android:background="@color/colorPrimary"
     tools:context=".ui.SignupFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -165,18 +166,18 @@
             android:layout_height="wrap_content"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/password_text">
+            android:imeOptions="actionNext"
+            app:boxBackgroundColor="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/password_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
 
             <EditText
+                style="@style/CustomEditTextStyle"
                 android:id="@+id/password_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
                 android:inputType="textPassword"
-                android:textColorHint="@color/colorPrimary"
                 android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginEnd="@dimen/_20sdp"
-                android:backgroundTint="@android:color/transparent"
 
                  />
 
@@ -184,13 +185,25 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <include
-            android:id="@+id/signup_btn"
+            android:id="@+id/continue_btn"
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             app:layout_constraintTop_toBottomOf="@id/password_text_input"
             android:layout_marginTop="@dimen/_8sdp"
             />
+        <TextView
+            android:id="@+id/login_text"
+            android:layout_margin="@dimen/_15sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/have_an_account"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/continue_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

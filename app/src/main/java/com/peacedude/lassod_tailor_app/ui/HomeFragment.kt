@@ -1,6 +1,5 @@
 package com.peacedude.lassod_tailor_app.ui
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.buildVersion
+import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlin.math.sign
 
 
 /**
@@ -31,11 +30,6 @@ class HomeFragment : Fragment() {
         AnimationUtils.loadAnimation(requireContext(), R.anim.right_animation)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,22 +40,26 @@ class HomeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        val signupBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
+        val loginBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_outline)
 
+        buttonTransactions({
+            loginBtn = login_btn.findViewById(R.id.btn)
+            signupBtn = signup_btn.findViewById(R.id.btn)
 
-        loginBtn = login_btn.findViewById(R.id.btn)
-        loginBtn.text = getString(R.string.login)
-        signupBtn = signup_btn.findViewById(R.id.btn)
-        signupBtn.text = getString(R.string.signup)
-
-        loginBtn.animation = leftAnimation
-        signupBtn.animation = rightAnimation
-        buildVersion({
-            signupBtn.setBackgroundColor(resources.getColor(R.color.colorAccent, requireActivity().theme))
-            signupBtn.setTextColor(resources.getColor(R.color.colorPrimary, requireActivity().theme))
         },{
-            signupBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
-            signupBtn.setTextColor(resources.getColor(R.color.colorPrimary))
+            loginBtn.text = getString(R.string.login)
+            signupBtn.text = getString(R.string.signup)
+
+            loginBtn.animation = leftAnimation
+            signupBtn.animation = rightAnimation
+
+            signupBtn.background = signupBackgroundDrawable
+            signupBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            loginBtn.background = loginBackgroundDrawable
         })
+
+
 
         signupBtn.setOnClickListener {
             findNavController().navigate(R.id.signupFragment)

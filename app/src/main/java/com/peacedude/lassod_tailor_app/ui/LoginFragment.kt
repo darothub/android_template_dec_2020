@@ -1,7 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -10,14 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.*
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.signup_btn
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.fragment_signup.*
 
 
 /**
@@ -27,15 +24,15 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  */
 class LoginFragment : Fragment() {
 
-    lateinit var loginBtn: Button
+    lateinit private var loginBtn: Button
 
-    val newUserText: String by lazy {
+    private val newUserText: String by lazy {
         getString(R.string.new_user)
     }
-    val spannableString: SpannableString by lazy {
+    private val spannableString: SpannableString by lazy {
         newUserText.setAsSpannable()
     }
-    var textColor = 0;
+    private var textColor = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -54,8 +51,11 @@ class LoginFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        loginBtn = login_page_btn.findViewById(R.id.btn)
-        loginBtn.text = getString(R.string.login)
+        buttonTransactions({
+            loginBtn = login_page_btn.findViewById(R.id.btn)
+        },{
+            loginBtn.text = getString(R.string.login)
+        })
 
         val toolbar = login_appbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
 
@@ -63,18 +63,22 @@ class LoginFragment : Fragment() {
 
         NavigationUI.setupWithNavController(toolbar, navController)
 
-        buildVersion({
-            loginBtn.setBackgroundColor(resources.getColor(R.color.colorAccent, requireActivity().theme))
-            loginBtn.setTextColor(resources.getColor(R.color.colorPrimary, requireActivity().theme))
-        },{
-            loginBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
-            loginBtn.setTextColor(resources.getColor(R.color.colorPrimary))
-        })
+        loginBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
 
-        setupSignUpLink()
+
         loginBtn.setOnClickListener {
             startActivity(Intent(requireContext(), ProfileActivity::class.java))
         }
+
+        textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        val textLen = newUserText.length
+        val start = 10
+        setupSpannableLinkAndDestination(newUserText, new_user, textColor, spannableString, start, textLen){
+            spannableString.enableClickOnSubstring(start, textLen) {
+                goto(R.id.signupFragment)
+            }
+        }
+
     }
 
     /**
@@ -87,11 +91,7 @@ class LoginFragment : Fragment() {
         }
         val start = 10
         val end = textLen
-        buildVersion({
-            textColor = resources.getColor(R.color.colorAccent, requireContext().theme)
-        },{
-            textColor = resources.getColor(R.color.colorAccent)
-        })
+        textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         spannableString.enableClickOnSubstring(start, end) {
             goto(R.id.signupFragment)
         }

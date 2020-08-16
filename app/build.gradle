@@ -81,14 +81,21 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.4.1'
 
     // Recommended: Add the Firebase SDK for Google Analytics.
-    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.4'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
 
     // Add the Firebase Crashlytics SDK.
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
 
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
     implementation 'com.github.darothub:DarotToastLib:1.0.2'
+
+//    Pin entry view
+    implementation ('com.alimuzaffar.lib:pinentryedittext:2.0.6') {
+        // Exclude is only needed if you already have
+        // androidx.appcompat as a dependency in your app.
+        exclude group: 'androidx.appcompat', module: 'appcompat'
+    }
 
 
 }

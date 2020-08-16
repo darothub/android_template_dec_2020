@@ -1,19 +1,18 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
+import android.text.SpannableString
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.google.android.material.appbar.AppBarLayout
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.buildVersion
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.signup_btn
+import com.peacedude.lassod_tailor_app.helpers.*
 import kotlinx.android.synthetic.main.fragment_signup.*
 
 
@@ -24,7 +23,14 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  */
 class SignupFragment : Fragment() {
 
-    lateinit var signupBtn: Button
+    lateinit var continueBtn: Button
+    private val loginAviseText: String by lazy {
+        getString(R.string.have_an_account)
+    }
+    private val spannableString: SpannableString by lazy {
+        loginAviseText.setAsSpannable()
+    }
+    private var textColor = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,21 +46,36 @@ class SignupFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        signupBtn = signup_btn.findViewById(R.id.btn)
-        signupBtn.text = getString(R.string.continue_text)
 
-        buildVersion({
-            signupBtn.setBackgroundColor(resources.getColor(R.color.colorAccent, requireActivity().theme))
-            signupBtn.setTextColor(resources.getColor(R.color.colorPrimary, requireActivity().theme))
+        val continueBtnBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
+        buttonTransactions({
+            continueBtn = continue_btn.findViewById(R.id.btn)
+
+            continueBtn.setOnClickListener {
+                val customDialog = CustomDialogFragment()
+                customDialog.show(parentFragmentManager, "My dialog")
+            }
         },{
-            signupBtn.setBackgroundColor(resources.getColor(R.color.colorAccent))
-            signupBtn.setTextColor(resources.getColor(R.color.colorPrimary))
+            continueBtn.background = continueBtnBackgroundDrawable
+            continueBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            continueBtn.text = getString(R.string.continue_text)
+
         })
+
         val toolbar = signup_appbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
 
         val navController = Navigation.findNavController(signup_appbar)
 
         NavigationUI.setupWithNavController(toolbar, navController)
+
+        textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        val textLen = loginAviseText.length
+        val start = 17
+        setupSpannableLinkAndDestination(loginAviseText, login_text, textColor, spannableString, start, textLen){
+            spannableString.enableClickOnSubstring(start, textLen) {
+                goto(R.id.loginFragment)
+            }
+        }
     }
 
 }

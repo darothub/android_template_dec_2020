@@ -20,4 +20,9 @@
         android:name="com.peacedude.lassod_tailor_app.ui.LoginFragment"
         android:label=" "
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/verificationFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.VerificationFragment"
+        android:label="fragment_verification"
+        tools:layout="@layout/fragment_verification" />
 </navigation>

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorPrimary"
     tools:context=".ui.LoginFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -94,10 +95,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:inputType="textPassword"
-                android:textColorHint="@color/colorPrimary"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_20sdp"
-                app:backgroundTint="@android:color/transparent"
+                style="@style/CustomEditTextStyle"
 
                 />
 

@@ -25,4 +25,8 @@
     <string name="subscription">Subscription</string>
     <string name="logout">Logout</string>
     <string name="hi">Hi -----</string>
+    <string name="enter_six_digit">Enter 6-digit code sent to your phone</string>
+    <string name="confirm">Confirm</string>
+    <string name="resend_code">Resend code</string>
+    <string name="have_an_account">Have an account? Log in</string>
 </resources>
