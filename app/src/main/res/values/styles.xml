@@ -51,6 +51,11 @@
         <item name="android:layout_marginStart">@dimen/_20sdp</item>
         <item name="android:layout_marginEnd">@dimen/_20sdp</item>
         <item name="backgroundTint">@color/colorGray</item>
+        <item name="spinnerDropDownItemStyle">@style/CustomSpinnerStyle</item>
+    </style>
+
+    <style name="CustomSpinnerStyle" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">

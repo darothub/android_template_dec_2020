@@ -1,21 +1,20 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import IsEmptyCheck
+import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ProgressBar
+import android.widget.*
+import android.widget.AdapterView.OnItemSelectedListener
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
@@ -89,6 +88,8 @@ class SignupFragment : DaggerFragment() {
 
         })
 
+        initEnterKeyToSubmitForm(password_edittext) { signupRequest() }
+
         val toolbar = signup_appbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
 
         val navController = Navigation.findNavController(signup_appbar)
@@ -110,6 +111,18 @@ class SignupFragment : DaggerFragment() {
                 R.layout.support_simple_spinner_dropdown_item,
                 arrayListOf("User", "Tailor")
             )
+        signup_country_spinner.setOnItemSelectedListener(object : OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+            override fun onItemSelected(
+                parentView: AdapterView<*>,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+            ) {
+                (parentView.getChildAt(0) as TextView).setTextColor(Color.WHITE)
+            }
+        })
         signup_country_spinner.adapter = adapterState
     }
     /**
@@ -161,9 +174,6 @@ class SignupFragment : DaggerFragment() {
                         result
                     )
                 })
-//                val action = SignupFragmentDirections.toAddressFragment()
-//                action.userData = userData
-//                goto(action)
             }
         }
 
@@ -185,7 +195,7 @@ class SignupFragment : DaggerFragment() {
                 val res = result as UserResponse
                 requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
 //                val clearRegister = storageRequest.clearByKey<User>("u")
-//                goto(R.id.signinFragment)
+                goto(R.id.loginFragment)
                 Log.i(title, "result of registration ${res.data}")
 //                Log.i(title, "clearedRegister $clearRegister")
             }
