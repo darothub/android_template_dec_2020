@@ -15,6 +15,6 @@ class UserRequestRepository @Inject constructor( val userServices: UserServices)
         phone: String,
         password: String
     ): Call<UserResponse> {
-        return super.registerUser(firstName, lastName, otherName, category, phone, password)
+        return userServices.registerUser(firstName, lastName, otherName, category, phone, password)
     }
 }

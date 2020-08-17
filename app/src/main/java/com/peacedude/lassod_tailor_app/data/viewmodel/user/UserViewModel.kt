@@ -108,7 +108,7 @@ class UserViewModel @Inject constructor(
                     val error = converter.convert(response.errorBody())
 
                     Log.i(title, "message ${error!!.errors?.get(0)}")
-                    responseLiveData.postValue(ServicesResponseWrapper.Logout(error.errors?.get(0).toString()))
+                    responseLiveData.postValue(ServicesResponseWrapper.Error(error.errors?.get(0).toString()))
                 }
                 catch (e:Exception){
                     Log.i(title, e.message.toString())

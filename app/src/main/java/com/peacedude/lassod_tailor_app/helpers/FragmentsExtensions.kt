@@ -74,7 +74,7 @@ fun Fragment.observeRequest(
                     button?.show()
                     result.postValue(Pair(true, responseData))
 
-//                    Log.i(title, "success ${it.data}")
+                    Log.i(title, "success ${it.data}")
                 }
                 is ServicesResponseWrapper.Error -> {
                     progressBar?.hide()
@@ -90,6 +90,7 @@ fun Fragment.observeRequest(
                         else -> {
                             result.postValue(Pair(false, errorResponse))
 //                            toast("$errorResponse")
+                            requireActivity().gdErrorToast("$errorResponse", Gravity.BOTTOM)
                         }
                     }
 

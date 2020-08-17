@@ -14,7 +14,7 @@ interface UserServices {
         @Field("lastName") last:String,
         @Field("otherName") otherName:String,
         @Field("category") category:String,
-        @Field("phone") phone:String,
+        @Field("phoneNumber") phone:String,
         @Field("password") password:String
 
     ): Call<UserResponse>

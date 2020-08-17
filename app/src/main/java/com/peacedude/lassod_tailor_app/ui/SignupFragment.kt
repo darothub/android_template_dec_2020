@@ -9,18 +9,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.peacedude.gdtoast.gdErrorToast
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup.*
 import javax.inject.Inject
@@ -38,6 +42,7 @@ class SignupFragment : DaggerFragment() {
     }
 
     lateinit var continueBtn: Button
+    lateinit private var progressBar:ProgressBar
     private val loginAviseText: String by lazy {
         getString(R.string.have_an_account)
     }
@@ -69,11 +74,13 @@ class SignupFragment : DaggerFragment() {
         val continueBtnBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         buttonTransactions({
             continueBtn = continue_btn.findViewById(R.id.btn)
-            val customDialog = CustomDialogFragment()
+            progressBar = continue_btn.findViewById(R.id.progress_bar)
+//            val customDialog = CustomDialogFragment()
 
             continueBtn.setOnClickListener {
-                customDialog.show(parentFragmentManager, "My dialog")
-                customDialog.dialog?.setCanceledOnTouchOutside(false)
+                signupRequest()
+//                customDialog.show(parentFragmentManager, "My dialog")
+//                customDialog.dialog?.setCanceledOnTouchOutside(false)
             }
         },{
             continueBtn.background = continueBtnBackgroundDrawable
@@ -96,6 +103,14 @@ class SignupFragment : DaggerFragment() {
                 goto(R.id.loginFragment)
             }
         }
+
+        val adapterState =
+            ArrayAdapter(
+                requireContext(),
+                R.layout.support_simple_spinner_dropdown_item,
+                arrayListOf("User", "Tailor")
+            )
+        signup_country_spinner.adapter = adapterState
     }
     /**
      * Sign up request
@@ -122,14 +137,30 @@ class SignupFragment : DaggerFragment() {
         when {
             checkForEmpty != null -> {
                 checkForEmpty.error = getString(R.string.field_required)
-                requireActivity().gdErrorToast("${checkForEmpty.hint} is empty", Gravity.BOTTOM)
+                requireActivity().gdErrorToast("${resources.getResourceEntryName(checkForEmpty.id)} is empty", Gravity.BOTTOM)
 
             }
             validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
 
             else -> {
-                val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
+//                val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
 
+                val request = userViewModel.registerUser(
+                    firstName,
+                    lastName,
+                    otherName,
+                    category,
+                    phoneNumber,
+                    passwordString
+                )
+                val response = observeRequest(request, progressBar, continueBtn)
+                response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                    val (bool, result) = it
+                    onRequestResponseTask(
+                        bool,
+                        result
+                    )
+                })
 //                val action = SignupFragmentDirections.toAddressFragment()
 //                action.userData = userData
 //                goto(action)
@@ -137,6 +168,29 @@ class SignupFragment : DaggerFragment() {
         }
 
 
+    }
+
+    /**
+     * Handles sign-up request live response
+     *
+     * @param bool
+     * @param result
+     */
+    private fun onRequestResponseTask(
+        bool: Boolean,
+        result: Any?
+    ) {
+        when (bool) {
+            true -> {
+                val res = result as UserResponse
+                requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
+//                val clearRegister = storageRequest.clearByKey<User>("u")
+//                goto(R.id.signinFragment)
+                Log.i(title, "result of registration ${res.data}")
+//                Log.i(title, "clearedRegister $clearRegister")
+            }
+            else -> Log.i(title, "error $result")
+        }
     }
 
 }
