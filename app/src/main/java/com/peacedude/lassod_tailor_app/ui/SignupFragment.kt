@@ -1,20 +1,29 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import IsEmptyCheck
 import android.os.Bundle
 import android.text.SpannableString
+import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup.*
+import javax.inject.Inject
 
 
 /**
@@ -23,6 +32,10 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * create an instance of this fragment.
  */
 class SignupFragment : DaggerFragment() {
+
+    val title: String by lazy {
+        getName()
+    }
 
     lateinit var continueBtn: Button
     private val loginAviseText: String by lazy {
@@ -35,6 +48,11 @@ class SignupFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+    }
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    val userViewModel: UserViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -78,6 +96,47 @@ class SignupFragment : DaggerFragment() {
                 goto(R.id.loginFragment)
             }
         }
+    }
+    /**
+     * Sign up request
+     *
+     */
+    private fun signupRequest() {
+
+        val firstName = first_name_edittext.text.toString().trim()
+        val lastName = last_name_edittext.text.toString().trim()
+        val otherName = other_name_edittext.text.toString().trim().toLowerCase()
+        val category = signup_country_spinner.selectedItem as String
+        val phoneNumber = signup_phone_number_edittext.text.toString().trim()
+        val passwordString = password_edittext.text.toString().trim()
+        val user = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
+
+//        val u = storageRequest.saveData(user,"u")
+//        Log.i(title, "reg1 $u")
+//        userViewModel.registerFormData = user
+
+//        Log.i(title, "reg2 ${userViewModel.registerFormData}")
+        val checkForEmpty =
+            IsEmptyCheck(first_name_edittext, last_name_edittext, other_name_edittext, signup_phone_number_edittext, password_edittext)
+        val validation = IsEmptyCheck.fieldsValidation(null, passwordString)
+        when {
+            checkForEmpty != null -> {
+                checkForEmpty.error = getString(R.string.field_required)
+                requireActivity().gdErrorToast("${checkForEmpty.hint} is empty", Gravity.BOTTOM)
+
+            }
+            validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
+
+            else -> {
+                val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
+
+//                val action = SignupFragmentDirections.toAddressFragment()
+//                action.userData = userData
+//                goto(action)
+            }
+        }
+
+
     }
 
 }

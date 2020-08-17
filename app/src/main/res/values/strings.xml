@@ -31,4 +31,5 @@
     <string name="have_an_account">Have an account? Log in</string>
     <string name="bad_network">Bad network, kindly check your network and try again</string>
     <string name="server_error">Server error</string>
+    <string name="field_required">Field is required</string>
 </resources>

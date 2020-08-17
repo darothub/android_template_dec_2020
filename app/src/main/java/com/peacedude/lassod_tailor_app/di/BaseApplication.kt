@@ -6,7 +6,7 @@ import dagger.android.DaggerApplication
 
 class BaseApplication : DaggerApplication() {
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        MediaManager.init(this)
+//        MediaManager.init(this)
         return DaggerAppComponent.builder().application(this).build()
     }
 }
