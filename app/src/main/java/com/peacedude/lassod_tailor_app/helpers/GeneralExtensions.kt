@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.peacedude.lassod_tailor_app.R
 import kotlinx.android.synthetic.main.fragment_login.*
+import java.lang.StringBuilder
 
 inline fun buttonTransactions(funct1:()->Unit, funct2:()->Unit){
     funct1()
@@ -20,3 +21,6 @@ inline fun buttonTransactions(funct1:()->Unit, funct2:()->Unit){
 fun Any.getName(): String {
     return this::class.qualifiedName!!
 }
+
+
+

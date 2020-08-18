@@ -14,11 +14,14 @@ abstract class MainActivityModule {
      * A abstract function to provide for MainActivity from DaggerGraph
      */
 
-    @ContributesAndroidInjector(  modules = [
-        SignupFragmentModule::class,
-        UserRequestsModule::class,
-        UserViewModelModule::class,
-        ViewModelFactoryModule::class
-    ])
+    @ContributesAndroidInjector(
+        modules = [
+            SignupFragmentModule::class,
+            UserRequestsModule::class,
+            UserViewModelModule::class,
+            ViewModelFactoryModule::class,
+            LoginFragmentModule::class
+        ]
+    )
     abstract fun provideMainActivity(): MainActivity
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
@@ -35,14 +36,29 @@ class UserViewModel @Inject constructor(
 //    val clearSavedUser= storage.clearByKey<User>(registeringUser)
 //
 
-    fun registerUser(
-        firstName: String,
-        lastName: String,
-        otherName: String,
-        category: String,
-        phone: String,
-        password: String
+    fun registerUser(user: User): LiveData<ServicesResponseWrapper<ParentData>>  {
 
+        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = userRequestInterface.registerUser(user)
+        request.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
+    fun loginUserRequest(
+        phoneNumber: String,
+        password: String
     ): LiveData<ServicesResponseWrapper<ParentData>> {
 
         val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
@@ -50,19 +66,12 @@ class UserViewModel @Inject constructor(
             null,
             "Loading..."
         )
-        val request = userRequestInterface.registerUser(
-            firstName,
-            lastName,
-            otherName,
-            category,
-            phone,
-            password
-        )
+        val request = userRequestInterface.loginRequest(phoneNumber, password)
         request.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
+                Log.i(title, "Error $t")
             }
-
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }

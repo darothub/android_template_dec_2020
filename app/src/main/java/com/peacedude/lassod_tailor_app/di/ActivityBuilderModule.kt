@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.MainActivityModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.SignupFragmentModule
+import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
@@ -66,6 +67,7 @@ open class ActivityStaticModule {
     fun getContexts(application: Application): Context {
         return application.applicationContext
     }
+
 
     @Singleton
     @Provides

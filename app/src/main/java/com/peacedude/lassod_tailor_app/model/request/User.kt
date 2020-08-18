@@ -12,7 +12,7 @@ open class User(
     var otherName:String?,
     @SerializedName("category")
     var category:String?="",
-    @SerializedName("phone")
+    @SerializedName("phoneNumber")
     var phone:String?,
     @SerializedName("password")
     var password:String?

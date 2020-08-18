@@ -41,7 +41,7 @@ class SignupFragment : DaggerFragment() {
     }
 
     lateinit var continueBtn: Button
-    lateinit private var progressBar:ProgressBar
+    private lateinit var progressBar:ProgressBar
     private val loginAviseText: String by lazy {
         getString(R.string.have_an_account)
     }
@@ -49,15 +49,16 @@ class SignupFragment : DaggerFragment() {
         loginAviseText.setAsSpannable()
     }
     private var textColor = 0;
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     val userViewModel: UserViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -156,16 +157,9 @@ class SignupFragment : DaggerFragment() {
             validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
 
             else -> {
-//                val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
+                val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
 
-                val request = userViewModel.registerUser(
-                    firstName,
-                    lastName,
-                    otherName,
-                    category,
-                    phoneNumber,
-                    passwordString
-                )
+                val request = userViewModel.registerUser(userData)
                 val response = observeRequest(request, progressBar, continueBtn)
                 response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                     val (bool, result) = it
