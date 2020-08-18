@@ -42,13 +42,12 @@
 
 
         <TextView
-            android:id="@+id/signup_phone_number_text"
+            android:id="@+id/login_phone_number_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/phone_number"
             android:textSize="15sp"
             android:textColor="@color/colorGray"
-
             app:layout_constraintTop_toBottomOf="@id/login_tocontinue"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_20sdp"
@@ -61,7 +60,7 @@
             android:inputType="phone"
             android:textColorHint="@color/colorPrimary"
             app:backgroundTint="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@id/signup_phone_number_text"
+            app:layout_constraintTop_toBottomOf="@id/login_phone_number_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />

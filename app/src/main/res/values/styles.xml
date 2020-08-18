@@ -44,7 +44,6 @@
     <style name="CustomEditTextStyle" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dp</item>
-        <item name="singleLine">true</item>
         <item name="android:textSize">@dimen/_13sdp</item>
         <item name="android:textColorHint">@color/colorGray</item>
         <item name="android:textColor">@color/colorAccent</item>
