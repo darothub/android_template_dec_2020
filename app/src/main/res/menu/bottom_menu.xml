@@ -12,13 +12,9 @@
         android:icon="@drawable/ic_add_a_photo_24px"/>
 
     <item
-        android:id="@+id/messagesFragment"
+        android:id="@+id/messageFragment"
         android:title="Messages"
         android:icon="@drawable/messages_icon"/>
-
-
-
-
 
 
 </menu>

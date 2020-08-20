@@ -3,11 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph2"
-    app:startDestination="@id/homeFragment2">
+    app:startDestination="@id/messageFragment">
 
     <fragment
-        android:id="@+id/homeFragment2"
-        android:name="com.peacedude.lassod_tailor_app.ui.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/editProfileFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.MessageFragment"
+        android:label="fragment_message"
+        tools:layout="@layout/fragment_message" />
+    <fragment
+        android:id="@+id/mediaFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.MediaFragment"
+        android:label="fragment_media"
+        tools:layout="@layout/fragment_media" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

@@ -5,13 +5,20 @@ import android.os.Bundle
 import android.view.Gravity
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.navigation.Navigation
+import androidx.navigation.ui.setupWithNavController
 import com.peacedude.lassod_tailor_app.R
 import kotlinx.android.synthetic.main.activity_profile.*
 
 class ProfileActivity : AppCompatActivity() {
+    private val navController by lazy {
+        Navigation.findNavController(this, R.id.fragment2)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        bottomNav.setupWithNavController(navController)
 
 //        setSupportActionBar(profile_toolbar)
 //
