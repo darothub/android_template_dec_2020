@@ -7,9 +7,13 @@ import com.peacedude.lassod_tailor_app.services.user.UserServices
 import retrofit2.Call
 import javax.inject.Inject
 
-class UserRequestRepository @Inject constructor( val userServices: UserServices):UserRequestInterface {
+class UserRequestRepository @Inject constructor(private val userServices: UserServices):UserRequestInterface {
     override fun registerUser(user: User): Call<UserResponse> {
         return userServices.registerUser(user)
+    }
+
+    override fun activateUser(phoneNumber: String, code: String): Call<UserResponse> {
+        return userServices.activateUser(phoneNumber, code)
     }
 
     override fun loginRequest(phoneNumber: String, password: String): Call<UserResponse> {

@@ -56,6 +56,27 @@ class UserViewModel @Inject constructor(
         })
         return responseLiveData
     }
+    fun activateUser(phoneNumber: String, code:String): LiveData<ServicesResponseWrapper<ParentData>> {
+
+        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = userRequestInterface.activateUser(phoneNumber, code)
+        request.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                onFailureResponse(responseLiveData, t)
+                Log.i(title, "Error $t")
+            }
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
+
     fun loginUserRequest(
         phoneNumber: String,
         password: String

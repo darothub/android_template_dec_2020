@@ -14,6 +14,13 @@ interface UserServices {
         @Body user: User
     ): Call<UserResponse>
 
+    @POST("auth/activate")
+    @FormUrlEncoded
+    fun activateUser(
+        @Field("phoneNumber") phone:String,
+        @Field("code") password:String
+    ):Call<UserResponse>
+
     @POST("auth/signin")
     @FormUrlEncoded
     fun loginRequest(

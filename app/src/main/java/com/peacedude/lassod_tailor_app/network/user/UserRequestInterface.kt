@@ -11,6 +11,10 @@ interface UserRequestInterface {
         return TODO()
     }
 
+    fun activateUser(phoneNumber:String, code: String): Call<UserResponse>{
+        return TODO()
+    }
+
     fun loginRequest(phoneNumber:String, password: String): Call<UserResponse> {
         return TODO()
     }

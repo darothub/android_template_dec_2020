@@ -30,8 +30,4 @@
         android:name="com.peacedude.lassod_tailor_app.ui.ProfileManagementFragment"
         android:label="Edit profile"
         tools:layout="@layout/fragment_profile_management" />
-    <dialog
-        android:id="@+id/customDialogFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.CustomDialogFragment"
-        android:label="CustomDialogFragment" />
 </navigation>

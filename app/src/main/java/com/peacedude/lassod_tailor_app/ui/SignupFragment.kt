@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.ui
 
 import IsEmptyCheck
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -84,51 +86,69 @@ class SignupFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val continueBtnBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        buttonTransactions({
-            continueBtn = continue_btn.findViewById(R.id.btn)
-            progressBar = continue_btn.findViewById(R.id.progress_bar)
-            val customDialog = CustomDialogFragment()
-
-
-            continueBtn.setOnClickListener {
-                signupRequest()
-
-//                customDialog.show(parentFragmentManager, "My dialog")
-//                customDialog.dialog?.setCanceledOnTouchOutside(false)
-
-            }
-        },{
-            continueBtn.background = continueBtnBackgroundDrawable
-            continueBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            continueBtn.text = getString(R.string.continue_text)
-
-        })
+        continueBtnTransaction()
 
         initEnterKeyToSubmitForm(password_edittext) { signupRequest() }
 
-        val toolbar = signup_appbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
+        setupToolbarAndNavigationUI()
 
-        val navController = Navigation.findNavController(signup_appbar)
+        setupLoginSpannableString()
 
-        NavigationUI.setupWithNavController(toolbar, navController)
+        setupCategorySpinner()
 
-        textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
-        val textLen = loginAviseText.length
-        val start = 17
-        setupSpannableLinkAndDestination(loginAviseText, login_text, textColor, spannableString, start, textLen){
-            spannableString.enableClickOnSubstring(start, textLen) {
-                goto(R.id.loginFragment)
-            }
-        }
+        dialogBtnsAndProgressBarsSetup()
+    }
 
+    private fun dialogBtnsAndProgressBarsSetup() {
+        //Drawable background for confirm button
+        val confirmBtnBackgroundDrawable = ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.rounded_corner_background_primary
+        )
+        //Drawable background for resend code button
+        val resendCodeBtnBackgroudDrawable =
+            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_trans)
+        buttonTransactions({
+            //Get included view for confirm button
+            val includedViewForConfirmBtn = dialog.findViewById<View>(R.id.confirm_btn)
+            //Get included view for resend code button
+            val includedViewForResendBtn = dialog.findViewById<View>(R.id.resend_code_btn)
+            //Set confirm button
+            confirmBtn = includedViewForConfirmBtn.findViewById(R.id.btn)
+            //Set confirm button background
+            confirmBtn.background = confirmBtnBackgroundDrawable
+            //Set resend code button
+            resendCodeBtn = includedViewForResendBtn.findViewById(R.id.btn)
+            //Set resend code button background
+            resendCodeBtn.background = resendCodeBtnBackgroudDrawable
+            //Set resend code button text color
+            resendCodeBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorPrimary
+                )
+            )
+            //Set resend code button progress bar
+            resendProgressBar = includedViewForResendBtn.findViewById(R.id.progress_bar)
+            //Set confirm button progress bar
+            confirmProgressBar = includedViewForConfirmBtn.findViewById(R.id.progress_bar)
+
+
+        }, {
+            confirmBtn.text = getString(R.string.confirm)
+            resendCodeBtn.text = getString(R.string.resend_code)
+        })
+    }
+
+    private fun setupCategorySpinner() {
         val adapterState =
             ArrayAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
                 arrayListOf("User", "Tailor")
             )
-        signup_country_spinner.setOnItemSelectedListener(object : OnItemSelectedListener {
+
+        signup_category_spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {}
 
             override fun onItemSelected(
@@ -139,28 +159,52 @@ class SignupFragment : DaggerFragment() {
             ) {
                 (parentView.getChildAt(0) as TextView).setTextColor(Color.WHITE)
             }
-        })
-        signup_country_spinner.adapter = adapterState
+        }
+        signup_category_spinner.adapter = adapterState
+    }
 
-        val confirmBtnBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
-        val resendCodeBtnBackgroudDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_trans)
+    private fun setupLoginSpannableString() {
+        textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        val textLen = loginAviseText.length
+        val start = 17
+        setupSpannableLinkAndDestination(
+            loginAviseText,
+            login_text,
+            textColor,
+            spannableString,
+            start,
+            textLen
+        ) {
+            spannableString.enableClickOnSubstring(start, textLen) {
+                goto(R.id.loginFragment)
+            }
+        }
+    }
+
+    private fun setupToolbarAndNavigationUI() {
+        val toolbar = signup_appbar.findViewById<Toolbar>(R.id.reusable_toolbar)
+        val navController = Navigation.findNavController(signup_appbar)
+        NavigationUI.setupWithNavController(toolbar, navController)
+    }
+
+    private fun continueBtnTransaction() {
+        val continueBtnBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
+
         buttonTransactions({
-            val includedViewForConfirmBtn = dialog.findViewById<View>(R.id.confirm_btn)
-            val includedViewForResendBtn = dialog.findViewById<View>(R.id.resend_code_btn)
-            confirmBtn = includedViewForConfirmBtn.findViewById(R.id.btn)
-            confirmBtn.background = confirmBtnBackgroundDrawable
-            resendCodeBtn = includedViewForResendBtn.findViewById(R.id.btn)
-            resendCodeBtn.background = resendCodeBtnBackgroudDrawable
-            resendCodeBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            resendProgressBar = includedViewForResendBtn.findViewById(R.id.progress_bar)
-            confirmProgressBar = includedViewForConfirmBtn.findViewById(R.id.progress_bar)
+            continueBtn = continue_btn.findViewById(R.id.btn)
+            progressBar = continue_btn.findViewById(R.id.progress_bar)
 
+            continueBtn.setOnClickListener {
+                signupRequest()
+            }
+        }, {
+            continueBtn.background = continueBtnBackgroundDrawable
+            continueBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            continueBtn.text = getString(R.string.continue_text)
 
-        },{
-            confirmBtn.text = getString(R.string.confirm)
-            resendCodeBtn.text = getString(R.string.resend_code)
         })
     }
+
     /**
      * Sign up request
      *
@@ -170,7 +214,7 @@ class SignupFragment : DaggerFragment() {
         val firstName = first_name_edittext.text.toString().trim()
         val lastName = last_name_edittext.text.toString().trim()
         val otherName = other_name_edittext.text.toString().trim().toLowerCase()
-        val category = signup_country_spinner.selectedItem as String
+        val category = signup_category_spinner.selectedItem as String
         val phoneNumber = signup_phone_number_edittext.text.toString().trim()
         val passwordString = password_edittext.text.toString().trim()
         val user = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
@@ -226,13 +270,14 @@ class SignupFragment : DaggerFragment() {
 //                val clearRegister = storageRequest.clearByKey<User>("u")
                 var code = ""
                 val pinEditText = dialog.findViewById<PinEntryEditText>(R.id.txt_pin_entry)
-
-
+                val phoneNumber = signup_phone_number_edittext.text.toString().trim()
+                pinEditText.setOnPinEnteredListener {
+                    code += it
+                }
                 confirmBtn.setOnClickListener {
-                    pinEditText.setOnPinEnteredListener {
-                        code += it
-                    }
-                    requireActivity().gdToast(code, Gravity.BOTTOM)
+
+//                    userViewModel.activateUser(phoneNumber, code)
+                    requireActivity().gdToast("$code $phoneNumber", Gravity.BOTTOM)
                 }
                 dialog.show()
 
