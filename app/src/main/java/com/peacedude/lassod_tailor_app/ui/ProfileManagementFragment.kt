@@ -42,11 +42,11 @@ class ProfileManagementFragment : Fragment() {
 
         setupViewPager()
 
-        val toolbar = profile_management_toolbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
+        val toolbar = profile_management_toolbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.profile_management_toolbar)
 
         val navController = Navigation.findNavController(profile_management_appBar)
 
-//        NavigationUI.setupWithNavController(toolbar, navController)
+        NavigationUI.setupWithNavController(toolbar, navController)
     }
 
     private fun setupViewPager() {
