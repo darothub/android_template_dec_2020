@@ -10,13 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.custom_dialog.*
 
 class CustomDialogFragment : DialogFragment() {
 
-    lateinit var confirmBtn: Button
+    private lateinit var confirmBtn: Button
     lateinit var resendCodeBtn: Button
-    lateinit private var progressBar:ProgressBar
+    private lateinit var progressBar:ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,6 +39,8 @@ class CustomDialogFragment : DialogFragment() {
             resendCodeBtn.background = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_trans)
             resendCodeBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             progressBar = resend_code_btn.findViewById(R.id.progress_bar)
+
+
         },{
             confirmBtn.text = getString(R.string.confirm)
             resendCodeBtn.text = getString(R.string.resend_code)

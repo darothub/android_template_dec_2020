@@ -16,6 +16,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.alimuzaffar.lib.pin.PinEntryEditText
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -39,7 +42,10 @@ class SignupFragment : DaggerFragment() {
     val title: String by lazy {
         getName()
     }
-
+    private lateinit var confirmBtn: Button
+    lateinit var resendCodeBtn: Button
+    private lateinit var confirmProgressBar:ProgressBar
+    private lateinit var resendProgressBar:ProgressBar
     lateinit var continueBtn: Button
     private lateinit var progressBar:ProgressBar
     private val loginAviseText: String by lazy {
@@ -59,6 +65,13 @@ class SignupFragment : DaggerFragment() {
 
     }
 
+    val dialog by lazy {
+        MaterialDialog(requireContext()).apply {
+            noAutoDismiss()
+            customView(R.layout.custom_dialog)
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,12 +88,15 @@ class SignupFragment : DaggerFragment() {
         buttonTransactions({
             continueBtn = continue_btn.findViewById(R.id.btn)
             progressBar = continue_btn.findViewById(R.id.progress_bar)
-//            val customDialog = CustomDialogFragment()
+            val customDialog = CustomDialogFragment()
+
 
             continueBtn.setOnClickListener {
                 signupRequest()
+
 //                customDialog.show(parentFragmentManager, "My dialog")
 //                customDialog.dialog?.setCanceledOnTouchOutside(false)
+
             }
         },{
             continueBtn.background = continueBtnBackgroundDrawable
@@ -125,6 +141,25 @@ class SignupFragment : DaggerFragment() {
             }
         })
         signup_country_spinner.adapter = adapterState
+
+        val confirmBtnBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
+        val resendCodeBtnBackgroudDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_trans)
+        buttonTransactions({
+            val includedViewForConfirmBtn = dialog.findViewById<View>(R.id.confirm_btn)
+            val includedViewForResendBtn = dialog.findViewById<View>(R.id.resend_code_btn)
+            confirmBtn = includedViewForConfirmBtn.findViewById(R.id.btn)
+            confirmBtn.background = confirmBtnBackgroundDrawable
+            resendCodeBtn = includedViewForResendBtn.findViewById(R.id.btn)
+            resendCodeBtn.background = resendCodeBtnBackgroudDrawable
+            resendCodeBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            resendProgressBar = includedViewForResendBtn.findViewById(R.id.progress_bar)
+            confirmProgressBar = includedViewForConfirmBtn.findViewById(R.id.progress_bar)
+
+
+        },{
+            confirmBtn.text = getString(R.string.confirm)
+            resendCodeBtn.text = getString(R.string.resend_code)
+        })
     }
     /**
      * Sign up request
@@ -189,7 +224,19 @@ class SignupFragment : DaggerFragment() {
                 val res = result as UserResponse
                 requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
 //                val clearRegister = storageRequest.clearByKey<User>("u")
-                goto(R.id.loginFragment)
+                var code = ""
+                val pinEditText = dialog.findViewById<PinEntryEditText>(R.id.txt_pin_entry)
+
+
+                confirmBtn.setOnClickListener {
+                    pinEditText.setOnPinEnteredListener {
+                        code += it
+                    }
+                    requireActivity().gdToast(code, Gravity.BOTTOM)
+                }
+                dialog.show()
+
+//                goto(R.id.loginFragment)
                 Log.i(title, "result of registration ${res.data}")
 //                Log.i(title, "clearedRegister $clearRegister")
             }
