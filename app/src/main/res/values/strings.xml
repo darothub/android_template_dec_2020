@@ -33,4 +33,7 @@
     <string name="server_error">Server error</string>
     <string name="field_required">Field is required</string>
     <string name="signup_successful">Registered successfully</string>
+    <string name="home">Home</string>
+    <string name="media">Media</string>
+    <string name="messages">Messages</string>
 </resources>

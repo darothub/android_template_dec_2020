@@ -5,22 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import com.peacedude.lassod_tailor_app.R
-
 
 
 /**
  * A simple [Fragment] subclass.
- * Use the [EditProfileFragment.newInstance] factory method to
+ * Use the [SpecialtyFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class EditProfileFragment : Fragment() {
+class SpecialtyFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
@@ -29,7 +26,8 @@ class EditProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_profile, container, false)
+        return inflater.inflate(R.layout.fragment_specialty, container, false)
     }
+
 
 }
