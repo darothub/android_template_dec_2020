@@ -41,6 +41,7 @@ class ProfileActivity : AppCompatActivity() {
         },{
             editBtn.setOnClickListener {
                 navController.navigate(R.id.profileManagementFragment)
+                drawer_layout.closeDrawer(drawer_view, true)
             }
         })
 
