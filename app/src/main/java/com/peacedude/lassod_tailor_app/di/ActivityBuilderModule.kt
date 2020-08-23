@@ -9,9 +9,11 @@ import com.google.gson.GsonBuilder
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.MainActivityModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.SignupFragmentModule
 import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
+import com.peacedude.lassod_tailor_app.utils.storage.SharedPrefManager
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
@@ -81,11 +83,11 @@ open class ActivityStaticModule {
         return GsonBuilder().create()
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideStorage(sharedPrefs: SharedPreferences, gson: Gson): StorageRequest {
-//        return SharedPrefManager(sharedPrefs, gson)
-//    }
+    @Singleton
+    @Provides
+    fun provideStorage(sharedPrefs: SharedPreferences, gson: Gson): StorageRequest {
+        return SharedPrefManager(sharedPrefs, gson)
+    }
 
     @Singleton
     @Provides

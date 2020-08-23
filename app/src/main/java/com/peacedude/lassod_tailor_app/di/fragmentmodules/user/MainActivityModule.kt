@@ -20,7 +20,8 @@ abstract class MainActivityModule {
             UserRequestsModule::class,
             UserViewModelModule::class,
             ViewModelFactoryModule::class,
-            LoginFragmentModule::class
+            LoginFragmentModule::class,
+            VerificationFragmentModule::class
         ]
     )
     abstract fun provideMainActivity(): MainActivity

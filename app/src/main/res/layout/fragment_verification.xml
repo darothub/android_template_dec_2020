@@ -1,10 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:layout_margin="@dimen/_10sdp"
+    android:background="@drawable/rounded_corner_background"
+    android:padding="@dimen/_20sdp"
     tools:context=".ui.VerificationFragment">
 
+    <TextView
+        android:id="@+id/dialog_create_account_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@color/colorAccent"
+        android:text="@string/create_an_account"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/dialog_enter_pin_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@color/colorAccent"
+        android:ems="8"
+        android:gravity="center"
+        android:text="@string/enter_six_digit"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_10sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dialog_create_account_text" />
+
+    <LinearLayout
+        android:id="@+id/pin_entry_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/rounded_corner_outline"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dialog_enter_pin_text">
+
+        <com.alimuzaffar.lib.pin.PinEntryEditText
+            android:id="@+id/txt_pin_entry"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:cursorVisible="false"
+            android:digits="1234567890"
+            android:inputType="number"
+            android:layoutDirection="ltr"
+            android:maxLength="6"
+            android:textColor="@color/colorPrimary"
+            android:textIsSelectable="false"
+            android:textSize="20sp"
+            app:pinAnimationType="popIn"
+            app:pinBackgroundIsSquare="true"
+            app:pinLineColors="@color/colorPrimary"
+            app:pinLineStroke="1dp"
+            app:pinLineStrokeSelected="3dp" />
+    </LinearLayout>
+
+
+    <include
+        android:id="@+id/resend_code_btn"
+        layout="@layout/button_and_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pin_entry_wrapper" />
+
+    <include
+        android:id="@+id/confirm_btn"
+        layout="@layout/button_and_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/resend_code_btn" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

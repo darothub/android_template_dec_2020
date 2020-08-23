@@ -16,11 +16,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.alimuzaffar.lib.pin.PinEntryEditText
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import kotlinx.android.synthetic.main.fragment_signup.*
 
 
 fun Fragment.goto(destinationId: Int) {
@@ -84,6 +87,11 @@ fun Fragment.observeRequest(
                             Log.i(title, "Errorcode ${errorCode}")
                             requireActivity().gdErrorToast(getString(R.string.bad_network), Gravity.BOTTOM)
                         }
+                        in 400..499 ->{
+                            result.postValue(Pair(false, errorResponse))
+//                            toast("$errorResponse")
+                            requireActivity().gdErrorToast("$errorResponse", Gravity.BOTTOM)
+                        }
                         in 500..600 -> {
                             requireActivity().gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
                         }
@@ -136,3 +144,27 @@ private fun Fragment.hideKeyboard() {
             )
     }
 }
+
+/**
+ * Handles sign-up request live response
+ *
+ * @param bool
+ * @param result
+ */
+fun Fragment.onRequestResponseTask(
+    bool: Boolean,
+    result: Any?,
+    action:()-> Unit
+) {
+    when (bool) {
+        true -> {
+            val res = result as UserResponse
+            requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
+            action()
+            Log.i("onResponseTask", "result of registration ${res.data}")
+//                Log.i(title, "clearedRegister $clearRegister")
+        }
+        else -> Log.i("onResponseTask", "error $result")
+    }
+}
+

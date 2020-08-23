@@ -7,15 +7,21 @@ import retrofit2.Call
 interface UserRequestInterface {
 
     fun registerUser(
-        user:User): Call<UserResponse>{
+        firstName: String,
+        lastName: String,
+        otherName: String,
+        category: String,
+        phoneNumber: String,
+        password: String
+    ): Call<UserResponse> {
         return TODO()
     }
 
-    fun activateUser(phoneNumber:String, code: String): Call<UserResponse>{
+    fun activateUser(phoneNumber: String, code: String): Call<UserResponse> {
         return TODO()
     }
 
-    fun loginRequest(phoneNumber:String, password: String): Call<UserResponse> {
+    fun loginRequest(phoneNumber: String, password: String): Call<UserResponse> {
         return TODO()
     }
 

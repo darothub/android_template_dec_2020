@@ -100,4 +100,7 @@ dependencies {
     //Dialog dependency
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
 
+    //Pin edit text
+    implementation 'com.poovam:pin-edittext-field:1.2.3'
+
 }

@@ -58,6 +58,7 @@
             android:id="@+id/first_name_edittext"
             style="@style/CustomEditTextStyle"
             android:singleLine="true"
+            android:inputType="textCapWords"
             app:layout_constraintTop_toBottomOf="@id/first_name_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,6 +81,7 @@
             android:id="@+id/last_name_edittext"
             style="@style/CustomEditTextStyle"
             android:singleLine="true"
+            android:inputType="textCapWords"
             app:layout_constraintTop_toBottomOf="@id/last_name_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,6 +103,7 @@
         <EditText
             android:id="@+id/other_name_edittext"
             style="@style/CustomEditTextStyle"
+            android:inputType="textCapWords"
             app:layout_constraintTop_toBottomOf="@id/other_name_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

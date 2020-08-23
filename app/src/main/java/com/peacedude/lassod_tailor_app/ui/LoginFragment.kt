@@ -26,6 +26,7 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_signup.*
 import javax.inject.Inject
 
 
@@ -85,8 +86,10 @@ class LoginFragment : DaggerFragment() {
 
 
         loginBtn.setOnClickListener {
-            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+            loginRequest()
+
         }
+        initEnterKeyToSubmitForm(login_password_edittext) { loginRequest() }
 
         textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         val textLen = newUserText.length
@@ -99,25 +102,6 @@ class LoginFragment : DaggerFragment() {
 
     }
 
-    /**
-     * Spannable sign-up link
-     *
-     */
-    private fun setupSignUpLink() {
-        val textLen: Int by lazy {
-            newUserText.length
-        }
-        val start = 10
-        val end = textLen
-        textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
-        spannableString.enableClickOnSubstring(start, end) {
-            goto(R.id.signupFragment)
-        }
-        spannableString.setColorToSubstring(textColor, start, end)
-        spannableString.removeUnderLine(start, end)
-        new_user.text = spannableString
-        new_user.movementMethod = LinkMovementMethod.getInstance()
-    }
 
     fun loginRequest() {
         val phoneNumber = login_phone_number_edittext.text.toString().trim()
@@ -137,45 +121,48 @@ class LoginFragment : DaggerFragment() {
                 val response = observeRequest(request, progressBar, loginBtn)
                 response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                     val (bool, result) = it
-                    onRequestResponseTask(bool, result, phoneNumber, passwordString)
+                    onRequestResponseTask(bool, result){
+                        startActivity(Intent(requireContext(), ProfileActivity::class.java))
+                        requireActivity().finish()
+                    }
                 })
             }
         }
 
     }
 
-    /**
-     * Handle response live data
-     *
-     * @param bool
-     * @param result
-     * @param emailAddress
-     * @param passwordString
-     */
-    private fun onRequestResponseTask(
-        bool: Boolean,
-        result: Any?,
-        emailAddress: String,
-        passwordString: String
-    ) {
-
-
-        when (bool) {
-            true -> {
-                val res = result as UserResponse
-//                var userExist = User(null, null, emailAddress, passwordString, null)
-//                userExist.loggedIn = true
-//                userExist.token = res.data
-
-                requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
-
-            }
-            else -> {
-                requireActivity().gdErrorToast("$result", Gravity.BOTTOM)
-                Log.i(title, "error $result")
-            }
-        }
-    }
+//    /**
+//     * Handle response live data
+//     *
+//     * @param bool
+//     * @param result
+//     * @param emailAddress
+//     * @param passwordString
+//     */
+//    private fun onRequestResponseTask(
+//        bool: Boolean,
+//        result: Any?,
+//        emailAddress: String,
+//        passwordString: String
+//    ) {
+//
+//
+//        when (bool) {
+//            true -> {
+//                val res = result as UserResponse
+////                var userExist = User(null, null, emailAddress, passwordString, null)
+////                userExist.loggedIn = true
+////                userExist.token = res.data
+//
+//                requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
+//
+//            }
+//            else -> {
+//                requireActivity().gdErrorToast("$result", Gravity.BOTTOM)
+//                Log.i(title, "error $result")
+//            }
+//        }
+//    }
 
 
 }

@@ -15,8 +15,10 @@ import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -86,6 +88,12 @@ class SignupFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         continueBtnTransaction()
 
         initEnterKeyToSubmitForm(password_edittext) { signupRequest() }
@@ -145,7 +153,9 @@ class SignupFragment : DaggerFragment() {
             ArrayAdapter(
                 requireContext(),
                 R.layout.support_simple_spinner_dropdown_item,
-                arrayListOf("User", "Tailor")
+                arrayListOf("weaver", "tailor").apply {
+                    sort()
+                }
             )
 
         signup_category_spinner.onItemSelectedListener = object : OnItemSelectedListener {
@@ -217,7 +227,6 @@ class SignupFragment : DaggerFragment() {
         val category = signup_category_spinner.selectedItem as String
         val phoneNumber = signup_phone_number_edittext.text.toString().trim()
         val passwordString = password_edittext.text.toString().trim()
-        val user = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
 
 //        val u = storageRequest.saveData(user,"u")
 //        Log.i(title, "reg1 $u")
@@ -237,15 +246,21 @@ class SignupFragment : DaggerFragment() {
 
             else -> {
                 val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
-
-                val request = userViewModel.registerUser(userData)
+                requireActivity().gdToast("$phoneNumber", Gravity.BOTTOM)
+                val request = userViewModel.registerUser(
+                    firstName,
+                    lastName,
+                    otherName,
+                    category,
+                    phoneNumber,
+                    passwordString
+                )
                 val response = observeRequest(request, progressBar, continueBtn)
                 response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                     val (bool, result) = it
-                    onRequestResponseTask(
-                        bool,
-                        result
-                    )
+                    onRequestResponseTask(bool, result){
+                        activateUserRequest(phoneNumber)
+                    }
                 })
             }
         }
@@ -253,39 +268,37 @@ class SignupFragment : DaggerFragment() {
 
     }
 
-    /**
-     * Handles sign-up request live response
-     *
-     * @param bool
-     * @param result
-     */
-    private fun onRequestResponseTask(
-        bool: Boolean,
-        result: Any?
-    ) {
-        when (bool) {
-            true -> {
-                val res = result as UserResponse
-                requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
-//                val clearRegister = storageRequest.clearByKey<User>("u")
-                var code = ""
-                val pinEditText = dialog.findViewById<PinEntryEditText>(R.id.txt_pin_entry)
-                val phoneNumber = signup_phone_number_edittext.text.toString().trim()
-                pinEditText.setOnPinEnteredListener {
-                    code += it
-                }
-                confirmBtn.setOnClickListener {
+    private fun activateUserRequest(phone:String) {
+//        var code:String? = null
+        val pinEditText = dialog.findViewById<PinEntryEditText>(R.id.txt_pin_entry)
 
-//                    userViewModel.activateUser(phoneNumber, code)
-                    requireActivity().gdToast("$code $phoneNumber", Gravity.BOTTOM)
-                }
-                dialog.show()
-
-//                goto(R.id.loginFragment)
-                Log.i(title, "result of registration ${res.data}")
-//                Log.i(title, "clearedRegister $clearRegister")
+        requireActivity().gdToast("$phone", Gravity.BOTTOM)
+        confirmBtn.setOnClickListener {
+            val code = pinEditText.text.toString()
+            if (code.isBlank()) {
+                requireActivity().gdErrorToast("Empty code is not allowed", Gravity.BOTTOM)
             }
-            else -> Log.i(title, "error $result")
+            else{
+                Log.i(title, "$code")
+                val request = userViewModel.activateUser(phone, code)
+                requireActivity().gdToast("$code $phone", Gravity.BOTTOM)
+                val response =
+                    observeRequest(request, confirmProgressBar, confirmBtn)
+                response.observe(viewLifecycleOwner, Observer {
+                    val (bool, result) = it
+                    onRequestResponseTask(
+                        bool,
+                        result
+                    ){
+                        findNavController().navigate(R.id.loginFragment)
+                    }
+                })
+
+            }
+            dialog.dismiss()
+        }
+        dialog.show{
+            cornerRadius(15F)
         }
     }
 

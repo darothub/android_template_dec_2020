@@ -9,6 +9,6 @@ class UserResponse (
     val data:Data
 ): ParentData, Serializable
 
-class Data (token:String?)
+class Data (token:String?, isVerified:Boolean=false)
 
 

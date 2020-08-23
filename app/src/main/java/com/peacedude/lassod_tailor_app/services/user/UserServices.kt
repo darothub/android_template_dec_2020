@@ -10,16 +10,19 @@ import retrofit2.http.POST
 
 interface UserServices {
     @POST("auth/signup")
+    @FormUrlEncoded
     fun registerUser(
-        @Body user: User
+        @Field("firstName") firstName:String,
+        @Field("lastName") lastName:String,
+        @Field("otherName") otherName:String,
+        @Field("category") category:String,
+        @Field("phoneNumber") phoneNumber:String,
+        @Field("password") password:String
     ): Call<UserResponse>
 
     @POST("auth/activate")
     @FormUrlEncoded
-    fun activateUser(
-        @Field("phoneNumber") phone:String,
-        @Field("code") password:String
-    ):Call<UserResponse>
+    fun activateUser(@Field("phoneNumber") phoneNumber:String, @Field("code") code:String  ):Call<UserResponse>
 
     @POST("auth/signin")
     @FormUrlEncoded
