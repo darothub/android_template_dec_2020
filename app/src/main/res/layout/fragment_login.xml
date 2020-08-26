@@ -55,7 +55,7 @@
 
         <EditText
             android:id="@+id/login_phone_number_edittext"
-            style="@style/CustomEditTextStyle"
+            style="@style/EditTextCustomStyle"
             android:singleLine="true"
             android:inputType="phone"
             android:textColorHint="@color/colorPrimary"
@@ -92,7 +92,7 @@
                 android:id="@+id/login_password_edittext"
                 android:inputType="textPassword"
                 android:layout_marginStart="@dimen/_20sdp"
-                style="@style/CustomEditTextStyle"
+                style="@style/EditTextCustomStyle"
 
                 />
 

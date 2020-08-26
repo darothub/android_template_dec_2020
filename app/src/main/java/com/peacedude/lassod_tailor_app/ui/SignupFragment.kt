@@ -14,6 +14,7 @@ import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -105,8 +106,24 @@ class SignupFragment : DaggerFragment() {
         setupCategorySpinner()
 
         dialogBtnsAndProgressBarsSetup()
+
+        password_edittext.doOnTextChanged { text, start, count, after ->
+            if (text != null) {
+                validateEmailAndPassword(text)
+            }
+            return@doOnTextChanged
+        }
     }
 
+    private fun validateEmailAndPassword(text:CharSequence) {
+        val passwordPattern = Regex("""^[a-zA-Z0-9@$!%*#?&]{6,}$""")
+        val matchedPassword = passwordPattern.matches(text)
+        if (!matchedPassword) {
+            password_standard_tv.show()
+        } else {
+            password_standard_tv.hide()
+        }
+    }
     private fun dialogBtnsAndProgressBarsSetup() {
         //Drawable background for confirm button
         val confirmBtnBackgroundDrawable = ContextCompat.getDrawable(
@@ -163,11 +180,12 @@ class SignupFragment : DaggerFragment() {
 
             override fun onItemSelected(
                 parentView: AdapterView<*>,
-                selectedItemView: View,
+                selectedItemView: View?,
                 position: Int,
                 id: Long
             ) {
-                (parentView.getChildAt(0) as TextView).setTextColor(Color.WHITE)
+
+//                (parentView.getChildAt(0) as TextView?)?.setTextColor(Color.WHITE)
             }
         }
         signup_category_spinner.adapter = adapterState

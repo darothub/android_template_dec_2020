@@ -36,4 +36,5 @@
     <string name="home">Home</string>
     <string name="media">Media</string>
     <string name="messages">Messages</string>
+    <string name="password_standard">password field should contain at least 8 characters, at least 1 lowercase, 1 uppercase and 1 number and a special character.</string>
 </resources>

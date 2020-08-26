@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
@@ -20,12 +21,12 @@ import javax.inject.Inject
 
 class UserViewModel @Inject constructor(
     private val userRequestInterface: UserRequestInterface,
-    val retrofit: Retrofit,
+    override var retrofit: Retrofit,
     val storage: StorageRequest
-) : ViewModel() {
+) : GeneralViewModel(retrofit) {
 
 
-    val title: String by lazy {
+    override val title: String by lazy {
         this.getName()
     }
     val registeringUser:String by lazy {
@@ -118,76 +119,5 @@ class UserViewModel @Inject constructor(
         return responseLiveData
     }
 
-    internal fun onFailureResponse(
-        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
-        t: Throwable
-    ) {
-        responseLiveData.postValue(ServicesResponseWrapper.Error(t.localizedMessage, 0, null))
-    }
-    internal fun onResponseTask(response: Response<ParentData>, responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>){
-        val res = response.body()
-        val statusCode = response.code()
-        Log.i(title, "${response.code()}")
-        when(statusCode) {
 
-            401 -> {
-                try {
-                    Log.i(title, "errorbody ${response.raw()}")
-                    val a = object : Annotation{}
-                    val converter = retrofit.responseBodyConverter<ErrorModel>(
-                        ErrorModel::class.java, arrayOf(a))
-                    val error = converter.convert(response.errorBody())
-                    var errorString = ""
-                    if(error?.errors?.size!! > 1){
-                        errorString = "${error?.errors?.get(0)}, ${error?.errors?.get(1)}"
-                    }
-                    else{
-                        errorString = "${error?.errors?.get(0)}"
-                    }
-                    Log.i(title, "message $errorString")
-                    responseLiveData.postValue(ServicesResponseWrapper.Logout(errorString, response.code()))
-                }
-                catch (e:Exception){
-                    Log.i(title, e.message.toString())
-                    responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
-                }
-
-            }
-            in 400..501 ->{
-                try{
-                    val a = object : Annotation{}
-                    val converter = retrofit.responseBodyConverter<ErrorModel>(
-                        ErrorModel::class.java, arrayOf(a))
-                    val error = converter.convert(response.errorBody())
-                    var errorString = ""
-                    if(error?.errors?.size!! > 1){
-                        errorString = "${error?.errors?.get(0)}, ${error?.errors?.get(1)}"
-                    }
-                    else{
-                        errorString = "${error?.errors?.get(0)}"
-                    }
-
-                    Log.i(title, "message $errorString")
-                    responseLiveData.postValue(ServicesResponseWrapper.Error(errorString, statusCode))
-                }
-                catch (e:Exception){
-                    Log.i(title, e.message.toString())
-                    responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
-                }
-
-
-            }
-            else -> {
-                try {
-                    Log.i(title, "success ${response.errorBody()}")
-                    responseLiveData.postValue(ServicesResponseWrapper.Success(res))
-                }catch (e:java.lang.Exception){
-                    Log.i(title, e.message.toString())
-                }
-
-
-            }
-        }
-
-    }
 }

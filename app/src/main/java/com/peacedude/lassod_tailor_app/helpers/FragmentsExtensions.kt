@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ProgressBar
@@ -24,6 +25,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import kotlinx.android.synthetic.main.fragment_signup.*
+import kotlin.reflect.KFunction
 
 
 fun Fragment.goto(destinationId: Int) {
@@ -123,26 +125,30 @@ fun Fragment.observeRequest(
 }
 
 private fun Fragment.hideKeyboard() {
-    // this will give us the view
-    // which is currently focus
-    // in this layout
-    val view: View? = requireActivity().getCurrentFocus()
+    val controller = requireView().windowInsetsController
+    controller?.hide(WindowInsets.Type.ime())
 
-    // if nothing is currently
-    // focus then this will protect
-    // the app from crash
-    if (view != null) {
 
-        // now assign the system
-        // service to InputMethodManager
-        val manager: InputMethodManager? = requireActivity().getSystemService(
-            Context.INPUT_METHOD_SERVICE
-        ) as InputMethodManager?
-        manager
-            ?.hideSoftInputFromWindow(
-                view.getWindowToken(), 0
-            )
-    }
+//    // this will give us the view
+//    // which is currently focus
+//    // in this layout
+//    val view: View? = requireActivity().getCurrentFocus()
+//
+//    // if nothing is currently
+//    // focus then this will protect
+//    // the app from crash
+//    if (view != null) {
+//
+//        // now assign the system
+//        // service to InputMethodManager
+//        val manager: InputMethodManager? = requireActivity().getSystemService(
+//            Context.INPUT_METHOD_SERVICE
+//        ) as InputMethodManager?
+//        manager
+//            ?.hideSoftInputFromWindow(
+//                view.getWindowToken(), 0
+//            )
+//    }
 }
 
 /**

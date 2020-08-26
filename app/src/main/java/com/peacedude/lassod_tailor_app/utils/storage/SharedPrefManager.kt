@@ -33,12 +33,13 @@ class SharedPrefManager @Inject constructor(val sharedPrefs: SharedPreferences, 
         sharedPrefs.edit()
             .apply {
                 putString(key, userJson)
-                apply() }
+                apply()
+            }
 
     }
 
 
-    override fun getUserData(user:String): User? {
+    override fun getUserData(user:String):User? {
         return gson.fromJson(user, User::class.java)
     }
 

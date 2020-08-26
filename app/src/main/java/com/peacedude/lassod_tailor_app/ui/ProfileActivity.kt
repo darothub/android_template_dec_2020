@@ -15,7 +15,7 @@ import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.fragment_login.*
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : BaseActivity() {
     private val navController by lazy {
         Navigation.findNavController(this, R.id.fragment2)
     }

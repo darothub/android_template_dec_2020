@@ -6,12 +6,12 @@ import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.MainActivityModule
-import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.SignupFragmentModule
-import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.di.activitymodules.MainActivityModule
+import com.peacedude.lassod_tailor_app.di.activitymodules.ProfileActivityModule
+import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.GeneralViewModelModule
+import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.ViewModelFactoryModule
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
-import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
 import com.peacedude.lassod_tailor_app.utils.storage.SharedPrefManager
 import dagger.Module
@@ -22,11 +22,12 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-@Module(includes = [ActivityStaticModule::class, MainActivityModule::class])
+@Module(includes = [ActivityStaticModule::class, MainActivityModule::class, ProfileActivityModule::class])
 abstract class ActivityBuilderModule {
     @ContributesAndroidInjector(
         modules = [
-
+            ViewModelFactoryModule::class,
+            GeneralViewModelModule::class
         ]
     )
     abstract fun baseActivity(): BaseActivity
