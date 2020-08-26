@@ -125,30 +125,34 @@ fun Fragment.observeRequest(
 }
 
 private fun Fragment.hideKeyboard() {
-    val controller = requireView().windowInsetsController
-    controller?.hide(WindowInsets.Type.ime())
 
+//    buildVersion({
+//        val controller = requireView().windowInsetsController
+//        controller?.hide(WindowInsets.Type.ime())
+//    },{
+//
+//    })
+    // this will give us the view
+    // which is currently focus
+    // in this layout
+    val view: View? = requireActivity().getCurrentFocus()
 
-//    // this will give us the view
-//    // which is currently focus
-//    // in this layout
-//    val view: View? = requireActivity().getCurrentFocus()
-//
-//    // if nothing is currently
-//    // focus then this will protect
-//    // the app from crash
-//    if (view != null) {
-//
-//        // now assign the system
-//        // service to InputMethodManager
-//        val manager: InputMethodManager? = requireActivity().getSystemService(
-//            Context.INPUT_METHOD_SERVICE
-//        ) as InputMethodManager?
-//        manager
-//            ?.hideSoftInputFromWindow(
-//                view.getWindowToken(), 0
-//            )
-//    }
+    // if nothing is currently
+    // focus then this will protect
+    // the app from crash
+    if (view != null) {
+
+        // now assign the system
+        // service to InputMethodManager
+        val manager: InputMethodManager? = requireActivity().getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as InputMethodManager?
+        manager
+            ?.hideSoftInputFromWindow(
+                view.getWindowToken(), 0
+            )
+    }
+
 }
 
 /**

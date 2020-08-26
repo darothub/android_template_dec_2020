@@ -7,6 +7,7 @@ import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -29,15 +30,15 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
         Log.i(title, "${response.code()}")
         Log.i(title, "errorbody ${response.raw()}")
         val a = object : Annotation{}
-        val converter = retrofit.responseBodyConverter<ErrorModel>(
-            ErrorModel::class.java, arrayOf(a))
-        val error = converter.convert(response.errorBody())
-        var errorString = ""
+        val converter = retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
+
+
         when(statusCode) {
 
             401 -> {
                 try {
-                    errorConverter(error, errorString, error?.errors, responseLiveData, response)
+
+                    errorConverter(responseLiveData, response)
                 }
                 catch (e:Exception){
                     Log.i(title, e.message.toString())
@@ -47,7 +48,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
             }
             in 400..501 ->{
                 try{
-                    errorConverter(error, errorString, error?.errors, responseLiveData, response)
+                    errorConverter(responseLiveData, response)
                 }
                 catch (e:Exception){
                     Log.i(title, "Hello" + " " + e.message.toString())
@@ -71,13 +72,14 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
     }
 
     fun errorConverter(
-        error: ErrorModel?,
-        errorString: String,
-        errors: List<String>?,
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
         response: Response<ParentData>
     ) {
-        var errorString1 = errorString
+        val a = object : Annotation{}
+        val converter = retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
+        val error = converter.convert(response.errorBody())
+        val errors = error?.errors
+        var errorString1 = ""
         if (error?.errors?.size!! > 1) {
             errorString1 = "${errors?.get(0)}, ${errors?.get(1)}"
         } else {

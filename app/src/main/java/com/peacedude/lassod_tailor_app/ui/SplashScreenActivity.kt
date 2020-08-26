@@ -48,7 +48,7 @@ class SplashScreenActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     private fun hideSystemUI() {
         buildVersion({
-            window.setDecorFitsSystemWindows(false)
+//            window.setDecorFitsSystemWindows(false)
         },{
             // Enables regular immersive mode.
         // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 
 
 inline fun Any.buildVersion(forSdkGreaterThankM:()->Unit, forSdkLesserThanM:()->Unit){
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
         forSdkGreaterThankM()
     }else{
         forSdkLesserThanM()
