@@ -200,6 +200,7 @@
             app:layout_constraintTop_toBottomOf="@id/password_text_input"
             android:textColor="@color/colorRed"
             android:textSize="@dimen/_9sdp"
+            android:textStyle="bold"
             android:visibility="gone"
             />
 

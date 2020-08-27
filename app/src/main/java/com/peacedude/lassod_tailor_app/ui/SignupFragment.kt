@@ -160,14 +160,12 @@ class SignupFragment : DaggerFragment() {
     }
 
     private fun setupCategorySpinner() {
-        val adapterState =
-            ArrayAdapter(
-                requireContext(),
-                R.layout.support_simple_spinner_dropdown_item,
-                arrayListOf("weaver", "tailor").apply {
-                    sort()
-                }
-            )
+        val categorySpinnerAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.categories_array,
+            R.layout.spinner_colored_text_layout
+        )
+        categorySpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
 
         signup_category_spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -182,7 +180,7 @@ class SignupFragment : DaggerFragment() {
                 (parentView.getChildAt(0) as TextView?)?.setTextColor(Color.WHITE)
             }
         }
-        signup_category_spinner.adapter = adapterState
+        signup_category_spinner.adapter = categorySpinnerAdapter
     }
 
     private fun setupLoginSpannableString() {
@@ -302,11 +300,13 @@ class SignupFragment : DaggerFragment() {
                         bool,
                         result
                     ){
+                        dialog.dismiss()
                         findNavController().navigate(R.id.loginFragment)
                     }
                 })
+
             }
-            dialog.dismiss()
+
         }
         dialog.show{
             cornerRadius(15F)

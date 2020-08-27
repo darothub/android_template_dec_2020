@@ -1,4 +1,9 @@
 <resources>
+    <string-array name="categories_array">
+        <item>Guest</item>
+        <item>Tailor</item>
+        <item>Weaver</item>
+    </string-array>
     <string name="app_name">Lassod-Tailor-App</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
