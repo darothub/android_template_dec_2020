@@ -17,8 +17,5 @@ open class User(
     @SerializedName("password")
     var password:String?
 
-) : Serializable {
-    var loggedIn:Boolean = false
-    var message = ""
-}
+) : Serializable
 

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemSelectedListener
+import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
@@ -107,6 +108,9 @@ class SignupFragment : DaggerFragment() {
             }
             return@doOnTextChanged
         }
+        requireActivity().onBackPressedDispatcher.addCallback {
+            goto(R.id.homeFragment)
+        }
     }
 
     private fun validateEmailAndPassword(text:CharSequence) {
@@ -177,7 +181,6 @@ class SignupFragment : DaggerFragment() {
                 id: Long
             ) {
 
-                (parentView.getChildAt(0) as TextView?)?.setTextColor(Color.WHITE)
             }
         }
         signup_category_spinner.adapter = categorySpinnerAdapter

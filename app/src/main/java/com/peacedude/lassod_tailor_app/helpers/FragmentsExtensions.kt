@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.helpers
 
 import android.content.Context
+import android.net.Uri
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -16,6 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.alimuzaffar.lib.pin.PinEntryEditText
 import com.peacedude.gdtoast.gdErrorToast
@@ -124,6 +127,35 @@ fun Fragment.observeRequest(
     return result
 }
 
+/**
+ * Navigate to destination id
+ *
+ * @param destinationId
+ */
+fun Fragment.goto(destinationId: NavDirections) {
+    findNavController().navigate(destinationId)
+}
+
+/**
+ * Navigate up
+ *
+ */
+fun Fragment.gotoUp() {
+    findNavController().navigateUp()
+}
+
+/**
+ * Navigate to uri
+ *
+ * @param uri
+ */
+fun Fragment.goto(uri: Uri) {
+    val request = NavDeepLinkRequest.Builder
+        .fromUri(uri)
+        .build()
+    findNavController().navigate(request)
+}
+
 private fun Fragment.hideKeyboard() {
 
 //    buildVersion({
@@ -171,7 +203,7 @@ fun Fragment.onRequestResponseTask(
             val res = result as UserResponse
             requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
             action()
-            Log.i("onResponseTask", "result of registration ${res.data}")
+            Log.i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
 //                Log.i(title, "clearedRegister $clearRegister")
         }
         else -> Log.i("onResponseTask", "error $result")

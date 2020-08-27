@@ -1,8 +1,8 @@
 <resources>
     <string-array name="categories_array">
-        <item>Guest</item>
-        <item>Tailor</item>
-        <item>Weaver</item>
+        <item>guest</item>
+        <item>tailor</item>
+        <item>weaver</item>
     </string-array>
     <string name="app_name">Lassod-Tailor-App</string>
     <!-- TODO: Remove or change this placeholder text -->

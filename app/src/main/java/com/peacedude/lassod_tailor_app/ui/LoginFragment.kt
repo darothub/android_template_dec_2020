@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -98,6 +99,9 @@ class LoginFragment : DaggerFragment() {
             spannableString.enableClickOnSubstring(start, textLen) {
                 goto(R.id.signupFragment)
             }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback {
+            goto(R.id.homeFragment)
         }
 
     }
