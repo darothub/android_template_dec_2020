@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.peacedude.lassod_tailor_app.di.activitymodules.MainActivityModule
@@ -13,6 +15,7 @@ import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.ViewModelFact
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
+import com.peacedude.lassod_tailor_app.utils.storage.EncryptedSharedPrefManager
 import com.peacedude.lassod_tailor_app.utils.storage.SharedPrefManager
 import dagger.Module
 import dagger.Provides
@@ -80,18 +83,52 @@ open class ActivityStaticModule {
 
     @Singleton
     @Provides
+    fun provideMasterKey(context: Context): MasterKey {
+        return MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+    }
+
+    @Singleton
+    @Provides
+    fun providePrefKeyEncryptionScheme(): EncryptedSharedPreferences.PrefKeyEncryptionScheme = EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV
+
+
+    @Singleton
+    @Provides
+    fun providePrefValueEncryptionScheme(): EncryptedSharedPreferences.PrefValueEncryptionScheme = EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+
+
+    @Singleton
+    @Provides
+    fun provideEncryptedSharedPreference(
+        context: Context,
+        masterKey: MasterKey,
+        prefKey: EncryptedSharedPreferences.PrefKeyEncryptionScheme,
+        prefValue:EncryptedSharedPreferences.PrefValueEncryptionScheme
+    ): EncryptedSharedPreferences {
+        return EncryptedSharedPreferences.create(
+            context,
+            "LassodFile",
+            masterKey,
+            prefKey,
+            prefValue
+        ) as EncryptedSharedPreferences
+    }
+
+    @Singleton
+    @Provides
     fun provideGson(): Gson {
         return GsonBuilder().create()
     }
 
     @Singleton
     @Provides
-    fun provideStorage(sharedPrefs: SharedPreferences, gson: Gson): StorageRequest {
-        return SharedPrefManager(sharedPrefs, gson)
+    fun provideStorage(sharedPrefs: EncryptedSharedPreferences): StorageRequest {
+        return EncryptedSharedPrefManager(sharedPrefs)
     }
 
     @Singleton
     @Provides
-    fun provideSavedStateHandle()= SavedStateHandle()
+    fun provideSavedStateHandle() = SavedStateHandle()
 
 }

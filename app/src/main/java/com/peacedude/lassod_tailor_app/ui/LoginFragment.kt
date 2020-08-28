@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import androidx.security.crypto.EncryptedSharedPreferences
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -25,6 +26,8 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
+import com.peacedude.lassod_tailor_app.utils.loggedInUser
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_signup.*
@@ -44,6 +47,8 @@ class LoginFragment : DaggerFragment() {
         getName()
     }
 
+    @Inject
+    lateinit var storageRequest: StorageRequest
     private lateinit var progressBar: ProgressBar
     private val newUserText: String by lazy {
         getString(R.string.new_user)
@@ -126,7 +131,13 @@ class LoginFragment : DaggerFragment() {
                 response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                     val (bool, result) = it
                     onRequestResponseTask(bool, result){
-                        startActivity(Intent(requireContext(), ProfileActivity::class.java))
+                        val userDetails = result as? UserResponse
+                        val user = userDetails?.data
+                        user?.loggedIn = true
+                        storageRequest.saveData(user, loggedInUser)
+                        val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
+                        loginIntent.putExtra("token", userDetails?.data?.token)
+                        startActivity(loginIntent)
                         requireActivity().finish()
                     }
                 })
@@ -135,38 +146,7 @@ class LoginFragment : DaggerFragment() {
 
     }
 
-//    /**
-//     * Handle response live data
-//     *
-//     * @param bool
-//     * @param result
-//     * @param emailAddress
-//     * @param passwordString
-//     */
-//    private fun onRequestResponseTask(
-//        bool: Boolean,
-//        result: Any?,
-//        emailAddress: String,
-//        passwordString: String
-//    ) {
-//
-//
-//        when (bool) {
-//            true -> {
-//                val res = result as UserResponse
-////                var userExist = User(null, null, emailAddress, passwordString, null)
-////                userExist.loggedIn = true
-////                userExist.token = res.data
-//
-//                requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
-//
-//            }
-//            else -> {
-//                requireActivity().gdErrorToast("$result", Gravity.BOTTOM)
-//                Log.i(title, "error $result")
-//            }
-//        }
-//    }
+
 
 
 }

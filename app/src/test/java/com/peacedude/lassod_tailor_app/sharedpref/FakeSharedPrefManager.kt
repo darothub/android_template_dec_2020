@@ -23,7 +23,7 @@ class FakeSharedPrefManager(val hashMap: HashMap<String, String>):StorageRequest
         TODO("Not yet implemented")
     }
 
-    override fun checkUser(key: String): User? {
+    override fun checkUser(key: User): User? {
         TODO("Not yet implemented")
     }
 

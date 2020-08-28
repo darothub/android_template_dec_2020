@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface AuthServices {
-    @GET("profile/me")
-    fun getUUserData(@Header("Authorization") header:String): Call<UserResponse>
+    @GET("auth/profile/me")
+    fun getUserData(@Header("Authorization") header:String): Call<UserResponse>
 }
 

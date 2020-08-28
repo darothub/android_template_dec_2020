@@ -118,6 +118,9 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core-jvm:4.2.0.RC2")
     testImplementation("io.kotest:kotest-property-jvm:4.2.0.RC2")
 
+    //For shared preference encryption
+    implementation "androidx.security:security-crypto:1.1.0-alpha02"
+
 
 
 }

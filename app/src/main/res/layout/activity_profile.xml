@@ -46,7 +46,7 @@
 
                 <TextView
                     android:id="@+id/hi_user_name"
-                    android:layout_width="@dimen/_15sdp"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/_15sdp"
                     android:text="@string/hi"
                     android:layout_marginStart="@dimen/_10sdp"
@@ -87,12 +87,12 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <include
-        android:id="@+id/drawer_view"
+        android:id="@+id/profile_drawer_view"
         layout="@layout/drawer_item"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="match_parent"
         android:layout_gravity="start" />
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
