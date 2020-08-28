@@ -34,11 +34,11 @@ class ProfileActivity : BaseActivity() {
         profile_drawer_view.findViewById<TextView>(R.id.profile_name)
     }
     //Get logged-in user
-    val UserLoggingIn: User by lazy {
-        storageRequest.checkUser(loggedInUser)!!
+    val currentUser: User? by lazy {
+        storageRequest.checkUser(loggedInUser)
     }
     val token by lazy {
-        UserLoggingIn.token
+        currentUser?.token
     }
     val header by lazy {
         "$bearer $token"
@@ -111,7 +111,7 @@ class ProfileActivity : BaseActivity() {
                 val user = userDetails?.data
                 hi_user_name.append(" ${user?.firstName}")
                 profileName.append("${user?.firstName} ${user?.lastName}")
-                Log.i(title, "UserToken ${user?.token} loggedIn\n${user?.firstName}")
+                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
             }
         })
     }

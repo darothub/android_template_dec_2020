@@ -119,7 +119,7 @@ fun Activity.onRequestResponseTask(
                 val res = result as UserResponse
                 gdToast(res.message.toString(), Gravity.BOTTOM)
                 action()
-                Log.i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
+                Log.i("onResponseTask", "result of registration ${res.message} ${res.data.firstName}\n${res.data.userId}")
             }
             catch (e:java.lang.Exception){
                 gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)

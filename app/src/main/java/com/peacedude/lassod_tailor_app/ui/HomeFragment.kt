@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,7 +12,12 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
+import com.peacedude.lassod_tailor_app.utils.loggedInUser
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_home.*
+import javax.inject.Inject
 
 
 /**
@@ -19,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : Fragment() {
+class HomeFragment : DaggerFragment() {
 
     lateinit var loginBtn:Button
     lateinit var signupBtn:Button
@@ -30,6 +36,12 @@ class HomeFragment : Fragment() {
         AnimationUtils.loadAnimation(requireContext(), R.anim.right_animation)
     }
 
+    @Inject
+    lateinit var storageRequest: StorageRequest
+
+    val currentUser: User? by lazy {
+        storageRequest.checkUser(loggedInUser)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,6 +79,12 @@ class HomeFragment : Fragment() {
 
         loginBtn.setOnClickListener {
             findNavController().navigate(R.id.loginFragment)
+        }
+
+        if (currentUser != null){
+            when (currentUser?.loggedIn) {
+                true -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
+            }
         }
     }
 
