@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -101,6 +102,7 @@ class ProfileActivity : BaseActivity() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getUserData(){
         val request = authViewModel.getUserData(header)
         val response = observeRequest(request, null, null)
@@ -109,8 +111,8 @@ class ProfileActivity : BaseActivity() {
             onRequestResponseTask(bool, result){
                 val userDetails = result as? UserResponse
                 val user = userDetails?.data
-                hi_user_name.append(" ${user?.firstName}")
-                profileName.append("${user?.firstName} ${user?.lastName}")
+                hi_user_name.text = "Hi ${user?.firstName}"
+                profileName.text = "${user?.firstName} ${user?.lastName}"
                 Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
             }
         })

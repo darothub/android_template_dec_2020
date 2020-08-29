@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.loggedInUser
+import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
@@ -25,7 +27,7 @@ import javax.inject.Inject
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : DaggerFragment() {
+open class HomeFragment : DaggerFragment() {
 
     lateinit var loginBtn:Button
     lateinit var signupBtn:Button
@@ -87,5 +89,14 @@ class HomeFragment : DaggerFragment() {
             }
         }
     }
+
+    override fun onAttach(context: Context) {
+        injectMembers()
+        super.onAttach(context)
+
+
+    }
+    protected open fun injectMembers() =
+        AndroidSupportInjection.inject(this)
 
 }

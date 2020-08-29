@@ -1,9 +1,13 @@
 package com.peacedude.lassod_tailor_app.sharedpref
 
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import org.junit.Test
 
 class SharedPrefManagerTest : FunSpec({
     val h = hashMapOf("hello" to "world")

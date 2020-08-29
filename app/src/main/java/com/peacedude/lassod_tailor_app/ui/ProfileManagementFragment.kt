@@ -37,14 +37,16 @@ class ProfileManagementFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile_management, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onStart() {
+        super.onStart()
 
         setupViewPager()
 
         val toolbar = profile_management_toolbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.profile_management_toolbar)
+        toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark))
 
         val navController = Navigation.findNavController(profile_management_appBar)
+
 
         NavigationUI.setupWithNavController(toolbar, navController)
     }
@@ -59,6 +61,8 @@ class ProfileManagementFragment : Fragment() {
                 R.color.colorAccent
             )
         )
+        profile_management_tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+
     }
 
 }

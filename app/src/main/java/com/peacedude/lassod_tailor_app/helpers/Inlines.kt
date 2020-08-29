@@ -7,7 +7,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 
 
-inline fun Any.buildVersion(forSdkGreaterThankM:()->Unit, forSdkLesserThanM:()->Unit){
+inline fun buildVersion(forSdkGreaterThankM:()->Unit, forSdkLesserThanM:()->Unit){
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
         forSdkGreaterThankM()
     }else{
@@ -21,7 +21,7 @@ inline fun Any.buildVersion(forSdkGreaterThankM:()->Unit, forSdkLesserThanM:()->
  * @param editText
  * @param request
  */
-inline fun Fragment.initEnterKeyToSubmitForm(editText: EditText, crossinline request: () -> Unit) {
+inline fun initEnterKeyToSubmitForm(editText: EditText, crossinline request: () -> Unit) {
     editText.setOnKeyListener { view, keyCode, keyEvent ->
         if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
 
