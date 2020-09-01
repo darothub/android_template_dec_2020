@@ -31,7 +31,7 @@ import com.peacedude.lassod_tailor_app.ui.MainActivity
  * @param button
  * @return
  */
-fun LifecycleOwner.observeRequest(
+fun AppCompatActivity.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>,
     progressBar: ProgressBar?, button: Button?
 ): LiveData<Pair<Boolean, Any?>> {
@@ -42,7 +42,7 @@ fun LifecycleOwner.observeRequest(
 
     val act = this as? Activity
 
-    act?.hideKeyboard()
+    hideKeyboard()
     request.observe(this, Observer {
         try {
             val responseData = it.data
@@ -67,20 +67,20 @@ fun LifecycleOwner.observeRequest(
                     when (errorCode) {
                         0 -> {
                             Log.i(title, "Errorcode ${errorCode}")
-                            act?.gdErrorToast(act?.getString(R.string.bad_network), Gravity.BOTTOM)
+                            gdErrorToast(getString(R.string.bad_network), Gravity.BOTTOM)
                         }
                         in 400..499 ->{
                             result.postValue(Pair(false, errorResponse))
 //                            toast("$errorResponse")
-                            act?.gdErrorToast("$errorResponse", Gravity.BOTTOM)
+                            gdErrorToast("$errorResponse", Gravity.BOTTOM)
                         }
                         in 500..600 -> {
-                            act?. gdErrorToast(act?.getString(R.string.server_error), Gravity.BOTTOM)
+                             gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
                         }
                         else -> {
                             result.postValue(Pair(false, errorResponse))
 //                            toast("$errorResponse")
-                            act?.gdErrorToast("$errorResponse", Gravity.BOTTOM)
+                            gdErrorToast("$errorResponse", Gravity.BOTTOM)
                         }
                     }
 
@@ -90,9 +90,9 @@ fun LifecycleOwner.observeRequest(
                     progressBar?.hide()
                     button?.show()
                     result.postValue(Pair(false, errorResponse))
-                    act?.gdToast("$errorResponse", Gravity.BOTTOM)
+                    gdToast("$errorResponse", Gravity.BOTTOM)
                     Log.i(title, "Log out $errorResponse")
-                    act?.startActivity(Intent(this as? Activity, MainActivity::class.java))
+                    startActivity(Intent(this as? Activity, MainActivity::class.java))
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
                 }
             }

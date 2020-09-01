@@ -31,4 +31,15 @@ class ProfileViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BE
             else -> "NULL"
         }
     }
+
+//    override fun getItemCount(): Int = 3
+//
+//    override fun createFragment(position: Int): Fragment {
+//        return when (position) {
+//            0 -> ProfileFragment()
+//            1 -> SpecialtyFragment()
+//            2 -> PaymentMethodFragment()
+//            else -> ProfileFragment()
+//        }
+//    }
 }

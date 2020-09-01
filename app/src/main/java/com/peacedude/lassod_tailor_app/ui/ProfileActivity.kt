@@ -5,23 +5,29 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TableLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.observeRequest
-import com.peacedude.lassod_tailor_app.helpers.onRequestResponseTask
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
+import com.peacedude.lassod_tailor_app.ui.adapters.ProfileViewPagerAdapter
 import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUser
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.profile_header.*
 import javax.inject.Inject
 
 class ProfileActivity : BaseActivity() {
@@ -44,6 +50,14 @@ class ProfileActivity : BaseActivity() {
     val header by lazy {
         "$bearer $token"
     }
+    val menuIcon by lazy{
+        profile_header.findViewById<ImageView>(R.id.menu_icon)
+    }
+    val greeting by lazy{
+        profile_header.findViewById<TextView>(R.id.hi_user_name)
+    }
+
+
     @Inject
     lateinit var storageRequest: StorageRequest
     private lateinit var editBtn:Button
@@ -52,6 +66,9 @@ class ProfileActivity : BaseActivity() {
     val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
+    lateinit var profileViewPager:ViewPager
+    lateinit var profileTabLayout:TabLayout
+    lateinit var adapter : ProfileViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -64,7 +81,8 @@ class ProfileActivity : BaseActivity() {
 //        drawer_layout.addDrawerListener(actionBarDrawerToggle)
 //        actionBarDrawerToggle.syncState()
 
-        menu_icon.setOnClickListener {
+        profile_header.show()
+        menuIcon.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)
         }
 
@@ -76,15 +94,27 @@ class ProfileActivity : BaseActivity() {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
             }
         })
+        Log.i(title, "Oncreate")
 
+
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(title, "onStart")
     }
 
     override fun onResume() {
         super.onResume()
 
+        Log.i(title, "OnResume")
         val token = intent.getStringExtra("token")
         Log.i(title, "Token $token")
         val user = storageRequest.checkUser(loggedInUser)
+
+
 
         getUserData()
 
@@ -111,7 +141,7 @@ class ProfileActivity : BaseActivity() {
             onRequestResponseTask(bool, result){
                 val userDetails = result as? UserResponse
                 val user = userDetails?.data
-                hi_user_name.text = "Hi ${user?.firstName}"
+                greeting.text = "Hi ${user?.firstName}"
                 profileName.text = "${user?.firstName} ${user?.lastName}"
                 Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
             }

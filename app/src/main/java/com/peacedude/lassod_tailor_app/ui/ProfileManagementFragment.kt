@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.ui.adapters.ProfileViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -41,7 +42,7 @@ class ProfileManagementFragment : Fragment() {
         super.onStart()
 
         setupViewPager()
-
+//
         val toolbar = profile_management_toolbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.profile_management_toolbar)
         toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark))
 
@@ -49,9 +50,11 @@ class ProfileManagementFragment : Fragment() {
 
 
         NavigationUI.setupWithNavController(toolbar, navController)
+
     }
 
     private fun setupViewPager() {
+
         adapter = ProfileViewPagerAdapter(requireActivity().supportFragmentManager)
         profile_management_viewPager.adapter = adapter
         profile_management_tabLayout.setupWithViewPager(profile_management_viewPager)
