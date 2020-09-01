@@ -64,6 +64,9 @@
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="android:maxLength">28</item>
         <item name="maxLines">2</item>
+        <item name="enabled">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
     </style>
 
     <style name="EditProfileTextViewCustomStyle">

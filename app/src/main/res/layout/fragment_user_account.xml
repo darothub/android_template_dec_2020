@@ -143,8 +143,7 @@
             app:layout_constraintTop_toBottomOf="@id/workshop_address_et" />
 
         <EditText
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
+
             android:id="@+id/showroom_address_et"
             style="@style/EditProfileEditTextCustomStyle"
             android:inputType="textMultiLine|textCapWords"
@@ -156,6 +155,142 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/showroom_address_tv"
 
+            />
+
+        <TextView
+            android:id="@+id/no_employee_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/no_of_emplyee"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/showroom_address_et" />
+
+        <EditText
+            android:id="@+id/no_employee_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/showroom_address_et"
+            app:layout_constraintBottom_toBottomOf="@id/no_employee_tv"/>
+
+        <TextView
+            android:id="@+id/legal_status_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/legal_status"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_employee_et" />
+
+        <EditText
+            android:id="@+id/legal_status_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/no_employee_et"
+            app:layout_constraintBottom_toBottomOf="@id/legal_status_tv"/>
+
+        <TextView
+            android:id="@+id/union_membership"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:textColor="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/legal_status_et"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:text="@string/union_membership"/>
+
+        <View
+            android:id="@+id/union_membership_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/union_membership"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginTop="@dimen/_8sdp"/>
+
+        <TextView
+            android:id="@+id/name_of_union_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/name_of_union"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/union_membership_line" />
+
+        <EditText
+            android:id="@+id/name_of_union_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/union_membership_line"
+            app:layout_constraintBottom_toBottomOf="@id/name_of_union_tv"/>
+
+        <TextView
+            android:id="@+id/ward_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/ward"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_of_union_et" />
+
+        <EditText
+            android:id="@+id/ward_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_of_union_et"
+            app:layout_constraintBottom_toBottomOf="@id/ward_tv"/>
+
+        <TextView
+            android:id="@+id/account_lga_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/lga"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ward_et" />
+
+        <EditText
+            android:id="@+id/account_lga_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ward_et"
+            app:layout_constraintBottom_toBottomOf="@id/account_lga_tv"/>
+        <TextView
+            android:id="@+id/account_state_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/state"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/account_lga_et" />
+
+        <EditText
+            android:id="@+id/account_state_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/account_lga_et"
+            app:layout_constraintBottom_toBottomOf="@id/account_state_tv"/>
+
+        <include
+            android:id="@+id/save_changes_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/account_state_et"
+            android:layout_marginTop="@dimen/_8sdp"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

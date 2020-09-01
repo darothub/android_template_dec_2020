@@ -46,4 +46,12 @@
     <string name="gender">Gender</string>
     <string name="workshop_address">Workshop Address</string>
     <string name="showroom_address">Showroom Address</string>
+    <string name="no_of_emplyee">No of Employees/Apprentices</string>
+    <string name="legal_status">Legal Status</string>
+    <string name="union_membership">UNION MEMBERSHIP</string>
+    <string name="name_of_union">Name Of Union</string>
+    <string name="ward">Ward</string>
+    <string name="lga">Local Government Area</string>
+    <string name="state">State</string>
+    <string name="save_changes">Save changes</string>
 </resources>

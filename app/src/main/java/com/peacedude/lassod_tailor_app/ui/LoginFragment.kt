@@ -41,7 +41,7 @@ import javax.inject.Inject
  */
 class LoginFragment : DaggerFragment() {
 
-    lateinit private var loginBtn: Button
+    private lateinit var loginBtn: Button
 
     val title: String by lazy {
         getName()
