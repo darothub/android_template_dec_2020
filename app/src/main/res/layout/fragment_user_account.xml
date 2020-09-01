@@ -196,12 +196,10 @@
         <TextView
             android:id="@+id/union_membership"
             style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/union_membership"
             android:textColor="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/legal_status_et"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:text="@string/union_membership"/>
+            app:layout_constraintTop_toBottomOf="@id/legal_status_et" />
 
         <View
             android:id="@+id/union_membership_line"
