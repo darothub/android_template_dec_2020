@@ -45,4 +45,5 @@
     <string name="tap_to_change_picture">tap to change picture</string>
     <string name="gender">Gender</string>
     <string name="workshop_address">Workshop Address</string>
+    <string name="showroom_address">Showroom Address</string>
 </resources>
