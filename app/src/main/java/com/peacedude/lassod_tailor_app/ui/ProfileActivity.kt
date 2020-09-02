@@ -2,33 +2,27 @@ package com.peacedude.lassod_tailor_app.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TableLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.ui.adapters.ProfileViewPagerAdapter
 import com.peacedude.lassod_tailor_app.utils.bearer
-import com.peacedude.lassod_tailor_app.utils.loggedInUser
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.profile_header.*
-import org.w3c.dom.Text
 import javax.inject.Inject
 
 class ProfileActivity : BaseActivity() {

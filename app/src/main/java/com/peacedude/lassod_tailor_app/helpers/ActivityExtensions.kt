@@ -3,9 +3,11 @@ package com.peacedude.lassod_tailor_app.helpers
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ProgressBar
@@ -139,31 +141,33 @@ fun Activity.onRequestResponseTask(
 
 private fun Activity.hideKeyboard() {
 
-//    buildVersion({
-//        val controller = requireView().windowInsetsController
-//        controller?.hide(WindowInsets.Type.ime())
-//    },{
-//
-//    })
-    // this will give us the view
-    // which is currently focus
-    // in this layout
-    val view: View? = currentFocus
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+        val view: View? = currentFocus
+        val controller = view?.windowInsetsController
+        controller?.hide(WindowInsets.Type.ime())
+    }else{
+        // this will give us the view
+        // which is currently focus
+        // in this layout
+        val view: View? = currentFocus
 
-    // if nothing is currently
-    // focus then this will protect
-    // the app from crash
-    if (view != null) {
+        // if nothing is currently
+        // focus then this will protect
+        // the app from crash
+        if (view != null) {
 
-        // now assign the system
-        // service to InputMethodManager
-        val manager: InputMethodManager? = getSystemService(
-            Context.INPUT_METHOD_SERVICE
-        ) as InputMethodManager?
-        manager
-            ?.hideSoftInputFromWindow(
-                view.getWindowToken(), 0
-            )
+            // now assign the system
+            // service to InputMethodManager
+            val manager: InputMethodManager? = getSystemService(
+                Context.INPUT_METHOD_SERVICE
+            ) as InputMethodManager?
+            manager
+                ?.hideSoftInputFromWindow(
+                    view.getWindowToken(), 0
+                )
+        }
     }
+
+
 
 }
