@@ -23,7 +23,7 @@ class UserViewModel @Inject constructor(
     private val userRequestInterface: UserRequestInterface,
     override var retrofit: Retrofit,
     val storage: StorageRequest
-) : GeneralViewModel(retrofit) {
+) : GeneralViewModel(retrofit,storage) {
 
 
     override val title: String by lazy {
@@ -35,7 +35,7 @@ class UserViewModel @Inject constructor(
     var storeData:User? = storage.checkUser(registeringUser)
         set(user) = storage.keepData(user, registeringUser)
 
-    val clearSavedUser= storage.clearByKey<User>(registeringUser)
+    val clearSavedUser= storage.clearByKey(registeringUser)
 
 
     fun registerUser(

@@ -20,7 +20,7 @@ class AuthViewModel @Inject constructor(
     private val authRequestInterface: AuthRequestInterface,
     override var retrofit: Retrofit,
     val storage: StorageRequest
-) : GeneralViewModel(retrofit) {
+) : GeneralViewModel(retrofit,storage) {
 
     fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
         val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()

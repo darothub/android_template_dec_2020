@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.di.activitymodules
 
+import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.UserAccountFragmentModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.LoginFragmentModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.SignupFragmentModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.VerificationFragmentModule
@@ -22,7 +23,8 @@ abstract class ProfileActivityModule {
     @ContributesAndroidInjector(
         modules = [
             AuthRequestModule::class,
-            AuthViewModelModule::class
+            AuthViewModelModule::class,
+            UserAccountFragmentModule::class
         ]
     )
     abstract fun provideProfileActivity(): ProfileActivity

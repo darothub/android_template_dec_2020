@@ -89,9 +89,10 @@ fun Activity.observeRequest(
                 is ServicesResponseWrapper.Logout -> {
                     progressBar?.hide()
                     button?.show()
-//                    startActivity(Intent(this as? Context, MainActivity::class.java))
-//                    result.postValue(Pair(false, errorResponse))
                     gdToast("${getString(R.string.session_expired)}", Gravity.BOTTOM)
+                    startActivity(Intent(this as? Context, MainActivity::class.java))
+                    result.postValue(Pair(false, errorResponse))
+
                     Log.i(title, "Log out $errorResponse")
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())

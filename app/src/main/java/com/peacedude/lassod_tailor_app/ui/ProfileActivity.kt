@@ -28,6 +28,7 @@ import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUser
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.profile_header.*
+import org.w3c.dom.Text
 import javax.inject.Inject
 
 class ProfileActivity : BaseActivity() {
@@ -61,6 +62,8 @@ class ProfileActivity : BaseActivity() {
     @Inject
     lateinit var storageRequest: StorageRequest
     private lateinit var editBtn:Button
+    private lateinit var logoutText:TextView
+    private lateinit var logoutImage:ImageView
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     val authViewModel: AuthViewModel by lazy {
@@ -88,10 +91,20 @@ class ProfileActivity : BaseActivity() {
 
         buttonTransactions({
             editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
+            logoutText = profile_drawer_view.findViewById(R.id.logout_tv)
+            logoutImage = profile_drawer_view.findViewById(R.id.logout_image)
         },{
             editBtn.setOnClickListener {
                 navController.navigate(R.id.profileManagementFragment)
                 drawer_layout.closeDrawer(profile_drawer_view, true)
+            }
+            logoutText.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                logout(storageRequest, this)
+            }
+            logoutImage.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                logout(storageRequest, this)
             }
         })
         Log.i(title, "Oncreate")
@@ -100,6 +113,8 @@ class ProfileActivity : BaseActivity() {
 
 
     }
+
+
 
     override fun onStart() {
         super.onStart()

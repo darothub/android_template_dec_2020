@@ -204,7 +204,7 @@
             />
 
         <TextView
-            android:id="@+id/logout_text"
+            android:id="@+id/logout_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/logout"

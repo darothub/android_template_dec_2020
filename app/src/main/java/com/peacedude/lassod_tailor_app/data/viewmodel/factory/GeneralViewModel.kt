@@ -7,12 +7,14 @@ import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
+import com.peacedude.lassod_tailor_app.utils.loggedInUser
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): ViewModel() {
+open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val storageRequest: StorageRequest): ViewModel() {
 
     open val title: String by lazy {
         this.getName()
@@ -29,8 +31,6 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
         val statusCode = response.code()
         Log.i(title, "${response.code()}")
         Log.i(title, "errorbody ${response.raw()}")
-        val a = object : Annotation{}
-        val converter = retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
 
 
         when(statusCode) {
@@ -38,7 +38,9 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
             401 -> {
                 try {
 
-                    errorConverter(responseLiveData, response)
+                    val err = errorConverter(responseLiveData, response)
+                    storageRequest.clearByKey(loggedInUser)
+                    responseLiveData.postValue(ServicesResponseWrapper.Logout(err.first, err.second))
                 }
                 catch (e:Exception){
                     Log.i(title, e.message.toString())
@@ -48,7 +50,8 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
             }
             in 400..501 ->{
                 try{
-                    errorConverter(responseLiveData, response)
+                    val err = errorConverter(responseLiveData, response)
+                    responseLiveData.postValue(ServicesResponseWrapper.Error(err.first, err.second))
                 }
                 catch (e:Exception){
                     Log.i(title, "Hello" + " " + e.message.toString())
@@ -74,7 +77,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
     fun errorConverter(
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
         response: Response<ParentData>
-    ) {
+    ):Pair<String, Int> {
         val a = object : Annotation{}
         val converter = retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
         val error = converter.convert(response.errorBody())
@@ -86,6 +89,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit): Vi
             errorString1 = errors?.get(0).toString()
         }
         Log.i(title, "message $errorString1")
-        responseLiveData.postValue(ServicesResponseWrapper.Logout(errorString1, response.code()))
+        return Pair(errorString1, response.code())
+
     }
 }

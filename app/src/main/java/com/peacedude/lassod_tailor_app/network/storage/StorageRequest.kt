@@ -16,7 +16,7 @@ interface StorageRequest {
     fun checkUser(key: String): User?{
         return TODO()
     }
-    fun <T>clearByKey(key: String):Boolean {
+    fun clearByKey(key: String):Boolean {
         return TODO()
     }
 }

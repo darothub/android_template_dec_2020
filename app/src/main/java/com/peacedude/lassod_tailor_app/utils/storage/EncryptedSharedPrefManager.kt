@@ -42,7 +42,7 @@ class EncryptedSharedPrefManager @Inject constructor(val sharedPref: EncryptedSh
         return null
     }
 
-    override fun <T> clearByKey(key: String): Boolean {
+    override fun clearByKey(key: String): Boolean {
         val data = sharedPref.contains(key)
         if (data){
             sharedPref.edit().apply {
