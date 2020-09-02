@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.peacedude.lassod_tailor_app.R
@@ -27,7 +28,8 @@ fun Any.getName(): String {
 }
 
 fun logout(storageRequest:StorageRequest, context: Context) {
-    storageRequest.clearByKey(loggedInUser)
+    val currentUser = storageRequest.checkUser(loggedInUser)
+//    Log.i("return", "res $res")
     context.startActivity(Intent(context, MainActivity::class.java))
 }
 

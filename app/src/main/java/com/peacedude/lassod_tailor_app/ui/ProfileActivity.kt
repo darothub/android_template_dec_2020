@@ -43,7 +43,7 @@ class ProfileActivity : BaseActivity() {
     }
     //Get logged-in user
     val currentUser: User? by lazy {
-        storageRequest.checkUser(loggedInUser)
+        authViewModel.currentUser
     }
     val token by lazy {
         currentUser?.token
@@ -58,9 +58,6 @@ class ProfileActivity : BaseActivity() {
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
 
-
-    @Inject
-    lateinit var storageRequest: StorageRequest
     private lateinit var editBtn:Button
     private lateinit var logoutText:TextView
     private lateinit var logoutImage:ImageView
@@ -100,11 +97,15 @@ class ProfileActivity : BaseActivity() {
             }
             logoutText.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
-                logout(storageRequest, this)
+                authViewModel.logout()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
             logoutImage.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
-                logout(storageRequest, this)
+                authViewModel.logout()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
         })
         Log.i(title, "Oncreate")
@@ -127,7 +128,7 @@ class ProfileActivity : BaseActivity() {
         Log.i(title, "OnResume")
         val token = intent.getStringExtra("token")
         Log.i(title, "Token $token")
-        val user = storageRequest.checkUser(loggedInUser)
+        val user = authViewModel.currentUser
 
 
 

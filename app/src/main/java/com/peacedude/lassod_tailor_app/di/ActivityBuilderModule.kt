@@ -16,7 +16,6 @@ import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
 import com.peacedude.lassod_tailor_app.utils.storage.EncryptedSharedPrefManager
-import com.peacedude.lassod_tailor_app.utils.storage.SharedPrefManager
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector

@@ -28,6 +28,15 @@ class EncryptedSharedPrefManager @Inject constructor(val sharedPref: EncryptedSh
         return result
     }
 
+    override fun <T> keepData(user: T?, key: String) {
+        val userJson = gson.toJson(user)
+        editor
+            .apply {
+                putString(key, userJson)
+                apply()
+            }
+    }
+
     override fun getUserData(user: String): User? {
         return gson.fromJson(user, User::class.java)
     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.loggedInUser
@@ -19,6 +20,11 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
     open val title: String by lazy {
         this.getName()
     }
+    var currentUser: User? = storageRequest.checkUser(loggedInUser)
+        set(currentUser) = storageRequest.keepData(currentUser, loggedInUser)
+
+    var saveUser = storageRequest.saveData(currentUser, loggedInUser)
+
     fun onFailureResponse(
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
         t: Throwable
@@ -39,7 +45,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
                 try {
 
                     val err = errorConverter(responseLiveData, response)
-                    storageRequest.clearByKey(loggedInUser)
+                    logout()
                     responseLiveData.postValue(ServicesResponseWrapper.Logout(err.first, err.second))
                 }
                 catch (e:Exception){
@@ -91,5 +97,12 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
         Log.i(title, "message $errorString1")
         return Pair(errorString1, response.code())
 
+    }
+
+    fun logout(){
+        currentUser?.token = ""
+        currentUser?.loggedIn = false
+        val res= storageRequest.saveData(currentUser, loggedInUser)
+        Log.i(title, "resArray ${res.size}")
     }
 }

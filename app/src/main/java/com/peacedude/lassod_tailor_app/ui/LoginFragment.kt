@@ -46,9 +46,6 @@ class LoginFragment : DaggerFragment() {
     val title: String by lazy {
         getName()
     }
-
-    @Inject
-    lateinit var storageRequest: StorageRequest
     private lateinit var progressBar: ProgressBar
     private val newUserText: String by lazy {
         getString(R.string.new_user)
@@ -134,9 +131,11 @@ class LoginFragment : DaggerFragment() {
                         val userDetails = result as? UserResponse
                         val user = userDetails?.data
                         user?.loggedIn = true
-                        storageRequest.saveData(user, loggedInUser)
+                        userViewModel.currentUser = user
+                        val res = userViewModel.saveUser
                         val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
-                        loginIntent.putExtra("token", userDetails?.data?.token)
+//                        loginIntent.putExtra("token", userDetails?.data?.token)
+                        Log.i(title, "res ${res.size}")
                         startActivity(loginIntent)
                         requireActivity().finish()
                     }

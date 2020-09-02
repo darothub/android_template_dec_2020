@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.model.request.User
@@ -29,12 +31,12 @@ import javax.inject.Inject
  */
 open class HomeFragment : DaggerFragment() {
 
-    lateinit var loginBtn:Button
-    lateinit var signupBtn:Button
-    val leftAnimation by lazy{
+    lateinit var loginBtn: Button
+    lateinit var signupBtn: Button
+    val leftAnimation by lazy {
         AnimationUtils.loadAnimation(requireContext(), R.anim.left_animation)
     }
-    val rightAnimation by lazy{
+    val rightAnimation by lazy {
         AnimationUtils.loadAnimation(requireContext(), R.anim.right_animation)
     }
 
@@ -44,6 +46,7 @@ open class HomeFragment : DaggerFragment() {
     val currentUser: User? by lazy {
         storageRequest.checkUser(loggedInUser)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,14 +57,16 @@ open class HomeFragment : DaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val signupBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        val loginBackgroundDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_outline)
+        val signupBackgroundDrawable =
+            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
+        val loginBackgroundDrawable =
+            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_outline)
 
         buttonTransactions({
             loginBtn = login_btn.findViewById(R.id.btn)
             signupBtn = signup_btn.findViewById(R.id.btn)
 
-        },{
+        }, {
             loginBtn.text = getString(R.string.login)
             signupBtn.text = getString(R.string.signup)
 
@@ -83,7 +88,7 @@ open class HomeFragment : DaggerFragment() {
             findNavController().navigate(R.id.loginFragment)
         }
 
-        if (currentUser != null){
+        if (currentUser != null) {
             when (currentUser?.loggedIn) {
                 true -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
             }
@@ -96,6 +101,7 @@ open class HomeFragment : DaggerFragment() {
 
 
     }
+
     protected open fun injectMembers() =
         AndroidSupportInjection.inject(this)
 
