@@ -50,8 +50,8 @@ class UserAccountFragment : Fragment() {
         )
 
         buttonTransactions({
-            saveBtn = save_changes_btn.findViewById(R.id.btn)
-            progressBar = save_changes_btn.findViewById(R.id.progress_bar)
+            saveBtn = account_save_changes_btn.findViewById(R.id.btn)
+            progressBar = account_save_changes_btn.findViewById(R.id.progress_bar)
         },{
             saveBtn.text = getString(R.string.save_changes)
             saveBtn.background = saveBtnBackground

@@ -127,7 +127,7 @@ class LoginFragment : DaggerFragment() {
                 val request = userViewModel.loginUserRequest(
                     phoneNumber, passwordString
                 )
-                val response = observeRequest(request, progressBar, loginBtn)
+                val response = requireActivity().observeRequest(request, progressBar, loginBtn)
                 response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                     val (bool, result) = it
                     onRequestResponseTask(bool, result){

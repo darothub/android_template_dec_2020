@@ -268,7 +268,7 @@ class SignupFragment : DaggerFragment() {
                     phoneNumber,
                     passwordString
                 )
-                val response = observeRequest(request, progressBar, continueBtn)
+                val response = requireActivity().observeRequest(request, progressBar, continueBtn)
                 response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                     val (bool, result) = it
                     onRequestResponseTask(bool, result){
@@ -296,7 +296,7 @@ class SignupFragment : DaggerFragment() {
                 val request = userViewModel.activateUser(phone, code)
                 requireActivity().gdToast("$code $phone", Gravity.BOTTOM)
                 val response =
-                    observeRequest(request, confirmProgressBar, confirmBtn)
+                    requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
                 response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
                     onRequestResponseTask(

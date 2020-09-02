@@ -283,7 +283,7 @@
             app:layout_constraintBottom_toBottomOf="@id/account_state_tv"/>
 
         <include
-            android:id="@+id/save_changes_btn"
+            android:id="@+id/account_save_changes_btn"
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"

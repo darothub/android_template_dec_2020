@@ -1,8 +1,30 @@
 <resources>
     <string-array name="categories_array">
-        <item>guest</item>
         <item>tailor</item>
         <item>weaver</item>
+    </string-array>
+    <string-array name="specialty_list">
+        <item>Yoruba attires</item>
+        <item>Hausa attires</item>
+        <item>Igbo attires</item>
+        <item>South-south attires</item>
+        <item>Senator</item>
+        <item>Kaftans</item>
+        <item>African fashion</item>
+        <item>Western fashion</item>
+        <item>School uniform</item>
+        <item>Caps</item>
+        <item>Military and para-military Uniform</item>
+    </string-array>
+    <string-array name="gender_list">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Kids</item>
+        <item>Unisex</item>
+    </string-array>
+    <string-array name="measurement_options_list">
+        <item>Visit us for your measurement</item>
+        <item>Will accept self-measurement</item>
     </string-array>
     <string name="app_name">Lassod-Tailor-App</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -54,4 +76,12 @@
     <string name="lga">Local Government Area</string>
     <string name="state">State</string>
     <string name="save_changes">Save changes</string>
+    <string name="session_expired">Session has expired</string>
+    <string name="gender_focus">Gender Focus</string>
+    <string name="quality_asurance_str">Quality Assurance</string>
+    <string name="obioma_trained_str">Obioma trained and certified</string>
+    <string name="yes_no_str">Yes</string>
+    <string name="measurement_option_str">Measurement  Options</string>
+    <string name="delivery_lead_time_str">Delivery lead time</string>
+    <string name="time_placeholder">10mins</string>
 </resources>

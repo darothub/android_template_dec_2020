@@ -20,6 +20,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.MainActivity
+import com.peacedude.lassod_tailor_app.ui.SplashScreenActivity
 
 /**
  * Observe request response
@@ -31,7 +32,7 @@ import com.peacedude.lassod_tailor_app.ui.MainActivity
  * @param button
  * @return
  */
-fun AppCompatActivity.observeRequest(
+fun Activity.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>,
     progressBar: ProgressBar?, button: Button?
 ): LiveData<Pair<Boolean, Any?>> {
@@ -40,10 +41,9 @@ fun AppCompatActivity.observeRequest(
         this.getName()
     }
 
-    val act = this as? Activity
 
     hideKeyboard()
-    request.observe(this, Observer {
+    request.observe(this as LifecycleOwner, Observer {
         try {
             val responseData = it.data
             val errorResponse = it.message
@@ -89,10 +89,11 @@ fun AppCompatActivity.observeRequest(
                 is ServicesResponseWrapper.Logout -> {
                     progressBar?.hide()
                     button?.show()
-                    result.postValue(Pair(false, errorResponse))
-                    gdToast("$errorResponse", Gravity.BOTTOM)
+//                    startActivity(Intent(this as? Context, MainActivity::class.java))
+//                    result.postValue(Pair(false, errorResponse))
+                    gdToast("${getString(R.string.session_expired)}", Gravity.BOTTOM)
                     Log.i(title, "Log out $errorResponse")
-                    startActivity(Intent(this as? Activity, MainActivity::class.java))
+
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
                 }
             }
