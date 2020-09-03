@@ -16,12 +16,15 @@ import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
 import com.peacedude.lassod_tailor_app.utils.storage.EncryptedSharedPrefManager
+import com.squareup.okhttp.OkHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
+import okhttp3.OkHttp
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module(includes = [ActivityStaticModule::class, MainActivityModule::class, ProfileActivityModule::class])
@@ -48,7 +51,20 @@ open class ActivityStaticModule {
 
     @Singleton
     @Provides
-    fun provideGsonConverterFcatory(): GsonConverterFactory = GsonConverterFactory.create()
+    fun provideGsonConverterFcatory(): GsonConverterFactory = GsonConverterFactory.create(GsonBuilder().setLenient().create())
+
+    /**
+     * A function to provide okHttp instance
+     *
+     */
+    @Singleton
+    @Provides
+    open fun provideokHttpInstance(): okhttp3.OkHttpClient {
+        return okhttp3.OkHttpClient.Builder()
+            .connectTimeout(5, TimeUnit.MINUTES)
+            .readTimeout(5, TimeUnit.MINUTES)
+            .build()
+    }
 
     /**
      * A function to provide retrofit instance
@@ -58,12 +74,14 @@ open class ActivityStaticModule {
     @Provides
     open fun provideRetrofitInstance(
         gson: GsonConverterFactory,
-        callAdapter: RxJava2CallAdapterFactory
+        callAdapter: RxJava2CallAdapterFactory,
+        client: okhttp3.OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL_STAGING)
             .addCallAdapterFactory(callAdapter)
             .addConverterFactory(gson)
+            .client(client)
             .build()
     }
 

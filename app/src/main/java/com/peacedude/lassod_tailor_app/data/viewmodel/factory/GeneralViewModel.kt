@@ -29,7 +29,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
         t: Throwable
     ) {
-        Log.i(title, "Throwable ${t.localizedMessage}")
+        Log.i(title, "Throwable $t")
         responseLiveData.postValue(ServicesResponseWrapper.Error(t.localizedMessage, 0, null))
     }
     fun onResponseTask(response: Response<ParentData>, responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>){
@@ -44,7 +44,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
             401 -> {
                 try {
 
-                    val err = errorConverter(responseLiveData, response)
+                    val err = errorConverter(response)
                     logout()
                     responseLiveData.postValue(ServicesResponseWrapper.Logout(err.first, err.second))
                 }
@@ -54,9 +54,9 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
                 }
 
             }
-            in 400..501 ->{
+            in 400..599 ->{
                 try{
-                    val err = errorConverter(responseLiveData, response)
+                    val err = errorConverter(response)
                     responseLiveData.postValue(ServicesResponseWrapper.Error(err.first, err.second))
                 }
                 catch (e:Exception){
@@ -81,7 +81,6 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
     }
 
     fun errorConverter(
-        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
         response: Response<ParentData>
     ):Pair<String, Int> {
         val a = object : Annotation{}

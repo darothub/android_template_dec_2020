@@ -258,7 +258,7 @@ class SignupFragment : DaggerFragment() {
             validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
 
             else -> {
-                val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
+//                val userData = User(firstName, lastName, otherName, category, phoneNumber, passwordString)
                 requireActivity().gdToast("$phoneNumber", Gravity.BOTTOM)
                 val request = userViewModel.registerUser(
                     firstName,

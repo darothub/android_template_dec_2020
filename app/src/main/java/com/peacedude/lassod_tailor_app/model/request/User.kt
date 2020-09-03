@@ -11,13 +11,13 @@ open class User(
     @SerializedName("otherName")
     var otherName:String?,
     @SerializedName("category")
-    var category:String?="",
+    var category:String?,
     @SerializedName("phoneNumber")
-    var phone:String?,
-    @SerializedName("password")
-    var password:String?
+    var phone:String?
 
 ) : Serializable{
+    @SerializedName("password")
+    var password:String?=""
     @SerializedName("user_id")
     var userId: String? = ""
     var id:String? = ""
@@ -34,12 +34,12 @@ open class User(
     var visitUsMeasurement:String?="YES"
     var acceptSelfMeasurement:String?="NO"
     var deliveryTime:String?=null
-    var paymentOptions:String?="bank account"
+    var paymentOptions:String?=""
     var name_union:String?=null
     var ward:String?=null
     var lga:String?=null
     var state:String?=null
-    var country:String?= " "
+    var country:String? = ""
     var email:String?=""
     var loggedIn:Boolean = false
 }

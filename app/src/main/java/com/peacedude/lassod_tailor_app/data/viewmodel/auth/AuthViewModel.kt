@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
@@ -16,7 +17,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-class AuthViewModel @Inject constructor(
+open class AuthViewModel @Inject constructor(
     private val authRequestInterface: AuthRequestInterface,
     override var retrofit: Retrofit,
     val storage: StorageRequest
@@ -42,4 +43,23 @@ class AuthViewModel @Inject constructor(
         return responseLiveData
     }
 
+   fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>> {
+        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.updateUserData(header, user)
+        request.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
 }

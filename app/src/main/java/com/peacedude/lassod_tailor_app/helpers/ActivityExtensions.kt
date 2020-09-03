@@ -69,7 +69,7 @@ fun Activity.observeRequest(
                     when (errorCode) {
                         0 -> {
                             Log.i(title, "Errorcode ${errorCode}")
-                            gdErrorToast(getString(R.string.bad_network), Gravity.BOTTOM)
+                            gdErrorToast("$errorResponse", Gravity.BOTTOM)
                         }
                         in 400..499 ->{
                             result.postValue(Pair(false, errorResponse))
@@ -91,7 +91,7 @@ fun Activity.observeRequest(
                 is ServicesResponseWrapper.Logout -> {
                     progressBar?.hide()
                     button?.show()
-                    gdToast("${getString(R.string.session_expired)}", Gravity.BOTTOM)
+                    gdToast("$errorResponse", Gravity.BOTTOM)
                     startActivity(Intent(this as? Context, MainActivity::class.java))
                     result.postValue(Pair(false, errorResponse))
 
