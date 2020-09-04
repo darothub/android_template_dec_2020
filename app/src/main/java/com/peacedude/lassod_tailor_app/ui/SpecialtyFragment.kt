@@ -92,45 +92,7 @@ class SpecialtyFragment : DaggerFragment() {
             submitList(specialtyList)
         }
 
-        var genderList = resources.getStringArray(R.array.gender_list).toList().map {
-            RecyclerItem(text = it)
-        }
-        val checkboxes = arrayListOf<CheckBox>()
 
-        gender_rv.setupAdapter<RecyclerItem>(R.layout.specialty_layout_item) { adapter, context, list ->
-            bind { itemView, position, item ->
-                itemView.specialty_item_checkbox.show()
-                itemView.specialty_item_checkbox.text = item?.text
-                itemView.specialty_item_checkbox.isChecked = item?.selected!!
-
-                checkboxes.add(itemView.specialty_item_checkbox)
-                itemView.specialty_item_checkbox.setOnCheckedChangeListener { compoundButton, b ->
-                    if (b) {
-                        compoundButton.isChecked = true
-                        val otherCheckboxes =
-                            checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
-                        otherCheckboxes.forEach { checkbox ->
-                            if (checkbox.isChecked) {
-                                checkbox.isChecked = !checkbox.isChecked
-                            }
-                        }
-                        val sz = otherCheckboxes.size
-                        Log.i("checkbox", "hello ${compoundButton.text} othersSize $sz")
-                    }
-
-
-                }
-
-            }
-            setLayoutManager(
-                LinearLayoutManager(
-                    requireContext(),
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                )
-            )
-            submitList(genderList)
-        }
         val measurementOptionsList =
             resources.getStringArray(R.array.measurement_options_list).toList()
         measurement_options_rv.setupAdapter<String>(R.layout.specialty_layout_item) { adapter, context, list ->
@@ -162,6 +124,7 @@ class SpecialtyFragment : DaggerFragment() {
             saveBtn.background = saveBtnBackground
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
+        getUserData()
     }
 
     @SuppressLint("SetTextI18n")
@@ -174,8 +137,11 @@ class SpecialtyFragment : DaggerFragment() {
                 val resp = result as? UserResponse
                 val user = resp?.data
 
-
+                obioma_trained_value_tv.text = user?.obiomaCert
+                delivery_lead_time_value_tv.text = user?.deliveryTime?: ""
                 Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
+
+                setupGenderFocusRecyclerView(user)
 
                 saveBtn.setOnClickListener {
                     if (user != null) {
@@ -186,8 +152,53 @@ class SpecialtyFragment : DaggerFragment() {
         })
     }
 
+    private fun setupGenderFocusRecyclerView(user: User?) {
+        var genderList = resources.getStringArray(R.array.gender_list).toList().map { str ->
+            if (str.toLowerCase() == user?.genderFocus) {
+                RecyclerItem(text = str, selected = true)
+            }
+            RecyclerItem(text = str)
+
+        }
+        val checkboxes = arrayListOf<CheckBox>()
+
+        gender_rv.setupAdapter<RecyclerItem>(R.layout.specialty_layout_item) { adapter, context, list ->
+            bind { itemView, position, item ->
+                itemView.specialty_item_checkbox.show()
+                itemView.specialty_item_checkbox.text = item?.text
+                itemView.specialty_item_checkbox.isChecked = item?.selected!!
+
+                checkboxes.add(itemView.specialty_item_checkbox)
+                itemView.specialty_item_checkbox.setOnCheckedChangeListener { compoundButton, b ->
+                    if (b) {
+                        compoundButton.isChecked = true
+                        val otherCheckboxes =
+                            checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
+                        otherCheckboxes.forEach { checkbox ->
+                            if (checkbox.isChecked) {
+                                checkbox.isChecked = !checkbox.isChecked
+                            }
+                        }
+                        val sz = otherCheckboxes.size
+                        Log.i("checkbox", "hello ${compoundButton.text} othersSize $sz")
+                    }
+                }
+
+            }
+            setLayoutManager(
+                LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+            )
+            submitList(genderList)
+        }
+    }
+
     private fun updateUserData(user: User) {
 //        val newUserData = User(firstName, lastName, otherName,category,phone)
+        user.isVerified = true
         val request = authViewModel.updateUserData(header, user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
         response.observe(this, androidx.lifecycle.Observer {
@@ -197,7 +208,6 @@ class SpecialtyFragment : DaggerFragment() {
                 val msg = response?.message
                 val profileData = response?.data
                 authViewModel.profileData = profileData
-                Log.i(title, "msg $msg ${profileData?.firstName}")
             }
         })
     }
