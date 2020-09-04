@@ -64,7 +64,9 @@ class SpecialtyFragment : DaggerFragment() {
     val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
-    var genderValue = ""
+    var genderFocusValue = ""
+    var visitUsForMeasurementValue:String?="NO"
+    var acceptSelfMeasurementValue:String?="NO"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -93,22 +95,7 @@ class SpecialtyFragment : DaggerFragment() {
         }
 
 
-        val measurementOptionsList =
-            resources.getStringArray(R.array.measurement_options_list).toList()
-        measurement_options_rv.setupAdapter<String>(R.layout.specialty_layout_item) { adapter, context, list ->
-            bind { itemView, position, item ->
-                itemView.measurement_vg.show()
-                itemView.measurement_options_tv.text = item
-            }
-            setLayoutManager(
-                LinearLayoutManager(
-                    requireContext(),
-                    LinearLayoutManager.VERTICAL,
-                    false
-                )
-            )
-            submitList(measurementOptionsList)
-        }
+
 
         val saveBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
@@ -137,11 +124,12 @@ class SpecialtyFragment : DaggerFragment() {
                 val resp = result as? UserResponse
                 val user = resp?.data
 
-                obioma_trained_value_tv.text = user?.obiomaCert
-                delivery_lead_time_value_tv.text = user?.deliveryTime?: ""
-                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
+                obioma_trained_value_et.setText(user?.obiomaCert)
+                delivery_lead_time_value_et.setText(user?.deliveryTime?: "")
+                Log.i(title, " visitus\n${user?.visitUsMeasurement} accept ${user?.acceptSelfMeasurement}  ")
 
                 setupGenderFocusRecyclerView(user)
+                setupMeasurementOptionRv(user)
 
                 saveBtn.setOnClickListener {
                     if (user != null) {
@@ -180,6 +168,7 @@ class SpecialtyFragment : DaggerFragment() {
                             }
                         }
                         val sz = otherCheckboxes.size
+                        genderFocusValue = compoundButton.text.toString()
                         Log.i("checkbox", "hello ${compoundButton.text} othersSize $sz")
                     }
                 }
@@ -196,9 +185,69 @@ class SpecialtyFragment : DaggerFragment() {
         }
     }
 
+    private fun setupMeasurementOptionRv(user: User?) {
+
+        val measurementOptionsList =
+            resources.getStringArray(R.array.measurement_options_list).toList().map { str ->
+                if (user?.visitUsMeasurement == "YES" && str == "Visit us for your measurement") {
+                    RecyclerItem(text = str, selected = true)
+                }
+                else if(user?.acceptSelfMeasurement == "YES" && str == "Will accept self-measurement"){
+                    RecyclerItem(text = str, selected = true)
+                }
+                else{
+                    RecyclerItem(text = str)
+                }
+            }
+        val checkboxes = arrayListOf<CheckBox>()
+        measurement_options_rv.setupAdapter<RecyclerItem>(R.layout.specialty_layout_item) { adapter, context, list ->
+            bind { itemView, position, item ->
+                itemView.measurement_checkbox.show()
+                itemView.measurement_checkbox.text = item?.text
+                itemView.measurement_checkbox.isChecked = item?.selected!!
+
+                checkboxes.add(itemView.measurement_checkbox)
+                itemView.measurement_checkbox.setOnCheckedChangeListener { compoundButton, b ->
+                    if (b) {
+                        compoundButton.isChecked = true
+                        val otherCheckboxes =
+                            checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
+                        otherCheckboxes.forEach { checkbox ->
+                            if (checkbox.isChecked) {
+                                checkbox.isChecked = !checkbox.isChecked
+                            }
+                        }
+                        val sz = otherCheckboxes.size
+                        if (compoundButton.text == "Visit us for your measurement"){
+                            visitUsForMeasurementValue = "YES"
+                        }
+                        else if(compoundButton.text == "Will accept self-measurement"){
+                            acceptSelfMeasurementValue = "YES"
+                        }
+
+                        Log.i("checkbox", "hello ${visitUsForMeasurementValue} othersSize $sz")
+                    }
+                }
+            }
+            setLayoutManager(
+                LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+            )
+            submitList(measurementOptionsList)
+        }
+    }
+
     private fun updateUserData(user: User) {
 //        val newUserData = User(firstName, lastName, otherName,category,phone)
         user.isVerified = true
+        user.obiomaCert = obioma_trained_value_et.text.toString().toUpperCase()
+        user.deliveryTime = delivery_lead_time_value_et.text.toString()
+        user.visitUsMeasurement = visitUsForMeasurementValue ?: "NO"
+        user.acceptSelfMeasurement = acceptSelfMeasurementValue ?: "NO"
+        Log.i(title, "onRequest $visitUsForMeasurementValue $acceptSelfMeasurementValue")
         val request = authViewModel.updateUserData(header, user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
         response.observe(this, androidx.lifecycle.Observer {

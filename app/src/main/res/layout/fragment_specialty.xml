@@ -9,7 +9,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/_15sdp">
+        android:paddingStart="@dimen/_15sdp"
+        android:paddingEnd="@dimen/_15sdp"
+        >
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/specialty_rv"
@@ -34,7 +36,6 @@
         <TextView
             android:id="@+id/gender_focus_tv"
             style="@style/SpecialtyTextViewCustomStyle"
-            android:layout_marginStart="@dimen/_8sdp"
             android:text="@string/gender_focus"
             android:textColor="@color/colorGray"
             android:textSize="@dimen/_13sdp"
@@ -93,19 +94,19 @@
             app:layout_constraintStart_toStartOf="@id/gender_focus_tv"
             app:layout_constraintTop_toBottomOf="@id/line4" />
 
-        <TextView
-            android:id="@+id/obioma_trained_value_tv"
-            style="@style/SpecialtyTextViewCustomStyle"
-            android:text="@string/yes_no_str"
-            app:layout_constraintEnd_toEndOf="@id/specialty_rv"
-            app:layout_constraintTop_toBottomOf="@id/line4" />
+        <EditText
+            android:id="@+id/obioma_trained_value_et"
+            style="@style/SpecialtyEditTextCustomStyle"
+            android:textAllCaps="true"
+            android:maxLength="3"
+            android:includeFontPadding="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line4"
+            app:layout_constraintBottom_toBottomOf="@id/obioma_trained_tv"
+            android:enabled="true"/>
 
-        <View
-            android:id="@+id/line5"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/obioma_trained_value_tv" />
 
         <TextView
             android:id="@+id/measurement_options_header_tv"
@@ -114,7 +115,7 @@
             android:textColor="@color/colorGray"
             android:textSize="@dimen/_13sdp"
             app:layout_constraintStart_toStartOf="@id/gender_focus_tv"
-            app:layout_constraintTop_toBottomOf="@id/line5" />
+            app:layout_constraintTop_toBottomOf="@id/obioma_trained_value_et" />
 
         <View
             android:id="@+id/line6"
@@ -144,25 +145,24 @@
             android:text="@string/delivery_lead_time_str"
             app:layout_constraintStart_toStartOf="@id/gender_focus_tv"
             app:layout_constraintTop_toBottomOf="@id/line7" />
-        <TextView
-            android:id="@+id/delivery_lead_time_value_tv"
-            style="@style/SpecialtyTextViewCustomStyle"
-            android:text="@string/time_placeholder"
-            app:layout_constraintEnd_toEndOf="@id/specialty_rv"
-            app:layout_constraintTop_toBottomOf="@id/line7" />
 
-        <View
-            android:id="@+id/line8"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/delivery_lead_time_tv" />
+        <EditText
+            android:id="@+id/delivery_lead_time_value_et"
+            style="@style/SpecialtyEditTextCustomStyle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line7"
+            android:includeFontPadding="false"
+            app:layout_constraintBottom_toBottomOf="@id/delivery_lead_time_tv"
+            android:enabled="true"/>
+
         <include
             android:id="@+id/specialty_save_changes_btn"
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/line8"
+            app:layout_constraintTop_toBottomOf="@id/delivery_lead_time_value_et"
             android:layout_marginTop="@dimen/_10sdp"
             />
 
