@@ -4,7 +4,6 @@ import IsEmptyCheck
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
@@ -18,19 +17,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
-import androidx.security.crypto.EncryptedSharedPreferences
 import com.peacedude.gdtoast.gdErrorToast
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
-import com.peacedude.lassod_tailor_app.utils.loggedInUser
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.fragment_signup.*
 import javax.inject.Inject
 
 

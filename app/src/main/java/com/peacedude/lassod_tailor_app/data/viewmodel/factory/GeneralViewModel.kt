@@ -9,8 +9,8 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
-import com.peacedude.lassod_tailor_app.utils.loggedInUser
-import okhttp3.ResponseBody
+import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
+import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -20,10 +20,13 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
     open val title: String by lazy {
         this.getName()
     }
-    var currentUser: User? = storageRequest.checkUser(loggedInUser)
-        set(currentUser) = storageRequest.keepData(currentUser, loggedInUser)
+    var currentUser: User? = storageRequest.checkUser(loggedInUserKey)
+        set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
 
-    var saveUser = storageRequest.saveData(currentUser, loggedInUser)
+    var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
+
+    var profileData = storageRequest.checkUser(profileDataKey)
+        set(currentUser) = storageRequest.keepData(currentUser, profileDataKey)
 
     fun onFailureResponse(
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
@@ -101,7 +104,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
     fun logout(){
         currentUser?.token = ""
         currentUser?.loggedIn = false
-        val res= storageRequest.saveData(currentUser, loggedInUser)
+        val res= storageRequest.saveData(currentUser, loggedInUserKey)
         Log.i(title, "resArray ${res.size}")
     }
 }

@@ -24,7 +24,7 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.bearer
-import com.peacedude.lassod_tailor_app.utils.loggedInUser
+import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import javax.inject.Inject
@@ -45,7 +45,7 @@ class UserAccountFragment : DaggerFragment() {
 
     //Get logged-in user
     val currentUser: User? by lazy {
-        storageRequest.checkUser(loggedInUser)
+        storageRequest.checkUser(loggedInUserKey)
     }
     val token by lazy {
         currentUser?.token
@@ -55,7 +55,6 @@ class UserAccountFragment : DaggerFragment() {
     }
     @Inject
     lateinit var storageRequest: StorageRequest
-    private lateinit var editBtn:Button
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     val authViewModel: AuthViewModel by lazy {
@@ -130,20 +129,20 @@ class UserAccountFragment : DaggerFragment() {
     private fun updateUserData(user: User){
         user.firstName = "Darotudeen"
         user.isVerified = true
-//        user.firstName = first_name_et.text.toString().trim()
-//        user.lastName = last_name_et.text.toString().trim()
-//        user.otherName = other_name_et.text.toString().trim()
-//        user.category = user.category
-//        user.phone = user.phone
-//        user.gender = gender_name_et.text.toString().trim()
-//        user.workshopAddress = workshop_address_et.text.toString().trim()
-//        user.showroomAddress = showroom_address_et.text.toString().trim()
-//        user.no_Employee = no_employee_et.text.toString().trim()
-//        user.legalStatus = legal_status_et.text.toString().trim()
-//        user.name_union = name_of_union_et.text.toString().trim()
-//        user.ward =ward_et.text.toString().trim()
-//        user.lga =account_lga_et.text.toString().trim()
-//        user.state = account_state_et.text.toString().trim()
+        user.firstName = first_name_et.text.toString().trim()
+        user.lastName = last_name_et.text.toString().trim()
+        user.otherName = other_name_et.text.toString().trim()
+        user.category = user.category
+        user.phone = user.phone
+        user.gender = gender_name_et.text.toString().toLowerCase().trim()
+        user.workshopAddress = workshop_address_et.text.toString().trim()
+        user.showroomAddress = showroom_address_et.text.toString().trim()
+        user.no_Employee = no_employee_et.text.toString().trim()
+        user.legalStatus = legal_status_et.text.toString().trim()
+        user.name_union = name_of_union_et.text.toString().trim()
+        user.ward = ward_et.text.toString().trim()
+        user.lga =account_lga_et.text.toString().trim()
+        user.state = account_state_et.text.toString().trim()
 //        val newUserData = User(firstName, lastName, otherName,category,phone)
         val request = authViewModel.updateUserData(header, user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
@@ -152,9 +151,9 @@ class UserAccountFragment : DaggerFragment() {
             onRequestResponseTask(bool, result){
                 val response = result as? UserResponse
                 val msg = response?.message
-                val data = response?.data
-
-                Log.i(title, "msg $msg ${data?.firstName}")
+                val profileData = response?.data
+                authViewModel.profileData = profileData
+                Log.i(title, "msg $msg ${profileData?.firstName}")
             }
         })
     }

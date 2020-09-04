@@ -3,7 +3,6 @@ package com.peacedude.lassod_tailor_app.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +11,11 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
-import com.peacedude.lassod_tailor_app.utils.loggedInUser
+import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -44,7 +42,7 @@ open class HomeFragment : DaggerFragment() {
     lateinit var storageRequest: StorageRequest
 
     val currentUser: User? by lazy {
-        storageRequest.checkUser(loggedInUser)
+        storageRequest.checkUser(loggedInUserKey)
     }
 
     override fun onCreateView(
