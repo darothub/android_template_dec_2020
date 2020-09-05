@@ -294,7 +294,7 @@ class SignupFragment : DaggerFragment() {
             else{
                 Log.i(title, "$code")
                 val request = userViewModel.activateUser(phone, code)
-                requireActivity().gdToast("$code $phone", Gravity.BOTTOM)
+//                requireActivity().gdToast("$code $phone", Gravity.BOTTOM)
                 val response =
                     requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
                 response.observe(viewLifecycleOwner, Observer {

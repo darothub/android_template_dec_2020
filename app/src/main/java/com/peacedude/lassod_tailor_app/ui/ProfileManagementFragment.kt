@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.ui.adapters.ProfileViewPagerAdapter
@@ -26,8 +28,6 @@ class ProfileManagementFragment : Fragment() {
     lateinit var adapter : ProfileViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-        }
     }
 
     override fun onCreateView(
@@ -55,15 +55,28 @@ class ProfileManagementFragment : Fragment() {
 
     private fun setupViewPager() {
 
-        adapter = ProfileViewPagerAdapter(requireActivity().supportFragmentManager)
+        adapter = ProfileViewPagerAdapter(requireActivity())
         profile_management_viewPager.adapter = adapter
-        profile_management_tabLayout.setupWithViewPager(profile_management_viewPager)
-        profile_management_tabLayout.setSelectedTabIndicatorColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.colorAccent
-            )
-        )
+        val tabLayoutMediator = TabLayoutMediator(profile_management_tabLayout, profile_management_viewPager,
+            TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+                when(position){
+                    0 -> tab.text = "Account"
+                    1 -> tab.text = "Specialty"
+                    2 -> tab.text = "Payment method"
+                    else -> ProfileFragment()
+                }
+            }).apply {
+            attach()
+        }
+
+//        profile_management_tabLayout.setupWithViewPager(profile_management_viewPager)
+//        profile_management_tabLayout.setSelectedTabIndicatorColor(
+//            ContextCompat.getColor(
+//                requireContext(),
+//                R.color.colorAccent
+//            )
+//        )
+
         profile_management_tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
 
     }

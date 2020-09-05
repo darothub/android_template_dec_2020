@@ -29,11 +29,7 @@ class VerificationFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_verification, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
-
-    }
 
 
 }

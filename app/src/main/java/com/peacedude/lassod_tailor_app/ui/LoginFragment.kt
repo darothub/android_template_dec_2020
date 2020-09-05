@@ -84,7 +84,6 @@ class LoginFragment : DaggerFragment() {
 
         loginBtn.setOnClickListener {
             loginRequest()
-
         }
         initEnterKeyToSubmitForm(login_password_edittext) { loginRequest() }
 

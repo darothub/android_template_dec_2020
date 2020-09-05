@@ -60,9 +60,6 @@ class ProfileActivity : BaseActivity() {
     val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
-    lateinit var profileViewPager:ViewPager
-    lateinit var profileTabLayout:TabLayout
-    lateinit var adapter : ProfileViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -105,8 +102,6 @@ class ProfileActivity : BaseActivity() {
         Log.i(title, "Oncreate")
 
 
-
-
     }
 
 
@@ -131,6 +126,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
+
 
         finish()
 //        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
@@ -158,12 +154,5 @@ class ProfileActivity : BaseActivity() {
         })
     }
 
-//    val masterKey by lazy {
-//        MasterKey.Builder(requireContext(), MasterKey.DEFAULT_MASTER_KEY_ALIAS).
-//        setKeyScheme(MasterKey.KeyScheme.AES256_GCM).
-//        build()
-//    }
-//    val sharedPreferences by lazy {
-//        SharedPref.sharedPref(requireContext(), masterKey)
-//    }
+
 }

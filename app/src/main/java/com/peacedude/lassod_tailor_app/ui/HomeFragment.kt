@@ -93,14 +93,6 @@ open class HomeFragment : DaggerFragment() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        injectMembers()
-        super.onAttach(context)
 
-
-    }
-
-    protected open fun injectMembers() =
-        AndroidSupportInjection.inject(this)
 
 }
