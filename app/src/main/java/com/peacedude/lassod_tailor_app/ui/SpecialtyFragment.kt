@@ -31,6 +31,10 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_specialty.*
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.specialty_layout_item.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -87,8 +91,22 @@ class SpecialtyFragment : DaggerFragment() {
         val specialtyList = resources.getStringArray(R.array.specialty_list).toList()
         specialty_rv.setupAdapter<String>(R.layout.specialty_layout_item) { adapter, context, list ->
             bind { itemView, position, item ->
-                itemView.specialty_item_checkbox.show()
-                itemView.specialty_item_checkbox.text = item
+
+                CoroutineScope(Main).launch {
+                    delay(2000)
+                    itemView.specialty_item_checkbox.show()
+                    itemView.specialty_item_checkbox.text = item
+                    delay(2000)
+                    itemView.shimmerLayout.stopShimmer()
+                    itemView.shimmerLayout.setShimmer(null)
+                    itemView.item_container.background = null
+
+
+                }
+
+
+
+
             }
             setLayoutManager(GridLayoutManager(context, 2))
             submitList(specialtyList)
@@ -152,9 +170,17 @@ class SpecialtyFragment : DaggerFragment() {
 
         gender_rv.setupAdapter<RecyclerItem>(R.layout.specialty_layout_item) { adapter, context, list ->
             bind { itemView, position, item ->
-                itemView.specialty_item_checkbox.show()
-                itemView.specialty_item_checkbox.text = item?.text
-                itemView.specialty_item_checkbox.isChecked = item?.selected!!
+                CoroutineScope(Main).launch {
+                    delay(2000)
+                    itemView.specialty_item_checkbox.show()
+                    itemView.specialty_item_checkbox.text = item?.text
+                    itemView.specialty_item_checkbox.isChecked = item?.selected!!
+                    delay(2000)
+                    itemView.shimmerLayout.stopShimmer()
+                    itemView.shimmerLayout.setShimmer(null)
+                    itemView.item_container.background = null
+                }
+
 
                 checkboxes.add(itemView.specialty_item_checkbox)
                 itemView.specialty_item_checkbox.setOnCheckedChangeListener { compoundButton, b ->
@@ -174,13 +200,7 @@ class SpecialtyFragment : DaggerFragment() {
                 }
 
             }
-            setLayoutManager(
-                LinearLayoutManager(
-                    requireContext(),
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                )
-            )
+            setLayoutManager(GridLayoutManager(context, 4))
             submitList(genderList)
         }
     }
@@ -202,9 +222,17 @@ class SpecialtyFragment : DaggerFragment() {
         val checkboxes = arrayListOf<CheckBox>()
         measurement_options_rv.setupAdapter<RecyclerItem>(R.layout.specialty_layout_item) { adapter, context, list ->
             bind { itemView, position, item ->
-                itemView.measurement_checkbox.show()
-                itemView.measurement_checkbox.text = item?.text
-                itemView.measurement_checkbox.isChecked = item?.selected!!
+
+                CoroutineScope(Main).launch {
+                    delay(2000)
+                    itemView.specialty_item_checkbox.show()
+                    itemView.specialty_item_checkbox.text = item?.text
+                    itemView.specialty_item_checkbox.isChecked = item?.selected!!
+                    delay(2000)
+                    itemView.shimmerLayout.stopShimmer()
+                    itemView.shimmerLayout.setShimmer(null)
+                    itemView.item_container.background = null
+                }
 
                 checkboxes.add(itemView.measurement_checkbox)
                 itemView.measurement_checkbox.setOnCheckedChangeListener { compoundButton, b ->

@@ -5,4 +5,5 @@
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorGray">#ADBACD</color>
     <color name="colorRed">#F44336</color>
+    <color name="shimmerColor">#dddddd</color>
 </resources>

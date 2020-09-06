@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -52,6 +53,7 @@ fun Activity.observeRequest(
             val errorCode = it.code
             when (it) {
                 is ServicesResponseWrapper.Loading<*> -> {
+
                     progressBar?.show()
                     button?.hide()
                     Log.i(title, "Loading..")

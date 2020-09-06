@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -35,12 +36,14 @@ import javax.inject.Inject
  */
 class LoginFragment : DaggerFragment() {
 
-    private lateinit var loginBtn: Button
+
 
     val title: String by lazy {
         getName()
     }
+    private lateinit var loginBtn: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var shimmerFrameLayout: ShimmerFrameLayout
     private val newUserText: String by lazy {
         getString(R.string.new_user)
     }
