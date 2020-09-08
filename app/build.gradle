@@ -141,5 +141,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
 
+    //phone utils
+    implementation 'io.michaelrocks:libphonenumber-android:8.12.9'
+
 
 }

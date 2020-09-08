@@ -45,7 +45,7 @@
     </style>
     <style name="EditTextCustomStyle" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/_13sdp</item>
         <item name="android:textColorHint">@color/colorGray</item>
         <item name="android:textColor">@color/colorAccent</item>
@@ -98,7 +98,7 @@
 
     <style name="SpinnerCustomStyle" parent="Widget.AppCompat.Spinner.Underlined">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/_13sdp</item>
         <item name="android:textColorHint">@color/colorGray</item>
         <item name="android:layout_marginStart">@dimen/_20sdp</item>
@@ -128,6 +128,10 @@
 
     <style name="ToolBarTheme"  parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="colorControlNormal">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="EditTextHintStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/colorGray</item>
     </style>
 
 

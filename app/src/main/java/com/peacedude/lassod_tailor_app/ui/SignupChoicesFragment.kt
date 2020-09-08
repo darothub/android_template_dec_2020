@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import com.peacedude.lassod_tailor_app.helpers.goto
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 
 
@@ -44,14 +46,18 @@ class SignupChoicesFragment : Fragment() {
         buttonTransactions({
             signupEmailBtn = signup_option_email_btn.findViewById(R.id.btn)
             signupPhoneBtn = signup_phone_btn.findViewById(R.id.btn)
-
-        }, {
             signupEmailBtn.text = getString(R.string.signup_with_email_str)
             signupPhoneBtn.text = getString(R.string.signup_with_phone_str)
-
-
             signupEmailBtn.background = backgroundDrawable
             signupPhoneBtn.background = backgroundDrawable
+
+        }, {
+            signupEmailBtn.setOnClickListener {
+                goto(R.id.emailSignupFragment)
+            }
+            signupPhoneBtn.setOnClickListener {
+                goto(R.id.phoneSignupFragment)
+            }
 
         })
     }

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.EmailSignupFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/appbar"
+            android:id="@+id/email_signup_appbar"/>
+
+        <TextView
+            android:id="@+id/email_signup_create_an_account_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_an_account"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/_16sdp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_appbar"
+            android:layout_marginTop="@dimen/_26sdp"
+            android:layout_marginStart="@dimen/_20sdp"/>
+
+
+        <TextView
+            android:id="@+id/email_signup_lets_get_to_know_you_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lets_get_to_know_you"
+            android:textColor="@color/colorGray"
+            android:textSize="@dimen/_12sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_create_an_account_text"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_20sdp"/>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_signup_email_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:layout_marginTop="@dimen/_35sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_lets_get_to_know_you_tv"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_signup_phone_number_et"
+                android:textColor="@color/colorGray"
+                style="@style/EditTextCustomStyle"
+                android:singleLine="true"
+                android:inputType="textEmailAddress"
+                android:hint="@string/email_address_str"
+                android:textColorHint="@color/colorGray"
+
+
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_signup_password_text_input"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/colorGray"
+            android:textColorHint="@color/colorGray"
+            android:imeOptions="actionNext"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_email_text_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/EditTextCustomStyle"
+                android:id="@+id/password_edittext"
+                android:inputType="textPassword"
+                android:hint="@string/password"
+                android:layout_marginStart="@dimen/_20sdp"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <include
+            android:id="@+id/email_signup_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_password_text_input"
+            android:layout_marginTop="@dimen/_15sdp"
+            />
+        <TextView
+            android:id="@+id/login_text"
+            android:layout_margin="@dimen/_15sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/have_an_account"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

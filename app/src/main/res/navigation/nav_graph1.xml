@@ -28,4 +28,14 @@
         android:id="@+id/signupChoicesFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.SignupChoicesFragment"
         android:label="SignupChoicesFragment" />
+    <fragment
+        android:id="@+id/phoneSignupFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.PhoneSignupFragment"
+        android:label="fragment_phone_signup"
+        tools:layout="@layout/fragment_phone_signup" />
+    <fragment
+        android:id="@+id/emailSignupFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.EmailSignupFragment"
+        android:label="fragment_email_signup"
+        tools:layout="@layout/fragment_email_signup" />
 </navigation>

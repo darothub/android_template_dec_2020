@@ -91,4 +91,6 @@
     <string name="signup_with_email_str">Sign up with email</string>
     <string name="signup_with_phone_str">Sign up with phone number</string>
     <string name="signup_with_google">Sign up with Google</string>
+    <string name="email_address_str">Email address</string>
+    <string name="select_your_country_str">Select your country</string>
 </resources>

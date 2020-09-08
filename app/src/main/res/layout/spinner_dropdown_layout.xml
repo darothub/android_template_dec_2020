@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:textSize="@dimen/_13sdp"
     android:textColor="@color/colorPrimary"
-    android:padding="@dimen/_8sdp"
+    android:padding="@dimen/_6sdp"
     android:background="@color/colorAccent"
-    android:text="Hello">
+    android:text="Hello"/>
 
-</TextView>

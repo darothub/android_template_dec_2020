@@ -178,7 +178,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 style="@style/EditTextCustomStyle"
                 android:id="@+id/password_edittext"
                 android:inputType="textPassword"
