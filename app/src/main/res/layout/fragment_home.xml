@@ -14,13 +14,15 @@
         <include
             android:id="@+id/home_app_logo"
             layout="@layout/app_logo_image_view"/>
+
         <include
             android:id="@+id/login_btn"
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             app:layout_constraintTop_toBottomOf="@id/home_app_logo"
-            android:layout_marginTop="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_25sdp"
+
              />
         <include
             android:id="@+id/signup_btn"

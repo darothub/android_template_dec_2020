@@ -7,9 +7,7 @@
     android:textColor="@color/colorAccent"
     android:paddingTop="@dimen/_8sdp"
     android:paddingBottom="@dimen/_8sdp"
-
     android:gravity="center_vertical"
     android:text="Hello"
-    >
+    />
 
-</CheckedTextView>

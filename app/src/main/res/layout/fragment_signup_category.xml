@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    android:background="@color/colorPrimary"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        tools:context=".ui.SignupCategoryFragment">
+
+        <include
+            android:id="@+id/signup_category_app_logo"
+            layout="@layout/app_logo_image_view"/>
+        <TextView
+            android:id="@+id/signup_category_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_a_user_category_str"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/_13sdp"
+            app:layout_constraintTop_toBottomOf="@id/signup_category_app_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_30sdp"
+
+            />
+        <Spinner
+            android:id="@+id/signup_category_spinner"
+            style="@style/SpinnerCustomStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/signup_category_tv"
+            android:layout_marginTop="@dimen/_20sdp"
+            />
+
+        <include
+            android:id="@+id/signup_category_cont_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/signup_category_spinner"
+            android:layout_marginTop="@dimen/_15sdp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

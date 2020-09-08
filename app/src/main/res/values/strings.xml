@@ -26,8 +26,11 @@
         <item>Visit us for your measurement</item>
         <item>Will accept self-measurement</item>
     </string-array>
+
+
     <string name="app_name">Obioma</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="client_id">485909312905-0hd3kgjv9kotocuatjs1gc9pp1apr3v6.apps.googleusercontent.com</string>
+    <string name="client_secret">LlAEEPh79wGRskK0tCRgy9Vl</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login">LOGIN</string>
     <string name="signup">SIGN UP</string>
@@ -84,4 +87,8 @@
     <string name="measurement_option_str">Measurement  Options</string>
     <string name="delivery_lead_time_str">Delivery lead time</string>
     <string name="time_placeholder">10mins</string>
+    <string name="choose_a_user_category_str">Choose a user category to begin</string>
+    <string name="signup_with_email_str">Sign up with email</string>
+    <string name="signup_with_phone_str">Sign up with phone number</string>
+    <string name="signup_with_google">Sign up with Google</string>
 </resources>

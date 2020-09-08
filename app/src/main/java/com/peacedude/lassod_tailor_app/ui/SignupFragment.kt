@@ -98,7 +98,7 @@ class SignupFragment : DaggerFragment() {
 
         setupLoginSpannableString()
 
-        setupCategorySpinner()
+        setupCategorySpinner(requireContext(), signup_spinner, R.array.categories_array )
 
         dialogBtnsAndProgressBarsSetup()
 
@@ -163,28 +163,7 @@ class SignupFragment : DaggerFragment() {
         })
     }
 
-    private fun setupCategorySpinner() {
-        val categorySpinnerAdapter = ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.categories_array,
-            R.layout.spinner_colored_text_layout
-        )
-        categorySpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
 
-        signup_category_spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-
-            override fun onItemSelected(
-                parentView: AdapterView<*>,
-                selectedItemView: View?,
-                position: Int,
-                id: Long
-            ) {
-
-            }
-        }
-        signup_category_spinner.adapter = categorySpinnerAdapter
-    }
 
     private fun setupLoginSpannableString() {
         textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
@@ -237,7 +216,7 @@ class SignupFragment : DaggerFragment() {
         val firstName = first_name_edittext.text.toString().trim()
         val lastName = last_name_edittext.text.toString().trim()
         val otherName = other_name_edittext.text.toString().trim().toLowerCase()
-        val category = signup_category_spinner.selectedItem as String
+        val category = signup_spinner.selectedItem as String
         val phoneNumber = signup_phone_number_edittext.text.toString().trim()
         val passwordString = password_edittext.text.toString().trim()
 

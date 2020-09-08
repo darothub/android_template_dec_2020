@@ -14,25 +14,18 @@
         android:id="@+id/signupFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.SignupFragment"
         android:label=" "
-        tools:layout="@layout/fragment_signup" >
-        <action
-            android:id="@+id/signupToVerification"
-            app:destination="@id/verificationFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_signup" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.LoginFragment"
         android:label=" "
         tools:layout="@layout/fragment_login" />
     <fragment
-        android:id="@+id/verificationFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.VerificationFragment"
-        android:label="fragment_verification"
-        tools:layout="@layout/fragment_verification" >
-        <argument
-            android:name="phoneNumber"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
-    </fragment>
+        android:id="@+id/signupCategoryFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.SignupCategoryFragment"
+        android:label="SignupCategoryFragment" />
+    <fragment
+        android:id="@+id/signupChoicesFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.SignupChoicesFragment"
+        android:label="SignupChoicesFragment" />
 </navigation>

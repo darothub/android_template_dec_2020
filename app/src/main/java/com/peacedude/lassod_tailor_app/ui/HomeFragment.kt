@@ -38,6 +38,9 @@ open class HomeFragment : DaggerFragment() {
         AnimationUtils.loadAnimation(requireContext(), R.anim.right_animation)
     }
 
+    val topAnimation by lazy{
+        AnimationUtils.loadAnimation(requireContext(), R.anim.top_animation)
+    }
     @Inject
     lateinit var storageRequest: StorageRequest
 
@@ -77,9 +80,8 @@ open class HomeFragment : DaggerFragment() {
         })
 
 
-
         signupBtn.setOnClickListener {
-            findNavController().navigate(R.id.signupFragment)
+            findNavController().navigate(R.id.signupCategoryFragment)
         }
 
         loginBtn.setOnClickListener {
