@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
+import android.text.SpannableString
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.*
 import kotlinx.android.synthetic.main.fragment_email_signup.*
+import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 
 
@@ -22,6 +23,14 @@ import kotlinx.android.synthetic.main.fragment_signup_choices.*
 class EmailSignupFragment : Fragment() {
     val title: String by lazy {
         getName()
+    }
+
+    private val loginAdviseText: String by lazy {
+        getString(R.string.have_an_account)
+    }
+    private var spannableTextColor = 0;
+    private val spannableString: SpannableString by lazy {
+        loginAdviseText.setAsSpannable()
     }
 
     private lateinit var emailSignupBtn: Button
@@ -52,9 +61,27 @@ class EmailSignupFragment : Fragment() {
         }, {
 
 
-
-
         })
+
+        setupLoginSpannableString()
+    }
+
+    private fun setupLoginSpannableString() {
+        spannableTextColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        val textLen = loginAdviseText.length
+        val start = 17
+        setupSpannableLinkAndDestination(
+            loginAdviseText,
+            email_signup_login_tv,
+            spannableTextColor,
+            spannableString,
+            start,
+            textLen
+        ) {
+            spannableString.enableClickOnSubstring(start, textLen) {
+                goto(R.id.loginFragment)
+            }
+        }
     }
 
 

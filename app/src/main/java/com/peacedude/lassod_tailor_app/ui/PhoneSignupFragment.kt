@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,11 +11,10 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.goto
+import com.peacedude.lassod_tailor_app.helpers.*
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
+import kotlinx.android.synthetic.main.fragment_signup.*
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 import java.util.*
 
@@ -27,6 +27,14 @@ import java.util.*
 class PhoneSignupFragment : Fragment() {
     val title: String = getName()
     lateinit var signupPhoneBtn: Button
+
+    private val loginAdviseText: String by lazy {
+        getString(R.string.have_an_account)
+    }
+    private var spannableTextColor = 0;
+    private val spannableString: SpannableString by lazy {
+        loginAdviseText.setAsSpannable()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -59,6 +67,7 @@ class PhoneSignupFragment : Fragment() {
         })
 
         setUpSpinner()
+        setupLoginSpannableString()
     }
 
     fun setUpSpinner(){
@@ -75,5 +84,23 @@ class PhoneSignupFragment : Fragment() {
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
         phone_signup_category_spinner.adapter = adapter
 
+    }
+
+    private fun setupLoginSpannableString() {
+        spannableTextColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        val textLen = loginAdviseText.length
+        val start = 17
+        setupSpannableLinkAndDestination(
+            loginAdviseText,
+            phone_signup_login_tv,
+            spannableTextColor,
+            spannableString,
+            start,
+            textLen
+        ) {
+            spannableString.enableClickOnSubstring(start, textLen) {
+                goto(R.id.loginFragment)
+            }
+        }
     }
 }

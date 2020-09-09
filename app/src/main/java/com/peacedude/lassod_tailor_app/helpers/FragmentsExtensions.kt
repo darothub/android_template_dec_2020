@@ -37,16 +37,7 @@ fun Fragment.goto(destinationId: Int) {
     findNavController().navigate(destinationId)
 }
 
-fun setupSpannableLinkAndDestination(text:String, textView: TextView,
-                       textColor:Int, spannableString: SpannableString, start:Int, end:Int, onSpannableClick:()->Unit
-) {
-    onSpannableClick()
-    spannableString.setColorToSubstring(textColor, start, end)
-    spannableString.removeUnderLine(start, end)
-    textView.text = spannableString
-    textView.movementMethod = LinkMovementMethod.getInstance()
 
-}
 
 ///**
 // * Observe request response
