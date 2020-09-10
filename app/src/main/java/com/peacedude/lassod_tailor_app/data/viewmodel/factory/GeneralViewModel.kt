@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.factory
 
 import android.util.Log
+import androidx.lifecycle.LiveDataScope
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.helpers.getName
@@ -8,6 +9,7 @@ import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
@@ -106,5 +108,39 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
         currentUser?.loggedIn = false
         val res= storageRequest.saveData(currentUser, loggedInUserKey)
         Log.i(title, "resArray ${res.size}")
+    }
+
+    suspend fun LiveDataScope<ServicesResponseWrapper<ParentData>>.onResponse(
+        status: Int?,
+        error: List<String>?,
+        registration: UserResponse
+    ) {
+        when (status) {
+
+            401 -> {
+                try {
+
+                    emit(ServicesResponseWrapper.Logout(error?.joinToString().toString()))
+                } catch (e: Exception) {
+                    Log.i(title, e.message.toString())
+                    emit(ServicesResponseWrapper.Error(e.message, status))
+                }
+            }
+            in 400..599 -> {
+                try {
+                    emit(ServicesResponseWrapper.Error(error?.joinToString().toString()))
+                } catch (e: Exception) {
+                    Log.i(title, "Hello" + " " + e.message.toString())
+                    emit(ServicesResponseWrapper.Error(e.message, status))
+                }
+            }
+            else -> {
+                try {
+                    emit(ServicesResponseWrapper.Success(registration))
+                } catch (e: java.lang.Exception) {
+                    Log.i(title, e.message.toString())
+                }
+            }
+        }
     }
 }

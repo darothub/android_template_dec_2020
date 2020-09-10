@@ -2,17 +2,26 @@ package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
 import android.text.SpannableString
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
+import javax.inject.Inject
 
 
 /**
@@ -20,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_signup_choices.*
  * Use the [EmailSignupFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class EmailSignupFragment : Fragment() {
+class EmailSignupFragment : DaggerFragment() {
     val title: String by lazy {
         getName()
     }
@@ -34,6 +43,14 @@ class EmailSignupFragment : Fragment() {
     }
 
     private lateinit var emailSignupBtn: Button
+    private lateinit var progressBar:ProgressBar
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    val userViewModel: UserViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
+    }
+    private val arg:EmailSignupFragmentArgs by navArgs()
+    val user = arg.newUser
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -51,16 +68,29 @@ class EmailSignupFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         val backgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         buttonTransactions({
             emailSignupBtn = email_signup_btn.findViewById(R.id.btn)
+            progressBar = email_signup_btn.findViewById(R.id.progress_bar)
             emailSignupBtn.background = backgroundDrawable
             emailSignupBtn.text = getString(R.string.signup)
             emailSignupBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
         }, {
-
-
+            email_signup_phone_number_et.setText(user?.email)
+            emailSignupBtn.setOnClickListener {
+                if (user != null) {
+                    var req = userViewModel.registerUser(user)
+                    val observer = requireActivity().observeRequest(req, progressBar, emailSignupBtn)
+                    observer.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                        val (bool, result) = it
+                        onRequestResponseTask(bool, result){
+                            Log.i(title, "Check your mail for confirmation")
+                        }
+                    })
+                }
+            }
         })
 
         setupLoginSpannableString()

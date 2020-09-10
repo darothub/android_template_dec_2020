@@ -31,4 +31,9 @@ interface UserServices {
         @Field("password") password:String
     ):Call<UserResponse>
 
+    @POST("auth/signup")
+    suspend fun registerUser(
+        @Body user: User
+    ): UserResponse
+
 }

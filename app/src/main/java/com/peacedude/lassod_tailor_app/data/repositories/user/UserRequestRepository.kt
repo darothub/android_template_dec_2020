@@ -20,6 +20,10 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
         return userServices.registerUser(firstName, lastName, otherName, category, phoneNumber, password)
     }
 
+    override suspend fun registerUser(user: User): UserResponse {
+        return userServices.registerUser(user)
+    }
+
     override fun activateUser(phoneNumber: String, code: String): Call<UserResponse> {
         Log.i("Repository", "$phoneNumber $code")
         return userServices.activateUser(phoneNumber, code)

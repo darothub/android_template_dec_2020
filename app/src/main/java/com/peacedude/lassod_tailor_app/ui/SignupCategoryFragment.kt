@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.helpers.setupCategorySpinner
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_signup.*
@@ -22,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_signup_category.*
  * create an instance of this fragment.
  */
 class SignupCategoryFragment : Fragment() {
+    val title = getName()
     private lateinit var continueBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +55,11 @@ class SignupCategoryFragment : Fragment() {
         }, {
 
             continueBtn.setOnClickListener {
-                findNavController().navigate(R.id.signupChoicesFragment)
+                val category = signup_category_spinner.selectedItem.toString()
+                val action = SignupCategoryFragmentDirections.actionSignupCategoryFragmentToSignupChoicesFragment()
+                action.category = category
+                Log.i(title, "category $category")
+                goto(action)
             }
         })
     }

@@ -25,4 +25,10 @@ interface UserRequestInterface {
         return TODO()
     }
 
+    suspend fun registerUser(
+        user: User
+    ): UserResponse {
+        return TODO()
+    }
+
 }

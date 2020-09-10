@@ -1,9 +1,7 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.user
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
@@ -13,6 +11,7 @@ import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
+import kotlinx.coroutines.Dispatchers.IO
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,6 +35,19 @@ class UserViewModel @Inject constructor(
         set(user) = storage.keepData(user, registeringUser)
 
     val clearSavedUser= storage.clearByKey(registeringUser)
+
+    fun registerUser(user: User) = liveData<ServicesResponseWrapper<ParentData>>(IO){
+        emit(ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        ))
+        val registration = userRequestInterface.registerUser(user)
+        val status = registration.status
+        val msg = registration.message
+        val error = registration.error
+        onResponse(status, error, registration)
+    }
+
 
 
     fun registerUser(

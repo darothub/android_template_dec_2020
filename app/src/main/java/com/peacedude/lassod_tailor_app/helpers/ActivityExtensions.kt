@@ -94,13 +94,14 @@ fun Activity.observeRequest(
                     Log.i(title, "Error ${it.message}")
                 }
                 is ServicesResponseWrapper.Logout -> {
+                    val unAuthorizedString = getString(R.string.unauthorized_user)
                     progressBar?.hide()
                     button?.show()
-                    gdToast("$errorResponse", Gravity.BOTTOM)
+                    gdToast(unAuthorizedString, Gravity.BOTTOM)
                     startActivity(Intent(this as? Context, MainActivity::class.java))
-                    result.postValue(Pair(false, errorResponse))
+                    result.postValue(Pair(false, unAuthorizedString))
 
-                    Log.i(title, "Log out $errorResponse")
+                    Log.i(title, "Log out $unAuthorizedString")
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
                 }

@@ -6,8 +6,9 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import java.io.Serializable
 
 class UserResponse(
-    val status: String?,
+    val status: Int?,
     val message: String?,
+    val error: List<String>?,
     val data: User
 ) : ParentData, Serializable
 
