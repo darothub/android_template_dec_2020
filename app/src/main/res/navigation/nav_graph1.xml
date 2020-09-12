@@ -24,22 +24,27 @@
         android:id="@+id/signupCategoryFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.SignupCategoryFragment"
         android:label="SignupCategoryFragment" >
+        <argument
+            android:name="newUser"
+            app:argType="com.peacedude.lassod_tailor_app.model.request.User"
+            app:nullable="true"
+            android:defaultValue="@null" />
         <action
-            android:id="@+id/action_signupCategoryFragment_to_signupChoicesFragment"
-            app:destination="@id/signupChoicesFragment" />
+            android:id="@+id/action_signupCategoryFragment_to_emailSignupFragment"
+            app:destination="@id/emailSignupFragment" />
     </fragment>
     <fragment
         android:id="@+id/signupChoicesFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.SignupChoicesFragment"
         android:label="SignupChoicesFragment" >
-        <action
-            android:id="@+id/action_signupChoicesFragment_to_emailSignupFragment"
-            app:destination="@id/emailSignupFragment" />
         <argument
             android:name="category"
             app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_signupChoicesFragment_to_signupCategoryFragment"
+            app:destination="@id/signupCategoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/phoneSignupFragment"

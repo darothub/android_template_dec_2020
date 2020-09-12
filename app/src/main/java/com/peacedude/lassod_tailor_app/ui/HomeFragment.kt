@@ -1,22 +1,29 @@
 package com.peacedude.lassod_tailor_app.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import com.peacedude.lassod_tailor_app.helpers.onRequestResponseTask
+import com.peacedude.lassod_tailor_app.helpers.request
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
-import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
@@ -46,6 +53,14 @@ open class HomeFragment : DaggerFragment() {
 
     val currentUser: User? by lazy {
         storageRequest.checkUser(loggedInUserKey)
+    }
+
+    @Inject
+    lateinit var mGoogleSignInClient:GoogleSignInClient
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    val userViewModel: UserViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -81,20 +96,44 @@ open class HomeFragment : DaggerFragment() {
 
 
         signupBtn.setOnClickListener {
-            findNavController().navigate(R.id.signupCategoryFragment)
+            findNavController().navigate(R.id.signupChoicesFragment)
         }
 
         loginBtn.setOnClickListener {
             findNavController().navigate(R.id.loginFragment)
         }
 
+        val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+
         if (currentUser != null) {
             when (currentUser?.loggedIn) {
                 true -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
             }
         }
+        else if(account != null){
+            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+//            requireActivity().request(null, null, userViewModel, {
+//                userViewModel.loginUserRequest(account.email.toString(), "Password")
+//            },{b, any ->
+//                onRequestResponseTask(b, any) {
+//                    val userDetails = any as? UserResponse
+//                    val user = userDetails?.data
+//                    user?.loggedIn = true
+//                    userViewModel.currentUser = user
+//                    val res = userViewModel.saveUser
+//                    val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
+//                    Log.i("$this", "res ${res.size}")
+//                    startActivity(loginIntent)
+//                    requireActivity().finish()
+//                }
+//            })
+        }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+    }
 
 
 }

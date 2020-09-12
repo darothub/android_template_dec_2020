@@ -148,5 +148,9 @@ dependencies {
     //phone utils
     implementation 'io.michaelrocks:libphonenumber-android:8.12.9'
 
+    //Moshi
+    implementation("com.squareup.moshi:moshi:1.9.3")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.3")
+
 
 }

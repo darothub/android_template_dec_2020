@@ -4,25 +4,23 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.model.error.ErrorModel
+import com.peacedude.lassod_tailor_app.helpers.safeApiCall
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
+import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import kotlinx.coroutines.Dispatchers.IO
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 import javax.inject.Inject
 
 class UserViewModel @Inject constructor(
     private val userRequestInterface: UserRequestInterface,
     override var retrofit: Retrofit,
     val storage: StorageRequest
-) : GeneralViewModel(retrofit,storage) {
+) : GeneralViewModel(retrofit,storage), ViewModelInterface {
 
 
     override val title: String by lazy {
@@ -36,21 +34,13 @@ class UserViewModel @Inject constructor(
 
     val clearSavedUser= storage.clearByKey(registeringUser)
 
-    fun registerUser(user: User) = liveData<ServicesResponseWrapper<ParentData>>(IO){
-        emit(ServicesResponseWrapper.Loading(
-            null,
-            "Loading..."
-        ))
-        val registration = userRequestInterface.registerUser(user)
-        val status = registration.status
-        val msg = registration.message
-        val error = registration.error
-        onResponse(status, error, registration)
+    override suspend fun registerUser(user: User?):LiveData<ServicesResponseWrapper<ParentData>> {
+      return safeApiCall(IO){userRequestInterface.registerUser(user)}
     }
 
 
 
-    fun registerUser(
+    override fun registerUser(
         firstName: String,
         lastName: String,
         otherName: String,
@@ -86,7 +76,7 @@ class UserViewModel @Inject constructor(
         })
         return responseLiveData
     }
-    fun activateUser(phoneNumber:String, code: String): LiveData<ServicesResponseWrapper<ParentData>> {
+    override fun activateUser(phoneNumber:String, code: String): LiveData<ServicesResponseWrapper<ParentData>> {
         Log.i(title, "$phoneNumber $code")
         val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(

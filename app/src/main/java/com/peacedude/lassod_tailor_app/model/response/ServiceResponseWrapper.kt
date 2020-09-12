@@ -1,5 +1,7 @@
 package com.peacedude.lassod_tailor_app.model.response
 
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+
 /**
  * A sealed class to control response from API
  */
@@ -7,11 +9,12 @@ sealed class ServicesResponseWrapper<T>(
     val data: T? = null,
     val message: String? = null,
     val code:Int? = null
-) {
+):ParentData {
     /**
      * A success class wrapper
      */
     class Success<T>(data: T?) : ServicesResponseWrapper<T>(data)
+
     /**
      * A loading class wrapper
      */

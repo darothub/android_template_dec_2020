@@ -11,6 +11,7 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
+import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,9 +22,9 @@ open class AuthViewModel @Inject constructor(
     private val authRequestInterface: AuthRequestInterface,
     override var retrofit: Retrofit,
     val storage: StorageRequest
-) : GeneralViewModel(retrofit,storage) {
+) : GeneralViewModel(retrofit,storage), ViewModelInterface {
 
-    fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
+    override fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
         val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
@@ -43,7 +44,7 @@ open class AuthViewModel @Inject constructor(
         return responseLiveData
     }
 
-   fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>> {
+   override fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>> {
         val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,

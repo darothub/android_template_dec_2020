@@ -6,10 +6,14 @@ import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.peacedude.lassod_tailor_app.di.activitymodules.MainActivityModule
 import com.peacedude.lassod_tailor_app.di.activitymodules.ProfileActivityModule
+import com.peacedude.lassod_tailor_app.di.networkmodules.user.ViewModelInterfaceModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.GeneralViewModelModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.ViewModelFactoryModule
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -32,7 +36,8 @@ abstract class ActivityBuilderModule {
     @ContributesAndroidInjector(
         modules = [
             ViewModelFactoryModule::class,
-            GeneralViewModelModule::class
+            GeneralViewModelModule::class,
+            ViewModelInterfaceModule::class
         ]
     )
     abstract fun baseActivity(): BaseActivity
@@ -147,5 +152,14 @@ open class ActivityStaticModule {
     @Singleton
     @Provides
     fun provideSavedStateHandle() = SavedStateHandle()
+
+    @Singleton
+    @Provides
+    fun provideGoogleSignInOptions():GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build()
+
+    @Singleton
+    @Provides
+    fun provideGoogleSigninClient(context: Context, gso:GoogleSignInOptions):GoogleSignInClient = GoogleSignIn.getClient(context, gso);
+
 
 }

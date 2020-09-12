@@ -1,9 +1,7 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.factory
 
 import android.util.Log
-import androidx.lifecycle.LiveDataScope
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
@@ -11,23 +9,25 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
+import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val storageRequest: StorageRequest): ViewModel() {
+open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val storageRequest: StorageRequest): ViewModel(), ViewModelInterface {
+
 
     open val title: String by lazy {
         this.getName()
     }
-    var currentUser: User? = storageRequest.checkUser(loggedInUserKey)
+    override var currentUser: User? = storageRequest.checkUser(loggedInUserKey)
         set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
 
-    var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
+    override var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
 
-    var profileData = storageRequest.checkUser(profileDataKey)
+    override var profileData = storageRequest.checkUser(profileDataKey)
         set(currentUser) = storageRequest.keepData(currentUser, profileDataKey)
 
     fun onFailureResponse(
@@ -143,4 +143,27 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
             }
         }
     }
+
+
+//    return try {
+//        val a = object : Annotation{}
+//        val converter = retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
+//        val error = converter.convert(throwable.response()?.errorBody())
+//        val errors = error?.errors
+//        var errorString1 = if (error?.errors?.size!! > 1) {
+//            "${errors?.get(0)}, ${errors?.get(1)}"
+//        } else {
+//            errors?.get(0).toString()
+//        }
+//        Log.i(title, "message $errorString1")
+//        return Pair(errorString1, throwable.code())
+////            throwable.response()?.errorBody()?.source()?.let {
+////
+////
+////        //                val moshiAdapter = Moshi.Builder().build().adapter(ErrorModel::class.java)
+////        //                moshiAdapter.fromJson(it)
+////            }!!
+//    } catch (exception: Exception) {
+//        Pair(exception.localizedMessage, throwable.code())
+//    }
 }

@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.network.user
 
+import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
@@ -26,8 +27,8 @@ interface UserRequestInterface {
     }
 
     suspend fun registerUser(
-        user: User
-    ): UserResponse {
+        user: User?
+    ):UserResponse {
         return TODO()
     }
 

@@ -33,7 +33,7 @@ interface UserServices {
 
     @POST("auth/signup")
     suspend fun registerUser(
-        @Body user: User
+        @Body user: User?
     ): UserResponse
 
 }

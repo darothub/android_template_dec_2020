@@ -21,10 +21,13 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import com.peacedude.lassod_tailor_app.ui.MainActivity
+import com.peacedude.lassod_tailor_app.ui.ProfileActivity
 import com.peacedude.lassod_tailor_app.ui.SplashScreenActivity
 import kotlinx.android.synthetic.main.fragment_signup.*
 
@@ -39,7 +42,7 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * @return
  */
 fun Activity.observeRequest(
-    request: LiveData<ServicesResponseWrapper<ParentData>>,
+    request: LiveData<ServicesResponseWrapper<ParentData>>?,
     progressBar: ProgressBar?, button: Button?
 ): LiveData<Pair<Boolean, Any?>> {
     val result = MutableLiveData<Pair<Boolean, Any?>>()
@@ -49,7 +52,7 @@ fun Activity.observeRequest(
 
 
     hideKeyboard()
-    request.observe(this as LifecycleOwner, Observer {
+    request?.observe(this as LifecycleOwner, Observer {
         try {
             val responseData = it.data
             val errorResponse = it.message
@@ -76,13 +79,13 @@ fun Activity.observeRequest(
                             Log.i(title, "Errorcode ${errorCode}")
                             gdErrorToast("$errorResponse", Gravity.BOTTOM)
                         }
-                        in 400..499 ->{
+                        in 400..499 -> {
                             result.postValue(Pair(false, errorResponse))
 //                            toast("$errorResponse")
                             gdErrorToast("$errorResponse", Gravity.BOTTOM)
                         }
                         in 500..600 -> {
-                             gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
+                            gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
                         }
                         else -> {
                             result.postValue(Pair(false, errorResponse))
@@ -115,6 +118,22 @@ fun Activity.observeRequest(
     return result
 }
 
+fun Activity.request(
+    progressBar: ProgressBar?,
+    btn: Button?,
+    viewModel: ViewModelInterface,
+    req: (ViewModelInterface) -> LiveData<ServicesResponseWrapper<ParentData>>,
+    action: (Boolean, Any?) -> Unit
+) {
+
+    val request = req(viewModel)
+    val response = observeRequest(request, progressBar, btn)
+    response.observe(this as LifecycleOwner, Observer {
+        val (bool, result) = it
+        action(bool, result)
+    })
+}
+
 /**
  * Handles sign-up request live response
  *
@@ -124,7 +143,7 @@ fun Activity.observeRequest(
 fun Activity.onRequestResponseTask(
     bool: Boolean,
     result: Any?,
-    action:()-> Unit
+    action: () -> Unit
 ) {
     when (bool) {
 
@@ -133,9 +152,11 @@ fun Activity.onRequestResponseTask(
                 val res = result as UserResponse
                 gdToast(res.message.toString(), Gravity.BOTTOM)
                 action()
-                Log.i("onResponseTask", "result of registration ${res.message} ${res.data.firstName}\n${res.data.userId}")
-            }
-            catch (e:java.lang.Exception){
+                Log.i(
+                    "onResponseTask",
+                    "result of registration ${res.message} ${res.data.firstName}\n${res.data.userId}"
+                )
+            } catch (e: java.lang.Exception) {
                 gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
             }
 
@@ -151,7 +172,7 @@ private fun Activity.hideKeyboard() {
         val view: View? = currentFocus
         val controller = view?.windowInsetsController
         controller?.hide(WindowInsets.Type.ime())
-    }else{
+    } else {
         // this will give us the view
         // which is currently focus
         // in this layout
@@ -173,7 +194,6 @@ private fun Activity.hideKeyboard() {
                 )
         }
     }
-
 
 
 }

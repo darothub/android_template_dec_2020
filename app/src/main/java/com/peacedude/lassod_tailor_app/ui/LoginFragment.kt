@@ -14,15 +14,21 @@ import android.widget.Button
 import android.widget.ProgressBar
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -86,9 +92,9 @@ class LoginFragment : DaggerFragment() {
 
 
         loginBtn.setOnClickListener {
-            loginRequest()
+            validateAndLoginRequest()
         }
-        initEnterKeyToSubmitForm(login_password_edittext) { loginRequest() }
+        initEnterKeyToSubmitForm(login_password_edittext) { validateAndLoginRequest() }
 
         textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         val textLen = newUserText.length
@@ -105,7 +111,7 @@ class LoginFragment : DaggerFragment() {
     }
 
 
-    fun loginRequest() {
+    fun validateAndLoginRequest() {
         val phoneNumber = login_phone_number_edittext.text.toString().trim()
         val passwordString = login_password_edittext.text.toString()
 
@@ -117,21 +123,18 @@ class LoginFragment : DaggerFragment() {
                 requireActivity().gdErrorToast("${resources.getResourceEntryName(checkForEmpty.id)} is empty", Gravity.BOTTOM)
             }
             else -> {
-                val request = userViewModel.loginUserRequest(
-                    phoneNumber, passwordString
-                )
-                val response = requireActivity().observeRequest(request, progressBar, loginBtn)
-                response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask(bool, result){
-                        val userDetails = result as? UserResponse
+
+                requireActivity().request(progressBar, loginBtn, userViewModel, {
+                    userViewModel.loginUserRequest(phoneNumber, passwordString)
+                },{ b, any ->
+                    onRequestResponseTask(b, any) {
+                        val userDetails = any as? UserResponse
                         val user = userDetails?.data
                         user?.loggedIn = true
                         userViewModel.currentUser = user
                         val res = userViewModel.saveUser
                         val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
-//                        loginIntent.putExtra("token", userDetails?.data?.token)
-                        Log.i(title, "res ${res.size}")
+                        Log.i("$this", "res ${res.size}")
                         startActivity(loginIntent)
                         requireActivity().finish()
                     }
@@ -141,7 +144,25 @@ class LoginFragment : DaggerFragment() {
 
     }
 
-
+//    fun request(req:(userViewModel:UserViewModel)->LiveData<ServicesResponseWrapper<ParentData>>) {
+//
+//        val request  = req(userViewModel)
+//        val response = requireActivity().observeRequest(request, progressBar, loginBtn)
+//        response.observe(viewLifecycleOwner, Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask(bool, result) {
+//                val userDetails = result as? UserResponse
+//                val user = userDetails?.data
+//                user?.loggedIn = true
+//                userViewModel.currentUser = user
+//                val res = userViewModel.saveUser
+//                val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
+//                Log.i(title, "res ${res.size}")
+//                startActivity(loginIntent)
+//                requireActivity().finish()
+//            }
+//        })
+//    }
 
 
 }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getName
@@ -27,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_signup_category.*
 class SignupCategoryFragment : Fragment() {
     val title = getName()
     private lateinit var continueBtn: Button
-
+    val arg:SignupCategoryFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,8 +57,8 @@ class SignupCategoryFragment : Fragment() {
 
             continueBtn.setOnClickListener {
                 val category = signup_category_spinner.selectedItem.toString()
-                val action = SignupCategoryFragmentDirections.actionSignupCategoryFragmentToSignupChoicesFragment()
-                action.category = category
+                val action = SignupCategoryFragmentDirections.actionSignupCategoryFragmentToEmailSignupFragment()
+                action.newUser = arg.newUser
                 Log.i(title, "category $category")
                 goto(action)
             }

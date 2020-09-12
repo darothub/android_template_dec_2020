@@ -1,7 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,10 +19,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
+import com.peacedude.lassod_tailor_app.helpers.CustomWebViewClient
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.goto
@@ -48,6 +51,13 @@ class SignupChoicesFragment : DaggerFragment() {
     val userViewModel: UserViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
+
+    val gso by lazy {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+    }
+    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(requireContext(), gso)}
 
     val arg:SignupChoicesFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,10 +98,8 @@ class SignupChoicesFragment : DaggerFragment() {
 
         })
 
-        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .build()
-        var mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+
+
 
         val someActivityResultLauncher = requireActivity().registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
@@ -110,8 +118,10 @@ class SignupChoicesFragment : DaggerFragment() {
                            val imageUrl = account?.photoUrl
                            val category = arg.category
                            val newUser = User(firstName, lastName, otherName, category, null)
+                           newUser.email = email
+
                            requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
-                           val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
+                           val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
                            action.newUser = newUser
                            goto(action)
 
@@ -122,8 +132,13 @@ class SignupChoicesFragment : DaggerFragment() {
                 }
             }
         )
-        
+
         google_sign_in_button.setOnClickListener {
+//            webviev.webChromeClient = CustomWebViewClient()
+//            val setting = webviev.settings
+//            setting.javaScriptEnabled = true
+//            webviev.loadUrl("https://obioma-staging.herokuapp.com/api/v1/auth/google")
+
             val intent = mGoogleSignInClient.getSignInIntent()
             someActivityResultLauncher.launch(intent)
         }
@@ -132,7 +147,14 @@ class SignupChoicesFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
 
+        mGoogleSignInClient.silentSignIn().addOnCompleteListener {task ->
+            when(task.isSuccessful){
+                true -> requireActivity().gdToast("Already signed in", Gravity.BOTTOM)
 
+            }
+
+
+        }
 
     }
 
