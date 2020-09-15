@@ -15,5 +15,9 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
     override fun updateUserData(header: String, user: User): Call<UserResponse> {
         return authServices.updateUserData(header, user)
     }
+
+    override fun forgetPassword(email: String): Call<UserResponse> {
+        return authServices.forgetPassword(email)
+    }
 }
 

@@ -26,9 +26,9 @@ interface UserRequestInterface {
         return TODO()
     }
 
-    suspend fun registerUser(
+   fun registerUser(
         user: User?
-    ):UserResponse {
+    ):Call<UserResponse> {
         return TODO()
     }
 

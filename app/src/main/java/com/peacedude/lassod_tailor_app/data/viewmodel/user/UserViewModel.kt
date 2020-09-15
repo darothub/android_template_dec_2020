@@ -34,10 +34,27 @@ class UserViewModel @Inject constructor(
 
     val clearSavedUser= storage.clearByKey(registeringUser)
 
-    override suspend fun registerUser(user: User?):LiveData<ServicesResponseWrapper<ParentData>> {
-      return safeApiCall(IO){userRequestInterface.registerUser(user)}
-    }
+    override fun registerUser(user: User?): LiveData<ServicesResponseWrapper<ParentData>> {
 
+        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = userRequestInterface.registerUser(
+            user)
+        request.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
 
 
     override fun registerUser(

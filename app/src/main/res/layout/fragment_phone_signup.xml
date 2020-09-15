@@ -44,7 +44,7 @@
 
         <Spinner
 
-            android:id="@+id/phone_signup_category_spinner"
+            android:id="@+id/phone_signup_country_spinner"
             style="@style/SpinnerCustomStyle"
             android:layout_marginTop="@dimen/_35sdp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
 
-            app:layout_constraintTop_toBottomOf="@id/phone_signup_category_spinner"
+            app:layout_constraintTop_toBottomOf="@id/phone_signup_country_spinner"
            >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -91,7 +91,7 @@
             app:passwordToggleTint="@color/colorGray">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/phonse_signup_password_et"
+                android:id="@+id/phone_signup_password_et"
                 android:textColor="@color/colorGray"
                 style="@style/EditTextCustomStyle"
                 android:inputType="textPassword"
@@ -101,6 +101,30 @@
 
                 />
         </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/phone_signup_password_standard_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password_standard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/phone_signup_password_text_input"
+            android:textColor="@color/colorRed"
+            android:textSize="@dimen/_9sdp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            />
+
+        <Spinner
+            android:id="@+id/phone_signup_category_spinner"
+            style="@style/SpinnerCustomStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/phone_signup_password_standard_tv"
+            android:layout_marginTop="@dimen/_20sdp"
+            />
 
         <include
             android:id="@+id/phone_signup_btn"
@@ -108,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
-            app:layout_constraintTop_toBottomOf="@id/phone_signup_password_text_input" />
+            app:layout_constraintTop_toBottomOf="@id/phone_signup_category_spinner" />
 
         <TextView
             android:id="@+id/phone_signup_login_tv"

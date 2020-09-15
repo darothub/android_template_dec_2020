@@ -56,7 +56,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email_signup_phone_number_et"
+                android:id="@+id/email_field"
                 android:textColor="@color/colorGray"
                 style="@style/EditTextCustomStyle"
                 android:singleLine="true"
@@ -85,8 +85,9 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
+
                 style="@style/EditTextCustomStyle"
-                android:id="@+id/password_edittext"
+                android:id="@+id/password_field"
                 android:inputType="textPassword"
                 android:hint="@string/password"
                 android:layout_marginStart="@dimen/_20sdp"
@@ -95,12 +96,35 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/email_signup_password_standard_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password_standard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_password_text_input"
+            android:textColor="@color/colorRed"
+            android:textSize="@dimen/_9sdp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            />
+        <Spinner
+            android:id="@+id/email_signup_category_spinner"
+            style="@style/SpinnerCustomStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_password_standard_tv"
+            android:layout_marginTop="@dimen/_20sdp"
+            />
         <include
             android:id="@+id/email_signup_btn"
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/email_signup_password_text_input"
+            app:layout_constraintTop_toBottomOf="@id/email_signup_category_spinner"
             android:layout_marginTop="@dimen/_15sdp"
             />
         <TextView

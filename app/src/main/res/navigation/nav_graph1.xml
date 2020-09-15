@@ -45,6 +45,12 @@
         <action
             android:id="@+id/action_signupChoicesFragment_to_signupCategoryFragment"
             app:destination="@id/signupCategoryFragment" />
+        <action
+            android:id="@+id/action_signupChoicesFragment_to_phoneSignupFragment"
+            app:destination="@id/phoneSignupFragment" />
+        <action
+            android:id="@+id/action_signupChoicesFragment_to_emailSignupFragment"
+            app:destination="@id/emailSignupFragment" />
     </fragment>
     <fragment
         android:id="@+id/phoneSignupFragment"
@@ -59,6 +65,11 @@
         <argument
             android:name="newUser"
             app:argType="com.peacedude.lassod_tailor_app.model.request.User"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="category"
+            app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

@@ -15,6 +15,7 @@ import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.helpers.setupCategorySpinner
+import com.peacedude.lassod_tailor_app.model.request.User
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_signup.*
 import kotlinx.android.synthetic.main.fragment_signup_category.*
@@ -57,10 +58,20 @@ class SignupCategoryFragment : Fragment() {
 
             continueBtn.setOnClickListener {
                 val category = signup_category_spinner.selectedItem.toString()
-                val action = SignupCategoryFragmentDirections.actionSignupCategoryFragmentToEmailSignupFragment()
-                action.newUser = arg.newUser
-                Log.i(title, "category $category")
-                goto(action)
+                if(arg != null){
+
+                    val action = SignupCategoryFragmentDirections.actionSignupCategoryFragmentToEmailSignupFragment()
+                    action.newUser = arg.newUser
+                    Log.i(title, "category $category")
+                    goto(action)
+                }
+                else{
+                    val action = SignupCategoryFragmentDirections.actionSignupCategoryFragmentToEmailSignupFragment()
+                    action.category = category
+                    Log.i(title, "category $category")
+                    goto(action)
+                }
+
             }
         })
     }

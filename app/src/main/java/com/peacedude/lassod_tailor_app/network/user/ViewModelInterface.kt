@@ -13,7 +13,7 @@ interface ViewModelInterface {
     var saveUser:ArrayList<String>
     var profileData:User?
 
-    suspend fun registerUser(user: User?):LiveData<ServicesResponseWrapper<ParentData>> {
+    fun registerUser(user: User?):LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
     fun activateUser(phoneNumber:String, code: String):LiveData<ServicesResponseWrapper<ParentData>>{
@@ -34,6 +34,9 @@ interface ViewModelInterface {
         TODO()
     }
     fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
+    fun forgetPassword(email:String): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
 }

@@ -23,7 +23,7 @@ open class AuthViewModel @Inject constructor(
     override var retrofit: Retrofit,
     val storage: StorageRequest
 ) : GeneralViewModel(retrofit,storage), ViewModelInterface {
-
+    val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
     override fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
         val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
@@ -45,7 +45,7 @@ open class AuthViewModel @Inject constructor(
     }
 
    override fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>> {
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
@@ -63,4 +63,24 @@ open class AuthViewModel @Inject constructor(
         })
         return responseLiveData
     }
+
+    override fun forgetPassword(email: String): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.forgetPassword(email)
+        request.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
+
 }

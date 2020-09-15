@@ -11,5 +11,9 @@ interface AuthServices {
 
     @PATCH("auth/profile/me")
     fun updateUserData(@Header("Authorization") header:String, @Body user: User): Call<UserResponse>
+
+    @PATCH("auth/forgetpassword")
+    @FormUrlEncoded
+    fun forgetPassword(@Field("email")email:String): Call<UserResponse>
 }
 

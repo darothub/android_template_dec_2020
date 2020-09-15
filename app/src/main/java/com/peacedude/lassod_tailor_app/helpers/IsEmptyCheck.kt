@@ -1,4 +1,8 @@
+import android.view.View
 import android.widget.EditText
+import com.peacedude.lassod_tailor_app.helpers.hide
+import com.peacedude.lassod_tailor_app.helpers.show
+import kotlinx.android.synthetic.main.fragment_signup.*
 
 class IsEmptyCheck {
 
@@ -49,5 +53,15 @@ class IsEmptyCheck {
 
             return message
         }
+    }
+}
+
+fun validatePasswordAndAdvise(text:CharSequence, view: View) {
+    val passwordPattern = Regex("""^[a-zA-Z0-9@$!%*#?&]{6,}$""")
+    val matchedPassword = passwordPattern.matches(text)
+    if (!matchedPassword) {
+        view.show()
+    } else {
+        view.hide()
     }
 }

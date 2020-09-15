@@ -32,8 +32,8 @@ interface UserServices {
     ):Call<UserResponse>
 
     @POST("auth/signup")
-    suspend fun registerUser(
+    fun registerUser(
         @Body user: User?
-    ): UserResponse
+    ): Call<UserResponse>
 
 }

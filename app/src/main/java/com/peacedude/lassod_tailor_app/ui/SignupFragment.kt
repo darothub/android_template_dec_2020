@@ -35,6 +35,7 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup.*
+import validatePasswordAndAdvise
 import javax.inject.Inject
 
 
@@ -66,17 +67,13 @@ class SignupFragment : DaggerFragment() {
     val userViewModel: UserViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     val dialog by lazy {
         MaterialDialog(requireContext()).apply {
             noAutoDismiss()
             customView(R.layout.custom_dialog)
         }
     }
+
 
 
     override fun onCreateView(
@@ -104,7 +101,7 @@ class SignupFragment : DaggerFragment() {
 
         password_edittext.doOnTextChanged { text, start, count, after ->
             if (text != null) {
-                validateEmailAndPassword(text)
+                validatePasswordAndAdvise(text, password_standard_tv)
             }
             return@doOnTextChanged
         }
@@ -113,15 +110,6 @@ class SignupFragment : DaggerFragment() {
         }
     }
 
-    private fun validateEmailAndPassword(text:CharSequence) {
-        val passwordPattern = Regex("""^[a-zA-Z0-9@$!%*#?&]{6,}$""")
-        val matchedPassword = passwordPattern.matches(text)
-        if (!matchedPassword) {
-            password_standard_tv.show()
-        } else {
-            password_standard_tv.hide()
-        }
-    }
     private fun dialogBtnsAndProgressBarsSetup() {
         //Drawable background for confirm button
         val confirmBtnBackgroundDrawable = ContextCompat.getDrawable(
@@ -220,11 +208,6 @@ class SignupFragment : DaggerFragment() {
         val phoneNumber = signup_phone_number_edittext.text.toString().trim()
         val passwordString = password_edittext.text.toString().trim()
 
-//        val u = storageRequest.saveData(user,"u")
-//        Log.i(title, "reg1 $u")
-//        userViewModel.registerFormData = user
-
-//        Log.i(title, "reg2 ${userViewModel.registerFormData}")
         val checkForEmpty =
             IsEmptyCheck(first_name_edittext, last_name_edittext, other_name_edittext, signup_phone_number_edittext, password_edittext)
         val validation = IsEmptyCheck.fieldsValidation(null, passwordString)

@@ -25,7 +25,8 @@ abstract class MainActivityModule {
             VerificationFragmentModule::class,
             HomeFragmentModule::class,
             SignupChoicesFragmentModule::class,
-            EmailSignupFragmentModule::class
+            EmailSignupFragmentModule::class,
+            PhoneSignupFragmentModule::class
         ]
     )
     abstract fun provideMainActivity(): MainActivity

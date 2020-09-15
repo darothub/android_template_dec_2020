@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.NonNull
@@ -101,35 +103,37 @@ class SignupChoicesFragment : DaggerFragment() {
 
 
 
-        val someActivityResultLauncher = requireActivity().registerForActivityResult(
+        val someActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback {result ->
+
                 if (result.resultCode == Activity.RESULT_OK){
                     val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                     task.addOnCompleteListener {
-                       if(it.isSuccessful){
-                           val account: GoogleSignInAccount? =
-                               it.getResult(ApiException::class.java)
+                        if(it.isSuccessful){
+                            val account: GoogleSignInAccount? =
+                                it.getResult(ApiException::class.java)
 
-                           val email = account?.email
-                           val lastName = account?.familyName
-                           val firstName = account?.givenName
-                           val otherName = account?.displayName
-                           val imageUrl = account?.photoUrl
-                           val category = arg.category
-                           val newUser = User(firstName, lastName, otherName, category, null)
-                           newUser.email = email
+                            val email = account?.email
+                            val lastName = account?.familyName
+                            val firstName = account?.givenName
+                            val otherName = account?.displayName
+                            val imageUrl = account?.photoUrl
+                            val category = arg.category
+                            val newUser = User(firstName, lastName, otherName, category, null)
+                            newUser.email = email
 
-                           requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
-                           val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
-                           action.newUser = newUser
-                           goto(action)
+                            requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
+//                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
+//                            action.newUser = newUser
+//                            goto(action)
 
-                           Log.i(title, "token $firstName")
+                            Log.i(title, "token $firstName")
 //                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
-                       }
+                        }
                     }
                 }
+
             }
         )
 
@@ -140,7 +144,8 @@ class SignupChoicesFragment : DaggerFragment() {
 //            webviev.loadUrl("https://obioma-staging.herokuapp.com/api/v1/auth/google")
 
             val intent = mGoogleSignInClient.getSignInIntent()
-            someActivityResultLauncher.launch(intent)
+            someActivityResultLauncher?.launch(intent)
+//            startActivityForResult(intent, RC_SIGN_IN)
         }
 
     }
@@ -157,6 +162,38 @@ class SignupChoicesFragment : DaggerFragment() {
         }
 
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (resultCode == RC_SIGN_IN){
+//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+//            task.addOnCompleteListener {
+//                if(it.isSuccessful){
+//                    val account: GoogleSignInAccount? =
+//                        it.getResult(ApiException::class.java)
+//
+//                    val email = account?.email
+//                    val lastName = account?.familyName
+//                    val firstName = account?.givenName
+//                    val otherName = account?.displayName
+//                    val imageUrl = account?.photoUrl
+//                    val category = arg.category
+//                    val newUser = User(firstName, lastName, otherName, category, null)
+//                    newUser.email = email
+//
+//                    requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
+//                    val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
+//                    action.newUser = newUser
+//                    goto(action)
+//
+//                    Log.i(title, "token $firstName")
+////                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
+//                }
+//            }
+//        }
+
+//    }
 
 
 
