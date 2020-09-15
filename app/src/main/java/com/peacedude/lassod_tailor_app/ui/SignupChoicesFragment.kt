@@ -124,9 +124,9 @@ class SignupChoicesFragment : DaggerFragment() {
                             newUser.email = email
 
                             requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
-//                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
-//                            action.newUser = newUser
-//                            goto(action)
+                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
+                            action.newUser = newUser
+                            goto(action)
 
                             Log.i(title, "token $firstName")
 //                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))

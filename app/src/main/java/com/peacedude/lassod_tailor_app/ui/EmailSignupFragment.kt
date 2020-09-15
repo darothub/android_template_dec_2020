@@ -11,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
@@ -27,6 +29,7 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import kotlinx.android.synthetic.main.fragment_signup.*
+import kotlinx.android.synthetic.main.fragment_signup_category.*
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -81,9 +84,13 @@ class EmailSignupFragment : DaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        val toolbar = email_signup_appbar.findViewById<Toolbar>(R.id.reusable_toolbar)
+        val navController = Navigation.findNavController(email_signup_appbar)
 
-        Log.i(title, "email ${user?.email}")
+       setupToolbarAndNavigationUI(toolbar, navController)
 
+        initEnterKeyToSubmitForm(password_field) { signupRequest() }
+        setupCategorySpinner(requireContext(), email_signup_category_spinner, R.array.categories_array)
         email_field.setText(user?.email)
         val backgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
@@ -96,68 +103,7 @@ class EmailSignupFragment : DaggerFragment() {
         }, {
 
             emailSignupBtn.setOnClickListener {
-                val email = email_field.text.toString().trim()
-                val passwordString = password_field.text.toString().trim()
-                val checkForEmpty =
-                    IsEmptyCheck(email_field, password_field)
-                val validation = IsEmptyCheck.fieldsValidation(null, passwordString)
-
-                when {
-                    checkForEmpty != null -> {
-                        checkForEmpty.error = getString(R.string.field_required)
-                        requireActivity().gdErrorToast(
-                            "${resources.getResourceEntryName(
-                                checkForEmpty.id
-                            )} is empty", Gravity.BOTTOM
-                        )
-
-                    }
-                    validation != null -> requireActivity().gdErrorToast(
-                        "$validation is invalid",
-                        Gravity.BOTTOM
-                    )
-                    user != null -> {
-                        if(email != user?.email){
-                            requireActivity().gdErrorToast(
-                                "Authenticated email address must not be changed",
-                                Gravity.BOTTOM
-                            )
-                            email_field.error = user?.email
-                        }else{
-                            user?.password = passwordString
-                            var req = userViewModel.registerUser(user)
-                            val observer =
-                                requireActivity().observeRequest(req, progressBar, emailSignupBtn)
-                            observer.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                                val (bool, result) = it
-                                onRequestResponseTask(bool, result) {
-
-                                    goto(R.id.loginFragment)
-//                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
-                                    Log.i(title, getString(R.string.check_email))
-                                }
-                            })
-                        }
-                    }
-                    else->{
-                        val category = arg.category
-                        val newUser = User("", "", "", category, "")
-                        newUser.email = email
-                        newUser.password = passwordString
-                        var req = userViewModel.registerUser(newUser)
-                        val observer =
-                            requireActivity().observeRequest(req, progressBar, emailSignupBtn)
-                        observer.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                            val (bool, result) = it
-                            onRequestResponseTask(bool, result) {
-
-                                goto(R.id.loginFragment)
-//                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
-                                Log.i(title, getString(R.string.check_email))
-                            }
-                        })
-                    }
-                }
+                signupRequest()
 
             }
         })
@@ -170,6 +116,71 @@ class EmailSignupFragment : DaggerFragment() {
         }
 
         setupLoginSpannableString()
+    }
+
+    private fun signupRequest() {
+        val email = email_field.text.toString().trim()
+        val passwordString = password_field.text.toString().trim()
+        val checkForEmpty =
+            IsEmptyCheck(email_field, password_field)
+        val validation = IsEmptyCheck.fieldsValidation(null, passwordString)
+
+        when {
+            checkForEmpty != null -> {
+                checkForEmpty.error = getString(R.string.field_required)
+                requireActivity().gdErrorToast(
+                    "${resources.getResourceEntryName(
+                        checkForEmpty.id
+                    )} is empty", Gravity.BOTTOM
+                )
+
+            }
+            validation != null -> requireActivity().gdErrorToast(
+                "$validation is invalid",
+                Gravity.BOTTOM
+            )
+            user != null -> {
+                if (email != user?.email) {
+                    requireActivity().gdErrorToast(
+                        "Authenticated email address must not be changed",
+                        Gravity.BOTTOM
+                    )
+                    email_field.error = user?.email
+                } else {
+                    user?.password = passwordString
+                    var req = userViewModel.registerUser(user)
+                    val observer =
+                        requireActivity().observeRequest(req, progressBar, emailSignupBtn)
+                    observer.observe(viewLifecycleOwner, Observer {
+                        val (bool, result) = it
+                        onRequestResponseTask(bool, result) {
+
+                            goto(R.id.loginFragment)
+    //                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
+                            Log.i(title, getString(R.string.check_email))
+                        }
+                    })
+                }
+            }
+            else -> {
+                val category = arg.category
+                val newUser = User("", "", "", category, "")
+                newUser.email = email
+                newUser.password = passwordString
+                var req = userViewModel.registerUser(newUser)
+                val observer =
+                    requireActivity().observeRequest(req, progressBar, emailSignupBtn)
+                observer.observe(viewLifecycleOwner, Observer {
+                    val (bool, result) = it
+                    onRequestResponseTask(bool, result) {
+
+                        goto(R.id.loginFragment)
+    //                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
+                        Log.i(title, getString(R.string.check_email))
+                    }
+                })
+            }
+        }
     }
 
     private fun setupLoginSpannableString() {

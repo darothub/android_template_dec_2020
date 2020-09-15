@@ -13,11 +13,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -34,6 +36,7 @@ import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import kotlinx.android.synthetic.main.fragment_signup.*
+import kotlinx.android.synthetic.main.fragment_signup_category.*
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 import validatePasswordAndAdvise
 import java.util.*
@@ -86,15 +89,21 @@ class PhoneSignupFragment : DaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_phone_signup, container, false)
     }
 
     override fun onResume() {
         super.onResume()
+        val toolbar = phone_signup_appbar.findViewById<Toolbar>(R.id.reusable_toolbar)
+        val navController = Navigation.findNavController(phone_signup_appbar)
+
+        setupToolbarAndNavigationUI(toolbar, navController)
         buttonAndProgressBarActivity()
 
         setUpSpinner()
         setupLoginSpannableString()
+        initEnterKeyToSubmitForm(phone_signup_password_et) { signupRequest() }
     }
 
     private fun buttonAndProgressBarActivity() {
@@ -158,6 +167,7 @@ class PhoneSignupFragment : DaggerFragment() {
             }
             return@doOnTextChanged
         }
+        setupCategorySpinner(requireContext(), phone_signup_category_spinner, R.array.categories_array)
     }
 
     fun setUpSpinner(){
@@ -172,7 +182,7 @@ class PhoneSignupFragment : DaggerFragment() {
         countries[0] = getString(R.string.select_your_country_str)
         val adapter = ArrayAdapter(requireContext(), R.layout.spinner_colored_text_layout, countries)
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
-        phone_signup_category_spinner.adapter = adapter
+        phone_signup_country_spinner.adapter = adapter
 
     }
 

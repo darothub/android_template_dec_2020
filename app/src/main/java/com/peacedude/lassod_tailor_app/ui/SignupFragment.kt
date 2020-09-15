@@ -19,12 +19,14 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.alimuzaffar.lib.pin.PinEntryEditText
+import com.google.android.material.appbar.AppBarLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -86,12 +88,13 @@ class SignupFragment : DaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-
+        val toolbar = signup_appbar.findViewById<Toolbar>(R.id.reusable_toolbar)
+        val navController = Navigation.findNavController(signup_appbar)
         continueBtnTransaction()
 
         initEnterKeyToSubmitForm(password_edittext) { signupRequest() }
 
-        setupToolbarAndNavigationUI()
+        setupToolbarAndNavigationUI(toolbar, navController)
 
         setupLoginSpannableString()
 
@@ -171,9 +174,7 @@ class SignupFragment : DaggerFragment() {
         }
     }
 
-    private fun setupToolbarAndNavigationUI() {
-        val toolbar = signup_appbar.findViewById<Toolbar>(R.id.reusable_toolbar)
-        val navController = Navigation.findNavController(signup_appbar)
+    private fun setupToolbarAndNavigationUI(toolbar:Toolbar, navController: NavController) {
         NavigationUI.setupWithNavController(toolbar, navController)
     }
 

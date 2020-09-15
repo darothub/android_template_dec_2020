@@ -111,7 +111,7 @@ open class HomeFragment : DaggerFragment() {
             }
         }
         else if(account != null){
-            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+//            startActivity(Intent(requireContext(), ProfileActivity::class.java))
 //            requireActivity().request(null, null, userViewModel, {
 //                userViewModel.loginUserRequest(account.email.toString(), "Password")
 //            },{b, any ->

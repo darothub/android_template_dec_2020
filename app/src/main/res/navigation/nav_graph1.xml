@@ -55,22 +55,22 @@
     <fragment
         android:id="@+id/phoneSignupFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.PhoneSignupFragment"
-        android:label="fragment_phone_signup"
+        android:label="  "
         tools:layout="@layout/fragment_phone_signup" />
     <fragment
         android:id="@+id/emailSignupFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.EmailSignupFragment"
-        android:label="fragment_email_signup"
-        tools:layout="@layout/fragment_email_signup" >
+        android:label="  "
+        tools:layout="@layout/fragment_email_signup">
         <argument
             android:name="newUser"
+            android:defaultValue="@null"
             app:argType="com.peacedude.lassod_tailor_app.model.request.User"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <argument
             android:name="category"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
 </navigation>
