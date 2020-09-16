@@ -155,5 +155,8 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.9.3")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.3")
 
+    //Connectivity
+    implementation 'com.job:droidnet:2.0.0'
+
 
 }

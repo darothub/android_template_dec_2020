@@ -17,9 +17,6 @@ import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -31,13 +28,10 @@ import com.google.android.gms.common.api.ApiException
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -176,9 +170,9 @@ class LoginFragment : DaggerFragment() {
             }
             else -> {
 
-                requireActivity().request(progressBar, loginBtn, userViewModel, {
+                requireActivity().request(progressBar, loginBtn, userViewModel,
                     userViewModel.loginUserRequest(phoneNumber, passwordString)
-                },{ b, any ->
+                ) { b, any ->
                     onRequestResponseTask(b, any) {
                         val userDetails = any as? UserResponse<User>
                         val user = userDetails?.data
@@ -190,7 +184,7 @@ class LoginFragment : DaggerFragment() {
                         startActivity(loginIntent)
                         requireActivity().finish()
                     }
-                })
+                }
             }
         }
 

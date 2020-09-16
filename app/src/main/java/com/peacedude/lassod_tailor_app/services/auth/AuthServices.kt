@@ -8,13 +8,26 @@ import retrofit2.http.*
 
 interface AuthServices {
     @GET("auth/profile/me")
-    fun getUserData(@Header("Authorization") header:String): Call<UserResponse<User>>
+    fun getUserData(@Header("Authorization") header: String): Call<UserResponse<User>>
 
     @PATCH("auth/profile/me")
-    fun updateUserData(@Header("Authorization") header:String, @Body user: User): Call<UserResponse<User>>
+    fun updateUserData(
+        @Header("Authorization") header: String,
+        @Body user: User
+    ): Call<UserResponse<User>>
 
     @POST("auth/forgetpassword")
     @FormUrlEncoded
-    fun forgetPassword(@Field("email") email:String): Call<UserResponse<String>>
+    fun forgetPassword(@Field("email") email: String): Call<UserResponse<String>>
+
+    @PATCH("auth/reset-password")
+    @FormUrlEncoded
+    fun resetPassword(
+        @Header("Authorization") header: String,
+        @Field("password") password: String,
+        @Field("confirmPassword") cpassword: String
+    ): Call<UserResponse<String>>
+
+
 }
 

@@ -85,5 +85,24 @@ open class AuthViewModel @Inject constructor(
         })
         return responseLiveData
     }
+    override fun resetPassword(header:String?, password:String?, cPassword:String?): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.resetPassword(header.toString(), password.toString(), cPassword.toString())
+        request.enqueue(object : Callback<UserResponse<String>> {
+            override fun onFailure(call: Call<UserResponse<String>>, t: Throwable) {
+                Log.i(title, "Thrown")
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(call: Call<UserResponse<String>>, response: Response<UserResponse<String>>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
 
 }

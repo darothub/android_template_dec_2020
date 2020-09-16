@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.di.activitymodules
 
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.ForgotPasswordFragmentModule
+import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.ResetPasswordFragmentModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.SignupChoicesFragmentModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.*
 import com.peacedude.lassod_tailor_app.di.networkmodules.auth.AuthRequestModule
@@ -32,7 +33,8 @@ abstract class MainActivityModule {
             SignupChoicesFragmentModule::class,
             EmailSignupFragmentModule::class,
             PhoneSignupFragmentModule::class,
-            ForgotPasswordFragmentModule::class
+            ForgotPasswordFragmentModule::class,
+            ResetPasswordFragmentModule::class
         ]
     )
     abstract fun provideMainActivity(): MainActivity

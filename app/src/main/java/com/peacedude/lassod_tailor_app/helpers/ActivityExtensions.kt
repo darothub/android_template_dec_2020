@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.text.SpannableString
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -12,25 +11,16 @@ import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import com.peacedude.lassod_tailor_app.ui.MainActivity
-import com.peacedude.lassod_tailor_app.ui.ProfileActivity
-import com.peacedude.lassod_tailor_app.ui.SplashScreenActivity
-import kotlinx.android.synthetic.main.fragment_signup.*
 
 /**
  * Observe request response
@@ -123,12 +113,11 @@ fun Activity.request(
     progressBar: ProgressBar?,
     btn: Button?,
     viewModel: ViewModelInterface,
-    req: (ViewModelInterface) -> LiveData<ServicesResponseWrapper<ParentData>>,
+    req: LiveData<ServicesResponseWrapper<ParentData>>,
     action: (Boolean, Any?) -> Unit
 ) {
 
-    val request = req(viewModel)
-    val response = observeRequest(request, progressBar, btn)
+    val response = observeRequest(req, progressBar, btn)
     response.observe(this as LifecycleOwner, Observer {
         val (bool, result) = it
         action(bool, result)

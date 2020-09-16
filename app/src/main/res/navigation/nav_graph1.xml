@@ -78,4 +78,17 @@
         android:name="com.peacedude.lassod_tailor_app.ui.ForgotPassword"
         android:label=" "
         tools:layout="@layout/fragment_forgot_password" />
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.ResetPasswordFragment"
+        android:label="fragment_reset_password"
+        tools:layout="@layout/fragment_reset_password">
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="https://obioma-staging.herokuapp.com/api/v1/auth/reset-password?authorization={token}" />
+        <argument
+            android:name="token"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>
