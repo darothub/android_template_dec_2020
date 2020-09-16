@@ -1,11 +1,13 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.auth
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.AuthResponse
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
@@ -31,12 +33,12 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.getUserData(header)
-        request.enqueue(object : Callback<UserResponse> {
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
             }
 
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 
@@ -51,12 +53,12 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.updateUserData(header, user)
-        request.enqueue(object : Callback<UserResponse> {
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
             }
 
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 
@@ -70,12 +72,13 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.forgetPassword(email)
-        request.enqueue(object : Callback<UserResponse> {
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<String>> {
+            override fun onFailure(call: Call<UserResponse<String>>, t: Throwable) {
+                Log.i(title, "Thrown")
                 onFailureResponse(responseLiveData, t)
             }
 
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<UserResponse<String>>, response: Response<UserResponse<String>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 

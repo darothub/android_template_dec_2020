@@ -69,6 +69,7 @@ class ForgotPassword : DaggerFragment() {
         setupToolbarAndNavigationUI(toolbar, navController)
         buttonTransactions({
             sendBtn = forgot_password_include_btn.findViewById(R.id.btn)
+            sendBtn.text = getString(R.string.send)
             progressBar = forgot_password_include_btn.findViewById(R.id.progress_bar)
             sendBtn.setTextColor(
                 ContextCompat.getColor(
@@ -120,7 +121,7 @@ class ForgotPassword : DaggerFragment() {
                 val response = requireActivity().observeRequest(request, progressBar, sendBtn)
                 response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
-                    onRequestResponseTask(bool, result) {
+                    requireActivity().onRequestResponseTask<String>(bool, result) {
                         requireActivity().gdToast(
                             "Request successful action needed",
                             Gravity.BOTTOM

@@ -14,21 +14,21 @@ interface UserRequestInterface {
         category: String,
         phoneNumber: String,
         password: String
-    ): Call<UserResponse> {
+    ): Call<UserResponse<User>> {
         return TODO()
     }
 
-    fun activateUser(phoneNumber: String, code: String): Call<UserResponse> {
+    fun activateUser(phoneNumber: String, code: String): Call<UserResponse<User>> {
         return TODO()
     }
 
-    fun loginRequest(phoneNumber: String, password: String): Call<UserResponse> {
+    fun loginRequest(phoneNumber: String, password: String): Call<UserResponse<User>> {
         return TODO()
     }
 
    fun registerUser(
         user: User?
-    ):Call<UserResponse> {
+    ):Call<UserResponse<User>> {
         return TODO()
     }
 

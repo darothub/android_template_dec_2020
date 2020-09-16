@@ -25,9 +25,9 @@ abstract class ProfileActivityModule {
     @ContributesAndroidInjector(
         modules = [
             AuthRequestModule::class,
-            AuthViewModelModule::class,
             UserAccountFragmentModule::class,
-            SpecialtyFragmentModule::class
+            SpecialtyFragmentModule::class,
+            AuthViewModelModule::class
         ]
     )
     abstract fun provideProfileActivity(): ProfileActivity

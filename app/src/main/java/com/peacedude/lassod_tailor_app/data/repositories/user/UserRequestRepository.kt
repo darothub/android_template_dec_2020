@@ -16,20 +16,20 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
         category: String,
         phoneNumber: String,
         password: String
-    ): Call<UserResponse> {
+    ): Call<UserResponse<User>> {
         return userServices.registerUser(firstName, lastName, otherName, category, phoneNumber, password)
     }
 
-    override fun registerUser(user: User?): Call<UserResponse> {
+    override fun registerUser(user: User?): Call<UserResponse<User>> {
         return userServices.registerUser(user)
     }
 
-    override fun activateUser(phoneNumber: String, code: String): Call<UserResponse> {
+    override fun activateUser(phoneNumber: String, code: String): Call<UserResponse<User>> {
         Log.i("Repository", "$phoneNumber $code")
         return userServices.activateUser(phoneNumber, code)
     }
 
-    override fun loginRequest(phoneNumber: String, password: String): Call<UserResponse> {
+    override fun loginRequest(phoneNumber: String, password: String): Call<UserResponse<User>> {
         return userServices.loginRequest(phoneNumber, password)
     }
 

@@ -23,6 +23,7 @@ import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
@@ -69,7 +70,7 @@ fun Activity.observeRequest(
                     button?.show()
                     result.postValue(Pair(true, responseData))
 
-                    Log.i(title, "success ${it.data}")
+                    Log.i("Observer", "success ${it.data}")
                 }
                 is ServicesResponseWrapper.Error -> {
                     progressBar?.hide()
@@ -140,7 +141,7 @@ fun Activity.request(
  * @param bool
  * @param result
  */
-fun Activity.onRequestResponseTask(
+inline fun <reified T>Activity.onRequestResponseTask(
     bool: Boolean,
     result: Any?,
     action: () -> Unit
@@ -149,13 +150,23 @@ fun Activity.onRequestResponseTask(
 
         true -> {
             try {
-                val res = result as UserResponse
-                gdToast(res.message.toString(), Gravity.BOTTOM)
+                when(T::class.java){
+                    User::class.java ->{
+                        val res = result as UserResponse<User>
+                        gdToast(res.message.toString(), Gravity.BOTTOM)
+                    }
+                    String::class.java ->{
+                        val res = result as UserResponse<String>
+                        gdToast(res.message.toString(), Gravity.BOTTOM)
+                    }
+                }
+
+
                 action()
-                Log.i(
-                    "onResponseTask",
-                    "result of registration ${res.message} ${res.data.firstName}\n${res.data.userId}"
-                )
+//                Log.i(
+//                    "onResponseTask",
+//                    "result of registration ${res.message} ${res.data.firstName}\n${res.data.userId}"
+//                )
             } catch (e: java.lang.Exception) {
                 gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
             }

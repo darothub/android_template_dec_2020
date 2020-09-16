@@ -43,12 +43,12 @@ class UserViewModel @Inject constructor(
         )
         val request = userRequestInterface.registerUser(
             user)
-        request.enqueue(object : Callback<UserResponse> {
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
             }
 
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 
@@ -81,12 +81,12 @@ class UserViewModel @Inject constructor(
             phoneNumber,
             password
         )
-        request.enqueue(object : Callback<UserResponse> {
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
             }
 
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 
@@ -101,12 +101,12 @@ class UserViewModel @Inject constructor(
             "Loading..."
         )
         val request = userRequestInterface.activateUser(phoneNumber, code)
-        request.enqueue(object : Callback<UserResponse> {
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
                 Log.i(title, "Error $t")
             }
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 
@@ -125,12 +125,12 @@ class UserViewModel @Inject constructor(
             "Loading..."
         )
         val request = userRequestInterface.loginRequest(phoneNumber, password)
-        request.enqueue(object : Callback<UserResponse> {
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
                 Log.i(title, "ErrorViewModel $t")
             }
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 

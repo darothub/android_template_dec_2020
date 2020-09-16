@@ -5,15 +5,18 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -88,15 +91,11 @@ class ProfileActivity : BaseActivity() {
             }
             logoutText.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
-                authViewModel.logout()
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                logoutRequest()
             }
             logoutImage.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
-                authViewModel.logout()
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                logoutRequest()
             }
         })
         Log.i(title, "Oncreate")
@@ -104,6 +103,14 @@ class ProfileActivity : BaseActivity() {
 
     }
 
+    private fun logoutRequest() {
+        if (authViewModel.logout().value!!) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        } else {
+            gdToast("Sign-out not request successful", Gravity.BOTTOM)
+        }
+    }
 
 
     override fun onStart() {
@@ -121,7 +128,7 @@ class ProfileActivity : BaseActivity() {
 
 
 
-        getUserData()
+//        getUserData()
 
     }
 
@@ -144,8 +151,8 @@ class ProfileActivity : BaseActivity() {
         val response = observeRequest(request, null, null)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
-            onRequestResponseTask(bool, result){
-                val userDetails = result as? UserResponse
+            onRequestResponseTask<User>(bool, result){
+                val userDetails = result as? UserResponse<User>
                 val user = userDetails?.data
                 greeting.text = "Hi ${user?.firstName}"
                 profileName.text = "${user?.firstName} ${user?.lastName}"

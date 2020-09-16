@@ -56,6 +56,7 @@ class SignupChoicesFragment : DaggerFragment() {
 
     val gso by lazy {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.client_id))
             .requestEmail()
             .build()
     }
@@ -114,6 +115,7 @@ class SignupChoicesFragment : DaggerFragment() {
                             val account: GoogleSignInAccount? =
                                 it.getResult(ApiException::class.java)
 
+                            val idToken = it.result?.idToken
                             val email = account?.email
                             val lastName = account?.familyName
                             val firstName = account?.givenName
@@ -122,7 +124,8 @@ class SignupChoicesFragment : DaggerFragment() {
                             val category = arg.category
                             val newUser = User(firstName, lastName, otherName, category, null)
                             newUser.email = email
-
+                            newUser.token = idToken
+                            Log.i(title, "idToken $idToken")
                             requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
                             val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
                             action.newUser = newUser
@@ -144,7 +147,7 @@ class SignupChoicesFragment : DaggerFragment() {
 //            webviev.loadUrl("https://obioma-staging.herokuapp.com/api/v1/auth/google")
 
             val intent = mGoogleSignInClient.getSignInIntent()
-            someActivityResultLauncher?.launch(intent)
+            someActivityResultLauncher.launch(intent)
 //            startActivityForResult(intent, RC_SIGN_IN)
         }
 

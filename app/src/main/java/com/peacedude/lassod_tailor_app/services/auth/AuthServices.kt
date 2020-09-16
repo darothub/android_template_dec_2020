@@ -1,19 +1,20 @@
 package com.peacedude.lassod_tailor_app.services.auth
 
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.AuthResponse
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
 import retrofit2.http.*
 
 interface AuthServices {
     @GET("auth/profile/me")
-    fun getUserData(@Header("Authorization") header:String): Call<UserResponse>
+    fun getUserData(@Header("Authorization") header:String): Call<UserResponse<User>>
 
     @PATCH("auth/profile/me")
-    fun updateUserData(@Header("Authorization") header:String, @Body user: User): Call<UserResponse>
+    fun updateUserData(@Header("Authorization") header:String, @Body user: User): Call<UserResponse<User>>
 
-    @PATCH("auth/forgetpassword")
+    @POST("auth/forgetpassword")
     @FormUrlEncoded
-    fun forgetPassword(@Field("email")email:String): Call<UserResponse>
+    fun forgetPassword(@Field("email") email:String): Call<UserResponse<String>>
 }
 

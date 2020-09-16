@@ -82,7 +82,7 @@
 
             android:id="@+id/login_password_text_input"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:imeOptions="actionNext"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/colorGray"
@@ -98,6 +98,8 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+
         <include
             android:id="@+id/login_page_btn"
             layout="@layout/button_and_progressbar"
@@ -107,6 +109,20 @@
             android:layout_marginTop="@dimen/_8sdp"
             />
 
+        <com.shobhitpuri.custombuttons.GoogleSignInButton
+            android:id="@+id/login_google_sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="25dp"
+            android:text="@string/signin_with_google"
+            app:isDarkTheme="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/login_page_btn"
+            />
+
         <TextView
             android:id="@+id/new_user"
             android:layout_width="wrap_content"
@@ -114,14 +130,14 @@
             android:text="@string/new_user"
             android:textSize="15sp"
             android:textColor="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/login_page_btn"
+            app:layout_constraintTop_toBottomOf="@id/login_google_sign_in_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_20sdp"/>
 
         <TextView
-            android:id="@+id/forgot_password"
+            android:id="@+id/forgot_password_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/forgot_password"

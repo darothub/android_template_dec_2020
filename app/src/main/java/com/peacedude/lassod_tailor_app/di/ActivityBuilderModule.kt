@@ -11,9 +11,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.di.activitymodules.MainActivityModule
 import com.peacedude.lassod_tailor_app.di.activitymodules.ProfileActivityModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.user.ViewModelInterfaceModule
+import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.GeneralViewModelModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.ViewModelFactoryModule
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -37,7 +39,9 @@ abstract class ActivityBuilderModule {
         modules = [
             ViewModelFactoryModule::class,
             GeneralViewModelModule::class,
-            ViewModelInterfaceModule::class
+            ViewModelInterfaceModule::class,
+            AuthViewModelModule::class
+
         ]
     )
     abstract fun baseActivity(): BaseActivity
@@ -56,7 +60,8 @@ open class ActivityStaticModule {
 
     @Singleton
     @Provides
-    fun provideGsonConverterFcatory(): GsonConverterFactory = GsonConverterFactory.create(GsonBuilder().setLenient().create())
+    fun provideGsonConverterFcatory(): GsonConverterFactory =
+        GsonConverterFactory.create(GsonBuilder().setLenient().create())
 
     /**
      * A function to provide okHttp instance
@@ -112,12 +117,14 @@ open class ActivityStaticModule {
 
     @Singleton
     @Provides
-    fun providePrefKeyEncryptionScheme(): EncryptedSharedPreferences.PrefKeyEncryptionScheme = EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV
+    fun providePrefKeyEncryptionScheme(): EncryptedSharedPreferences.PrefKeyEncryptionScheme =
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV
 
 
     @Singleton
     @Provides
-    fun providePrefValueEncryptionScheme(): EncryptedSharedPreferences.PrefValueEncryptionScheme = EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    fun providePrefValueEncryptionScheme(): EncryptedSharedPreferences.PrefValueEncryptionScheme =
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
 
 
     @Singleton
@@ -126,7 +133,7 @@ open class ActivityStaticModule {
         context: Context,
         masterKey: MasterKey,
         prefKey: EncryptedSharedPreferences.PrefKeyEncryptionScheme,
-        prefValue:EncryptedSharedPreferences.PrefValueEncryptionScheme
+        prefValue: EncryptedSharedPreferences.PrefValueEncryptionScheme
     ): EncryptedSharedPreferences {
         return EncryptedSharedPreferences.create(
             context,
@@ -155,11 +162,17 @@ open class ActivityStaticModule {
 
     @Singleton
     @Provides
-    fun provideGoogleSignInOptions():GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build()
+    fun provideGoogleSignInOptions(context: Context): GoogleSignInOptions =
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(
+            context.getString(
+                R.string.client_id
+            )
+        ).requestEmail().build()
 
     @Singleton
     @Provides
-    fun provideGoogleSigninClient(context: Context, gso:GoogleSignInOptions):GoogleSignInClient = GoogleSignIn.getClient(context, gso);
+    fun provideGoogleSigninClient(context: Context, gso: GoogleSignInOptions): GoogleSignInClient =
+        GoogleSignIn.getClient(context, gso);
 
 
 }

@@ -1,13 +1,19 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.factory
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
@@ -16,12 +22,15 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
 
+
 open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val storageRequest: StorageRequest): ViewModel(), ViewModelInterface {
-
-
+    @Inject
+    lateinit var mGoogleSignInClient:GoogleSignInClient
     open val title: String by lazy {
         this.getName()
     }
+//    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
+
     override var currentUser: User? = storageRequest.checkUser(loggedInUserKey)
         set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
 
@@ -34,7 +43,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
         t: Throwable
     ) {
-        Log.i(title, "Throwable $t")
+        Log.i(title, "Throwable ${t.localizedMessage}")
         responseLiveData.postValue(ServicesResponseWrapper.Error(t.localizedMessage, 0, null))
     }
     fun onResponseTask(response: Response<ParentData>, responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>){
@@ -59,6 +68,16 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
                 }
 
             }
+            404 -> {
+                try{
+
+                    responseLiveData.postValue(ServicesResponseWrapper.Error(response.message(), 404))
+                }
+                catch (e:Exception){
+                    Log.i(title, "Hello" + " " + e.message.toString())
+                    responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
+                }
+            }
             in 400..599 ->{
                 try{
                     val err = errorConverter(response)
@@ -73,7 +92,7 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
             }
             else -> {
                 try {
-                    Log.i(title, "success ${response.errorBody()}")
+                    Log.i(title, "success $res")
                     responseLiveData.postValue(ServicesResponseWrapper.Success(res))
                 }catch (e:java.lang.Exception){
                     Log.i(title, e.message.toString())
@@ -103,46 +122,57 @@ open class GeneralViewModel @Inject constructor(open var retrofit: Retrofit, val
 
     }
 
-    fun logout(){
+    fun logout():LiveData<Boolean>{
+        val logoutLiveData = MutableLiveData<Boolean>()
         currentUser?.token = ""
         currentUser?.loggedIn = false
         val res= storageRequest.saveData(currentUser, loggedInUserKey)
         Log.i(title, "resArray ${res.size}")
-    }
-
-    suspend fun LiveDataScope<ServicesResponseWrapper<ParentData>>.onResponse(
-        status: Int?,
-        error: List<String>?,
-        registration: UserResponse
-    ) {
-        when (status) {
-
-            401 -> {
-                try {
-
-                    emit(ServicesResponseWrapper.Logout(error?.joinToString().toString()))
-                } catch (e: Exception) {
-                    Log.i(title, e.message.toString())
-                    emit(ServicesResponseWrapper.Error(e.message, status))
-                }
-            }
-            in 400..599 -> {
-                try {
-                    emit(ServicesResponseWrapper.Error(error?.joinToString().toString()))
-                } catch (e: Exception) {
-                    Log.i(title, "Hello" + " " + e.message.toString())
-                    emit(ServicesResponseWrapper.Error(e.message, status))
-                }
-            }
-            else -> {
-                try {
-                    emit(ServicesResponseWrapper.Success(registration))
-                } catch (e: java.lang.Exception) {
-                    Log.i(title, e.message.toString())
+        mGoogleSignInClient.signOut().addOnCompleteListener { logoutTask ->
+            when(logoutTask.isSuccessful){
+                true -> {
+                    logoutLiveData.postValue(true)
+                    Log.i(title, "logout")
                 }
             }
         }
+
+        return logoutLiveData
     }
+
+//    suspend fun LiveDataScope<ServicesResponseWrapper<ParentData>>.onResponse(
+//        status: Int?,
+//        error: List<String>?,
+//        registration: UserResponse
+//    ) {
+//        when (status) {
+//
+//            401 -> {
+//                try {
+//
+//                    emit(ServicesResponseWrapper.Logout(error?.joinToString().toString()))
+//                } catch (e: Exception) {
+//                    Log.i(title, e.message.toString())
+//                    emit(ServicesResponseWrapper.Error(e.message, status))
+//                }
+//            }
+//            in 400..599 -> {
+//                try {
+//                    emit(ServicesResponseWrapper.Error(error?.joinToString().toString()))
+//                } catch (e: Exception) {
+//                    Log.i(title, "Hello" + " " + e.message.toString())
+//                    emit(ServicesResponseWrapper.Error(e.message, status))
+//                }
+//            }
+//            else -> {
+//                try {
+//                    emit(ServicesResponseWrapper.Success(registration))
+//                } catch (e: java.lang.Exception) {
+//                    Log.i(title, e.message.toString())
+//                }
+//            }
+//        }
+//    }
 
 
 //    return try {

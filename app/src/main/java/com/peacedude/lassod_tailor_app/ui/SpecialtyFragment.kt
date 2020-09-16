@@ -139,7 +139,7 @@ class SpecialtyFragment : DaggerFragment() {
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
             onRequestResponseTask(bool, result) {
-                val resp = result as? UserResponse
+                val resp = result as? UserResponse<User>
                 val user = resp?.data
 
                 obioma_trained_value_et.setText(user?.obiomaCert)
@@ -281,7 +281,7 @@ class SpecialtyFragment : DaggerFragment() {
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
             onRequestResponseTask(bool, result) {
-                val response = result as? UserResponse
+                val response = result as? UserResponse<User>
                 val msg = response?.message
                 val profileData = response?.data
                 authViewModel.profileData = profileData

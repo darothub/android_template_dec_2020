@@ -18,6 +18,7 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.onRequestResponseTask
 import com.peacedude.lassod_tailor_app.helpers.request
 import com.peacedude.lassod_tailor_app.model.request.User
@@ -35,7 +36,9 @@ import javax.inject.Inject
  * create an instance of this fragment.
  */
 open class HomeFragment : DaggerFragment() {
-
+    val title by lazy{
+        getName()
+    }
     lateinit var loginBtn: Button
     lateinit var signupBtn: Button
     val leftAnimation by lazy {
@@ -104,19 +107,24 @@ open class HomeFragment : DaggerFragment() {
         }
 
         val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+        val  googleEmail = account?.email
+        val sharedPrefEmail = currentUser?.email
 
+        Log.i(title, "Emails2 $googleEmail $sharedPrefEmail")
         if (currentUser != null) {
             when (currentUser?.loggedIn) {
                 true -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
             }
         }
-        else if(account != null){
-//            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+        else if(account != null && currentUser?.email == googleEmail){
+            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+            Log.i(title, "Emails $googleEmail $sharedPrefEmail")
+
 //            requireActivity().request(null, null, userViewModel, {
 //                userViewModel.loginUserRequest(account.email.toString(), "Password")
 //            },{b, any ->
 //                onRequestResponseTask(b, any) {
-//                    val userDetails = any as? UserResponse
+//                    val userDetails = any as? UserResponse<User>
 //                    val user = userDetails?.data
 //                    user?.loggedIn = true
 //                    userViewModel.currentUser = user

@@ -29,6 +29,8 @@ import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.AuthResponse
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.MainActivity
@@ -121,13 +123,13 @@ fun Fragment.onRequestResponseTask(
 
         true -> {
             try {
-                val res = result as UserResponse
+                val res = result as UserResponse<User>
                 requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
                 action()
-                Log.i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
+//                Log.i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
             }
             catch (e:java.lang.Exception){
-                requireActivity().gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
+                requireActivity().gdErrorToast(e.localizedMessage, Gravity.BOTTOM)
             }
 
 //               Log.i(title, "clearedRegister $clearRegister")

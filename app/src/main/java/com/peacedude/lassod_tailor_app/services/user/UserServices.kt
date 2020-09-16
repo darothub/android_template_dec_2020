@@ -18,22 +18,22 @@ interface UserServices {
         @Field("category") category:String,
         @Field("phoneNumber") phoneNumber:String,
         @Field("password") password:String
-    ): Call<UserResponse>
+    ): Call<UserResponse<User>>
 
     @POST("auth/activate")
     @FormUrlEncoded
-    fun activateUser(@Field("phoneNumber") phoneNumber:String, @Field("code") code:String  ):Call<UserResponse>
+    fun activateUser(@Field("phoneNumber") phoneNumber:String, @Field("code") code:String  ):Call<UserResponse<User>>
 
     @POST("auth/signin")
     @FormUrlEncoded
     fun loginRequest(
         @Field("phoneNumber") phone:String,
         @Field("password") password:String
-    ):Call<UserResponse>
+    ):Call<UserResponse<User>>
 
     @POST("auth/signup")
     fun registerUser(
         @Body user: User?
-    ): Call<UserResponse>
+    ): Call<UserResponse<User>>
 
 }

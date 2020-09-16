@@ -96,4 +96,6 @@
     <string name="unauthorized_user">You are not authorized</string>
     <string name="check_email">Check your mail for confirmation</string>
     <string name="forgot_password_str">Forgot password</string>
+    <string name="send">Send</string>
+    <string name="signin_with_google">Sign in with Google</string>
 </resources>

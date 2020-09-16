@@ -73,4 +73,9 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/forgotPassword"
+        android:name="com.peacedude.lassod_tailor_app.ui.ForgotPassword"
+        android:label=" "
+        tools:layout="@layout/fragment_forgot_password" />
 </navigation>

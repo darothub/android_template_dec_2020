@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import IsEmptyCheck
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
@@ -13,6 +14,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.activity.addCallback
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -21,13 +24,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
 import com.peacedude.gdtoast.gdErrorToast
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
@@ -62,7 +71,8 @@ class LoginFragment : DaggerFragment() {
     val userViewModel: UserViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
-
+    @Inject
+    lateinit var mGoogleSignInClient:GoogleSignInClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -108,6 +118,48 @@ class LoginFragment : DaggerFragment() {
             goto(R.id.homeFragment)
         }
 
+        forgot_password_tv.setOnClickListener {
+            goto(R.id.forgotPassword)
+        }
+        val someActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            ActivityResultCallback {result ->
+
+                if (result.resultCode == Activity.RESULT_OK){
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    task.addOnCompleteListener {
+                        if(it.isSuccessful){
+                            val account: GoogleSignInAccount? =
+                                it.getResult(ApiException::class.java)
+
+                            val idToken = it.result?.idToken
+                            val email = account?.email
+                            val lastName = account?.familyName
+                            val firstName = account?.givenName
+                            val otherName = account?.displayName
+                            val imageUrl = account?.photoUrl
+
+                            val newUser = User(firstName, lastName, otherName, "", "")
+                            newUser.email = email
+                            newUser.token = idToken
+                            Log.i(title, "idToken $idToken")
+                            requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
+//                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
+//                            action.newUser = newUser
+//                            goto(action)
+
+                            Log.i(title, "token $firstName")
+//                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
+                        }
+                    }
+                }
+
+            }
+        )
+        login_google_sign_in_button.setOnClickListener {
+            val intent = mGoogleSignInClient.getSignInIntent()
+            someActivityResultLauncher.launch(intent)
+        }
     }
 
 
@@ -128,7 +180,7 @@ class LoginFragment : DaggerFragment() {
                     userViewModel.loginUserRequest(phoneNumber, passwordString)
                 },{ b, any ->
                     onRequestResponseTask(b, any) {
-                        val userDetails = any as? UserResponse
+                        val userDetails = any as? UserResponse<User>
                         val user = userDetails?.data
                         user?.loggedIn = true
                         userViewModel.currentUser = user
