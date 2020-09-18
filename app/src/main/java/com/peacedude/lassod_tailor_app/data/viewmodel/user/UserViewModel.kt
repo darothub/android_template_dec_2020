@@ -56,6 +56,31 @@ class UserViewModel @Inject constructor(
         return responseLiveData
     }
 
+    override fun registerUser(
+        header: String,
+        user: User?
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+
+        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = userRequestInterface.registerUser(header,
+            user)
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
+
 
     override fun registerUser(
         firstName: String,
@@ -115,7 +140,7 @@ class UserViewModel @Inject constructor(
     }
 
     fun loginUserRequest(
-        phoneNumber: String,
+        emailOrPhone: String,
         password: String
     ): LiveData<ServicesResponseWrapper<ParentData>> {
 
@@ -124,7 +149,7 @@ class UserViewModel @Inject constructor(
             null,
             "Loading..."
         )
-        val request = userRequestInterface.loginRequest(phoneNumber, password)
+        val request = userRequestInterface.loginRequest(emailOrPhone, password)
         request.enqueue(object : Callback<UserResponse<User>> {
             override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)

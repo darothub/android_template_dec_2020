@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.core.content.ContextCompat
@@ -19,11 +20,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.onRequestResponseTask
-import com.peacedude.lassod_tailor_app.helpers.request
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -40,22 +37,17 @@ open class HomeFragment : DaggerFragment() {
         getName()
     }
     lateinit var loginBtn: Button
-    lateinit var signupBtn: Button
-    val leftAnimation by lazy {
+    private lateinit var signupBtn: Button
+    private val leftAnimation: Animation? by lazy {
         AnimationUtils.loadAnimation(requireContext(), R.anim.left_animation)
     }
-    val rightAnimation by lazy {
+    private val rightAnimation: Animation? by lazy {
         AnimationUtils.loadAnimation(requireContext(), R.anim.right_animation)
     }
 
-    val topAnimation by lazy{
-        AnimationUtils.loadAnimation(requireContext(), R.anim.top_animation)
-    }
-    @Inject
-    lateinit var storageRequest: StorageRequest
 
-    val currentUser: User? by lazy {
-        storageRequest.checkUser(loggedInUserKey)
+    private val currentUser: User? by lazy {
+        userViewModel.currentUser
     }
 
     @Inject
@@ -66,6 +58,19 @@ open class HomeFragment : DaggerFragment() {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.let {instateBundle ->
+            (instateBundle[loggedInUserKey] as User)?.let {
+                userViewModel.currentUser = it
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(loggedInUserKey, currentUser)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -110,7 +115,6 @@ open class HomeFragment : DaggerFragment() {
         val  googleEmail = account?.email
         val sharedPrefEmail = currentUser?.email
 
-        Log.i(title, "Emails2 $googleEmail $sharedPrefEmail")
         if (currentUser != null) {
             when (currentUser?.loggedIn) {
                 true -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
@@ -142,6 +146,8 @@ open class HomeFragment : DaggerFragment() {
         super.onResume()
 
     }
+
+
 
 
 }

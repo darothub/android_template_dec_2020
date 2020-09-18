@@ -101,9 +101,6 @@ class SignupChoicesFragment : DaggerFragment() {
 
         })
 
-
-
-
         val someActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback {result ->

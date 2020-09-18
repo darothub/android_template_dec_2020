@@ -1,13 +1,9 @@
 package com.peacedude.lassod_tailor_app.sharedpref
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import org.junit.Test
 
 class SharedPrefManagerTest : FunSpec({
     val h = hashMapOf("hello" to "world")
@@ -30,13 +26,13 @@ class SharedPrefManagerTest : FunSpec({
         result.size shouldBeGreaterThan 0
         result[0] shouldBe "Bola"
     }
-    test("Should return true after successfully removing a value by key") {
-        val result = fake.clearByKey<String>( "bola")
-        result shouldBe true
-    }
-    test("Should return false if key is not present") {
-        val result = fake.clearByKey<String>( "kola")
-        result shouldBe false
-    }
+//    test("Should return true after successfully removing a value by key") {
+//        val result = fake.clearByKey<String>( "bola")
+//        result shouldBe true
+//    }
+//    test("Should return false if key is not present") {
+//        val result = fake.clearByKey<String>( "kola")
+//        result shouldBe false
+//    }
 })
 

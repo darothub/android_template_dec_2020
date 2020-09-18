@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import IsEmptyCheck
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
@@ -19,22 +20,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.peacedude.gdtoast.gdErrorToast
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.drawerlayout_header.*
 import kotlinx.android.synthetic.main.fragment_email_signup.*
-import kotlinx.android.synthetic.main.fragment_phone_signup.*
-import kotlinx.android.synthetic.main.fragment_signup.*
-import kotlinx.android.synthetic.main.fragment_signup_category.*
-import kotlinx.android.synthetic.main.fragment_signup_choices.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.launch
 import validatePasswordAndAdvise
 import javax.inject.Inject
 
@@ -48,6 +42,14 @@ class EmailSignupFragment : DaggerFragment() {
     val title: String by lazy {
         getName()
     }
+    //Get logged-in user
+    private val currentUser: User? by lazy {
+        userViewModel.currentUser
+    }
+
+    private val header by lazy {
+        userViewModel.header
+    }
 
     private val loginAdviseText: String by lazy {
         getString(R.string.have_an_account)
@@ -58,13 +60,14 @@ class EmailSignupFragment : DaggerFragment() {
     }
 
     private lateinit var emailSignupBtn: Button
-    private lateinit var progressBar:ProgressBar
+    private lateinit var progressBar: ProgressBar
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    val userViewModel: UserViewModel by lazy {
+    private val userViewModel: UserViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
-    private val arg:EmailSignupFragmentArgs by navArgs()
+    private val arg: EmailSignupFragmentArgs by navArgs()
     val user by lazy { arg.newUser }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,10 +90,14 @@ class EmailSignupFragment : DaggerFragment() {
         val toolbar = email_signup_appbar.findViewById<Toolbar>(R.id.reusable_toolbar)
         val navController = Navigation.findNavController(email_signup_appbar)
 
-       setupToolbarAndNavigationUI(toolbar, navController)
+        setupToolbarAndNavigationUI(toolbar, navController)
 
         initEnterKeyToSubmitForm(password_field) { signupRequest() }
-        setupCategorySpinner(requireContext(), email_signup_category_spinner, R.array.categories_array)
+        setupCategorySpinner(
+            requireContext(),
+            email_signup_category_spinner,
+            R.array.categories_array
+        )
         email_field.setText(user?.email)
         val backgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
@@ -99,12 +106,16 @@ class EmailSignupFragment : DaggerFragment() {
             progressBar = email_signup_btn.findViewById(R.id.progress_bar)
             emailSignupBtn.background = backgroundDrawable
             emailSignupBtn.text = getString(R.string.signup)
-            emailSignupBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            emailSignupBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorPrimary
+                )
+            )
         }, {
 
             emailSignupBtn.setOnClickListener {
                 signupRequest()
-
             }
         })
 
@@ -140,6 +151,7 @@ class EmailSignupFragment : DaggerFragment() {
                 Gravity.BOTTOM
             )
             user != null -> {
+                email_field.hide()
                 if (email != user?.email) {
                     requireActivity().gdErrorToast(
                         "Authenticated email address must not be changed",
@@ -148,18 +160,30 @@ class EmailSignupFragment : DaggerFragment() {
                     email_field.error = user?.email
                 } else {
                     user?.password = passwordString
-                    var req = userViewModel.registerUser(user)
-                    val observer =
-                        requireActivity().observeRequest(req, progressBar, emailSignupBtn)
-                    observer.observe(viewLifecycleOwner, Observer {
-                        val (bool, result) = it
-                        onRequestResponseTask(bool, result) {
-
-                            goto(R.id.loginFragment)
-    //                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
-                            Log.i(title, getString(R.string.check_email))
+                    var req = userViewModel.registerUser(header.toString(), user)
+                    requireActivity().requestObserver(
+                        progressBar,
+                        emailSignupBtn,
+                        req
+                    ) { bool, result ->
+                        onRequestResponseTask(bool, result){
+                            val loginReq = userViewModel.loginUserRequest(user?.email.toString(), passwordString)
+                            requireActivity().requestObserver(progressBar, emailSignupBtn, loginReq){bool, result ->
+                                onRequestResponseTask(bool, result){
+                                    val userDetails = result as? UserResponse<User>
+                                    val user = userDetails?.data
+                                    user?.loggedIn = true
+                                    userViewModel.currentUser = user
+                                    val res = userViewModel.saveUser
+                                    val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
+                                    Log.i("$this", "res ${res.size}")
+                                    startActivity(loginIntent)
+                                    requireActivity().finish()
+                                }
+                            }
                         }
-                    })
+                    }
+
                 }
             }
             else -> {
@@ -175,7 +199,7 @@ class EmailSignupFragment : DaggerFragment() {
                     onRequestResponseTask(bool, result) {
 
                         goto(R.id.loginFragment)
-    //                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
+                        //                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
                         Log.i(title, getString(R.string.check_email))
                     }
                 })
@@ -188,7 +212,6 @@ class EmailSignupFragment : DaggerFragment() {
         val textLen = loginAdviseText.length
         val start = 17
         setupSpannableLinkAndDestination(
-            loginAdviseText,
             email_signup_login_tv,
             spannableTextColor,
             spannableString,

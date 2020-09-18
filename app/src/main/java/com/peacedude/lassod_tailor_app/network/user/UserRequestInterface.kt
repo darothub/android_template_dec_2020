@@ -32,4 +32,10 @@ interface UserRequestInterface {
         return TODO()
     }
 
+    fun registerUser(
+        header:String,
+        user: User?
+    ):Call<UserResponse<User>> {
+        return TODO()
+    }
 }

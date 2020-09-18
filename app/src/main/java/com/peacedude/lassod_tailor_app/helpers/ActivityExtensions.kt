@@ -109,10 +109,9 @@ fun Activity.observeRequest(
     return result
 }
 
-fun Activity.request(
+fun Activity.requestObserver(
     progressBar: ProgressBar?,
     btn: Button?,
-    viewModel: ViewModelInterface,
     req: LiveData<ServicesResponseWrapper<ParentData>>,
     action: (Boolean, Any?) -> Unit
 ) {

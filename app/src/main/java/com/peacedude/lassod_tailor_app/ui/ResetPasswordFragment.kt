@@ -1,6 +1,5 @@
 package com.peacedude.lassod_tailor_app.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -23,7 +22,6 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_reset_password.*
 import validatePasswordAndAdvise
 import javax.inject.Inject
@@ -122,10 +120,9 @@ class ResetPasswordFragment : DaggerFragment() {
         } else if (password != cpassword) {
             requireActivity().gdErrorToast("passwords do not match", Gravity.BOTTOM)
         } else {
-            val req = requireActivity().request(
+            val req = requireActivity().requestObserver(
                 resetPasswordProgressabar,
                 resetBtn,
-                authViewModel,
                 authViewModel.resetPassword(header, password, cpassword)
             ) { b, any ->
                 onRequestResponseTask(b, any) {

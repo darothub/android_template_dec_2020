@@ -9,6 +9,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.peacedude.lassod_tailor_app.R
@@ -48,7 +49,7 @@ fun SpannableString.removeUnderLine(start:Int, end:Int){
     this.setSpan(NounderLine(), start, end, Spanned.SPAN_MARK_MARK)
 }
 
-fun setupSpannableLinkAndDestination(text:String, textView: TextView,
+fun setupSpannableLinkAndDestination(textView: TextView,
                                      textColor:Int, spannableString: SpannableString, start:Int, end:Int, onSpannableClick:()->Unit
 ) {
     onSpannableClick()
@@ -56,6 +57,16 @@ fun setupSpannableLinkAndDestination(text:String, textView: TextView,
     spannableString.removeUnderLine(start, end)
     textView.text = spannableString
     textView.movementMethod = LinkMovementMethod.getInstance()
+
+}
+fun setupSpannableLinkAndDestination(view: Button,
+                                     textColor:Int, spannableString: SpannableString, start:Int, end:Int, onSpannableClick:()->Unit
+) {
+    onSpannableClick()
+    spannableString.setColorToSubstring(textColor, start, end)
+    spannableString.removeUnderLine(start, end)
+    view.text = spannableString
+    view.movementMethod = LinkMovementMethod.getInstance()
 
 }
 

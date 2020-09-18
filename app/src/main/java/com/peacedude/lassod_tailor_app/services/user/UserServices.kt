@@ -3,10 +3,7 @@ package com.peacedude.lassod_tailor_app.services.user
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface UserServices {
     @POST("auth/signup")
@@ -33,6 +30,12 @@ interface UserServices {
 
     @POST("auth/signup")
     fun registerUser(
+        @Body user: User?
+    ): Call<UserResponse<User>>
+
+    @POST("auth/signup/google")
+    fun registerUser(
+        @Header("Authorization") header: String,
         @Body user: User?
     ): Call<UserResponse<User>>
 

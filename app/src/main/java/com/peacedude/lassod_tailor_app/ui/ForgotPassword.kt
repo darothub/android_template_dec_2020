@@ -34,7 +34,7 @@ import javax.inject.Inject
  * Use the [ForgotPassword.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ForgotPassword : DaggerFragment() {
+class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
     val title: String = getName()
     private lateinit var progressBar: ProgressBar
     lateinit var sendBtn: Button
@@ -52,13 +52,13 @@ class ForgotPassword : DaggerFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forgot_password, container, false)
-    }
+//    override fun onCreateView(
+//        inflater: LayoutInflater, container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View? {
+//        // Inflate the layout for this fragment
+//        return inflater.inflate(R.layout.fragment_forgot_password, container, false)
+//    }
 
     override fun onStart() {
         super.onStart()

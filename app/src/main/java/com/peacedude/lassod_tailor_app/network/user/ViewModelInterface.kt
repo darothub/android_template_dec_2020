@@ -12,11 +12,16 @@ interface ViewModelInterface {
     var currentUser: User?
     var saveUser:ArrayList<String>
     var profileData:User?
+    var header:String?
 
+
+    fun activateUser(phoneNumber:String, code: String):LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
     fun registerUser(user: User?):LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
-    fun activateUser(phoneNumber:String, code: String):LiveData<ServicesResponseWrapper<ParentData>>{
+    fun registerUser(header:String, user: User?):LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
     fun registerUser(

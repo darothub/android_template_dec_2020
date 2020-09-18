@@ -161,7 +161,6 @@ class SignupFragment : DaggerFragment() {
         val textLen = loginAviseText.length
         val start = 17
         setupSpannableLinkAndDestination(
-            loginAviseText,
             login_text,
             textColor,
             spannableString,

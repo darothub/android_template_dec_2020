@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -25,6 +26,7 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.adapters.ProfileViewPagerAdapter
 import com.peacedude.lassod_tailor_app.utils.bearer
+import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import kotlinx.android.synthetic.main.activity_profile.*
 import javax.inject.Inject
 
@@ -39,19 +41,17 @@ class ProfileActivity : BaseActivity() {
         profile_drawer_view.findViewById<TextView>(R.id.profile_name)
     }
     //Get logged-in user
-    val currentUser: User? by lazy {
+    private val currentUser: User? by lazy {
         authViewModel.currentUser
     }
-    val token by lazy {
-        currentUser?.token
+
+    private val header by lazy {
+        authViewModel.header
     }
-    val header by lazy {
-        "$bearer $token"
-    }
-    val menuIcon by lazy{
+    private val menuIcon: ImageView? by lazy{
         profile_header.findViewById<ImageView>(R.id.menu_icon)
     }
-    val greeting by lazy{
+    private val greeting: TextView by lazy{
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
 
@@ -60,12 +60,23 @@ class ProfileActivity : BaseActivity() {
     private lateinit var logoutImage:ImageView
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    val authViewModel: AuthViewModel by lazy {
+    private val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+        savedInstanceState?.let {instateBundle ->
+            instateBundle.apply {
+                authViewModel.header = this["header"] as String?
+                (this[loggedInUserKey] as User).let {
+                    authViewModel.currentUser = it
+                }
+            }
+
+        }
 
         bottomNav.setupWithNavController(navController)
 
@@ -76,7 +87,7 @@ class ProfileActivity : BaseActivity() {
 //        actionBarDrawerToggle.syncState()
 
         profile_header.show()
-        menuIcon.setOnClickListener {
+        menuIcon?.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)
         }
 
@@ -102,14 +113,15 @@ class ProfileActivity : BaseActivity() {
 
 
     }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(loggedInUserKey, currentUser)
+        outState.putString("header", header)
+
+    }
 
     private fun logoutRequest() {
-        if (authViewModel.logout().value!!) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        } else {
-            gdToast("Sign-out not request successful", Gravity.BOTTOM)
-        }
+        authViewModel.logout(this)
     }
 
 
@@ -147,7 +159,7 @@ class ProfileActivity : BaseActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun getUserData(){
-        val request = authViewModel.getUserData(header)
+        val request = authViewModel.getUserData(header.toString())
         val response = observeRequest(request, null, null)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
@@ -156,10 +168,13 @@ class ProfileActivity : BaseActivity() {
                 val user = userDetails?.data
                 greeting.text = "Hi ${user?.firstName}"
                 profileName.text = "${user?.firstName} ${user?.lastName}"
+                authViewModel.currentUser = user
                 Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
             }
         })
     }
+
+
 
 
 }

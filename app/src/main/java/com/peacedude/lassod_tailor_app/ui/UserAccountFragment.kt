@@ -25,6 +25,7 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
+import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import javax.inject.Inject
@@ -44,27 +45,44 @@ class UserAccountFragment : DaggerFragment() {
     private lateinit var progressBar: ProgressBar
 
     //Get logged-in user
-    val currentUser: User? by lazy {
-        storageRequest.checkUser(loggedInUserKey)
-    }
-    val token by lazy {
-        currentUser?.token
+    private val currentUser: User? by lazy {
+        authViewModel.currentUser
     }
     val header by lazy {
-        "$bearer $token"
+        authViewModel.header
     }
     @Inject
     lateinit var storageRequest: StorageRequest
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    val authViewModel: AuthViewModel by lazy {
+    private val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let {instateBundle ->
+            instateBundle.apply {
+                authViewModel.header = this["header"] as String?
+                (this[loggedInUserKey] as User).let {
+                    authViewModel.currentUser = it
+                }
+                (this[profileDataKey] as User).let {
+                    authViewModel.profileData = it
+                }
+            }
+
+        }
         arguments?.let {
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(loggedInUserKey, currentUser)
+        outState.putSerializable(profileDataKey, authViewModel.profileData)
+        outState.putString("header", header)
+
     }
 
     override fun onCreateView(
@@ -97,7 +115,7 @@ class UserAccountFragment : DaggerFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun getUserData(){
-        val request = authViewModel.getUserData(header)
+        val request = authViewModel.getUserData(header.toString())
         val response = requireActivity().observeRequest(request, null, null)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
@@ -144,7 +162,7 @@ class UserAccountFragment : DaggerFragment() {
         user.lga =account_lga_et.text.toString().trim()
         user.state = account_state_et.text.toString().trim()
 //        val newUserData = User(firstName, lastName, otherName,category,phone)
-        val request = authViewModel.updateUserData(header, user)
+        val request = authViewModel.updateUserData(header.toString(), user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it

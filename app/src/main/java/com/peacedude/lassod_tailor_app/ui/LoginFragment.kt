@@ -56,10 +56,19 @@ class LoginFragment : DaggerFragment() {
     private val newUserText: String by lazy {
         getString(R.string.new_user)
     }
+    private val googleBtnText: String by lazy {
+        getString(R.string.signin_with_google)
+    }
+
+    private val googleBtnTextSpannable: SpannableString by lazy {
+        googleBtnText.setAsSpannable()
+
+    }
     private val spannableString: SpannableString by lazy {
         newUserText.setAsSpannable()
     }
     private var textColor = 0;
+    private var googleBtnTextColor = 0
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     val userViewModel: UserViewModel by lazy {
@@ -76,8 +85,8 @@ class LoginFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         buttonTransactions({
             loginBtn = login_page_btn.findViewById(R.id.btn)
@@ -96,18 +105,21 @@ class LoginFragment : DaggerFragment() {
 
 
         loginBtn.setOnClickListener {
-            validateAndLoginRequest()
+            validateAndLogin()
         }
-        initEnterKeyToSubmitForm(login_password_edittext) { validateAndLoginRequest() }
+        initEnterKeyToSubmitForm(login_password_edittext) { validateAndLogin() }
 
         textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+        googleBtnTextColor = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
         val textLen = newUserText.length
         val start = 10
-        setupSpannableLinkAndDestination(newUserText, new_user, textColor, spannableString, start, textLen){
+        setupSpannableLinkAndDestination(new_user, textColor, spannableString, start, textLen){
             spannableString.enableClickOnSubstring(start, textLen) {
                 goto(R.id.signupFragment)
             }
         }
+        val googleTextLen = googleBtnText.length
+        setupSpannableLinkAndDestination(login_google_sign_in_button, googleBtnTextColor, googleBtnTextSpannable, 0, googleTextLen){}
         requireActivity().onBackPressedDispatcher.addCallback {
             goto(R.id.homeFragment)
         }
@@ -157,7 +169,7 @@ class LoginFragment : DaggerFragment() {
     }
 
 
-    fun validateAndLoginRequest() {
+    private fun validateAndLogin() {
         val phoneNumber = login_phone_number_edittext.text.toString().trim()
         val passwordString = login_password_edittext.text.toString()
 
@@ -170,7 +182,7 @@ class LoginFragment : DaggerFragment() {
             }
             else -> {
 
-                requireActivity().request(progressBar, loginBtn, userViewModel,
+                requireActivity().requestObserver(progressBar, loginBtn,
                     userViewModel.loginUserRequest(phoneNumber, passwordString)
                 ) { b, any ->
                     onRequestResponseTask(b, any) {
