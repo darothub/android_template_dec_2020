@@ -32,8 +32,8 @@
     <string name="client_id">485909312905-0hd3kgjv9kotocuatjs1gc9pp1apr3v6.apps.googleusercontent.com</string>
     <string name="client_secret">LlAEEPh79wGRskK0tCRgy9Vl</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="login">LOGIN</string>
-    <string name="signup">SIGN UP</string>
+    <string name="login">Sign in</string>
+    <string name="signup">Sign up</string>
     <string name="create_an_account">Create an account</string>
     <string name="lets_get_to_know_you">Let\'s get to know you</string>
     <string name="first_name">First name</string>
@@ -100,4 +100,7 @@
     <string name="signin_with_google">Sign in with Google</string>
     <string name="reset_password_str">Reset password</string>
     <string name="cpassword">Confirm password</string>
+    <string name="email_confirmation_str">Email confirmation</string>
+    <string name="email_confirmation_advice_str">Your email has been verified successfully</string>
+    <string name="email_address_or_phone_str">Email or Phone No</string>
 </resources>

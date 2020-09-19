@@ -18,15 +18,15 @@ interface AuthServices {
 
     @POST("auth/forgetpassword")
     @FormUrlEncoded
-    fun forgetPassword(@Field("email") email: String): Call<UserResponse<String>>
+    fun forgetPassword(@Field("field") field: String): Call<UserResponse<String>>
 
     @PATCH("auth/reset-password")
     @FormUrlEncoded
     fun resetPassword(
-        @Header("Authorization") header: String,
+        @Query("authorization") token: String,
         @Field("password") password: String,
         @Field("confirmPassword") cpassword: String
-    ): Call<UserResponse<String>>
+    ): Call<UserResponse<User>>
 
 
 }

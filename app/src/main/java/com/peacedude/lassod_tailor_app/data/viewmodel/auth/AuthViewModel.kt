@@ -66,12 +66,12 @@ open class AuthViewModel @Inject constructor(
         return responseLiveData
     }
 
-    override fun forgetPassword(email: String): LiveData<ServicesResponseWrapper<ParentData>> {
+    override fun forgetPassword(field: String): LiveData<ServicesResponseWrapper<ParentData>> {
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
         )
-        val request = authRequestInterface.forgetPassword(email)
+        val request = authRequestInterface.forgetPassword(field)
         request.enqueue(object : Callback<UserResponse<String>> {
             override fun onFailure(call: Call<UserResponse<String>>, t: Throwable) {
                 Log.i(title, "Thrown")
@@ -85,19 +85,19 @@ open class AuthViewModel @Inject constructor(
         })
         return responseLiveData
     }
-    override fun resetPassword(header:String?, password:String?, cPassword:String?): LiveData<ServicesResponseWrapper<ParentData>> {
+    override fun resetPassword(token:String?, password:String?, cPassword:String?): LiveData<ServicesResponseWrapper<ParentData>> {
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
         )
-        val request = authRequestInterface.resetPassword(header.toString(), password.toString(), cPassword.toString())
-        request.enqueue(object : Callback<UserResponse<String>> {
-            override fun onFailure(call: Call<UserResponse<String>>, t: Throwable) {
-                Log.i(title, "Thrown")
+        val request = authRequestInterface.resetPassword(token.toString(), password.toString(), cPassword.toString())
+        request.enqueue(object : Callback<UserResponse<User>> {
+            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
+                Log.i(title, " ${t.localizedMessage}")
                 onFailureResponse(responseLiveData, t)
             }
 
-            override fun onResponse(call: Call<UserResponse<String>>, response: Response<UserResponse<String>>) {
+            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 

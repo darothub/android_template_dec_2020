@@ -93,11 +93,14 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
     }
 
     private fun forgotPasswordRequest() {
-        val email = forgot_password_email_et.text.toString().trim()
+        val field = forgot_password_email_et.text.toString().trim()
 
         val checkForEmpty =
             IsEmptyCheck(forgot_password_email_et)
-        val validation = IsEmptyCheck.fieldsValidation(email, null)
+        val emailPattern = Regex("""^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*${'$'}""")
+        var phonePattern = Regex("""\d{10,13}""")
+        val emailValidation = emailPattern.matches(field)
+        val phoneValidation = phonePattern.matches(field)
 
         when {
             checkForEmpty != null -> {
@@ -111,21 +114,21 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
                 requireActivity().gdErrorToast("$editTextName is empty", Gravity.BOTTOM)
 
             }
-            validation != null -> requireActivity().gdErrorToast(
-                "$validation is invalid",
+            !(emailValidation || phoneValidation) -> requireActivity().gdErrorToast(
+                "Input field is invalid",
                 Gravity.BOTTOM
             )
             else -> {
 
-                val request = authViewModel.forgetPassword(email)
+                val request = authViewModel.forgetPassword(field)
                 val response = requireActivity().observeRequest(request, progressBar, sendBtn)
                 response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
                     requireActivity().onRequestResponseTask<String>(bool, result) {
-                        requireActivity().gdToast(
-                            "Request successful action needed",
-                            Gravity.BOTTOM
-                        )
+//                        requireActivity().gdToast(
+//                            "Request successful action needed",
+//                            Gravity.BOTTOM
+//                        )
                         Log.i(title, "Request successful action needed")
                     }
                 })

@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.peacedude.gdtoast.gdErrorToast
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
@@ -42,6 +43,7 @@ class EmailSignupFragment : DaggerFragment() {
     val title: String by lazy {
         getName()
     }
+
     //Get logged-in user
     private val currentUser: User? by lazy {
         userViewModel.currentUser
@@ -166,16 +168,24 @@ class EmailSignupFragment : DaggerFragment() {
                         emailSignupBtn,
                         req
                     ) { bool, result ->
-                        onRequestResponseTask(bool, result){
-                            val loginReq = userViewModel.loginUserRequest(user?.email.toString(), passwordString)
-                            requireActivity().requestObserver(progressBar, emailSignupBtn, loginReq){bool, result ->
-                                onRequestResponseTask(bool, result){
+                        onRequestResponseTask(bool, result) {
+                            val loginReq = userViewModel.loginUserRequest(
+                                user?.email.toString(),
+                                passwordString
+                            )
+                            requireActivity().requestObserver(
+                                progressBar,
+                                emailSignupBtn,
+                                loginReq
+                            ) { bool, result ->
+                                onRequestResponseTask(bool, result) {
                                     val userDetails = result as? UserResponse<User>
                                     val user = userDetails?.data
                                     user?.loggedIn = true
                                     userViewModel.currentUser = user
                                     val res = userViewModel.saveUser
-                                    val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
+                                    val loginIntent =
+                                        Intent(requireContext(), ProfileActivity::class.java)
                                     Log.i("$this", "res ${res.size}")
                                     startActivity(loginIntent)
                                     requireActivity().finish()
@@ -197,8 +207,11 @@ class EmailSignupFragment : DaggerFragment() {
                 observer.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
                     onRequestResponseTask(bool, result) {
-
-                        goto(R.id.loginFragment)
+                        requireActivity().gdToast(
+                            "Check your email for verification",
+                            Gravity.BOTTOM
+                        )
+//                        goto(R.id.loginFragment)
                         //                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
                         Log.i(title, getString(R.string.check_email))
                     }

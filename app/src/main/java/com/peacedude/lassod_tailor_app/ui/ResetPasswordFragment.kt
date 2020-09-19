@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.lassod_tailor_app.R
@@ -42,15 +43,16 @@ class ResetPasswordFragment : DaggerFragment() {
     val currentUser: User? by lazy {
         authViewModel.currentUser
     }
+
+    private lateinit var resetPasswordProgressabar: ProgressBar
+    private lateinit var resetBtn: Button
+    private val arg: ResetPasswordFragmentArgs by navArgs()
     val token by lazy {
-        currentUser?.token
+        arg.token
     }
     val header by lazy {
         "$bearer $token"
     }
-    private lateinit var resetPasswordProgressabar: ProgressBar
-    private lateinit var resetBtn: Button
-    private val arg: ResetPasswordFragmentArgs by navArgs()
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -108,7 +110,8 @@ class ResetPasswordFragment : DaggerFragment() {
 
 
         val token = arg.token
-        Log.i(title, token.toString())
+        Log.i(title, "token $token")
+        Log.i(title, "header $header")
     }
 
     private fun resetPasswordRequest() {
@@ -123,12 +126,13 @@ class ResetPasswordFragment : DaggerFragment() {
             val req = requireActivity().requestObserver(
                 resetPasswordProgressabar,
                 resetBtn,
-                authViewModel.resetPassword(header, password, cpassword)
+                authViewModel.resetPassword(token, password, cpassword)
             ) { b, any ->
                 onRequestResponseTask(b, any) {
-                    val userDetails = any as? UserResponse<String>
+                    val userDetails = any as? UserResponse<User>
                     val user = userDetails?.data
-                    requireActivity().gdErrorToast(user.toString(), Gravity.BOTTOM)
+                    Log.i(title, "User $user")
+                    findNavController().navigate(R.id.loginFragment)
                 }
             }
         }

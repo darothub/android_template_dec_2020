@@ -17,12 +17,12 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.updateUserData(header, user)
     }
 
-    override fun forgetPassword(email: String): Call<UserResponse<String>> {
-        return authServices.forgetPassword(email)
+    override fun forgetPassword(field: String): Call<UserResponse<String>> {
+        return authServices.forgetPassword(field)
     }
 
-    override fun resetPassword(header: String, password:String, cPassword: String): Call<UserResponse<String>> {
-        return authServices.resetPassword(header, password, cPassword)
+    override fun resetPassword(token: String, password:String, cPassword: String): Call<UserResponse<User>> {
+        return authServices.resetPassword(token, password, cPassword)
     }
 }
 

@@ -13,10 +13,10 @@ interface AuthRequestInterface {
     fun updateUserData(header:String, user: User): Call<UserResponse<User>> {
         return TODO()
     }
-    fun forgetPassword(email:String): Call<UserResponse<String>> {
+    fun forgetPassword(field:String): Call<UserResponse<String>> {
         return TODO()
     }
-    fun resetPassword(header: String, password:String, cPassword:String): Call<UserResponse<String>> {
+    fun resetPassword(token: String, password:String, cPassword:String): Call<UserResponse<User>> {
         return TODO()
     }
 }

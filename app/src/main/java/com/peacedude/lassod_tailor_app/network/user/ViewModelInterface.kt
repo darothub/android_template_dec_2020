@@ -44,7 +44,7 @@ interface ViewModelInterface {
     fun forgetPassword(email:String): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun resetPassword(header: String?, password: String?, cpasswod:String?): LiveData<ServicesResponseWrapper<ParentData>>{
+    fun resetPassword(token: String?, password: String?, cpasswod:String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
 }
