@@ -38,6 +38,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
 <!--        <item name="android:textViewStyle">@style/PoppinsTextViewStyle</item>-->
 <!--        <item name="android:buttonStyle">@style/PoppinsButtonStyle</item>-->
         <item name="editTextStyle">@style/EditTextCustomStyle</item>

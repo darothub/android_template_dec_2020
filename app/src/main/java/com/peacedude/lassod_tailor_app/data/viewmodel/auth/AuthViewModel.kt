@@ -91,13 +91,13 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.resetPassword(token.toString(), password.toString(), cPassword.toString())
-        request.enqueue(object : Callback<UserResponse<User>> {
-            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
+        request.enqueue(object : Callback<UserResponse<String>> {
+            override fun onFailure(call: Call<UserResponse<String>>, t: Throwable) {
                 Log.i(title, " ${t.localizedMessage}")
                 onFailureResponse(responseLiveData, t)
             }
 
-            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
+            override fun onResponse(call: Call<UserResponse<String>>, response: Response<UserResponse<String>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 

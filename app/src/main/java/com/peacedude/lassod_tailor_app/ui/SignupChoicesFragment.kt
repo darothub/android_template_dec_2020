@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnCompleteListener
@@ -35,6 +36,7 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 import javax.inject.Inject
+import kotlin.properties.Delegates.observable
 
 
 /**
@@ -54,13 +56,14 @@ class SignupChoicesFragment : DaggerFragment() {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
 
-    val gso by lazy {
+    private val gso: GoogleSignInOptions by lazy {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.client_id))
             .requestEmail()
             .build()
     }
-    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(requireContext(), gso)}
+    private val mGoogleSignInClient: GoogleSignInClient by lazy{ GoogleSignIn.getClient(requireContext(), gso)}
+//    @Inject
+//    lateinit var mGoogleSignInClient:GoogleSignInClient
 
     val arg:SignupChoicesFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +71,9 @@ class SignupChoicesFragment : DaggerFragment() {
         arguments?.let {
 
         }
+//        var maxCount: Int by observable(initialValue = 0) { property, oldValue, newValue ->
+//            println("${property.name} is being changed from $oldValue to $newValue")
+//        }
     }
 
     override fun onCreateView(
@@ -93,9 +99,11 @@ class SignupChoicesFragment : DaggerFragment() {
 
         }, {
             signupEmailBtn.setOnClickListener {
+
                 goto(R.id.emailSignupFragment)
             }
             signupPhoneBtn.setOnClickListener {
+
                 goto(R.id.phoneSignupFragment)
             }
 
@@ -106,7 +114,10 @@ class SignupChoicesFragment : DaggerFragment() {
             ActivityResultCallback {result ->
 
                 if (result.resultCode == Activity.RESULT_OK){
+                    Log.i(title, "Here Result")
+
                     val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    Log.i(title, "Here isSuccessful ${task.isSuccessful}")
                     task.addOnCompleteListener {
                         if(it.isSuccessful){
                             val account: GoogleSignInAccount? =
@@ -123,7 +134,7 @@ class SignupChoicesFragment : DaggerFragment() {
                             newUser.email = email
                             newUser.token = idToken
                             Log.i(title, "idToken $idToken")
-                            requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
+                            requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
                             val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
                             action.newUser = newUser
                             goto(action)
@@ -131,7 +142,13 @@ class SignupChoicesFragment : DaggerFragment() {
                             Log.i(title, "token $firstName")
 //                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
                         }
+                        else{
+                            requireActivity().gdToast("Authentication UNsuccessful", Gravity.BOTTOM)
+                            Log.i(title, "Task not successful")
+                        }
                     }
+                }else{
+                    Log.i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode }")
                 }
 
             }
@@ -142,8 +159,9 @@ class SignupChoicesFragment : DaggerFragment() {
 //            val setting = webviev.settings
 //            setting.javaScriptEnabled = true
 //            webviev.loadUrl("https://obioma-staging.herokuapp.com/api/v1/auth/google")
-
-            val intent = mGoogleSignInClient.getSignInIntent()
+            Log.i(title, "Here")
+            Log.i(title, "OKCODE1 ${Activity.RESULT_OK} ")
+            val intent = mGoogleSignInClient.signInIntent
             someActivityResultLauncher.launch(intent)
 //            startActivityForResult(intent, RC_SIGN_IN)
         }
@@ -182,7 +200,7 @@ class SignupChoicesFragment : DaggerFragment() {
 //                    val newUser = User(firstName, lastName, otherName, category, null)
 //                    newUser.email = email
 //
-//                    requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
+//                    requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
 //                    val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
 //                    action.newUser = newUser
 //                    goto(action)
@@ -192,7 +210,7 @@ class SignupChoicesFragment : DaggerFragment() {
 //                }
 //            }
 //        }
-
+//
 //    }
 
 

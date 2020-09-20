@@ -26,7 +26,7 @@ interface AuthServices {
         @Query("authorization") token: String,
         @Field("password") password: String,
         @Field("confirmPassword") cpassword: String
-    ): Call<UserResponse<User>>
+    ): Call<UserResponse<String>>
 
 
 }

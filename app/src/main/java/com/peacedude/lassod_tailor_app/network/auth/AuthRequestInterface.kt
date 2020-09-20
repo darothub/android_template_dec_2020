@@ -16,7 +16,7 @@ interface AuthRequestInterface {
     fun forgetPassword(field:String): Call<UserResponse<String>> {
         return TODO()
     }
-    fun resetPassword(token: String, password:String, cPassword:String): Call<UserResponse<User>> {
+    fun resetPassword(token: String, password:String, cPassword:String): Call<UserResponse<String>> {
         return TODO()
     }
 }

@@ -22,6 +22,7 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
+import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_reset_password.*
 import validatePasswordAndAdvise
@@ -47,9 +48,7 @@ class ResetPasswordFragment : DaggerFragment() {
     private lateinit var resetPasswordProgressabar: ProgressBar
     private lateinit var resetBtn: Button
     private val arg: ResetPasswordFragmentArgs by navArgs()
-    val token by lazy {
-        arg.token
-    }
+    var token:String?=""
     val header by lazy {
         "$bearer $token"
     }
@@ -60,11 +59,20 @@ class ResetPasswordFragment : DaggerFragment() {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-
+        savedInstanceState?.let {instateBundle ->
+            (instateBundle["token"] as String).let {
+                token = it
+            }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("token", arg.token)
     }
 
     override fun onCreateView(
@@ -109,7 +117,7 @@ class ResetPasswordFragment : DaggerFragment() {
         }
 
 
-        val token = arg.token
+        token = arg.token
         Log.i(title, "token $token")
         Log.i(title, "header $header")
     }
@@ -129,7 +137,7 @@ class ResetPasswordFragment : DaggerFragment() {
                 authViewModel.resetPassword(token, password, cpassword)
             ) { b, any ->
                 onRequestResponseTask(b, any) {
-                    val userDetails = any as? UserResponse<User>
+                    val userDetails = any as? UserResponse<String>
                     val user = userDetails?.data
                     Log.i(title, "User $user")
                     findNavController().navigate(R.id.loginFragment)

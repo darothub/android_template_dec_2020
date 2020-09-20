@@ -21,7 +21,7 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.forgetPassword(field)
     }
 
-    override fun resetPassword(token: String, password:String, cPassword: String): Call<UserResponse<User>> {
+    override fun resetPassword(token: String, password:String, cPassword: String): Call<UserResponse<String>> {
         return authServices.resetPassword(token, password, cPassword)
     }
 }

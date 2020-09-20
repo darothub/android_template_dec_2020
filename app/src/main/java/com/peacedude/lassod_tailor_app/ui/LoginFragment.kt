@@ -17,6 +17,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -33,6 +34,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
@@ -52,7 +54,7 @@ class LoginFragment : DaggerFragment() {
     }
     private lateinit var loginBtn: Button
     private lateinit var progressBar: ProgressBar
-    private lateinit var shimmerFrameLayout: ShimmerFrameLayout
+
     private val newUserText: String by lazy {
         getString(R.string.new_user)
     }
@@ -85,6 +87,8 @@ class LoginFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -115,7 +119,7 @@ class LoginFragment : DaggerFragment() {
         val start = 10
         setupSpannableLinkAndDestination(new_user, textColor, spannableString, start, textLen){
             spannableString.enableClickOnSubstring(start, textLen) {
-                goto(R.id.signupFragment)
+                goto(R.id.signupChoicesFragment)
             }
         }
         val googleTextLen = googleBtnText.length
@@ -163,8 +167,18 @@ class LoginFragment : DaggerFragment() {
             }
         )
         login_google_sign_in_button.setOnClickListener {
-            val intent = mGoogleSignInClient.getSignInIntent()
-            someActivityResultLauncher.launch(intent)
+            val registerForActivity = RegisterForActivityResult.getInstance(
+                requireActivity().activityResultRegistry,
+                requireActivity()
+            )
+            val data = registerForActivity.onCreate(this)
+            data.observe(viewLifecycleOwner, Observer {
+                val name = it?.familyName
+
+                Log.i(title, "name $name")
+            })
+//            val intent = mGoogleSignInClient.getSignInIntent()
+//            someActivityResultLauncher.launch(intent)
         }
     }
 
