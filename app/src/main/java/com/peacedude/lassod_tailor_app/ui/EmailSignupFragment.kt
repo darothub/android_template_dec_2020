@@ -27,6 +27,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.drawerlayout_header.*
 import kotlinx.android.synthetic.main.fragment_email_signup.*
@@ -121,6 +122,10 @@ class EmailSignupFragment : DaggerFragment() {
             }
         })
 
+        if(user != null){
+            email_field.hide()
+        }
+
         password_field.doOnTextChanged { text, start, count, after ->
             if (text != null) {
                 validatePasswordAndAdvise(text, email_signup_password_standard_tv)
@@ -153,7 +158,7 @@ class EmailSignupFragment : DaggerFragment() {
                 Gravity.BOTTOM
             )
             user != null -> {
-                email_field.hide()
+
                 if (email != user?.email) {
                     requireActivity().gdErrorToast(
                         "Authenticated email address must not be changed",
@@ -161,8 +166,10 @@ class EmailSignupFragment : DaggerFragment() {
                     )
                     email_field.error = user?.email
                 } else {
+                    val googleAuthHeader = "$bearer ${user?.token.toString()}"
                     user?.password = passwordString
-                    var req = userViewModel.registerUser(header.toString(), user)
+                    var req = userViewModel.registerUser(googleAuthHeader, user)
+                    Log.i(title, "header ${user?.token}")
                     requireActivity().requestObserver(
                         progressBar,
                         emailSignupBtn,

@@ -61,7 +61,7 @@ open class HomeFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {instateBundle ->
-            (instateBundle[loggedInUserKey] as User)?.let {
+            (instateBundle[loggedInUserKey] as? User)?.let {
                 userViewModel.currentUser = it
             }
         }

@@ -56,14 +56,14 @@ class SignupChoicesFragment : DaggerFragment() {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
 
-    private val gso: GoogleSignInOptions by lazy {
-        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestEmail()
-            .build()
-    }
-    private val mGoogleSignInClient: GoogleSignInClient by lazy{ GoogleSignIn.getClient(requireContext(), gso)}
-//    @Inject
-//    lateinit var mGoogleSignInClient:GoogleSignInClient
+//    private val gso: GoogleSignInOptions by lazy {
+//        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//            .requestEmail()
+//            .build()
+//    }
+//    private val mGoogleSignInClient: GoogleSignInClient by lazy{ GoogleSignIn.getClient(requireContext(), gso)}
+    @Inject
+    lateinit var mGoogleSignInClient:GoogleSignInClient
 
     val arg:SignupChoicesFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.peacedude.gdtoast.gdToast
+import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.ui.SignupChoicesFragmentArgs
 import com.peacedude.lassod_tailor_app.ui.SignupChoicesFragmentDirections
@@ -31,6 +32,7 @@ class RegisterForActivityResult(
     }
     private val gso: GoogleSignInOptions by lazy {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(activity.getString(R.string.client_id))
             .requestEmail()
             .build()
     }
