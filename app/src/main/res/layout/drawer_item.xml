@@ -74,7 +74,7 @@
             />
 
         <TextView
-            android:id="@+id/clients_text"
+            android:id="@+id/clients_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/clients"

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:elevation="@dimen/_15sdp"
-    android:background="@color/colorAccent"
-    tools:context=".ui.ProfileManagementFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.clientmanagement.ClientFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/profile_management_appBar"
+        android:id="@+id/client_management_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
@@ -18,11 +15,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <include
-            android:id="@+id/profile_management_toolbar"
+            android:id="@+id/client_management_toolbar"
             layout="@layout/reusable_toolbar" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/profile_management_tabLayout"
+            android:id="@+id/client_management_tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
@@ -33,11 +30,11 @@
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include android:id="@+id/profile_management_included_viewPager"
+    <include android:id="@+id/client_management_included_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         layout="@layout/reusable_viewpager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_management_appBar"/>
-
-
+        app:layout_constraintTop_toBottomOf="@id/client_management_appBar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
 import com.peacedude.lassod_tailor_app.R
@@ -43,10 +45,22 @@ class ProfileActivity : BaseActivity() {
     private val greeting: TextView by lazy{
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
+    val destinationChangedListener by lazy {
+        NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            when(destination.id){
+                R.id.profileManagementFragment -> profile_header.hide()
+                R.id.clientFragment -> profile_header.hide()
+            }
+
+        }
+    }
+
 
     private lateinit var editBtn:Button
     private lateinit var logoutText:TextView
     private lateinit var logoutImage:ImageView
+    private lateinit var clientImage:ImageView
+    private lateinit var clientText:TextView
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
@@ -66,7 +80,8 @@ class ProfileActivity : BaseActivity() {
             }
 
         }
-        setBottomNavController()
+        bottomNav.setupWithNavController(navController)
+//        setBottomNavController()
 
 
 //        setSupportActionBar(profile_toolbar)
@@ -80,10 +95,16 @@ class ProfileActivity : BaseActivity() {
             drawer_layout.openDrawer(profile_drawer_view, true)
         }
 
+
+        navController.addOnDestinationChangedListener(destinationChangedListener)
+
         buttonTransactions({
             editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
             logoutText = profile_drawer_view.findViewById(R.id.logout_tv)
             logoutImage = profile_drawer_view.findViewById(R.id.logout_image)
+            clientText = profile_drawer_view.findViewById(R.id.clients_tv)
+            clientImage = profile_drawer_view.findViewById(R.id.client_image)
+
         },{
             editBtn.setOnClickListener {
                 navController.navigate(R.id.profileManagementFragment)
@@ -97,36 +118,22 @@ class ProfileActivity : BaseActivity() {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
                 logoutRequest()
             }
+            clientText.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                goto(R.id.clientFragment)
+            }
+            clientImage.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                goto(R.id.clientFragment)
+            }
         })
         Log.i(title, "Oncreate")
 
 
     }
 
-    private fun setBottomNavController() {
-        navController.setGraph(R.navigation.profile_bottom_nav_graph)
-        bottomNav.setupWithNavController(navController)
-        setBottomNavNavigation()
-    }
-
-    private fun setBottomNavNavigation() {
-        bottomNav.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.mediaFragment -> {
-                    R.id.mediaFragment2
-                    true
-                }
-                R.id.profileFragment -> {
-                    R.id.profileFragment2
-                    true
-                }
-                R.id.messageFragment -> {
-                    R.id.messageFragment2
-                    true
-                }
-                else -> false
-            }
-        }
+    private fun goto(destinationId:Int) {
+        navController.navigate(destinationId)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -154,15 +161,11 @@ class ProfileActivity : BaseActivity() {
         Log.i(title, "Token $token")
         val user = authViewModel.currentUser
 
-
-
 //        getUserData()
 
     }
 
     override fun onBackPressed() {
-
-
         finish()
 //        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
 //            drawer_layout.closeDrawer(GravityCompat.START)
@@ -171,6 +174,11 @@ class ProfileActivity : BaseActivity() {
 //            super.onBackPressed()
 //        }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        navController.removeOnDestinationChangedListener(destinationChangedListener)
     }
 
     @SuppressLint("SetTextI18n")

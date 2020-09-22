@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     android:background="@color/colorAccent"
+    android:elevation="@dimen/_10sdp"
     app:layout_constraintTop_toTopOf="parent">
 
     <LinearLayout
