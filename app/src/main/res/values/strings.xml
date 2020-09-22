@@ -103,4 +103,5 @@
     <string name="email_confirmation_str">Email confirmation</string>
     <string name="email_confirmation_advice_str">Your email has been verified successfully</string>
     <string name="email_address_or_phone_str">Email or Phone No</string>
+    <string name="you_have_not_added_str">You have not added client yet</string>
 </resources>

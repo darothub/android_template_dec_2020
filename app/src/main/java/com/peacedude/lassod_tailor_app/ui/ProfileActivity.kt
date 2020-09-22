@@ -28,6 +28,7 @@ import com.peacedude.lassod_tailor_app.ui.adapters.ProfileViewPagerAdapter
 import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_profile.view.*
 import javax.inject.Inject
 
 class ProfileActivity : BaseActivity() {
@@ -77,8 +78,8 @@ class ProfileActivity : BaseActivity() {
             }
 
         }
+        setBottomNavController()
 
-        bottomNav.setupWithNavController(navController)
 
 //        setSupportActionBar(profile_toolbar)
 //
@@ -113,6 +114,33 @@ class ProfileActivity : BaseActivity() {
 
 
     }
+
+    private fun setBottomNavController() {
+        navController.setGraph(R.navigation.profile_bottom_nav_graph)
+        bottomNav.setupWithNavController(navController)
+        setBottomNavNavigation()
+    }
+
+    private fun setBottomNavNavigation() {
+        bottomNav.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.mediaFragment -> {
+                    R.id.mediaFragment2
+                    true
+                }
+                R.id.profileFragment -> {
+                    R.id.profileFragment2
+                    true
+                }
+                R.id.messageFragment -> {
+                    R.id.messageFragment2
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putSerializable(loggedInUserKey, currentUser)

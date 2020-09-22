@@ -28,6 +28,13 @@ interface UserServices {
         @Field("password") password:String
     ):Call<UserResponse<User>>
 
+    @POST("auth/signin")
+    @FormUrlEncoded
+    fun login(
+        @Field("field") field:String,
+        @Field("password") password:String
+    ):Call<UserResponse<User>>
+
     @POST("auth/signup")
     fun registerUser(
         @Body user: User?
