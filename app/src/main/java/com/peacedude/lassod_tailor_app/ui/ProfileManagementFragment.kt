@@ -8,13 +8,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
-import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.ui.adapters.ProfileViewPagerAdapter
-import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.fragment_login.*
+import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_profile_management.*
 
 
@@ -25,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_profile_management.*
  */
 class ProfileManagementFragment : Fragment() {
 
-    lateinit var adapter : ProfileViewPagerAdapter
+    lateinit var adapter : ViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -55,7 +51,14 @@ class ProfileManagementFragment : Fragment() {
 
     private fun setupViewPager() {
 
-        adapter = ProfileViewPagerAdapter(requireActivity())
+        adapter = ViewPagerAdapter(requireActivity(), 3) { position->
+            when(position){
+                0 -> UserAccountFragment()
+                1 -> SpecialtyFragment()
+                2 -> PaymentMethodFragment()
+                else -> ProfileFragment()
+            }
+        }
         profile_management_viewPager.adapter = adapter
         val tabLayoutMediator = TabLayoutMediator(profile_management_tabLayout, profile_management_viewPager,
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
