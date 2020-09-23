@@ -1,15 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
     tools:context=".ui.clientmanagement.ClientAccountFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:paddingTop="@dimen/_10sdp"
+        >
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/client_account_name_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/name"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <EditText
+            android:id="@+id/client_account_name_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textCapWords|textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="6dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/client_account_phone_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/phone_number"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/client_account_name_et"
+            />
+
+        <EditText
+            android:id="@+id/client_account_phone_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="phone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/client_account_phone_tv"
+            app:layout_constraintTop_toBottomOf="@id/client_account_name_et"
+             />
+
+        <TextView
+            android:id="@+id/client_account_email_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/email_address_str"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/client_account_phone_et"
+            />
+
+        <EditText
+            android:id="@+id/client_account_email_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/client_account_email_tv"
+            app:layout_constraintTop_toBottomOf="@id/client_account_phone_et"
+            />
+
+        <TextView
+            android:id="@+id/client_account_shipping_add_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/shipping_addresss_str"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/client_account_email_et"
+            />
+
+        <EditText
+            android:id="@+id/client_account_shipping_add_et"
+            style="@style/EditProfileEditTextCustomStyle"
+            android:inputType="textMultiLine|textCapWords"
+            android:maxLines="4"
+            android:maxLength="150"
+            android:gravity="start"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginTop="@dimen/_70sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/client_account_shipping_add_tv"
+            app:layout_constraintTop_toBottomOf="@id/client_account_email_et"
+            />
+        <include
+            android:id="@+id/client_account_next_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/client_account_shipping_add_et"
+            android:layout_marginTop="@dimen/_10sdp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

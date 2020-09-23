@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
@@ -37,6 +40,13 @@ class ClientFragment : Fragment() {
         super.onResume()
 
         setupViewPager()
+        val toolbar = (client_management_toolbar as Toolbar)
+        toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark))
+
+        val navController = Navigation.findNavController(client_management_appBar)
+
+
+        NavigationUI.setupWithNavController(toolbar, navController)
     }
 
     private fun setupViewPager() {

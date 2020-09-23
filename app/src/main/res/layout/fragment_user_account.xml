@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
+    android:background="@color/colorAccent"
     android:fitsSystemWindows="true"
     tools:context=".ui.UserAccountFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +61,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line"
             app:layout_constraintBottom_toBottomOf="@id/first_name_tv"
-            android:enabled="false"/>
+            />
 
         <TextView
             android:id="@+id/last_name_tv"
@@ -79,7 +80,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/last_name_tv"
             app:layout_constraintBottom_toBottomOf="@id/first_name_et"
-            android:enabled="false"/>
+            />
 
         <TextView
             android:id="@+id/other_name_tv"
@@ -97,7 +98,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/other_name_tv"
             app:layout_constraintBottom_toBottomOf="@id/last_name_et"
-            android:enabled="false"/>
+            />
 
         <TextView
             android:id="@+id/gender_name_tv"
