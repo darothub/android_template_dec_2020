@@ -108,4 +108,10 @@
     <string name="shipping_addresss_str">Shipping address</string>
     <string name="next">Next</string>
     <string name="add_client">Add client</string>
+    <string name="save">Save</string>
+    <string name="value">Value</string>
+    <string name="limit_update">44/77</string>
+    <string name="add">Add</string>
+    <string name="text_count">--/--</string>
+    <string name="add_measurement">Add measurement</string>
 </resources>

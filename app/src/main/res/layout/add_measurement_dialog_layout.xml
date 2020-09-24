@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    android:background="@color/colorAccent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginStart="@dimen/_20sdp"
+            app:layout_constraintStart_toStartOf="parent"/>
+        <LinearLayout
+            android:id="@+id/add_measurement_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_measurement_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:layout_marginTop="@dimen/_35sdp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/add_measurement_et"
+                android:textColor="@color/colorGray"
+                style="@style/EditTextCustomStyle"
+                android:singleLine="true"
+                android:inputType="text"
+                android:hint="@string/name"
+                android:textColorHint="@color/colorGray"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/add_measurement_text_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_count"
+            android:layout_marginEnd="@dimen/_20sdp"
+
+            android:layout_gravity="end"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_measurement_value_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:layout_marginTop="@dimen/_35sdp"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/add_measurement_value_et"
+                android:textColor="@color/colorGray"
+                style="@style/EditTextCustomStyle"
+                android:singleLine="true"
+                android:inputType="text"
+                android:hint="@string/value"
+                android:textColorHint="@color/colorGray"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <include
+            android:id="@+id/add_measurement_save_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/_15sdp"
+            />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/edit_measurement_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edit_measurement_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:textColorHint="@color/colorGray"
+                android:layout_marginTop="@dimen/_35sdp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_measurement_et"
+                    android:textColor="@color/colorGray"
+                    style="@style/EditTextCustomStyle"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:hint="@string/name"
+                    android:maxLength="50"
+                    android:textColorHint="@color/colorGray"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/edit_measurement_text_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_count"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_gravity="end"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edit_measurement_value_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:textColorHint="@color/colorGray"
+                android:layout_marginTop="@dimen/_35sdp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_measurement_value_et"
+                    android:textColor="@color/colorGray"
+                    style="@style/EditTextCustomStyle"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    android:hint="@string/value"
+                    android:maxLength="50"
+                    android:textColorHint="@color/colorGray"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <include
+                android:id="@+id/edit_measurement_save_btn"
+                layout="@layout/button_and_progressbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_15sdp"
+                />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
