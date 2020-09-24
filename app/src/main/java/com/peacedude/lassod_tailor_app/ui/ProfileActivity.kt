@@ -1,8 +1,10 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,12 +13,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import kotlinx.android.synthetic.main.activity_profile.*
 import javax.inject.Inject
@@ -49,7 +53,12 @@ class ProfileActivity : BaseActivity() {
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
                 R.id.profileManagementFragment -> profile_header.hide()
-                R.id.clientFragment -> profile_header.hide()
+                R.id.clientFragment -> {
+                    profile_header.hide()
+                }
+                R.id.clientAccountFragment ->{
+                    profile_fab.alpha = 0.0f
+                }
             }
 
         }
@@ -96,7 +105,7 @@ class ProfileActivity : BaseActivity() {
         }
 
 
-        navController.addOnDestinationChangedListener(destinationChangedListener)
+
 
         buttonTransactions({
             editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
@@ -120,11 +129,11 @@ class ProfileActivity : BaseActivity() {
             }
             clientText.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
-                goto(R.id.clientFragment)
+                startActivity(Intent(this, ClientActivity::class.java))
             }
             clientImage.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
-                goto(R.id.clientFragment)
+                startActivity(Intent(this, ClientActivity::class.java))
             }
         })
         Log.i(title, "Oncreate")
@@ -155,10 +164,10 @@ class ProfileActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        navController.addOnDestinationChangedListener(destinationChangedListener)
         Log.i(title, "OnResume")
         val token = intent.getStringExtra("token")
-        Log.i(title, "Token $token")
+        Log.i(title, "Onresume")
         val user = authViewModel.currentUser
 
 //        getUserData()
@@ -176,9 +185,15 @@ class ProfileActivity : BaseActivity() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.i(title, "On pause")
+        navController.removeOnDestinationChangedListener(destinationChangedListener)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        navController.removeOnDestinationChangedListener(destinationChangedListener)
+
     }
 
     @SuppressLint("SetTextI18n")
