@@ -1,11 +1,19 @@
 package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ProgressBar
+import androidx.core.content.ContextCompat
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import kotlinx.android.synthetic.main.fragment_client_account.*
+import kotlinx.android.synthetic.main.fragment_native_measurement.*
 
 
 /**
@@ -14,9 +22,8 @@ import com.peacedude.lassod_tailor_app.R
  * create an instance of this fragment.
  */
 class NativeMeasurementFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var saveBtn: Button
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +35,25 @@ class NativeMeasurementFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_native_measurement, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val saveBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
+        saveBtnBackground?.colorFilter = PorterDuffColorFilter(
+            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+            PorterDuff.Mode.SRC_IN
+        )
+
+        buttonTransactions({
+            saveBtn = native_measurement_save_btn.findViewById(R.id.btn)
+            progressBar = native_measurement_save_btn.findViewById(R.id.progress_bar)
+        },{
+            saveBtn.text = getString(R.string.save_changes)
+            saveBtn.background = saveBtnBackground
+            saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+        })
     }
 
 }

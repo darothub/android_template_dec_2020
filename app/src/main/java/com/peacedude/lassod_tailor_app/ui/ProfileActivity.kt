@@ -83,9 +83,9 @@ class ProfileActivity : BaseActivity() {
         savedInstanceState?.let {instateBundle ->
             instateBundle.apply {
                 authViewModel.header = this["header"] as String?
-                (this[loggedInUserKey] as User).let {
-                    authViewModel.currentUser = it
-                }
+//                (this[loggedInUserKey] as User).let {
+//                    authViewModel.currentUser = it
+//                }
             }
 
         }
