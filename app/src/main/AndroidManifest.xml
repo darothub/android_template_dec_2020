@@ -37,6 +37,7 @@ package="com.peacedude.lassod_tailor_app">
     <activity android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity"
         android:theme="@style/ProfileActivityTheme"
         android:label="@string/add_client"
+        android:parentActivityName=".ui.ProfileActivity"
         />
 
     <activity android:name=".ui.BaseActivity" />

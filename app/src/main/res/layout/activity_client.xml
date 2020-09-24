@@ -5,30 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.clientmanagement.ClientActivity">
+    <include
+        android:id="@+id/client_activity_toolbar"
+        layout="@layout/activity_client_toolbar" />
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/client_activity_appBar"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/client_activity_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:elevation="@dimen/_15sdp"
-        app:layout_constraintTop_toTopOf="parent">
+        app:tabIndicatorHeight="3dp"
+        app:layout_constraintTop_toBottomOf="@id/client_activity_toolbar"
+        app:tabSelectedTextColor="@color/colorPrimary">
 
-        <include
-            android:id="@+id/client_activity_toolbar"
-            layout="@layout/activity_client_toolbar" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/client_activity_tabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabIndicatorHeight="3dp"
-            app:tabSelectedTextColor="@color/colorPrimary">
-
-        </com.google.android.material.tabs.TabLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+    </com.google.android.material.tabs.TabLayout>
 
     <include
         android:id="@+id/client_activity_included_viewPager"
@@ -36,6 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/client_activity_appBar" />
+        app:layout_constraintTop_toBottomOf="@id/client_activity_tabLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,7 +22,10 @@ class ClientActivity : AppCompatActivity() {
 
 
         setupViewPager()
-        setSupportActionBar(client_management_toolbar as Toolbar?)
+        val toolbar = (client_activity_toolbar as Toolbar?)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar?.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
 
     }
 
