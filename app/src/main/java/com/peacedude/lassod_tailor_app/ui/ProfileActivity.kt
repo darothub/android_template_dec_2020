@@ -138,6 +138,11 @@ class ProfileActivity : BaseActivity() {
         })
         Log.i(title, "Oncreate")
 
+        profile_fab.setOnClickListener {
+            drawer_layout.closeDrawer(profile_drawer_view, true)
+            startActivity(Intent(this, ClientActivity::class.java))
+        }
+
 
     }
 

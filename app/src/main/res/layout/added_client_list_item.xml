@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/rounded_blue_outline_white_backgrnd"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    android:padding="8dp"
+    android:layout_margin="10dp"
+    android:layout_height="40dp">
+
+    <ImageView
+        android:id="@+id/client_profile_thumbnail"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="start|center"
+        android:layout_weight="1"
+
+        app:srcCompat="@drawable/profile_image_thumbnail"/>
+    <TextView
+        android:id="@+id/client_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_blank_fragment"
+        android:layout_gravity="start|center"
+        android:layout_weight="1"
+        app:layout_constraintStart_toEndOf="@id/client_profile_thumbnail"
+       />
+    <TextView
+        android:id="@+id/client_location_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_blank_fragment"
+        android:layout_gravity="start|center"
+        android:gravity="end"
+        android:layout_weight="1"
+        app:layout_constraintStart_toEndOf="@id/client_profile_thumbnail"
+        />
+
+
+</LinearLayout>
