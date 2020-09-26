@@ -227,12 +227,7 @@ class PhoneSignupFragment : DaggerFragment() {
             country == getString(R.string.select_your_country_str) -> requireActivity().gdToast(getString(R.string.select_your_country_str), Gravity.BOTTOM)
             checkForEmpty != null -> {
                 val pattern = Regex("""phone_number|password""")
-                checkForEmpty.error = getString(R.string.field_required)
-                val nameFinder = pattern.find(resources.getResourceEntryName(checkForEmpty.id) )?.value
-                val nameSplit = nameFinder?.split("_")
-                val editTextName = if(nameSplit?.size!! > 1) "${nameSplit[0]} ${nameSplit[1]}" else nameSplit[0]
-                requireActivity().gdErrorToast("$editTextName is empty", Gravity.BOTTOM)
-
+                requireActivity().getEditTextName(checkForEmpty, pattern)
             }
             validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
             !checkPhoneStandard -> requireActivity().gdErrorToast("Invalid phone number", Gravity.BOTTOM)

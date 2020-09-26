@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.lifecycle.*
 import com.peacedude.gdtoast.gdErrorToast
@@ -195,5 +196,15 @@ private fun Activity.hideKeyboard() {
     }
 
 
+}
+
+fun Activity.getEditTextName(checkForEmpty: EditText, pattern: Regex) {
+    checkForEmpty.error = getString(R.string.field_required)
+    val nameFinder =
+        pattern.find(resources.getResourceEntryName(checkForEmpty.id))?.value
+    val nameSplit = nameFinder?.split("_")
+    val editTextName =
+        if (nameSplit?.size!! > 1) "${nameSplit[0]} ${nameSplit[1]}" else nameSplit[0]
+    gdErrorToast("$editTextName is empty", Gravity.BOTTOM)
 }
 
