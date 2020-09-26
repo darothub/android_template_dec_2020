@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.AuthResponse
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface

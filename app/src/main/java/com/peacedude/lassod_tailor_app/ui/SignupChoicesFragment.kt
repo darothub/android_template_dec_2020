@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -28,10 +29,7 @@ import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
-import com.peacedude.lassod_tailor_app.helpers.CustomWebViewClient
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.goto
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
@@ -155,14 +153,33 @@ class SignupChoicesFragment : DaggerFragment() {
         )
 
         google_sign_in_button.setOnClickListener {
+            val registerForActivity = RegisterForActivityResult.getInstance(
+                requireActivity().activityResultRegistry,
+                requireActivity()
+            )
+            val data = registerForActivity.onCreate(this)
+            data.observe(viewLifecycleOwner, Observer {
+                val name = it?.familyName
+                val email = it?.email
+                val password = ""
+
+//                val loginRequest = userViewModel.loginUserRequest(email.toString(), password)
+//                requireActivity().requestObserver(null, null, loginRequest){bool, result->
+//                    onRequestResponseTask(bool, result){
+//
+//                    }
+//
+//                }
+                Log.i(title, "email $email")
+            })
 //            webviev.webChromeClient = CustomWebViewClient()
 //            val setting = webviev.settings
 //            setting.javaScriptEnabled = true
 //            webviev.loadUrl("https://obioma-staging.herokuapp.com/api/v1/auth/google")
-            Log.i(title, "Here")
-            Log.i(title, "OKCODE1 ${Activity.RESULT_OK} ")
-            val intent = mGoogleSignInClient.signInIntent
-            someActivityResultLauncher.launch(intent)
+//            Log.i(title, "Here")
+//            Log.i(title, "OKCODE1 ${Activity.RESULT_OK} ")
+//            val intent = mGoogleSignInClient.signInIntent
+//            someActivityResultLauncher.launch(intent)
 //            startActivityForResult(intent, RC_SIGN_IN)
         }
 

@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.show
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client_account.*
 import kotlinx.android.synthetic.main.fragment_native_measurement.*
 import kotlinx.android.synthetic.main.fragment_signup.*
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_signup.*
  * Use the [NativeMeasurementFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NativeMeasurementFragment : Fragment() {
+class NativeMeasurementFragment : DaggerFragment() {
     private lateinit var saveBtn: Button
     private lateinit var progressBar: ProgressBar
     private val dialog by lazy {

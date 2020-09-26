@@ -131,41 +131,6 @@ class LoginFragment : DaggerFragment() {
         forgot_password_tv.setOnClickListener {
             goto(R.id.forgotPassword)
         }
-        val someActivityResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(),
-            ActivityResultCallback {result ->
-
-                if (result.resultCode == Activity.RESULT_OK){
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    task.addOnCompleteListener {
-                        if(it.isSuccessful){
-                            val account: GoogleSignInAccount? =
-                                it.getResult(ApiException::class.java)
-
-                            val idToken = it.result?.idToken
-                            val email = account?.email
-                            val lastName = account?.familyName
-                            val firstName = account?.givenName
-                            val otherName = account?.displayName
-                            val imageUrl = account?.photoUrl
-
-                            val newUser = User(firstName, lastName, otherName, "", "")
-                            newUser.email = email
-                            newUser.token = idToken
-                            Log.i(title, "idToken $idToken")
-                            requireActivity().gdToast("Aunthentication successful", Gravity.BOTTOM)
-//                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
-//                            action.newUser = newUser
-//                            goto(action)
-
-                            Log.i(title, "token $firstName")
-//                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
-                        }
-                    }
-                }
-
-            }
-        )
         login_google_sign_in_button.setOnClickListener {
             val registerForActivity = RegisterForActivityResult.getInstance(
                 requireActivity().activityResultRegistry,
@@ -174,8 +139,17 @@ class LoginFragment : DaggerFragment() {
             val data = registerForActivity.onCreate(this)
             data.observe(viewLifecycleOwner, Observer {
                 val name = it?.familyName
+                val email = it?.email
+                val password = ""
 
-                Log.i(title, "name $name")
+//                val loginRequest = userViewModel.loginUserRequest(email.toString(), password)
+//                requireActivity().requestObserver(null, null, loginRequest){bool, result->
+//                    onRequestResponseTask(bool, result){
+//
+//                    }
+//
+//                }
+                Log.i(title, "email $email")
             })
 //            val intent = mGoogleSignInClient.getSignInIntent()
 //            someActivityResultLauncher.launch(intent)

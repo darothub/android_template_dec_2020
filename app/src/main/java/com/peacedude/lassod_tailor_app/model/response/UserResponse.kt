@@ -12,12 +12,7 @@ class UserResponse<T>(
     val data: T
 ) : ParentData, Serializable
 
-class AuthResponse(
-    val status: Int?,
-    val message: String?,
-    val error: List<String>?,
-    val data: String?
-) : ParentData, Serializable
+
 
 
 

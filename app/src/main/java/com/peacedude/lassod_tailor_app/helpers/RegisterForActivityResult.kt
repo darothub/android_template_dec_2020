@@ -83,28 +83,6 @@ class RegisterForActivityResult(
                             val account: GoogleSignInAccount? =
                                 it.getResult(ApiException::class.java)
                             responseLiveData.value = account
-
-//                            val idToken = it.result?.idToken
-//                            val email = account?.email
-//                            val lastName = account?.familyName
-//                            val firstName = account?.givenName
-//                            val otherName = account?.displayName
-//                            val imageUrl = account?.photoUrl
-//                            val category = arg?.category
-//                            val newUser = User(firstName, lastName, otherName, category, null)
-//                            newUser.email = email
-//                            newUser.token = idToken
-//                            (owner as? Activity)?.gdToast(
-//                                "Authentication successful",
-//                                Gravity.BOTTOM
-//                            )
-//                            val action =
-//                                SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
-//                            action.newUser = newUser
-//                            (owner as? Fragment)?.goto(action)
-//
-//                            Log.i(title, "token $firstName")
-//                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
                         } else {
                             (owner as? Activity)?.gdToast(
                                 "Authentication Unsuccessful",
@@ -121,7 +99,7 @@ class RegisterForActivityResult(
         return responseLiveData
     }
 
-    fun signInWithGoogle() {
+    private fun signInWithGoogle() {
         val intent = mGoogleSignInClient.signInIntent
         getContent.launch(intent)
     }

@@ -10,11 +10,12 @@ import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_client.*
 import kotlinx.android.synthetic.main.fragment_client.*
 
-class ClientActivity : AppCompatActivity() {
+class ClientActivity : BaseActivity() {
     lateinit var adapter : ViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

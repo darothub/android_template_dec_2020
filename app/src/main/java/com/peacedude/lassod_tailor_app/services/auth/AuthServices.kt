@@ -1,7 +1,7 @@
 package com.peacedude.lassod_tailor_app.services.auth
 
+import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.AuthResponse
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -27,6 +27,12 @@ interface AuthServices {
         @Field("password") password: String,
         @Field("confirmPassword") cpassword: String
     ): Call<UserResponse<String>>
+
+    @POST("auth/client")
+    fun addClient(
+        @Header("Authorization") header: String,
+        @Body client: Client
+    ): Call<UserResponse<Client>>
 
 
 }

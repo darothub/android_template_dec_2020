@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.network.user
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
@@ -13,8 +14,6 @@ interface ViewModelInterface {
     var saveUser:ArrayList<String>
     var profileData:User?
     var header:String?
-
-
     fun activateUser(phoneNumber:String, code: String):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
@@ -45,6 +44,9 @@ interface ViewModelInterface {
         TODO()
     }
     fun resetPassword(header: String?, password: String?, cpasswod:String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
+    fun addClient(header: String?, client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
 }
