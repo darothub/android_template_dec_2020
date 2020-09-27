@@ -2,13 +2,16 @@ package com.peacedude.lassod_tailor_app.utils.storage
 
 import androidx.security.crypto.EncryptedSharedPreferences
 import com.google.gson.Gson
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
-class EncryptedSharedPrefManager @Inject constructor(val sharedPref: EncryptedSharedPreferences):StorageRequest {
-    private val editor = sharedPref.edit()
-    val gson: Gson = Gson()
+class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: EncryptedSharedPreferences):StorageRequest {
+    override var sharedPrefer: EncryptedSharedPreferences = sharedPref
+    override var editor = sharedPrefer.edit()
+    override var gson: Gson = Gson()
     override fun clearData() {
         editor.apply {
             clear()
@@ -37,24 +40,30 @@ class EncryptedSharedPrefManager @Inject constructor(val sharedPref: EncryptedSh
             }
     }
 
-    override fun getUserData(user: String): User? {
-        return gson.fromJson(user, User::class.java)
-    }
-
-    override fun checkUser(key: String): User? {
-        when {
-            sharedPref.contains(key) ->{
-                val result = sharedPref.getString(key, "")
-                return result?.let { getUserData(it) }
-            }
-        }
-        return null
-    }
+//    override fun <T : Any> getUserData(data: String, klass: KClass<T>): T? {
+//        if(klass.objectInstance != null){
+//            return gson.fromJson(data, klass.objectInstance!!::class.java)
+//        }
+//        else{
+//            return null
+//        }
+//    }
+//
+//
+//    override fun <T:Any>checkUser(key: String, klass: KClass<T>): T? {
+//        when {
+//            sharedPrefer.contains(key) ->{
+//                val result = sharedPrefer.getString(key, "")
+//                return result?.let { getUserData(it, klass) }
+//            }
+//        }
+//        return null
+//    }
 
     override fun clearByKey(key: String): Boolean {
-        val data = sharedPref.contains(key)
+        val data = sharedPrefer.contains(key)
         if (data){
-            sharedPref.edit().apply {
+            sharedPrefer.edit().apply {
                 remove(key)
                 apply()
             }

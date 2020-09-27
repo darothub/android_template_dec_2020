@@ -51,7 +51,7 @@ class SpecialtyFragment : DaggerFragment() {
     private lateinit var saveBtn: Button
     private lateinit var progressBar: ProgressBar
     val currentUser: User? by lazy {
-        storageRequest.checkUser(loggedInUserKey)
+        authViewModel.currentUser
     }
     val token by lazy {
         currentUser?.token
@@ -59,9 +59,6 @@ class SpecialtyFragment : DaggerFragment() {
     val header by lazy {
         "$bearer $token"
     }
-
-    @Inject
-    lateinit var storageRequest: StorageRequest
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory

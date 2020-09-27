@@ -30,44 +30,4 @@
         android:name="com.peacedude.lassod_tailor_app.ui.ProfileManagementFragment"
         android:label="Edit profile"
         tools:layout="@layout/fragment_profile_management" />
-    <fragment
-        android:id="@+id/clientFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientFragment"
-        android:label="Add client"
-        tools:layout="@layout/fragment_client" />
-    <fragment
-        android:id="@+id/clientAccountFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientAccountFragment"
-        android:label="fragment_client_account"
-        tools:layout="@layout/fragment_client_account" >
-        <action
-            android:id="@+id/action_clientAccountFragment_to_nativeMeasurementFragment"
-            app:destination="@id/nativeMeasurementFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/nativeMeasurementFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.NativeMeasurementFragment"
-        android:label="NativeMeasurementFragment">
-        <argument
-            android:name="client"
-            android:defaultValue="@null"
-            app:argType="com.peacedude.lassod_tailor_app.model.request.Client"
-            app:nullable="true" />
-        <deepLink
-            android:id="@+id/deepLink3"
-            app:uri="android-app://obioma/{client}" />
-    </fragment>
-    <fragment
-        android:id="@+id/englishMeasurementFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.EnglishMeasurementFragment"
-        android:label="EnglishMeasurementFragment">
-        <argument
-            android:name="client"
-            android:defaultValue="@null"
-            app:argType="com.peacedude.lassod_tailor_app.model.request.Client"
-            app:nullable="true" />
-        <deepLink
-            android:id="@+id/deepLink4"
-            app:uri="android-app://obioma/{client}" />
-    </fragment>
 </navigation>

@@ -36,9 +36,9 @@ class ProfileActivity : BaseActivity() {
         profile_drawer_view.findViewById<TextView>(R.id.profile_name)
     }
     //Get logged-in user
-    private val currentUser: User? by lazy {
-        authViewModel.currentUser
-    }
+//    private val currentUser: User? by lazy {
+//        authViewModel.currentUser
+//    }
 
     private val header by lazy {
         authViewModel.header
@@ -81,12 +81,12 @@ class ProfileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         savedInstanceState?.let {instateBundle ->
-            instateBundle.apply {
-                authViewModel.header = this["header"] as String?
+//            instateBundle.apply {
+//                authViewModel.header = this["header"] as String?
 //                (this[loggedInUserKey] as User).let {
 //                    authViewModel.currentUser = it
 //                }
-            }
+//            }
 
         }
         bottomNav.setupWithNavController(navController)
@@ -152,8 +152,8 @@ class ProfileActivity : BaseActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(loggedInUserKey, currentUser)
-        outState.putString("header", header)
+//        outState.putSerializable(loggedInUserKey, currentUser)
+//        outState.putString("header", header)
 
     }
 
@@ -173,7 +173,7 @@ class ProfileActivity : BaseActivity() {
         Log.i(title, "OnResume")
         val token = intent.getStringExtra("token")
         Log.i(title, "Onresume")
-        val user = authViewModel.currentUser
+//        val user = authViewModel.currentUser
 
 //        getUserData()
 
@@ -212,8 +212,8 @@ class ProfileActivity : BaseActivity() {
                 val user = userDetails?.data
                 greeting.text = "Hi ${user?.firstName}"
                 profileName.text = "${user?.firstName} ${user?.lastName}"
-                authViewModel.currentUser = user
-                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
+                authViewModel?.currentUser = user
+//                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
             }
         })
     }

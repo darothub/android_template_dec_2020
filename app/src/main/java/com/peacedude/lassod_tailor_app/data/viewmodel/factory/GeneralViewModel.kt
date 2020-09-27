@@ -16,13 +16,16 @@ import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
+import com.peacedude.lassod_tailor_app.network.storage.checkData
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
+import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -41,16 +44,20 @@ open class GeneralViewModel @Inject constructor(
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
-    final override var currentUser: User? = storageRequest.checkUser(loggedInUserKey)
+    final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey)
         set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
 
     override var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
 
-    override var profileData = storageRequest.checkUser(profileDataKey)
-        set(currentUser) = storageRequest.keepData(currentUser, profileDataKey)
 
+    override var profileData = storageRequest.checkData<User>(profileDataKey)
+        set(currentUser) = storageRequest.keepData(currentUser, profileDataKey)
     override var header: String? = null
         get() = "$bearer ${currentUser?.token}"
+
+    override var newClient: Client? = storageRequest.checkData<Client>(newClientKey)
+        set(currentClient) = storageRequest.keepData(currentClient, newClientKey)
+    override var saveClient = storageRequest.saveData(newClient, newClientKey)
 
 
     fun onFailureResponse(

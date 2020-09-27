@@ -16,7 +16,8 @@
 
         <include
             android:id="@+id/client_management_toolbar"
-            layout="@layout/reusable_toolbar" />
+            android:visibility="gone"
+            layout="@layout/activity_client_toolbar" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/client_management_tabLayout"
@@ -30,11 +31,25 @@
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include android:id="@+id/client_management_included_viewPager"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/client_management_included_viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        layout="@layout/reusable_viewpager"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/client_management_appBar"/>
+        app:layout_constraintTop_toBottomOf="@id/client_management_appBar">
+
+    </androidx.viewpager2.widget.ViewPager2>
+
+    <include
+        android:id="@+id/client_account_next_btn2"
+        layout="@layout/button_and_progressbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".6"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:visibility="gone"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

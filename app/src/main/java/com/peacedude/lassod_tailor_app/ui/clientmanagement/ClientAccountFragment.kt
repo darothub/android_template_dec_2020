@@ -4,6 +4,7 @@ import IsEmptyCheck
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,14 +14,27 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getEditTextName
+import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.model.request.Client
+import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_client.*
 import kotlinx.android.synthetic.main.fragment_client_account.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import kotlinx.android.synthetic.main.fragment_user_account.*
+import javax.inject.Inject
 
 
 /**
@@ -28,10 +42,18 @@ import kotlinx.android.synthetic.main.fragment_user_account.*
  * Use the [ClientAccountFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ClientAccountFragment : Fragment(){
-
+class ClientAccountFragment : DaggerFragment(){
+    private val title by lazy {
+        getName()
+    }
     private lateinit var nextBtn: Button
     private lateinit var progressBar: ProgressBar
+
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val authViewModel: AuthViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +77,12 @@ class ClientAccountFragment : Fragment(){
             PorterDuff.Mode.SRC_IN
         )
 
+        val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
+        Log.i(title, "size of fragment1 $navHostFragment")
+        val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
+
+
+        (parentFragment as? ClientFragment)?.setItem(2)
         buttonTransactions({
             nextBtn = client_account_next_btn.findViewById(R.id.btn)
             progressBar = client_account_next_btn.findViewById(R.id.progress_bar)
@@ -64,6 +92,7 @@ class ClientAccountFragment : Fragment(){
             nextBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         }) {
             nextBtn.setOnClickListener {
+                Log.i(title, "here2")
                 val clientName = client_account_name_et.text.toString().trim()
                 var clientPhoneNumber = client_account_phone_number_et.text.toString().trim()
                 val clientShippingAddress = client_account_shipping_address_et.text.toString().trim()
@@ -81,7 +110,12 @@ class ClientAccountFragment : Fragment(){
                     validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
 
                     else->{
+
                         val client = Client(clientName, clientPhoneNumber, clientEmail, clientShippingAddress)
+                        authViewModel.newClient = client
+                        Log.i(title, "newclient ${client.name}")
+//                        val action = "android-app://obioma/nativemeasurement/$client".toUri()
+                        parent.setItem(1)
                     }
                 }
             }

@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.model.request.Client
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_english_measurement.*
 import kotlinx.android.synthetic.main.fragment_native_measurement.*
@@ -60,6 +61,9 @@ class EnglishMeasurementFragment : DaggerFragment() {
     }
     lateinit var addMeasurementLayout:View
     lateinit var dialogTitle: TextView
+
+    var client: Client? = Client("","", "", "")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -75,6 +79,10 @@ class EnglishMeasurementFragment : DaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+
+        arguments?.let {
+
+        }
         addMeasurementLayout = dialog.findViewById(R.id.add_measurement_ll)
         dialogTitle = dialog.findViewById(R.id.dialog_title)
         val saveBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)

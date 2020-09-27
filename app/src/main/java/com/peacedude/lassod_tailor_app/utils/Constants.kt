@@ -5,4 +5,5 @@ const val BASE_URL  = ""
 const val loggedInUserKey = "loggedInUser"
 const val bearer = "Bearer"
 const val profileDataKey = "profileData"
+const val newClientKey = "newclientkey"
 data class RecyclerItem(val text: String, val selected: Boolean = false)

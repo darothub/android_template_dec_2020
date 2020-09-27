@@ -12,8 +12,10 @@ import com.peacedude.lassod_tailor_app.utils.profileDataKey
 interface ViewModelInterface {
     var currentUser: User?
     var saveUser:ArrayList<String>
+    var saveClient:ArrayList<String>
     var profileData:User?
     var header:String?
+    var newClient:Client?
     fun activateUser(phoneNumber:String, code: String):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }

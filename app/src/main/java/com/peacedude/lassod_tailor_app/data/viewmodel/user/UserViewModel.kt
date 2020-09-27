@@ -26,13 +26,13 @@ class UserViewModel @Inject constructor(
     override val title: String by lazy {
         this.getName()
     }
-    val registeringUser:String by lazy {
-        "registeringUser"
-    }
-    var storeData:User? = storage.checkUser(registeringUser)
-        set(user) = storage.keepData(user, registeringUser)
-
-    val clearSavedUser= storage.clearByKey(registeringUser)
+//    val registeringUser:String by lazy {
+//        "registeringUser"
+//    }
+//    var storeData:User? = storage.checkUser(registeringUser)
+//        set(user) = storage.keepData(user, registeringUser)
+//
+//    val clearSavedUser= storage.clearByKey(registeringUser)
 
     override fun registerUser(user: User?): LiveData<ServicesResponseWrapper<ParentData>> {
 
