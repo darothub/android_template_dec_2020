@@ -78,11 +78,8 @@ class ClientAccountFragment : DaggerFragment(){
         )
 
         val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
-        Log.i(title, "size of fragment1 $navHostFragment")
         val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
 
-
-        (parentFragment as? ClientFragment)?.setItem(2)
         buttonTransactions({
             nextBtn = client_account_next_btn.findViewById(R.id.btn)
             progressBar = client_account_next_btn.findViewById(R.id.progress_bar)

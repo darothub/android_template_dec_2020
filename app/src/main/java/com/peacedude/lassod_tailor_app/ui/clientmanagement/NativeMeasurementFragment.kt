@@ -4,6 +4,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +14,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.textfield.TextInputEditText
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -23,10 +27,20 @@ import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.Measurement
+import com.peacedude.lassod_tailor_app.utils.RecyclerItem
+import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client_account.*
 import kotlinx.android.synthetic.main.fragment_native_measurement.*
 import kotlinx.android.synthetic.main.fragment_signup.*
+import kotlinx.android.synthetic.main.fragment_specialty.*
+import kotlinx.android.synthetic.main.measurement_item.view.*
+import kotlinx.android.synthetic.main.specialty_layout_item.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -59,8 +73,14 @@ class NativeMeasurementFragment : DaggerFragment() {
     private val dialogAddNameField by lazy {
         dialog.findViewById<TextInputEditText>(R.id.add_measurement_et)
     }
+    private val dialogAddValueField by lazy {
+        dialog.findViewById<TextInputEditText>(R.id.add_measurement_value_et)
+    }
     private val dialogEditNameField by lazy {
         dialog.findViewById<TextInputEditText>(R.id.edit_measurement_et)
+    }
+    private val dialogEditValueField by lazy {
+        dialog.findViewById<TextInputEditText>(R.id.edit_measurement_value_et)
     }
     private val addTextCountTv by lazy {
         dialog.findViewById<TextView>(R.id.add_measurement_text_count_tv)
@@ -97,6 +117,8 @@ class NativeMeasurementFragment : DaggerFragment() {
 
         }
 
+        val measurementList = ArrayList<Measurement>()
+
         addMeasurementLayout = dialog.findViewById(R.id.add_measurement_ll)
         dialogTitle = dialog.findViewById(R.id.dialog_title)
         val saveBtnBackground =
@@ -130,8 +152,28 @@ class NativeMeasurementFragment : DaggerFragment() {
             }
 
         }, {
+            addMeasurementButton.setOnClickListener {
+                val measurementName = dialogAddNameField.text.toString().trim()
+                val measurementValue = dialogAddValueField.text.toString().trim()
 
+                measurementList.add(Measurement(measurementName, measurementValue))
+
+                native_measurement_rv.setupAdapter<Measurement>(R.layout.measurement_item) { adapter, context, list ->
+                    bind { itemView, position, item ->
+                        itemView.measurement_name.text = item?.name
+                        itemView.measurement_value.text = item?.value
+
+                        itemView.measurement_delete_btn.setOnClickListener {
+                            requireActivity().gdToast("Hello I clicked", Gravity.BOTTOM)
+                        }
+                    }
+                    setLayoutManager(StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL))
+                    submitList(measurementList)
+                }
+                dialog.dismiss()
+            }
         })
+
 
 
         dialogAddNameField.textCountListener(addTextCountTv)
@@ -142,12 +184,15 @@ class NativeMeasurementFragment : DaggerFragment() {
             addMeasurementLayout.show()
             dialog.show()
         }
+
+       val c =  authViewModel.newClient
+        Log.i(title, "newclientname ${c?.name}")
     }
 
     fun EditText.textCountListener(tv: TextView) {
         this.doOnTextChanged { text, start, count, after ->
             if (text != null) {
-                tv.text = "${text.length}/50"
+                tv.text = "${text.length}/15"
             }
             return@doOnTextChanged
         }
