@@ -110,8 +110,8 @@ class NativeMeasurementFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_native_measurement, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
 
@@ -167,7 +167,7 @@ class NativeMeasurementFragment : DaggerFragment() {
                             requireActivity().gdToast("Hello I clicked", Gravity.BOTTOM)
                         }
                     }
-                    setLayoutManager(StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL))
+                    setLayoutManager(GridLayoutManager(requireContext(), 3))
                     submitList(measurementList)
                 }
                 dialog.dismiss()
@@ -185,9 +185,10 @@ class NativeMeasurementFragment : DaggerFragment() {
             dialog.show()
         }
 
-       val c =  authViewModel.newClient
+        val c =  authViewModel.newClient
         Log.i(title, "newclientname ${c?.name}")
     }
+
 
     fun EditText.textCountListener(tv: TextView) {
         this.doOnTextChanged { text, start, count, after ->

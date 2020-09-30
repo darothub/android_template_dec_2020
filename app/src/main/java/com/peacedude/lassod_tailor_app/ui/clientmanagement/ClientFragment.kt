@@ -12,6 +12,9 @@ import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
@@ -37,7 +40,7 @@ import kotlinx.android.synthetic.main.fragment_profile_management.*
  * Use the [ClientFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ClientFragment : DaggerFragment() {
+class ClientFragment : DaggerFragment(), LifecycleEventObserver {
     lateinit var adapter: ViewPagerAdapter
     private lateinit var nextBtn: Button
     private lateinit var progressBar: ProgressBar
@@ -55,8 +58,8 @@ class ClientFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_client, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupViewPager()
         val toolbar = (client_management_toolbar as Toolbar)
@@ -141,6 +144,10 @@ class ClientFragment : DaggerFragment() {
     fun setItem(item:Int){
         Log.i(title, "here")
         clientManagementViewPager?.currentItem = item
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        source.lifecycle.addObserver(this)
     }
 
 }
