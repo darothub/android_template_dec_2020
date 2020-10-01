@@ -176,28 +176,18 @@ class EmailSignupFragment : DaggerFragment() {
                         req
                     ) { bool, result ->
                         onRequestResponseTask(bool, result) {
-                            val loginReq = userViewModel.loginUserRequest(
-                                user?.email.toString(),
-                                passwordString
-                            )
-                            requireActivity().requestObserver(
-                                progressBar,
-                                emailSignupBtn,
-                                loginReq
-                            ) { bool, result ->
-                                onRequestResponseTask(bool, result) {
-                                    val userDetails = result as? UserResponse<User>
-                                    val user = userDetails?.data
-                                    user?.loggedIn = true
-                                    userViewModel.currentUser = user
-                                    val res = userViewModel.saveUser
-                                    val loginIntent =
-                                        Intent(requireContext(), ProfileActivity::class.java)
-                                    Log.i("$this", "res ${res.size}")
-                                    startActivity(loginIntent)
-                                    requireActivity().finish()
-                                }
-                            }
+                            val userDetails = result as? UserResponse<User>
+                            val user = userDetails?.data
+                            currentUser?.loggedIn = true
+                            currentUser?.token = user?.token
+//                            userViewModel.currentUser = currentUser
+                            val res = userViewModel.saveUser
+                            val loginIntent =
+                                Intent(requireContext(), ProfileActivity::class.java)
+                            i("$this", "res ${res.size} token ${currentUser?.token}")
+                            startActivity(loginIntent)
+                            requireActivity().finish()
+
                         }
                     }
 

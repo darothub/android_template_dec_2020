@@ -16,10 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.observeRequest
-import com.peacedude.lassod_tailor_app.helpers.onRequestResponseTask
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -51,8 +48,6 @@ class UserAccountFragment : DaggerFragment() {
     val header by lazy {
         authViewModel.header
     }
-    @Inject
-    lateinit var storageRequest: StorageRequest
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
@@ -93,15 +88,17 @@ class UserAccountFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_user_account, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
 
         val saveBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         saveBtnBackground?.colorFilter = PorterDuffColorFilter(
-                ContextCompat.getColor( requireContext(), R.color.colorPrimary),
-        PorterDuff.Mode.SRC_IN
+            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+            PorterDuff.Mode.SRC_IN
         )
 
+        i(title, "header $header token ${currentUser?.token}")
         buttonTransactions({
             saveBtn = account_save_changes_btn.findViewById(R.id.btn)
             progressBar = account_save_changes_btn.findViewById(R.id.progress_bar)
@@ -117,7 +114,7 @@ class UserAccountFragment : DaggerFragment() {
     private fun getUserData(){
         val request = authViewModel.getUserData(header.toString())
         val response = requireActivity().observeRequest(request, null, null)
-        response.observe(this, androidx.lifecycle.Observer {
+        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it
             onRequestResponseTask(bool, result){
                 val resp = result as? UserResponse<User>
@@ -134,7 +131,7 @@ class UserAccountFragment : DaggerFragment() {
                 ward_et.setText(user?.ward?: "")
                 account_lga_et.setText(user?.lga?: "")
                 account_state_et.setText(user?.state?: "Lagos")
-                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
+                i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
 
                 saveBtn.setOnClickListener {
                     if (user != null) {

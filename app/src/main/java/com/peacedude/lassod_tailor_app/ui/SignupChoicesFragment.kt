@@ -107,50 +107,7 @@ class SignupChoicesFragment : DaggerFragment() {
 
         })
 
-        val someActivityResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(),
-            ActivityResultCallback {result ->
 
-                if (result.resultCode == Activity.RESULT_OK){
-                    Log.i(title, "Here Result")
-
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    Log.i(title, "Here isSuccessful ${task.isSuccessful}")
-                    task.addOnCompleteListener {
-                        if(it.isSuccessful){
-                            val account: GoogleSignInAccount? =
-                                it.getResult(ApiException::class.java)
-
-                            val idToken = it.result?.idToken
-                            val email = account?.email
-                            val lastName = account?.familyName
-                            val firstName = account?.givenName
-                            val otherName = account?.displayName
-                            val imageUrl = account?.photoUrl
-                            val category = arg.category
-                            val newUser = User(firstName, lastName, otherName, category, null)
-                            newUser.email = email
-                            newUser.token = idToken
-                            Log.i(title, "idToken $idToken")
-                            requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
-                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
-                            action.newUser = newUser
-                            goto(action)
-
-                            Log.i(title, "token $firstName")
-//                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
-                        }
-                        else{
-                            requireActivity().gdToast("Authentication UNsuccessful", Gravity.BOTTOM)
-                            Log.i(title, "Task not successful")
-                        }
-                    }
-                }else{
-                    Log.i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode }")
-                }
-
-            }
-        )
 
         google_sign_in_button.setOnClickListener {
             val registerForActivity = RegisterForActivityResult.getInstance(
@@ -165,9 +122,23 @@ class SignupChoicesFragment : DaggerFragment() {
                         if (it.isSuccessful) {
                             val account: GoogleSignInAccount? =
                                 it.getResult(ApiException::class.java)
-                            val name = account?.familyName
+                            val idToken = it.result?.idToken
                             val email = account?.email
-                            val password = ""
+                            val lastName = account?.familyName
+                            val firstName = account?.givenName
+                            val otherName = account?.displayName
+                            val imageUrl = account?.photoUrl
+                            val category = arg.category
+                            val newUser = User(firstName, lastName, otherName, category, null)
+                            newUser.email = email
+                            newUser.token = idToken
+                            newUser.imageUrl = imageUrl.toString()
+                            Log.i(title, "idToken $idToken")
+                            userViewModel.currentUser = newUser
+                            requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
+                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
+                            action.newUser = newUser
+                            goto(action)
                         } else {
                             requireActivity().gdToast(
                                 "Authentication Unsuccessful",

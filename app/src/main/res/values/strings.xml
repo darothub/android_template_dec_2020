@@ -29,8 +29,9 @@
 
 
     <string name="app_name">Obioma</string>
-    <string name="client_id">485909312905-nb1ne0scgue264h3v5j6nuc51quoblnj.apps.googleusercontent.com</string>
-    <string name="client_secret">zNCNVHzgd_hhirWUECp0offP</string>
+
+    <string name="client_id">613503245566-ogq6dr43j1l102t6djudnia1ekceg5j3.apps.googleusercontent.com</string>
+    <string name="client_secret">xo8FTx2cZmZN8IvthUl1wT-7</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login">Sign in</string>
     <string name="signup">Sign up</string>

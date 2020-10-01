@@ -43,5 +43,6 @@ open class User(
     var country:String? = ""
     var email:String?=""
     var loggedIn:Boolean = false
+    var imageUrl:String?=null
 }
 
