@@ -115,4 +115,6 @@
     <string name="text_count">--/--</string>
     <string name="add_measurement">Add measurement</string>
     <string name="photo_gallery_str">Photo Gallery</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="photo_uploading_str">Photo uploading</string>
 </resources>

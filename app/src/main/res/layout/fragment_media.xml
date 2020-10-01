@@ -27,18 +27,21 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:textSize="@dimen/_14sdp"
                 android:text="@string/photo_gallery_str"
                 android:layout_weight="1"
                 />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_photo_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/add"
+                android:scaleType="centerCrop"
                 android:background="@color/colorPrimary"
                 app:backgroundTint="@color/colorPrimary"
-                android:elevation="@dimen/_10sdp"
                 android:layout_gravity="end|center_vertical"
+                app:fabCustomSize="@dimen/_30sdp"
                 />
 
         </LinearLayout>

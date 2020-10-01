@@ -47,8 +47,6 @@ import javax.inject.Inject
  */
 class LoginFragment : DaggerFragment() {
 
-
-
     val title: String by lazy {
         getName()
     }
