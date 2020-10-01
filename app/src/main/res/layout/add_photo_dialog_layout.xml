@@ -86,32 +86,4 @@
         android:layout_marginEnd="@dimen/_10sdp"
         app:fabCustomSize="90dp"
         />
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/add_photo_loading_layout"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="@dimen/_150sdp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        android:background="@drawable/dashed_border_drawable"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent">-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/photo_loading_dialog_iv"-->
-<!--            android:layout_width="@dimen/_60sdp"-->
-<!--            android:layout_height="@dimen/_60sdp"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:layout_marginTop="@dimen/_12sdp"-->
-<!--            app:srcCompat="@drawable/cloud_upload_24px"/>-->
-<!--        <TextView-->
-<!--            android:id="@+id/photo_loading_dialog_tv"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/photo_loading_dialog_iv"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:textSize="@dimen/_12sdp"-->
-<!--            android:text="@string/photo_uploading_str"/>-->
-
-<!--    </RelativeLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

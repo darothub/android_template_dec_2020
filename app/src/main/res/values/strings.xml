@@ -117,4 +117,5 @@
     <string name="photo_gallery_str">Photo Gallery</string>
     <string name="upload_photo">Upload photo</string>
     <string name="photo_uploading_str">Photo uploading</string>
+    <string name="you_have_no_photo_str">You have no photo in your gallery</string>
 </resources>
