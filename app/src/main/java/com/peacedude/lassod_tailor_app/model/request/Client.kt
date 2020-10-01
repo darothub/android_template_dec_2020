@@ -6,7 +6,7 @@ import java.io.Serializable
 class Client (val name:String, val phone:String, val email:String, val shippingAddress:String):Serializable,
     ParentData {
     val id:String?=""
-    val tailorId:String?=""
+    val state:String?=""
     val gender:String=""
     val country:String?= ""
 }

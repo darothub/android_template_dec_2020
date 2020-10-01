@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
@@ -97,6 +98,29 @@ open class AuthViewModel @Inject constructor(
             }
 
             override fun onResponse(call: Call<UserResponse<String>>, response: Response<UserResponse<String>>) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
+    }
+
+    override fun addClient(
+        header: String?,
+        client: Client
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.addClient(header.toString(), client)
+        request.enqueue(object : Callback<UserResponse<Client>> {
+            override fun onFailure(call: Call<UserResponse<Client>>, t: Throwable) {
+                Log.i(title, " ${t.localizedMessage}")
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(call: Call<UserResponse<Client>>, response: Response<UserResponse<Client>>) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 
