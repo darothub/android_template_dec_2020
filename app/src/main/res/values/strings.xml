@@ -119,4 +119,10 @@
     <string name="photo_uploading_str">Photo uploading</string>
     <string name="you_have_no_photo_str">You have no photo in your gallery</string>
     <string name="delete">Delete</string>
+    <string name="allow_camera">Allow camera permission</string>
+    <string name="camera_str">Camera</string>
+    <string name="ok_str">Allow</string>
+    <string name="permission_granted_str">Camera permission is already granted</string>
+    <string name="goto_setting">Go to setting</string>
+    <string name="permission_not_granted_str">Permission is not granted</string>
 </resources>

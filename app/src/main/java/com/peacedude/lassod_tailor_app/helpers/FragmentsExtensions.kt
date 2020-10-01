@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.helpers
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -119,3 +120,9 @@ fun Fragment.onRequestResponseTask(
     }
 }
 
+fun Fragment.i(tag:String, message:String){
+    Log.i(tag, message)
+}
+fun Fragment.e(tag:String, message:String){
+    Log.e(tag, message)
+}

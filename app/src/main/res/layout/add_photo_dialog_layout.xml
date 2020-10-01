@@ -70,7 +70,7 @@
 
     </RelativeLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/profile_fab"
+        android:id="@+id/add_photo_dialog_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/add"

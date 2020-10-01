@@ -134,21 +134,30 @@ class LoginFragment : DaggerFragment() {
                 requireActivity().activityResultRegistry,
                 requireActivity()
             )
-            val data = registerForActivity.onCreate(this)
-            data.observe(viewLifecycleOwner, Observer {
-                val name = it?.familyName
-                val email = it?.email
-                val password = ""
+            val intent = mGoogleSignInClient.signInIntent
+            registerForActivity.onCreate(this, intent){result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    task.addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val account: GoogleSignInAccount? =
+                                it.getResult(ApiException::class.java)
+                            val name = account?.familyName
+                            val email = account?.email
+                            val password = ""
+                        } else {
+                            requireActivity().gdToast(
+                                "Authentication Unsuccessful",
+                                Gravity.BOTTOM
+                            )
+                            Log.i(title, "Task not successful")
+                        }
 
-//                val loginRequest = userViewModel.loginUserRequest(email.toString(), password)
-//                requireActivity().requestObserver(null, null, loginRequest){bool, result->
-//                    onRequestResponseTask(bool, result){
-//
-//                    }
-//
-//                }
-                Log.i(title, "email $email")
-            })
+                    }
+                } else {
+                    Log.i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
+                }
+            }
 //            val intent = mGoogleSignInClient.getSignInIntent()
 //            someActivityResultLauncher.launch(intent)
         }
@@ -207,6 +216,15 @@ class LoginFragment : DaggerFragment() {
 //            }
 //        })
 //    }
+
+
+    //                val loginRequest = userViewModel.loginUserRequest(email.toString(), password)
+//                requireActivity().requestObserver(null, null, loginRequest){bool, result->
+//                    onRequestResponseTask(bool, result){
+//
+//                    }
+//
+//                }
 
 
 }

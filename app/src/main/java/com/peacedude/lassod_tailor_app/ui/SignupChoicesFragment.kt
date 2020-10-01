@@ -157,30 +157,31 @@ class SignupChoicesFragment : DaggerFragment() {
                 requireActivity().activityResultRegistry,
                 requireActivity()
             )
-            val data = registerForActivity.onCreate(this)
-            data.observe(viewLifecycleOwner, Observer {
-                val name = it?.familyName
-                val email = it?.email
-                val password = ""
+            val intent = mGoogleSignInClient.signInIntent
+            registerForActivity.onCreate(this, intent){result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                    task.addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val account: GoogleSignInAccount? =
+                                it.getResult(ApiException::class.java)
+                            val name = account?.familyName
+                            val email = account?.email
+                            val password = ""
+                        } else {
+                            requireActivity().gdToast(
+                                "Authentication Unsuccessful",
+                                Gravity.BOTTOM
+                            )
+                            Log.i(title, "Task not successful")
+                        }
 
-//                val loginRequest = userViewModel.loginUserRequest(email.toString(), password)
-//                requireActivity().requestObserver(null, null, loginRequest){bool, result->
-//                    onRequestResponseTask(bool, result){
-//
-//                    }
-//
-//                }
-                Log.i(title, "email $email")
-            })
-//            webviev.webChromeClient = CustomWebViewClient()
-//            val setting = webviev.settings
-//            setting.javaScriptEnabled = true
-//            webviev.loadUrl("https://obioma-staging.herokuapp.com/api/v1/auth/google")
-//            Log.i(title, "Here")
-//            Log.i(title, "OKCODE1 ${Activity.RESULT_OK} ")
-//            val intent = mGoogleSignInClient.signInIntent
-//            someActivityResultLauncher.launch(intent)
-//            startActivityForResult(intent, RC_SIGN_IN)
+                    }
+                } else {
+                    Log.i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
+                }
+            }
+
         }
 
     }

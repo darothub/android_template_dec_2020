@@ -64,7 +64,7 @@
     <include
         android:id="@+id/profile_drawer_view"
         layout="@layout/drawer_item"
-        android:layout_width="@dimen/_200sdp"
+        android:layout_width="@dimen/_250sdp"
         android:layout_height="match_parent"
         android:layout_gravity="start" />
 

@@ -1,17 +1,44 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.Settings
+import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.RegisterForActivityResult
 import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.i
+import com.peacedude.lassod_tailor_app.helpers.show
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_media.*
+import java.io.ByteArrayOutputStream
+import java.util.jar.Manifest
 
-
+const val REQUEST_CODE = 1
+const val GALLERY_PHOTO_CODE = 0
 /**
  * A simple [Fragment] subclass.
  * Use the [MediaFragment.newInstance] factory method to
@@ -26,6 +53,12 @@ class MediaFragment : Fragment() {
             noAutoDismiss()
             customView(R.layout.add_photo_dialog_layout)
         }
+    }
+    private val addPhotoFab by lazy {
+        (dialog.findViewById(R.id.add_photo_dialog_fab) as FloatingActionButton)
+    }
+    private val addPhotoLoaderLayout by lazy {
+        (dialog.findViewById(R.id.add_photo_loading_ll) as LinearLayout)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +84,129 @@ class MediaFragment : Fragment() {
                 cornerRadius(15F)
             }
         }
+
+        ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA), REQUEST_CODE)
+
+        addPhotoFab.setOnClickListener {
+            checkCameraPermission()
+        }
     }
 
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            i(title, "first if here we aee")
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    android.Manifest.permission.CAMERA
+                )
+            ) {
+                i(title, "second if here we aee")
+                val alertBuilder = AlertDialog.Builder(requireActivity())
+                alertBuilder.setTitle(R.string.allow_camera)
+                alertBuilder.setMessage(R.string.camera_str)
+                alertBuilder.setPositiveButton(getString(R.string.ok_str)) { dialog, which ->
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        arrayOf(android.Manifest.permission.CAMERA),
+                        REQUEST_CODE
+                    )
+                }
+                alertBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                    requireActivity().gdToast(
+                        "Permission is needed for photo upload",
+                        Gravity.BOTTOM
+                    )
+                    val settingIntent = Intent()
+                    settingIntent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    val uri = Uri.fromParts("package", requireActivity().packageName, null)
+                    settingIntent.data = uri
+                    startActivity(settingIntent)
+                }
+                val alertDialog = alertBuilder.create()
+                alertDialog.setOnShowListener {
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.colorPrimary
+                        )
+                    )
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.colorPrimary
+                        )
+                    )
+                }
+                alertDialog.show()
+            } else {
+                i(title, "second else Here we aee")
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(android.Manifest.permission.CAMERA),
+                    REQUEST_CODE
+                )
+            }
+        } else {
+            i(title, "first else Here we aee")
+            val galleryIntent = Intent()
+            galleryIntent.type = "image/*"
+            galleryIntent.action = Intent.ACTION_GET_CONTENT
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val chooser = Intent.createChooser(galleryIntent, "Photo options")
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
+            val registerForActivity = RegisterForActivityResult.getInstance(
+                requireActivity().activityResultRegistry,
+                requireActivity()
+            )
+            registerForActivity.onCreate(this, chooser){result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data = result.data
+                    val imageUri = data?.data ?: getImageUriFromBitmap(
+                        requireContext(),
+                        data?.extras?.get("data") as Bitmap
+                    )
+                    addPhotoLoaderLayout.show()
+//                    Picasso.get().load(imageUri).into()
+                    requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
+                } else {
+                    i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
+                }
+            }
+
+//            requireActivity().gdToast(getString(R.string.permission_granted_str), Gravity.BOTTOM)
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == REQUEST_CODE){
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                requireActivity().gdToast(getString(R.string.permission_granted_str), Gravity.BOTTOM)
+            }
+            else{
+                requireActivity().gdToast(getString(R.string.permission_not_granted_str), Gravity.BOTTOM)
+            }
+        }
+        else{
+            requireActivity().gdToast("error code", Gravity.BOTTOM)
+        }
+    }
+
+    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+        return Uri.parse(path.toString())
+    }
 }

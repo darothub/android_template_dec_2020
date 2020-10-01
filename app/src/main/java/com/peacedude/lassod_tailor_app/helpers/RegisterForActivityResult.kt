@@ -1,9 +1,11 @@
 package com.peacedude.lassod_tailor_app.helpers
 
 import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import android.util.Log
 import android.view.Gravity
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
@@ -43,11 +45,13 @@ class RegisterForActivityResult(
         )
     }
 
-    lateinit var getContent: ActivityResultLauncher<Intent>
+
 
 
 
     companion object {
+        lateinit var getContent: ActivityResultLauncher<Intent>
+        lateinit var getResultForPermission:ActivityResultLauncher<String>
         @Volatile private var instance: RegisterForActivityResult? = null
         fun getInstance(registry: ActivityResultRegistry, activity: Activity): RegisterForActivityResult {
             val checkInstance = instance
@@ -69,38 +73,24 @@ class RegisterForActivityResult(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate(owner: LifecycleOwner):LiveData<GoogleSignInAccount?> {
-        val responseLiveData = MutableLiveData<GoogleSignInAccount?>()
+    fun onCreate(owner: LifecycleOwner, intent: Intent, action:(ActivityResult)->Unit) {
         getContent = registry.register(
             "Hello",
             owner,
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    task.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val account: GoogleSignInAccount? =
-                                it.getResult(ApiException::class.java)
-                            responseLiveData.value = account
-                        } else {
-                            (owner as? Activity)?.gdToast(
-                                "Authentication Unsuccessful",
-                                Gravity.BOTTOM
-                            )
-                            Log.i(title, "Task not successful")
-                        }
-                    }
-                } else {
-                    Log.i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
-                }
+                action(result)
             })
-        signInWithGoogle()
-        return responseLiveData
+        launchIntent(intent)
+
     }
 
-    private fun signInWithGoogle() {
-        val intent = mGoogleSignInClient.signInIntent
+
+
+
+
+    private fun launchIntent(intent:Intent) {
+
         getContent.launch(intent)
     }
 }
