@@ -169,7 +169,7 @@ class EmailSignupFragment : DaggerFragment() {
                     val googleAuthHeader = "$bearer ${user?.token.toString()}"
                     user?.password = passwordString
                     var req = userViewModel.registerUser(googleAuthHeader, user)
-                    Log.i(title, "header ${user?.token}")
+                    i(title, "header ${user?.token}")
                     requireActivity().requestObserver(
                         progressBar,
                         emailSignupBtn,
@@ -180,11 +180,11 @@ class EmailSignupFragment : DaggerFragment() {
                             val user = userDetails?.data
                             currentUser?.loggedIn = true
                             currentUser?.token = user?.token
-//                            userViewModel.currentUser = currentUser
+                            userViewModel.currentUser = currentUser
                             val res = userViewModel.saveUser
                             val loginIntent =
                                 Intent(requireContext(), ProfileActivity::class.java)
-                            i("$this", "res ${res.size} token ${currentUser?.token}")
+                            i("$this", "res ${res.size} \ntoken ${user?.token}\ntoken 2${currentUser?.token}")
                             startActivity(loginIntent)
                             requireActivity().finish()
 

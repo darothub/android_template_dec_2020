@@ -208,10 +208,10 @@ fun Activity.getEditTextName(checkForEmpty: EditText, pattern: Regex) {
     gdErrorToast("$editTextName is empty", Gravity.BOTTOM)
 }
 
-fun Activity.i(tag:String, message:String){
+fun Any.i(tag:String, message:String){
     Log.i(tag, message)
 }
-fun Activity.e(tag:String, message:String){
+fun Any.e(tag:String, message:String){
     Log.e(tag, message)
 }
 

@@ -120,9 +120,3 @@ fun Fragment.onRequestResponseTask(
     }
 }
 
-fun Fragment.i(tag:String, message:String){
-    Log.i(tag, message)
-}
-fun Fragment.e(tag:String, message:String){
-    Log.e(tag, message)
-}

@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
@@ -38,9 +39,7 @@ open class GeneralViewModel @Inject constructor(
 ) : ViewModel(), ViewModelInterface {
     @Inject
     lateinit var mGoogleSignInClient: GoogleSignInClient
-    open val title: String by lazy {
-        this.getName()
-    }
+    open val title: String = this.getName()
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
@@ -52,12 +51,12 @@ open class GeneralViewModel @Inject constructor(
 
     override var profileData = storageRequest.checkData<User>(profileDataKey)
         set(currentUser) = storageRequest.keepData(currentUser, profileDataKey)
-    override var header: String? = null
-        get() = "$bearer ${currentUser?.token}"
+    final override var header: String? = "$bearer ${currentUser?.token}"
 
     override var newClient: Client? = storageRequest.checkData<Client>(newClientKey)
         set(currentClient) = storageRequest.keepData(currentClient, newClientKey)
     override var saveClient = storageRequest.saveData(newClient, newClientKey)
+
 
 
     fun onFailureResponse(

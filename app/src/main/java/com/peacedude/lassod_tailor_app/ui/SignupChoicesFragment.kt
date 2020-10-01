@@ -131,10 +131,12 @@ class SignupChoicesFragment : DaggerFragment() {
                             val category = arg.category
                             val newUser = User(firstName, lastName, otherName, category, null)
                             newUser.email = email
-                            newUser.token = idToken
                             newUser.imageUrl = imageUrl.toString()
-                            Log.i(title, "idToken $idToken")
                             userViewModel.currentUser = newUser
+                            newUser.token = idToken
+
+                            i(title, "idToken $idToken")
+
                             requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
                             val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
                             action.newUser = newUser
