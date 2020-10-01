@@ -161,7 +161,7 @@ class UserAccountFragment : DaggerFragment() {
 //        val newUserData = User(firstName, lastName, otherName,category,phone)
         val request = authViewModel.updateUserData(header.toString(), user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
-        response.observe(this, androidx.lifecycle.Observer {
+        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it
             onRequestResponseTask(bool, result){
                 val response = result as? UserResponse<User>
