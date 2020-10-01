@@ -114,4 +114,5 @@
     <string name="add">Add</string>
     <string name="text_count">--/--</string>
     <string name="add_measurement">Add measurement</string>
+    <string name="photo_gallery_str">Photo Gallery</string>
 </resources>
