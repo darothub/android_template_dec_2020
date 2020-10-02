@@ -145,7 +145,27 @@ class LoginFragment : DaggerFragment() {
                             val name = account?.familyName
                             val email = account?.email
                             val password = ""
+                            requireActivity().gdToast(
+                                "Authentication successful",
+                                Gravity.BOTTOM
+                            )
+//                            requireActivity().requestObserver(progressBar, loginBtn,
+//                                userViewModel.loginUserRequest(email, passwordString)
+//                            ) { b, any ->
+//                                onRequestResponseTask(b, any) {
+//                                    val userDetails = any as? UserResponse<User>
+//                                    val user = userDetails?.data
+//                                    user?.loggedIn = true
+//                                    userViewModel.currentUser = user
+//                                    val res = userViewModel.saveUser
+//                                    val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
+//                                    Log.i("$this", "res ${res.size}")
+//                                    startActivity(loginIntent)
+//                                    requireActivity().finish()
+//                                }
+//                            }
                         } else {
+
                             requireActivity().gdToast(
                                 "Authentication Unsuccessful",
                                 Gravity.BOTTOM

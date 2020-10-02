@@ -161,14 +161,14 @@ class SignupChoicesFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
 
-        mGoogleSignInClient.silentSignIn().addOnCompleteListener {task ->
-            when(task.isSuccessful){
-                true -> requireActivity().gdToast("Already signed in", Gravity.BOTTOM)
-
-            }
-
-
-        }
+//        mGoogleSignInClient.silentSignIn().addOnCompleteListener {task ->
+//            when(task.isSuccessful){
+//                true -> requireActivity().gdToast("Already signed in", Gravity.BOTTOM)
+//
+//            }
+//
+//
+//        }
 
     }
 

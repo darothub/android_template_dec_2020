@@ -12,6 +12,6 @@ import dagger.multibindings.IntoMap
 abstract class GeneralViewModelModule {
     @Binds
     @IntoMap
-    @ViewModelKey(AuthViewModel::class)
-    abstract fun bindAuthViewModel(generalViewModel: GeneralViewModel): ViewModel
+    @ViewModelKey(GeneralViewModel::class)
+    abstract fun bindGeneralViewModel(generalViewModel: GeneralViewModel): ViewModel
 }

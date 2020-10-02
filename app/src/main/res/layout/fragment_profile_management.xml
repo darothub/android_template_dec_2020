@@ -33,11 +33,14 @@
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include android:id="@+id/profile_management_included_viewPager"
-        layout="@layout/reusable_viewpager"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/profile_management_included_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_management_appBar"/>
+        app:layout_constraintTop_toBottomOf="@id/profile_management_appBar">
 
+    </androidx.viewpager2.widget.ViewPager2>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

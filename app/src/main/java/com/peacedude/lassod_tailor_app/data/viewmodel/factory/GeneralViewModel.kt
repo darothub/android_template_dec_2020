@@ -118,8 +118,6 @@ open class GeneralViewModel @Inject constructor(
                     Log.i(title, "Hello" + " " + e.message.toString())
                     responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
                 }
-
-
             }
             else -> {
                 try {

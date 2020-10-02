@@ -181,10 +181,13 @@ class EmailSignupFragment : DaggerFragment() {
                             currentUser?.loggedIn = true
                             currentUser?.token = user?.token
                             userViewModel.currentUser = currentUser
-                            val res = userViewModel.saveUser
+//                            val res = userViewModel.saveUser
                             val loginIntent =
                                 Intent(requireContext(), ProfileActivity::class.java)
-                            i("$this", "res ${res.size} \ntoken ${user?.token}\ntoken 2${currentUser?.token}")
+                            i(
+                                "$this",
+                                "res $currentUser \ntoken ${user?.token}\ntoken 2${currentUser?.token}"
+                            )
                             startActivity(loginIntent)
                             requireActivity().finish()
 

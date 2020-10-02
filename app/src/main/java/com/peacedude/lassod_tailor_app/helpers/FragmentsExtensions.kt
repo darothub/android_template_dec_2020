@@ -26,6 +26,7 @@ fun Fragment.goto(destinationId: Int) {
 
 
 
+
 fun setupToolbarAndNavigationUI(toolbar: Toolbar, navController: NavController) {
     NavigationUI.setupWithNavController(toolbar, navController)
 }

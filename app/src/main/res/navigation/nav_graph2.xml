@@ -13,21 +13,22 @@
     <fragment
         android:id="@+id/messageFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.MessageFragment"
-        android:label="fragment_message"
+        android:label=" "
         tools:layout="@layout/fragment_message" />
     <fragment
         android:id="@+id/mediaFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.MediaFragment"
-        android:label="fragment_media"
+        android:label=" "
         tools:layout="@layout/fragment_media" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.ProfileFragment"
-        android:label="fragment_profile"
+        android:label=" "
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/profileManagementFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.ProfileManagementFragment"
         android:label="Edit profile"
-        tools:layout="@layout/fragment_profile_management" />
+        tools:layout="@layout/fragment_profile_management">
+    </fragment>
 </navigation>

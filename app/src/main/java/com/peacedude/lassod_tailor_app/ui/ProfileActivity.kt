@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -49,10 +50,12 @@ class ProfileActivity : BaseActivity() {
     private val greeting: TextView by lazy{
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
-    val destinationChangedListener by lazy {
+    private val destinationChangedListener by lazy {
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
                 R.id.profileManagementFragment -> profile_header.hide()
+                R.id.mediaFragment -> arguments?.putInt("lastFragment",  R.id.mediaFragment)
+                R.id.messageFragment -> arguments?.putInt("lastFragment",  R.id.messageFragment)
                 R.id.clientFragment -> {
                     profile_header.hide()
                 }
@@ -60,11 +63,8 @@ class ProfileActivity : BaseActivity() {
                     profile_fab.alpha = 0.0f
                 }
             }
-
         }
     }
-
-
     private lateinit var editBtn:Button
     private lateinit var logoutText:TextView
     private lateinit var logoutImage:ImageView
@@ -80,26 +80,13 @@ class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        savedInstanceState?.let {instateBundle ->
-//            instateBundle.apply {
-//                authViewModel.header = this["header"] as String?
-//                (this[loggedInUserKey] as User).let {
-//                    authViewModel.currentUser = it
-//                }
-//            }
 
-        }
+        i(title, "Oncreate")
         bottomNav.setupWithNavController(navController)
 //        setBottomNavController()
 
-
-//        setSupportActionBar(profile_toolbar)
-//
-//        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, profile_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-//        drawer_layout.addDrawerListener(actionBarDrawerToggle)
-//        actionBarDrawerToggle.syncState()
-
         profile_header.show()
+//        getUserData()
         menuIcon?.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)
         }
@@ -143,6 +130,19 @@ class ProfileActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
+        bottomNav.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.mediaFragment -> {
+                    true
+                }
+                R.id.messageFragment -> {
+                    true
+                }
+                else -> {
+                    true
+                }
+            }
+        }
 
     }
 
@@ -154,6 +154,7 @@ class ProfileActivity : BaseActivity() {
         super.onSaveInstanceState(outState)
 //        outState.putSerializable(loggedInUserKey, currentUser)
 //        outState.putString("header", header)
+
 
     }
 
@@ -172,7 +173,7 @@ class ProfileActivity : BaseActivity() {
         navController.addOnDestinationChangedListener(destinationChangedListener)
         Log.i(title, "OnResume")
         val token = intent.getStringExtra("token")
-        Log.i(title, "Onresume")
+
 //        val user = authViewModel.currentUser
 
 //        getUserData()
@@ -180,7 +181,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        finish()
+//        finish()
 //        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
 //            drawer_layout.closeDrawer(GravityCompat.START)
 //        }
@@ -196,12 +197,17 @@ class ProfileActivity : BaseActivity() {
         navController.removeOnDestinationChangedListener(destinationChangedListener)
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        i(title, "Restart")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        i(title, "onDestroy")
 
     }
 
-    @SuppressLint("SetTextI18n")
     private fun getUserData(){
         val request = authViewModel.getUserData(header.toString())
         val response = observeRequest(request, null, null)
@@ -216,6 +222,8 @@ class ProfileActivity : BaseActivity() {
 //                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
             }
         })
+
+
     }
 
 

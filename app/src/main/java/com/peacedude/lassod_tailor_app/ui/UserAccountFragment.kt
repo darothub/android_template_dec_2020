@@ -107,7 +107,7 @@ class UserAccountFragment : DaggerFragment() {
             saveBtn.background = saveBtnBackground
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
-        getUserData()
+//        getUserData()
     }
 
     @SuppressLint("SetTextI18n")
