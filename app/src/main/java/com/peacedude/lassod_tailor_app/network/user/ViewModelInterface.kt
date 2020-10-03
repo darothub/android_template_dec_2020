@@ -10,6 +10,7 @@ import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 
 interface ViewModelInterface {
+    var lastFragmentId:Int?
     var currentUser: User?
     var saveUser:ArrayList<String>
     var saveClient:ArrayList<String>

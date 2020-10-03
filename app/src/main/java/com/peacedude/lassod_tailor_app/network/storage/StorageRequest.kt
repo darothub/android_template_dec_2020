@@ -8,6 +8,8 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import kotlin.reflect.KClass
 
 interface StorageRequest {
+    fun saveLastFragment(id:Int?)
+    fun getLastFragmentId():Int
     var sharedPrefer: EncryptedSharedPreferences
     var editor:SharedPreferences.Editor
     var gson:Gson

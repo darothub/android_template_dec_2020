@@ -5,16 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -54,8 +57,18 @@ class ProfileActivity : BaseActivity() {
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
                 R.id.profileManagementFragment -> profile_header.hide()
-                R.id.mediaFragment -> arguments?.putInt("lastFragment",  R.id.mediaFragment)
-                R.id.messageFragment -> arguments?.putInt("lastFragment",  R.id.messageFragment)
+                R.id.mediaFragment -> {
+                    authViewModel.lastFragmentId = R.id.mediaFragment
+                    i(title, "id ${R.id.mediaFragment}")
+                }
+                R.id.messageFragment -> {
+                    authViewModel.lastFragmentId = R.id.messageFragment
+                    i(title, "id ${R.id.messageFragment}")
+                }
+                R.id.profileFragment -> {
+                    authViewModel.lastFragmentId = R.id.profileFragment
+                    i(title, "id ${R.id.profileFragment}")
+                }
                 R.id.clientFragment -> {
                     profile_header.hide()
                 }
@@ -90,9 +103,6 @@ class ProfileActivity : BaseActivity() {
         menuIcon?.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)
         }
-
-
-
 
         buttonTransactions({
             editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
@@ -130,19 +140,16 @@ class ProfileActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
-        bottomNav.setOnNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.mediaFragment -> {
-                    true
-                }
-                R.id.messageFragment -> {
-                    true
-                }
-                else -> {
-                    true
-                }
-            }
+        val  lastFragmentId = authViewModel.lastFragmentId!!
+        i(title, "lastFragmentId $lastFragmentId")
+        if(lastFragmentId == 0) {
+            bottomNav.selectedItemId = bottomNav.menu[0].itemId
+        }else{
+            bottomNav.selectedItemId = lastFragmentId
         }
+
+//
+
 
     }
 

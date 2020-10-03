@@ -43,6 +43,10 @@ open class GeneralViewModel @Inject constructor(
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
+    override var lastFragmentId: Int?
+        get() = storageRequest.getLastFragmentId()
+        set(id) = storageRequest.saveLastFragment(id)
+
     final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey)
         set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
 

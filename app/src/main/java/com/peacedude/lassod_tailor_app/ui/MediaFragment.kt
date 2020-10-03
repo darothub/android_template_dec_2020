@@ -88,6 +88,7 @@ class MediaFragment : Fragment() {
         ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA), REQUEST_CODE)
 
         addPhotoFab.setOnClickListener {
+            addPhotoFab.show()
             checkCameraPermission()
         }
     }
@@ -171,6 +172,7 @@ class MediaFragment : Fragment() {
                         data?.extras?.get("data") as Bitmap
                     )
                     addPhotoLoaderLayout.show()
+                    addPhotoFab.hide()
 //                    Picasso.get().load(imageUri).into()
                     requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
                 } else {
