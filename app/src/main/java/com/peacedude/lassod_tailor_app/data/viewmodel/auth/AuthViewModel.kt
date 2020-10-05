@@ -126,6 +126,6 @@ open class AuthViewModel @Inject constructor(
 
         })
         return responseLiveData
-    }
+    } 
 
 }

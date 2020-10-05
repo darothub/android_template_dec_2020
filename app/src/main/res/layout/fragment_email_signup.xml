@@ -63,8 +63,7 @@
                 android:inputType="textEmailAddress"
                 android:hint="@string/email_address_str"
                 android:textColorHint="@color/colorGray"
-
-
+                android:transitionName="@string/email_or_phone_et"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -91,6 +90,7 @@
                 android:inputType="textPassword"
                 android:hint="@string/password"
                 android:layout_marginStart="@dimen/_20sdp"
+                android:transitionName="@string/password_et"
                 />
 
 
@@ -118,6 +118,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/email_signup_password_standard_tv"
             android:layout_marginTop="@dimen/_20sdp"
+            android:transitionName="@string/spinner"
             />
         <include
             android:id="@+id/email_signup_btn"

@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.activity.addCallback
@@ -77,6 +79,12 @@ class LoginFragment : DaggerFragment() {
     @Inject
     lateinit var mGoogleSignInClient:GoogleSignInClient
 
+    private val leftAnimation: Animation? by lazy {
+        AnimationUtils.loadAnimation(requireContext(), R.anim.left_animation)
+    }
+    private val rightAnimation: Animation? by lazy {
+        AnimationUtils.loadAnimation(requireContext(), R.anim.right_animation)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -97,6 +105,32 @@ class LoginFragment : DaggerFragment() {
             loginBtn.text = getString(R.string.login)
         })
 
+        login_with_email_tv.setOnClickListener {
+            login_email_input.show()
+            login_email_input.animation = leftAnimation
+            login_phone_number_input.animation = AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
+            login_phone_number_input.invisible()
+
+            login_with_phone_tv.show()
+            login_with_phone_tv.animation = leftAnimation
+            login_with_email_tv.animation = AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
+            login_with_email_tv.invisible()
+
+        }
+        login_with_phone_tv.setOnClickListener {
+            login_phone_number_input.show()
+            login_phone_number_input.animation = leftAnimation
+            login_email_input.animation =AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
+            login_email_input.invisible()
+
+            login_with_email_tv.show()
+            login_with_email_tv.animation = leftAnimation
+            login_with_phone_tv.animation = AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
+            login_with_phone_tv.invisible()
+
+
+        }
+
         val toolbar = login_appbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.reusable_toolbar)
 
         val navController = Navigation.findNavController(login_appbar)
@@ -109,7 +143,7 @@ class LoginFragment : DaggerFragment() {
         loginBtn.setOnClickListener {
             validateAndLogin()
         }
-        initEnterKeyToSubmitForm(login_password_edittext) { validateAndLogin() }
+        initEnterKeyToSubmitForm(login_password_et) { validateAndLogin() }
 
         textColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
         googleBtnTextColor = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
@@ -185,10 +219,10 @@ class LoginFragment : DaggerFragment() {
 
 
     private fun validateAndLogin() {
-        val phoneNumber = login_phone_number_edittext.text.toString().trim()
-        val passwordString = login_password_edittext.text.toString()
+        val phoneNumber = login_phone_number_et.text.toString().trim()
+        val passwordString = login_password_et.text.toString()
 
-        val checkForEmpty = IsEmptyCheck(login_phone_number_edittext, login_phone_number_edittext)
+        val checkForEmpty = IsEmptyCheck(login_password_et, login_phone_number_et)
 
         when {
             checkForEmpty != null -> {

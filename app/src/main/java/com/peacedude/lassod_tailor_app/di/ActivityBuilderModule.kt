@@ -23,11 +23,9 @@ import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
 import com.peacedude.lassod_tailor_app.utils.storage.EncryptedSharedPrefManager
-import com.squareup.okhttp.OkHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
-import okhttp3.OkHttp
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory

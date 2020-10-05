@@ -126,4 +126,9 @@
     <string name="permission_granted_str">Camera permission is already granted</string>
     <string name="goto_setting">Go to setting</string>
     <string name="permission_not_granted_str">Permission is not granted</string>
+    <string name="email_or_phone_et">email or phone et</string>
+    <string name="password_et">password et</string>
+    <string name="spinner">spinner</string>
+    <string name="login_with_email">Login with email address</string>
+    <string name="login_with_phone">Login with phone number</string>
 </resources>

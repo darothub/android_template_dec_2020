@@ -89,6 +89,7 @@ class ProfileManagementFragment : Fragment() {
                 }
             }
 
+        
         profile_management_tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
 
     }

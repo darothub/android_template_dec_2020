@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -84,6 +85,8 @@ class EmailSignupFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_email_signup, container, false)
     }

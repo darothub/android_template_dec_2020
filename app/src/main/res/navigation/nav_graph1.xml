@@ -36,12 +36,12 @@
     <fragment
         android:id="@+id/signupChoicesFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.SignupChoicesFragment"
-        android:label="SignupChoicesFragment" >
+        android:label=" ">
         <argument
             android:name="category"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_signupChoicesFragment_to_signupCategoryFragment"
             app:destination="@id/signupCategoryFragment" />

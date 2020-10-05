@@ -74,6 +74,7 @@
                 android:textColorHint="@color/colorGray"
                 android:paddingTop="@dimen/_10sdp"
                 android:paddingBottom="@dimen/_10sdp"
+                android:transitionName="@string/email_or_phone_et"
 
                 />
 
@@ -97,7 +98,7 @@
                 android:inputType="textPassword"
                 android:hint="@string/password"
                 android:textColorHint="@color/colorGray"
-
+                android:transitionName="@string/password_et"
 
                 />
         </com.google.android.material.textfield.TextInputLayout>
@@ -124,6 +125,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/phone_signup_password_standard_tv"
             android:layout_marginTop="@dimen/_20sdp"
+            android:transitionName="@string/spinner"
             />
 
         <include
