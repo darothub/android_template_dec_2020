@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -38,14 +39,14 @@ class SplashScreenActivity : AppCompatActivity() {
             finish()
         }, 5000)
     }
-    @RequiresApi(Build.VERSION_CODES.R)
+
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 //        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE
         if (hasFocus) hideSystemUI()
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
+
     private fun hideSystemUI() {
         buildVersion({
 //            window.setDecorFitsSystemWindows(false)
@@ -53,7 +54,14 @@ class SplashScreenActivity : AppCompatActivity() {
             // Enables regular immersive mode.
         // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
         // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.hide(WindowInsets.Type.statusBars())
+            } else {
+                window.setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+                )
+            }
         })
 
 

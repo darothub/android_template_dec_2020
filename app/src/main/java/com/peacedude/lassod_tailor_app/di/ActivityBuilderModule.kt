@@ -92,6 +92,7 @@ open class ActivityStaticModule {
             .addConverterFactory(gson)
             .client(client)
             .build()
+
     }
 
     @Singleton

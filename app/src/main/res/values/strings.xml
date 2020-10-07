@@ -131,4 +131,7 @@
     <string name="spinner">spinner</string>
     <string name="login_with_email">Login with email address</string>
     <string name="login_with_phone">Login with phone number</string>
+    <string name="resources_str">Resources</string>
+    <string name="videos_str">Videos</string>
+    <string name="hour_min_str">1 hour 30 mins</string>
 </resources>

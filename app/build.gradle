@@ -7,7 +7,7 @@ apply plugin: "androidx.navigation.safeargs"
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.peacedude.lassod_tailor_app"
@@ -47,7 +47,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.activity:activity:1.2.0-alpha08"
     implementation "androidx.fragment:fragment:1.3.0-alpha08"
-    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -58,7 +58,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-intents:$versions.espresso"
 
     androidTestImplementation "androidx.test:runner:$versions.testrunner"
-    androidTestImplementation "androidx.test:core:1.3.0-rc-01"
+    androidTestImplementation "androidx.test:core:1.3.0"
     androidTestImplementation "androidx.test.ext:junit-ktx:1.1.2"
 
     //Jetpack Navigation
