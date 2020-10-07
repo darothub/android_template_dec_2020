@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.di.activitymodules.ClientActivityModule
 import com.peacedude.lassod_tailor_app.di.activitymodules.MainActivityModule
+import com.peacedude.lassod_tailor_app.di.activitymodules.DashboardActivityModule
 import com.peacedude.lassod_tailor_app.di.activitymodules.ProfileActivityModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.user.ViewModelInterfaceModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
@@ -32,7 +33,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-@Module(includes = [ActivityStaticModule::class, MainActivityModule::class, ProfileActivityModule::class, ClientActivityModule::class])
+@Module(includes = [ActivityStaticModule::class, MainActivityModule::class,
+    DashboardActivityModule::class,
+    ProfileActivityModule::class,
+    ClientActivityModule::class]
+)
 abstract class ActivityBuilderModule {
     @ContributesAndroidInjector(
         modules = [

@@ -117,11 +117,11 @@ open class HomeFragment : DaggerFragment() {
 
         if (currentUser != null) {
             when (currentUser?.loggedIn) {
-                true -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
+                true -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
             }
         }
         else if(account != null && currentUser?.email == googleEmail){
-            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+            startActivity(Intent(requireContext(), DashboardActivity::class.java))
             Log.i(title, "Emails $googleEmail $sharedPrefEmail")
 
 //            requireActivity().request(null, null, userViewModel, {

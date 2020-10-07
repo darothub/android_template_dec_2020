@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     android:elevation="@dimen/_15sdp"
     android:background="@color/colorAccent"
-    tools:context=".ui.ProfileManagementFragment">
+    tools:context=".ui.profile.ProfileManagementFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/profile_management_appBar"
@@ -19,7 +19,9 @@
 
         <include
             android:id="@+id/profile_management_toolbar"
-            layout="@layout/reusable_toolbar" />
+            layout="@layout/reusable_toolbar"
+            android:visibility="gone"
+            />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/profile_management_tabLayout"

@@ -30,7 +30,6 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.drawerlayout_header.*
 import kotlinx.android.synthetic.main.fragment_email_signup.*
 import validatePasswordAndAdvise
 import javax.inject.Inject
@@ -186,7 +185,7 @@ class EmailSignupFragment : DaggerFragment() {
                             userViewModel.currentUser = currentUser
 //                            val res = userViewModel.saveUser
                             val loginIntent =
-                                Intent(requireContext(), ProfileActivity::class.java)
+                                Intent(requireContext(), DashboardActivity::class.java)
                             i(
                                 "$this",
                                 "res $currentUser \ntoken ${user?.token}\ntoken 2${currentUser?.token}"

@@ -1,4 +1,4 @@
-package com.peacedude.lassod_tailor_app.ui
+package com.peacedude.lassod_tailor_app.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,17 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.goto
+import com.peacedude.lassod_tailor_app.ui.*
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_profile_management.*
 
@@ -51,9 +47,9 @@ class ProfileManagementFragment : Fragment() {
         val navController = Navigation.findNavController(profile_management_appBar)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
-                R.id.profileFragment -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
-                R.id.mediaFragment -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
-                R.id.messageFragment -> startActivity(Intent(requireContext(), ProfileActivity::class.java))
+                R.id.profileFragment -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
+                R.id.mediaFragment -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
+                R.id.messageFragment -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
             }
         }
         NavigationUI.setupWithNavController(toolbar, navController)

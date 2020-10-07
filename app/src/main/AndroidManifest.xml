@@ -16,19 +16,18 @@ package="com.peacedude.lassod_tailor_app">
     android:theme="@style/AppTheme.NoActionBar"
     tools:replace="android:fullBackupContent">
     <activity
-        android:name=".ui.ProfileActivity"
+        android:name=".ui.DashboardActivity"
         android:theme="@style/ProfileActivityTheme"
         tools:ignore="AllowBackup">
-
-
-    </activity>
-    <activity
-        android:name=".ui.SplashScreenActivity"
-        android:theme="@style/AppTheme.NoActionBar">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+    </activity>
+    <activity
+        android:name=".ui.SplashScreenActivity"
+        android:theme="@style/AppTheme.NoActionBar">
+
     </activity>
     <activity
         android:name=".ui.MainActivity"
@@ -36,15 +35,27 @@ package="com.peacedude.lassod_tailor_app">
         tools:ignore="AllowBackup">
         <nav-graph android:value="@navigation/nav_graph1" />
     </activity>
+    <activity android:name="com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity"
+        android:theme="@style/ProfileActivityTheme"
+        android:label="@string/edit_profile"
+        android:parentActivityName=".ui.DashboardActivity"
+        >
 
+    </activity>
     <activity
         android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity"
         android:theme="@style/ProfileActivityTheme"
         android:label="@string/add_client"
-        android:parentActivityName=".ui.ProfileActivity">
+        android:parentActivityName=".ui.DashboardActivity">
 
     </activity>
+    <activity
+        android:name="com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity"
+        android:theme="@style/ProfileActivityTheme"
+        android:label="@string/resources_str"
+        android:parentActivityName=".ui.DashboardActivity" />
 </application>
 
 </manifest>
+
 

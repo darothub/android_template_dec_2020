@@ -16,14 +16,10 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.activity.addCallback
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -36,7 +32,6 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
@@ -240,7 +235,7 @@ class LoginFragment : DaggerFragment() {
                         user?.loggedIn = true
                         userViewModel.currentUser = user
                         val res = userViewModel.saveUser
-                        val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
+                        val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
                         Log.i("$this", "res ${res.size}")
                         startActivity(loginIntent)
                         requireActivity().finish()

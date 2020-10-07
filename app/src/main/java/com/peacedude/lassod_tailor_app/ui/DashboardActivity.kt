@@ -1,23 +1,16 @@
 package com.peacedude.lassod_tailor_app.ui
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
-import android.view.Gravity
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -25,11 +18,12 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
-import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
-import kotlinx.android.synthetic.main.activity_profile.*
+import com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity
+import com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity
+import kotlinx.android.synthetic.main.activity_dashboard.*
 import javax.inject.Inject
 
-class ProfileActivity : BaseActivity() {
+class DashboardActivity : BaseActivity() {
     private val navController by lazy {
         Navigation.findNavController(this, R.id.fragment2)
     }
@@ -57,6 +51,7 @@ class ProfileActivity : BaseActivity() {
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
                 R.id.profileManagementFragment -> profile_header.hide()
+                R.id.resourcesFragment -> profile_header.hide()
                 R.id.mediaFragment -> {
                     authViewModel.lastFragmentId = R.id.mediaFragment
                     i(title, "id ${R.id.mediaFragment}")
@@ -83,6 +78,8 @@ class ProfileActivity : BaseActivity() {
     private lateinit var logoutImage:ImageView
     private lateinit var clientImage:ImageView
     private lateinit var clientText:TextView
+    private lateinit var resourcesTv:TextView
+    private lateinit var resourcesIv:ImageView
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
@@ -92,7 +89,7 @@ class ProfileActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        setContentView(R.layout.activity_dashboard)
 
         i(title, "Oncreate")
         bottomNav.setupWithNavController(navController)
@@ -110,11 +107,13 @@ class ProfileActivity : BaseActivity() {
             logoutImage = profile_drawer_view.findViewById(R.id.logout_image)
             clientText = profile_drawer_view.findViewById(R.id.clients_tv)
             clientImage = profile_drawer_view.findViewById(R.id.client_image)
+            resourcesTv = profile_drawer_view.findViewById(R.id.resources_tv)
+            resourcesIv = profile_drawer_view.findViewById(R.id.resources_image)
 
         },{
             editBtn.setOnClickListener {
-                navController.navigate(R.id.profileManagementFragment)
                 drawer_layout.closeDrawer(profile_drawer_view, true)
+                startActivity(Intent(this, ProfileActivity::class.java))
             }
             logoutText.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
@@ -131,6 +130,14 @@ class ProfileActivity : BaseActivity() {
             clientImage.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
                 startActivity(Intent(this, ClientActivity::class.java))
+            }
+            resourcesTv.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                startActivity(Intent(this, ResourcesActivity::class.java))
+            }
+            resourcesIv.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                startActivity(Intent(this, ResourcesActivity::class.java))
             }
         })
         Log.i(title, "Oncreate")
