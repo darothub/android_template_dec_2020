@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp"
+    android:layout_margin="@dimen/_10sdp"
+    android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/resource_article_publications_iv"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_250sdp"
+        android:background="@drawable/top_left_bottom_right_rounded_corners"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+        android:id="@+id/resource_article_publication_item_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/resource_article_publications_iv"
+        app:layout_constraintStart_toStartOf="@id/resource_article_publications_iv"
+        app:layout_constraintEnd_toEndOf="@id/resource_article_publications_iv"
+        android:textSize="@dimen/_13sdp"
+        android:textStyle="bold"
+        android:text="@string/hello_blank_fragment"/>
+
+    <TextView
+        android:id="@+id/resource_article_publication_item_author_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/resource_article_publication_item_title_tv"
+        app:layout_constraintStart_toStartOf="@id/resource_article_publication_item_title_tv"
+        android:textSize="@dimen/_11sdp"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintVertical_bias=".5"
+        app:layout_constraintEnd_toEndOf="@id/resource_article_publications_iv"
+        android:text="@string/by_author_str"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,5 +22,5 @@ abstract class DashboardActivityModule {
             AuthViewModelModule::class
         ]
     )
-    abstract fun provideProfileActivity(): DashboardActivity
+    abstract fun provideDashboardActivity(): DashboardActivity
 }

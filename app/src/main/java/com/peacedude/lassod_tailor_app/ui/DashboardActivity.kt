@@ -47,32 +47,7 @@ class DashboardActivity : BaseActivity() {
     private val greeting: TextView by lazy{
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
-    private val destinationChangedListener by lazy {
-        NavController.OnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id){
-                R.id.profileManagementFragment -> profile_header.hide()
-                R.id.resourcesFragment -> profile_header.hide()
-                R.id.mediaFragment -> {
-                    authViewModel.lastFragmentId = R.id.mediaFragment
-                    i(title, "id ${R.id.mediaFragment}")
-                }
-                R.id.messageFragment -> {
-                    authViewModel.lastFragmentId = R.id.messageFragment
-                    i(title, "id ${R.id.messageFragment}")
-                }
-                R.id.profileFragment -> {
-                    authViewModel.lastFragmentId = R.id.profileFragment
-                    i(title, "id ${R.id.profileFragment}")
-                }
-                R.id.clientFragment -> {
-                    profile_header.hide()
-                }
-                R.id.clientAccountFragment ->{
-                    profile_fab.alpha = 0.0f
-                }
-            }
-        }
-    }
+
     private lateinit var editBtn:Button
     private lateinit var logoutText:TextView
     private lateinit var logoutImage:ImageView
@@ -160,10 +135,6 @@ class DashboardActivity : BaseActivity() {
 
     }
 
-    private fun goto(destinationId:Int) {
-        navController.navigate(destinationId)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 //        outState.putSerializable(loggedInUserKey, currentUser)
@@ -184,7 +155,6 @@ class DashboardActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        navController.addOnDestinationChangedListener(destinationChangedListener)
         Log.i(title, "OnResume")
         val token = intent.getStringExtra("token")
 
@@ -194,21 +164,10 @@ class DashboardActivity : BaseActivity() {
 
     }
 
-    override fun onBackPressed() {
-//        finish()
-//        if(drawer_layout.isDrawerOpen(GravityCompat.START)){
-//            drawer_layout.closeDrawer(GravityCompat.START)
-//        }
-//        else{
-//            super.onBackPressed()
-//        }
-
-    }
 
     override fun onPause() {
         super.onPause()
         Log.i(title, "On pause")
-        navController.removeOnDestinationChangedListener(destinationChangedListener)
     }
 
     override fun onRestart() {

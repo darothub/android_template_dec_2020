@@ -6,26 +6,3 @@
 
 </shape>
 
-<!--<vector-->
-<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--xmlns:aapt="http://schemas.android.com/aapt"-->
-<!--android:width="313dp"-->
-<!--android:height="86dp"-->
-<!--android:viewportWidth="313"-->
-<!--android:viewportHeight="86"-->
-<!--    >-->
-
-<!--<group>-->
-
-<!--    <clip-path-->
-<!--        android:pathData="M0 0H313V86H0V0Z"-->
-<!--        />-->
-
-<!--    <path-->
-<!--        android:pathData="M0 0V86H313V0"-->
-<!--        android:fillColor="#4D0066F5"-->
-<!--        />-->
-
-<!--</group>-->
-
-<!--</vector>-->

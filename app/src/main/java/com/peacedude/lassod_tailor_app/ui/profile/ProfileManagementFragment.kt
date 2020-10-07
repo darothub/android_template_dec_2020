@@ -41,18 +41,6 @@ class ProfileManagementFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
 //
-        val toolbar = profile_management_toolbar.findViewById<androidx.appcompat.widget.Toolbar>(R.id.profile_management_toolbar)
-        toolbar.setTitleTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimaryDark))
-
-        val navController = Navigation.findNavController(profile_management_appBar)
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id){
-                R.id.profileFragment -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
-                R.id.mediaFragment -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
-                R.id.messageFragment -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
-            }
-        }
-        NavigationUI.setupWithNavController(toolbar, navController)
 
 
 
