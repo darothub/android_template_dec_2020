@@ -15,4 +15,9 @@
         android:name="com.peacedude.lassod_tailor_app.ui.resources.AllVideoFragment"
         android:label="@string/resources_str"
         tools:layout="@layout/fragment_all_video" />
+    <fragment
+        android:id="@+id/singleVideoFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.resources.SingleVideoFragment"
+        android:label=" "
+        tools:layout="@layout/fragment_single_video" />
 </navigation>

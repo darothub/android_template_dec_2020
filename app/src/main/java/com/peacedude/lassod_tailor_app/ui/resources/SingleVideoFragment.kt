@@ -8,36 +8,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import androidx.appcompat.widget.Toolbar
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.goto
-import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.utsman.recycling.setupAdapter
-import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.fragment_all_video.*
-import kotlinx.android.synthetic.main.fragment_resources.*
+import kotlinx.android.synthetic.main.fragment_single_video.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 
 
 /**
  * A simple [Fragment] subclass.
- * Use the [AllVideo.newInstance] factory method to
+ * Use the [SingleVideoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AllVideoFragment : Fragment() {
-    private val title by lazy {
-        getName()
-    }
+class SingleVideoFragment : Fragment() {
+
     private val toolbar by lazy {
-        (all_video_fragment_tb as Toolbar)
+        (single_video_fragment_tb as Toolbar)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -50,15 +43,22 @@ class AllVideoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_video, container, false)
+        return inflater.inflate(R.layout.fragment_single_video, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        i(title, "OnViewcreated")
+        //Nav controller set on toolbar
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
+
+        val mediaController = MediaController(requireContext())
+        mediaController.setAnchorView(single_video_fragment_vv)
+        val uri = Uri.parse(getString(R.string.sample_video_str))
+        single_video_fragment_vv.setMediaController(mediaController)
+        single_video_fragment_vv.setVideoURI(uri)
+
         val videoResourcesList = arrayListOf<ResourcesVideo>(
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
@@ -67,7 +67,7 @@ class AllVideoFragment : Fragment() {
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str))
         )
 
-        all_video_fragment_rv.setupAdapter<ResourcesVideo>(R.layout.resource_video_item) { adapter, context, list ->
+        single_video_fragment_rv.setupAdapter<ResourcesVideo>(R.layout.resource_video_item) { adapter, context, list ->
             bind { itemView, position, item ->
                 val mediaController = MediaController(requireContext())
                 mediaController.setAnchorView(itemView.resource_video_item_vv)
@@ -79,13 +79,11 @@ class AllVideoFragment : Fragment() {
                 itemView.resource_video_item_title_tv.text = item?.videoTitle
                 itemView.resource_video_item_time_tv.text = item?.videoMins
 
-                itemView.resource_video_item_vv.setOnClickListener {
-                    goto(R.id.singleVideoFragment)
-                }
             }
             setLayoutManager(GridLayoutManager(requireContext(), 2))
             submitList(videoResourcesList)
         }
+
     }
 
 }

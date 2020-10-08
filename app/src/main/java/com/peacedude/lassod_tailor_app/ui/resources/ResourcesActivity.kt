@@ -30,6 +30,7 @@ class ResourcesActivity : AppCompatActivity() {
            when(destination.id){
                R.id.allVideoFragment -> toolbar?.hide()
                R.id.resourcesFragment -> toolbar?.show()
+               R.id.singleVideoFragment -> toolbar?.hide()
            }
         }
 

@@ -12,7 +12,7 @@
     tools:context=".ui.resources.AllVideoFragment">
 
     <include
-        android:id="@+id/all_video_fragment_toolbar"
+        android:id="@+id/all_video_fragment_tb"
         layout="@layout/activity_client_toolbar" />
 
     <TextView
