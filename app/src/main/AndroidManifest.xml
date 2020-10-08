@@ -14,8 +14,10 @@ package="com.peacedude.lassod_tailor_app">
     android:roundIcon="@drawable/obioma_logo_blue"
     android:supportsRtl="true"
     android:theme="@style/AppTheme.NoActionBar"
+
     tools:replace="android:fullBackupContent">
     <activity
+        android:screenOrientation="portrait"
         android:name=".ui.DashboardActivity"
         android:theme="@style/ProfileActivityTheme"
         tools:ignore="AllowBackup">
@@ -25,6 +27,7 @@ package="com.peacedude.lassod_tailor_app">
         </intent-filter>
     </activity>
     <activity
+        android:screenOrientation="portrait"
         android:name=".ui.SplashScreenActivity"
         android:theme="@style/AppTheme.NoActionBar">
 
@@ -32,12 +35,14 @@ package="com.peacedude.lassod_tailor_app">
     <activity
         android:name=".ui.MainActivity"
         android:theme="@style/AppThemeActivity"
+        android:windowSoftInputMode="adjustPan|adjustResize"
         tools:ignore="AllowBackup">
         <nav-graph android:value="@navigation/nav_graph1" />
     </activity>
     <activity android:name="com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity"
         android:theme="@style/ProfileActivityTheme"
         android:label="@string/edit_profile"
+        android:windowSoftInputMode="adjustResize|stateHidden"
         android:parentActivityName=".ui.DashboardActivity"
         >
 
@@ -46,6 +51,7 @@ package="com.peacedude.lassod_tailor_app">
         android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity"
         android:theme="@style/ProfileActivityTheme"
         android:label="@string/add_client"
+        android:windowSoftInputMode="adjustPan|adjustResize"
         android:parentActivityName=".ui.DashboardActivity">
 
     </activity>
@@ -53,6 +59,7 @@ package="com.peacedude.lassod_tailor_app">
         android:name="com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity"
         android:theme="@style/ProfileActivityTheme"
         android:label="@string/resources_str"
+        android:windowSoftInputMode="adjustPan|adjustResize"
         android:parentActivityName=".ui.DashboardActivity" />
 </application>
 

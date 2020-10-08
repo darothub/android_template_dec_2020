@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.model.request.Measurement
 import com.peacedude.lassod_tailor_app.model.request.ResourcesArticlePublication
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
@@ -78,13 +79,19 @@ class ResourcesFragment : Fragment() {
         }
         resource_fragment_article_publications_rv.setupAdapter<ResourcesArticlePublication>(R.layout.article_publication_item_layout) { adapter, context, list ->
             bind { itemView, position, item ->
-                Picasso.get().load(item?.articleImageUri).into(itemView.resource_article_publications_iv)
+
                 itemView.resource_article_publication_item_title_tv.text = item?.articleTitle
                 itemView.resource_article_publication_item_author_tv.text = item?.articleAuthor
+                Picasso.get().load(item?.articleImageUri).into(itemView.resource_article_publications_iv)
                 itemView.resource_article_publications_iv.clipToOutline = true
+
             }
             setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false))
             submitList(articleResourcesList)
+        }
+
+        resource_fragment_view_all_video_tv.setOnClickListener {
+            goto(R.id.allVideoFragment)
         }
     }
 }
