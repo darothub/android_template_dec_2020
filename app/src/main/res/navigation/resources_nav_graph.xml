@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/resourcesFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.resources.ResourcesFragment"
-        android:label="fragment_resources"
+        android:label=" "
         tools:layout="@layout/fragment_resources" />
     <fragment
         android:id="@+id/allVideoFragment"

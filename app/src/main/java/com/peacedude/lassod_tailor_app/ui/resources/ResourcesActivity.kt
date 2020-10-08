@@ -10,6 +10,7 @@ import androidx.navigation.Navigation
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.hide
+import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.helpers.show
 import kotlinx.android.synthetic.main.activity_client.*
 import kotlinx.android.synthetic.main.activity_resources.*
@@ -28,7 +29,12 @@ class ResourcesActivity : AppCompatActivity() {
     val navListener =
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
            when(destination.id){
-               R.id.allVideoFragment -> toolbar?.hide()
+               R.id.allVideoFragment -> {
+                   toolbar?.show()
+                   toolbar?.setNavigationOnClickListener {
+                       controller.popBackStack()
+                   }
+               }
                R.id.resourcesFragment -> toolbar?.show()
                R.id.singleVideoFragment -> toolbar?.hide()
            }
@@ -38,7 +44,6 @@ class ResourcesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resources)
 
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar?.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
@@ -46,13 +51,20 @@ class ResourcesActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        i(title, "onResume")
+        navController.addOnDestinationChangedListener(navListener)
+    }
     override fun onStart() {
         super.onStart()
-        navController.addOnDestinationChangedListener(navListener)
+        i(title, "OnStart")
+
     }
 
     override fun onPause() {
         super.onPause()
+        i(title, "Onpause")
         navController.removeOnDestinationChangedListener(navListener)
     }
 }
