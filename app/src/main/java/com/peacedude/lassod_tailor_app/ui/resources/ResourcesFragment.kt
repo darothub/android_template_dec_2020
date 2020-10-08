@@ -70,7 +70,7 @@ class ResourcesFragment : Fragment() {
                 itemView.resource_video_item_vv.setMediaController(mediaController)
                 itemView.resource_video_item_vv.setVideoURI(uri)
                 itemView.resource_video_item_fl.clipToOutline = true
-
+                itemView.resource_video_item_vv.seekTo(1)
                 itemView.resource_video_item_title_tv.text = item?.videoTitle
                 itemView.resource_video_item_time_tv.text = item?.videoMins
             }

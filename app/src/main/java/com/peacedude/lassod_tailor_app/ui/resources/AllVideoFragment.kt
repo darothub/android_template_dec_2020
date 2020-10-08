@@ -79,7 +79,12 @@ class AllVideoFragment : Fragment() {
                 itemView.resource_video_item_title_tv.text = item?.videoTitle
                 itemView.resource_video_item_time_tv.text = item?.videoMins
 
+                itemView.resource_video_item_vv.seekTo(1)
+
                 itemView.resource_video_item_vv.setOnClickListener {
+                    goto(R.id.singleVideoFragment)
+                }
+                itemView.resource_video_item_fl.setOnClickListener {
                     goto(R.id.singleVideoFragment)
                 }
             }

@@ -58,7 +58,7 @@ class SingleVideoFragment : Fragment() {
         val uri = Uri.parse(getString(R.string.sample_video_str))
         single_video_fragment_vv.setMediaController(mediaController)
         single_video_fragment_vv.setVideoURI(uri)
-
+        single_video_fragment_vv.seekTo(1)
         val videoResourcesList = arrayListOf<ResourcesVideo>(
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
@@ -75,7 +75,7 @@ class SingleVideoFragment : Fragment() {
                 itemView.resource_video_item_vv.setMediaController(mediaController)
                 itemView.resource_video_item_vv.setVideoURI(uri)
                 itemView.resource_video_item_fl.clipToOutline = true
-
+                itemView.resource_video_item_vv.seekTo(1)
                 itemView.resource_video_item_title_tv.text = item?.videoTitle
                 itemView.resource_video_item_time_tv.text = item?.videoMins
 
