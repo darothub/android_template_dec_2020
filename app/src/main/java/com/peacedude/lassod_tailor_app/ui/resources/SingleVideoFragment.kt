@@ -1,16 +1,19 @@
 package com.peacedude.lassod_tailor_app.ui.resources
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
@@ -46,6 +49,7 @@ class SingleVideoFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_single_video, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -53,12 +57,13 @@ class SingleVideoFragment : Fragment() {
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
 
-        val mediaController = MediaController(requireContext())
-        mediaController.setAnchorView(single_video_fragment_vv)
+        val singleMediaController = MediaController(requireContext())
+        singleMediaController.setAnchorView(single_video_fragment_vv)
         val uri = Uri.parse(getString(R.string.sample_video_str))
-        single_video_fragment_vv.setMediaController(mediaController)
+        single_video_fragment_vv.setMediaController(singleMediaController)
         single_video_fragment_vv.setVideoURI(uri)
         single_video_fragment_vv.seekTo(1)
+
         val videoResourcesList = arrayListOf<ResourcesVideo>(
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
@@ -79,10 +84,22 @@ class SingleVideoFragment : Fragment() {
                 itemView.resource_video_item_title_tv.text = item?.videoTitle
                 itemView.resource_video_item_time_tv.text = item?.videoMins
 
+                single_video_fragment_rv.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        mediaController.hide()
+                        singleMediaController.hide()
+                    }
+
+                })
+
             }
             setLayoutManager(GridLayoutManager(requireContext(), 2))
             submitList(videoResourcesList)
         }
+
+
 
     }
 
