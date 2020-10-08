@@ -7,11 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.utsman.recycling.setupAdapter
+import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_resources.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
@@ -23,7 +28,9 @@ import kotlinx.android.synthetic.main.resource_video_item.view.*
  * create an instance of this fragment.
  */
 class AllVideoFragment : Fragment() {
-
+    private val toolbar by lazy {
+        (all_video_fragment_toolbar as Toolbar)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -41,6 +48,9 @@ class AllVideoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navController = Navigation.findNavController(view)
+        NavigationUI.setupWithNavController(toolbar, navController)
         val videoResourcesList = arrayListOf<ResourcesVideo>(
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
             ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),

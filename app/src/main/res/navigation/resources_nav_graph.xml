@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/resources_nav_graph"
+    android:label="@string/resources_str"
     app:startDestination="@id/resourcesFragment">
     <fragment
         android:id="@+id/resourcesFragment"
@@ -12,6 +13,6 @@
     <fragment
         android:id="@+id/allVideoFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.resources.AllVideoFragment"
-        android:label="fragment_all_video"
+        android:label="@string/resources_str"
         tools:layout="@layout/fragment_all_video" />
 </navigation>

@@ -34,12 +34,13 @@
         app:layout_constraintEnd_toEndOf="@id/resource_video_item_fl"
         android:textSize="@dimen/_11sdp"
         android:textStyle="bold"
+        android:layout_marginTop="@dimen/_10sdp"
         android:text="@string/hello_blank_fragment"/>
 
     <ImageView
         android:id="@+id/resource_video_item_time_iv"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         app:srcCompat="@drawable/ic_baseline_access_time_24"
         app:layout_constraintTop_toBottomOf="@id/resource_video_item_title_tv"
         app:layout_constraintStart_toStartOf="@id/resource_video_item_title_tv"
