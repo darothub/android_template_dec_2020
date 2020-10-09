@@ -137,8 +137,10 @@
     <string name="view_all_str">View all</string>
     <string name="article_publication_str">Article/Publications</string>
     <string name="by_author_str">By Nathan Maro</string>
-    <string name="sample_video_str">https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4</string>
+    <string name="sample_video_str">https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4</string>
     <string name="sample_str">How to perfectly sew adire</string>
     <string name="sample_min_str">1 hour 30 mins</string>
     <string name="sample_image_str">https://guardian.ng/wp-content/uploads/2020/03/FASHION.jpg</string>
+    <string name="done">Done</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.goto
@@ -23,6 +24,7 @@ import com.utsman.recycling.setupAdapter
 import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_resources.*
+import kotlinx.android.synthetic.main.fragment_single_video.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 
 
@@ -87,6 +89,14 @@ class AllVideoFragment : Fragment() {
                 itemView.resource_video_item_fl.setOnClickListener {
                     goto(R.id.singleVideoFragment)
                 }
+                all_video_fragment_rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        mediaController.hide()
+                    }
+
+                })
             }
             setLayoutManager(GridLayoutManager(requireContext(), 2))
             submitList(videoResourcesList)

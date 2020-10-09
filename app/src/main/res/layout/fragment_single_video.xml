@@ -22,13 +22,22 @@
             app:expandedTitleMarginBottom="@dimen/_10sdp"
             app:expandedTitleMarginStart="@dimen/_15sdp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-
-            <VideoView
-                android:id="@+id/single_video_fragment_vv"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center" />
+               >
+                <VideoView
+                    android:id="@+id/single_video_fragment_vv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentStart="true"
 
+                    />
+
+            </RelativeLayout>
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/single_video_fragment_tb"
                 android:layout_width="match_parent"
@@ -42,7 +51,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    >
 
                     <ImageView
                         android:layout_width="wrap_content"

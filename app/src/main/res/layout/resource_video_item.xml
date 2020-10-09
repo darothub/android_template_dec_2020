@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/resource_video_item_fl"
         android:layout_width="@dimen/_140sdp"
         android:layout_height="@dimen/_230sdp"
@@ -21,10 +21,13 @@
             android:id="@+id/resource_video_item_vv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:clickable="true"
             android:focusable="true" />
-    </FrameLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/resource_video_item_title_tv"
