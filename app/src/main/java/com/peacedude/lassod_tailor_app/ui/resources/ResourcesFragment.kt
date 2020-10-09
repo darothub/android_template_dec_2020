@@ -93,7 +93,8 @@ class ResourcesFragment : Fragment() {
                     }
 
                 })
-                resources_fragment_nsv.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+
+                resources_fragment_nsv.viewTreeObserver.addOnScrollChangedListener {
                     mediaController.hide()
                 }
             }
