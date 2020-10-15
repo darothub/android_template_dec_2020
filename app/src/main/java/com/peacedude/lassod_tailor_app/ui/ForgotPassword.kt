@@ -26,6 +26,7 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import kotlinx.android.synthetic.main.fragment_signup.*
+import validateField
 import javax.inject.Inject
 
 
@@ -95,27 +96,12 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
     private fun forgotPasswordRequest() {
         val field = forgot_password_email_et.text.toString().trim()
 
-        val checkForEmpty =
-            IsEmptyCheck(forgot_password_email_et)
-        val emailPattern = Regex("""^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*${'$'}""")
-        var phonePattern = Regex("""\d{10,13}""")
-        val emailValidation = emailPattern.matches(field)
-        val phoneValidation = phonePattern.matches(field)
+        validateField(forgot_password_email_et, "email")
+        val validationResult = IsEmptyCheck.fieldsValidation(email = field)
 
         when {
-            checkForEmpty != null -> {
-                val pattern = Regex("""email""")
-                checkForEmpty.error = getString(R.string.field_required)
-                val nameFinder =
-                    pattern.find(resources.getResourceEntryName(checkForEmpty.id))?.value
-                val nameSplit = nameFinder?.split("_")
-                val editTextName =
-                    if (nameSplit?.size!! > 1) "${nameSplit[0]} ${nameSplit[1]}" else nameSplit[0]
-                requireActivity().gdErrorToast("$editTextName is empty", Gravity.BOTTOM)
-
-            }
-            !(emailValidation || phoneValidation) -> requireActivity().gdErrorToast(
-                "Input field is invalid",
+            validationResult != null -> requireActivity().gdErrorToast(
+                "$validationResult is an invalid email",
                 Gravity.BOTTOM
             )
             else -> {
@@ -125,10 +111,6 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
                 response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
                     requireActivity().onRequestResponseTask<String>(bool, result) {
-//                        requireActivity().gdToast(
-//                            "Request successful action needed",
-//                            Gravity.BOTTOM
-//                        )
                         Log.i(title, "Request successful action needed")
                     }
                 })

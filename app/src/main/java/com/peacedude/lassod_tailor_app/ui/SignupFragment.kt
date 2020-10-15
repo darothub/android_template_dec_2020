@@ -38,6 +38,7 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup.*
 import validatePasswordAndAdvise
+import java.util.*
 import javax.inject.Inject
 
 
@@ -203,7 +204,7 @@ class SignupFragment : DaggerFragment() {
 
         val firstName = first_name_edittext.text.toString().trim()
         val lastName = last_name_edittext.text.toString().trim()
-        val otherName = other_name_edittext.text.toString().trim().toLowerCase()
+        val otherName = other_name_edittext.text.toString().trim().toLowerCase(Locale.ROOT)
         val category = signup_spinner.selectedItem as String
         val phoneNumber = signup_phone_number_edittext.text.toString().trim()
         val passwordString = password_edittext.text.toString().trim()
@@ -231,7 +232,7 @@ class SignupFragment : DaggerFragment() {
                     passwordString
                 )
                 val response = requireActivity().observeRequest(request, progressBar, continueBtn)
-                response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
                     onRequestResponseTask(bool, result){
                         activateUserRequest(phoneNumber)

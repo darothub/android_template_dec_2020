@@ -65,6 +65,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
             android:visibility="gone"
+            android:hint="@string/email_address_str"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -73,7 +74,7 @@
                 style="@style/EditTextCustomStyle"
                 android:singleLine="true"
                 android:inputType="textEmailAddress"
-                android:hint="@string/email_address_str"
+
                 android:textColorHint="@color/colorGray"
                 android:transitionName="@string/email_or_phone_et"
                 />
@@ -89,6 +90,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
+            android:hint="@string/phone_number"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -97,7 +99,7 @@
                 style="@style/EditTextCustomStyle"
                 android:singleLine="true"
                 android:inputType="phone"
-                android:hint="@string/phone_number"
+
                 android:textColorHint="@color/colorGray"
                 android:transitionName="@string/email_or_phone_et"
                 />

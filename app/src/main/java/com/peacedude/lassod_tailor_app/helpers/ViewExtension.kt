@@ -6,21 +6,33 @@ import android.view.View
  * Hide view
  *
  */
-fun View.hide(){
-    this.visibility = View.GONE
+fun View.hide():Boolean{
+    if(this.visibility == View.VISIBLE || this.visibility == View.INVISIBLE){
+        this.visibility = View.GONE
+        return false
+    }
+    return this.visibility == View.GONE
 }
 
 /**
  * Show view
  *
  */
-fun View.show(){
-    this.visibility = View.VISIBLE
+fun View.show():Boolean{
+    if(this.visibility == View.INVISIBLE || this.visibility == View.GONE){
+        this.visibility = View.VISIBLE
+        return false
+    }
+    return this.visibility == View.VISIBLE
 }
 /**
  * Invisible view
  *
  */
-fun View.invisible(){
-    this.visibility = View.INVISIBLE
+fun View.invisible():Boolean{
+    if(this.visibility == View.VISIBLE || this.visibility == View.GONE){
+        this.visibility = View.INVISIBLE
+        return false
+    }
+    return this.visibility == View.INVISIBLE
 }

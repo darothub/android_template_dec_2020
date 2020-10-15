@@ -122,6 +122,7 @@ class DashboardActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
+        //Set last bottom navigation page
         bottomNav.selectedItemId = authViewModel.lastFragmentId ?: 0
         getUserData()
 

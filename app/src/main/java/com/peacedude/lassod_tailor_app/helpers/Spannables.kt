@@ -11,6 +11,7 @@ import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.peacedude.lassod_tailor_app.R
 
@@ -70,3 +71,44 @@ fun setupSpannableLinkAndDestination(view: Button,
 
 }
 
+
+inline fun String.setSpannableString(context: Context, color:Int, tv: TextView, start: Int, end:Int,  underline:Boolean=false, crossinline action:()->Unit){
+    val ssText = SpannableString(this)
+    // Implement ClickableSpan
+    val clickableSpan: ClickableSpan = object : ClickableSpan() {
+        override fun onClick(view: View) {
+            action()
+        }
+
+        // Change color and remove underline
+        override fun updateDrawState(ds: TextPaint) {
+            super.updateDrawState(ds)
+            ds.color = ContextCompat.getColor(context, color)
+            ds.isUnderlineText = underline
+        }
+    }
+    // Set the span text
+    ssText.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    tv.text = ssText
+    tv.movementMethod = LinkMovementMethod.getInstance();
+}
+inline fun String.setSpannableString(context: Context, color:Int, btn: Button, start: Int, end:Int,  underline:Boolean=false, crossinline action:()->Unit){
+    val ssText = SpannableString(this)
+    // Implement ClickableSpan
+    val clickableSpan: ClickableSpan = object : ClickableSpan() {
+        override fun onClick(view: View) {
+            action()
+        }
+
+        // Change color and remove underline
+        override fun updateDrawState(ds: TextPaint) {
+            super.updateDrawState(ds)
+            ds.color = ContextCompat.getColor(context, color)
+            ds.isUnderlineText = underline
+        }
+    }
+    // Set the span text
+    ssText.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    btn.text = ssText
+    btn.movementMethod = LinkMovementMethod.getInstance();
+}
