@@ -25,48 +25,10 @@ class ClientActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_client)
 
-//        clientManagementViewPager = (client_activity_included_viewPager as ViewPager2)
-//        navController = clientManagementViewPager.let { Navigation.findNavController(it) }
-//        navController.setGraph(R.navigation.client_viewpager_nav_graph)
-//        setupViewPager()
         val toolbar = (client_activity_toolbar as Toolbar?)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar?.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
 
     }
-
-//
-//    private fun setupViewPager() {
-//
-//        adapter = ViewPagerAdapter(this, 3) { position->
-//            when(position){
-//                0 -> ClientAccountFragment()
-//                1 -> NativeMeasurementFragment()
-//                2 -> EnglishMeasurementFragment()
-//                else -> ClientFragment()
-//            }
-//        }
-//
-//
-//
-//        clientManagementViewPager.adapter = adapter
-//        val tabLayoutMediator =
-//            clientManagementViewPager.let {
-//                TabLayoutMediator(client_activity_tabLayout, it,
-//                    TabLayoutMediator.TabConfigurationStrategy { tab, position ->
-//                        when(position){
-//                            0 -> tab.text = "Client Account"
-//                            1 -> tab.text = "Native Measurement"
-//                            2 -> tab.text = "English Measurement"
-//                            else -> tab.text = "Client"
-//                        }
-//                    }).apply {
-//                    attach()
-//                }
-//            }
-//
-//        client_activity_tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.colorPrimary))
-//
-//    }
 }

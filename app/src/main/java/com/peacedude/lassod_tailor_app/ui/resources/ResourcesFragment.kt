@@ -108,14 +108,6 @@ class ResourcesFragment : Fragment() {
                 itemView.resource_article_publication_item_author_tv.text = item?.articleAuthor
                 Picasso.get().load(item?.articleImageUri).into(itemView.resource_article_publications_iv)
 
-//                val request = ImageRequest.Builder(context)
-//                    .data(item?.articleImageUri)
-//                    .build()
-//                lifecycleScope.launch {
-//                    val drawable = imageLoader.execute(request).drawable
-//                    itemView.resource_article_publications_iv.setImageDrawable(drawable)
-//                }
-
                 itemView.resource_article_publications_iv.clipToOutline = true
 
             }

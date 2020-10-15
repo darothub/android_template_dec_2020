@@ -21,10 +21,7 @@ package="com.peacedude.lassod_tailor_app">
         android:name=".ui.DashboardActivity"
         android:theme="@style/ProfileActivityTheme"
         tools:ignore="AllowBackup">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+
     </activity>
     <activity
         android:screenOrientation="portrait"
@@ -38,6 +35,10 @@ package="com.peacedude.lassod_tailor_app">
         android:windowSoftInputMode="adjustPan|adjustResize"
         tools:ignore="AllowBackup">
         <nav-graph android:value="@navigation/nav_graph1" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
     </activity>
     <activity android:name="com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity"
         android:theme="@style/ProfileActivityTheme"

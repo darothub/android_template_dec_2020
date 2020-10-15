@@ -7,4 +7,5 @@
     <color name="colorRed">#F44336</color>
     <color name="shimmerColor">#dddddd</color>
     <color name="lightBlue">#4D0066F5</color>
+    <color name="colorTransparentWhite">#80FFFFFF</color>
 </resources>

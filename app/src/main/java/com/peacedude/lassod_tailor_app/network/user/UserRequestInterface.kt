@@ -38,4 +38,9 @@ interface UserRequestInterface {
     ):Call<UserResponse<User>> {
         return TODO()
     }
+    fun loginWithGoogle(
+        header:String?
+    ):Call<UserResponse<User>> {
+        return TODO()
+    }
 }

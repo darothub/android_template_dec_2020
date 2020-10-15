@@ -32,6 +32,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
@@ -171,28 +172,43 @@ class LoginFragment : DaggerFragment() {
                         if (it.isSuccessful) {
                             val account: GoogleSignInAccount? =
                                 it.getResult(ApiException::class.java)
-                            val name = account?.familyName
+                            val firstName = account?.givenName
+                            val lastName = account?.familyName
+                            val otherName = account?.displayName
                             val email = account?.email
                             val password = ""
                             requireActivity().gdToast(
                                 "Authentication successful",
                                 Gravity.BOTTOM
                             )
-//                            requireActivity().requestObserver(progressBar, loginBtn,
-//                                userViewModel.loginUserRequest(email, passwordString)
-//                            ) { b, any ->
-//                                onRequestResponseTask(b, any) {
-//                                    val userDetails = any as? UserResponse<User>
-//                                    val user = userDetails?.data
-//                                    user?.loggedIn = true
-//                                    userViewModel.currentUser = user
-//                                    val res = userViewModel.saveUser
-//                                    val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
-//                                    Log.i("$this", "res ${res.size}")
-//                                    startActivity(loginIntent)
-//                                    requireActivity().finish()
-//                                }
-//                            }
+                            val user = User(firstName, lastName, otherName)
+                            user.email = email
+                            user.token = account?.idToken
+                            val googleAuthHeader = "$bearer ${user.token.toString()}"
+                            val req = userViewModel.loginWithGoogle(googleAuthHeader)
+                            i(title, "header ${user.token}")
+                            requireActivity().requestObserver(
+                                null,
+                                null,
+                                req
+                            ) { bool, result ->
+                                onRequestResponseTask(bool, result) {
+                                    val userDetails = result as? UserResponse<User>
+                                    val user = userDetails?.data
+                                    user?.loggedIn = true
+                                    user?.token = user?.token
+                                    userViewModel.currentUser = user
+//                            val res = userViewModel.saveUser
+                                    val loginIntent =
+                                        Intent(requireContext(), DashboardActivity::class.java)
+                                    i(
+                                        "$this",
+                                        "res $user \ntoken ${user?.token}\ntoken 2${user?.token}"
+                                    )
+                                    startActivity(loginIntent)
+                                    requireActivity().finish()
+                                }
+                            }
                         } else {
 
                             requireActivity().gdToast(
@@ -245,35 +261,4 @@ class LoginFragment : DaggerFragment() {
         }
 
     }
-
-//    fun request(req:(userViewModel:UserViewModel)->LiveData<ServicesResponseWrapper<ParentData>>) {
-//
-//        val request  = req(userViewModel)
-//        val response = requireActivity().observeRequest(request, progressBar, loginBtn)
-//        response.observe(viewLifecycleOwner, Observer {
-//            val (bool, result) = it
-//            onRequestResponseTask(bool, result) {
-//                val userDetails = result as? UserResponse
-//                val user = userDetails?.data
-//                user?.loggedIn = true
-//                userViewModel.currentUser = user
-//                val res = userViewModel.saveUser
-//                val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
-//                Log.i(title, "res ${res.size}")
-//                startActivity(loginIntent)
-//                requireActivity().finish()
-//            }
-//        })
-//    }
-
-
-    //                val loginRequest = userViewModel.loginUserRequest(email.toString(), password)
-//                requireActivity().requestObserver(null, null, loginRequest){bool, result->
-//                    onRequestResponseTask(bool, result){
-//
-//                    }
-//
-//                }
-
-
 }

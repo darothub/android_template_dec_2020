@@ -1,18 +1,24 @@
 package com.peacedude.lassod_tailor_app.helpers
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.WindowInsets
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
+import com.afollestad.materialdialogs.DialogBehavior
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -35,11 +41,17 @@ import com.peacedude.lassod_tailor_app.ui.MainActivity
  */
 fun Activity.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>?,
-    progressBar: ProgressBar?, button: Button?
+    progressBar: ProgressBar?, button: Button?, loader:Boolean=false
 ): LiveData<Pair<Boolean, Any?>> {
     val result = MutableLiveData<Pair<Boolean, Any?>>()
     val title: String by lazy {
         this.getName()
+    }
+    val dialog by lazy {
+        Dialog(this, R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
     }
 
 
@@ -51,12 +63,13 @@ fun Activity.observeRequest(
             val errorCode = it.code
             when (it) {
                 is ServicesResponseWrapper.Loading<*> -> {
-
+                    if(loader) dialog.show() else dialog.hide()
                     progressBar?.show()
                     button?.hide()
                     Log.i(title, "Loading..")
                 }
                 is ServicesResponseWrapper.Success -> {
+                    dialog.hide()
                     progressBar?.hide()
                     button?.show()
                     result.postValue(Pair(true, responseData))
@@ -64,6 +77,7 @@ fun Activity.observeRequest(
                     Log.i("Observer", "success ${it.data}")
                 }
                 is ServicesResponseWrapper.Error -> {
+                    dialog.hide()
                     progressBar?.hide()
                     button?.show()
                     when (errorCode) {
@@ -89,6 +103,7 @@ fun Activity.observeRequest(
                     Log.i(title, "Error ${it.message}")
                 }
                 is ServicesResponseWrapper.Logout -> {
+                    dialog.hide()
                     val unAuthorizedString = getString(R.string.unauthorized_user)
                     progressBar?.hide()
                     button?.show()
@@ -102,6 +117,7 @@ fun Activity.observeRequest(
                 }
             }
         } catch (e: Exception) {
+            dialog.hide()
             Log.i(title, e.localizedMessage)
         }
 

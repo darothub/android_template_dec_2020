@@ -6,15 +6,15 @@ import java.io.Serializable
 
 open class User(
     @SerializedName("firstName")
-    var firstName: String?,
+    var firstName: String?="",
     @SerializedName("lastName")
-    var lastName: String?,
+    var lastName: String?="",
     @SerializedName("otherName")
-    var otherName:String?,
+    var otherName:String?="",
     @SerializedName("category")
-    var category:String?,
+    var category:String?="",
     @SerializedName("phoneNumber")
-    var phone:String?
+    var phone:String?=""
 
 ) : Serializable, ParentData{
     @SerializedName("password")

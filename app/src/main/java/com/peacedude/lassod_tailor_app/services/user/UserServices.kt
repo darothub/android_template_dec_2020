@@ -46,4 +46,9 @@ interface UserServices {
         @Body user: User?
     ): Call<UserResponse<User>>
 
+    @POST("auth/signin/google")
+    fun loginWithGoogle(
+        @Header("Authorization") header: String?
+    ): Call<UserResponse<User>>
+
 }

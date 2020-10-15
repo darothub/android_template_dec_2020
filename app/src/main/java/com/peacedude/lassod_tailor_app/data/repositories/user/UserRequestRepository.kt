@@ -37,5 +37,9 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
         return userServices.loginRequest(phoneNumber, password)
     }
 
+    override fun loginWithGoogle(header: String?): Call<UserResponse<User>> {
+        return userServices.loginWithGoogle(header)
+    }
+
 
 }

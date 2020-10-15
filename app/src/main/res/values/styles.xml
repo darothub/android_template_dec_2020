@@ -145,5 +145,10 @@
         <item name="android:textColor">@color/colorGray</item>
     </style>
 
-
+    <style name="DialogTheme" parent="@style/Base.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:background">@drawable/md_transparent</item>
+    </style>
 </resources>

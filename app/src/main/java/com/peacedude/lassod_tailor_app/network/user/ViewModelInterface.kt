@@ -52,4 +52,8 @@ interface ViewModelInterface {
     fun addClient(header: String?, client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
+
+    fun loginWithGoogle(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
 }

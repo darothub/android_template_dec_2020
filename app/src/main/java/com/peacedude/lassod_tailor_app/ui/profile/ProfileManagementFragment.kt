@@ -41,9 +41,6 @@ class ProfileManagementFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
 //
-
-
-
     }
 
     private fun setupViewPager() {
@@ -73,7 +70,6 @@ class ProfileManagementFragment : Fragment() {
                 }
             }
 
-        
         profile_management_tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
 
     }

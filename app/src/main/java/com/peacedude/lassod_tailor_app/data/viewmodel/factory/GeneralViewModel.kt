@@ -20,6 +20,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.storage.checkData
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
@@ -28,6 +29,8 @@ import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -39,7 +42,7 @@ open class GeneralViewModel @Inject constructor(
 ) : ViewModel(), ViewModelInterface {
     @Inject
     lateinit var mGoogleSignInClient: GoogleSignInClient
-    open val title: String = this.getName()
+    protected open val title: String = this.getName()
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
@@ -52,7 +55,6 @@ open class GeneralViewModel @Inject constructor(
 
     override var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
 
-
     override var profileData = storageRequest.checkData<User>(profileDataKey)
         set(currentUser) = storageRequest.keepData(currentUser, profileDataKey)
     final override var header: String? = "$bearer ${currentUser?.token}"
@@ -61,9 +63,7 @@ open class GeneralViewModel @Inject constructor(
         set(currentClient) = storageRequest.keepData(currentClient, newClientKey)
     override var saveClient = storageRequest.saveData(newClient, newClientKey)
 
-
-
-    fun onFailureResponse(
+    protected fun onFailureResponse(
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
         t: Throwable
     ) {
@@ -71,7 +71,7 @@ open class GeneralViewModel @Inject constructor(
         responseLiveData.postValue(ServicesResponseWrapper.Error(t.localizedMessage, 0, null))
     }
 
-    fun onResponseTask(
+    protected fun onResponseTask(
         response: Response<ParentData>,
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
     ) {
@@ -82,42 +82,23 @@ open class GeneralViewModel @Inject constructor(
 
 
         when (statusCode) {
-
-            401 -> {
-                try {
-
-                    val err = errorConverter(response)
-                    logout()
-                    responseLiveData.postValue(
-                        ServicesResponseWrapper.Logout(
-                            err.first,
-                            err.second
-                        )
-                    )
-                } catch (e: Exception) {
-                    Log.i(title, e.message.toString())
-                    responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
-                }
-
-            }
-            404 -> {
-                try {
-
-                    responseLiveData.postValue(
-                        ServicesResponseWrapper.Error(
-                            response.message(),
-                            404
-                        )
-                    )
-                } catch (e: Exception) {
-                    Log.i(title, "Hello" + " " + e.message.toString())
-                    responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
-                }
-            }
             in 400..599 -> {
                 try {
-                    val err = errorConverter(response)
-                    responseLiveData.postValue(ServicesResponseWrapper.Error(err.first, err.second))
+                    if(statusCode == 401 || statusCode == 403){
+                        val err = errorConverter(response)
+                        logout()
+                        responseLiveData.postValue(
+                            ServicesResponseWrapper.Logout(
+                                err.first,
+                                err.second
+                            )
+                        )
+                    }
+                    else{
+                        val err = errorConverter(response)
+                        responseLiveData.postValue(ServicesResponseWrapper.Error(err.first, err.second))
+                    }
+
                 } catch (e: Exception) {
                     Log.i(title, "Hello" + " " + e.message.toString())
                     responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
@@ -137,7 +118,7 @@ open class GeneralViewModel @Inject constructor(
 
     }
 
-    fun errorConverter(
+    protected fun errorConverter(
         response: Response<ParentData>
     ): Pair<String, Int> {
         val a = object : Annotation {}
@@ -178,7 +159,7 @@ open class GeneralViewModel @Inject constructor(
         return logoutLiveData
     }
 
-    fun logout(): LiveData<Boolean> {
+    protected fun logout(): LiveData<Boolean> {
         currentUser?.token = ""
         currentUser?.loggedIn = false
         val res = storageRequest.saveData(currentUser, loggedInUserKey)
@@ -192,6 +173,26 @@ open class GeneralViewModel @Inject constructor(
             }
         }
         return logoutLiveData
+    }
+
+   protected inline fun<reified  T> enqueueRequest(
+        request: Call<UserResponse<T>>,
+        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
+    ): MutableLiveData<ServicesResponseWrapper<ParentData>> {
+        request.enqueue(object : Callback<UserResponse<T>> {
+            override fun onFailure(call: Call<UserResponse<T>>, t: Throwable) {
+                onFailureResponse(responseLiveData, t)
+            }
+
+            override fun onResponse(
+                call: Call<UserResponse<T>>,
+                response: Response<UserResponse<T>>
+            ) {
+                onResponseTask(response as Response<ParentData>, responseLiveData)
+            }
+
+        })
+        return responseLiveData
     }
 
 }

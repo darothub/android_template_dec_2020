@@ -54,25 +54,6 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
             }
     }
 
-//    override fun <T : Any> getUserData(data: String, klass: KClass<T>): T? {
-//        if(klass.objectInstance != null){
-//            return gson.fromJson(data, klass.objectInstance!!::class.java)
-//        }
-//        else{
-//            return null
-//        }
-//    }
-//
-//
-//    override fun <T:Any>checkUser(key: String, klass: KClass<T>): T? {
-//        when {
-//            sharedPrefer.contains(key) ->{
-//                val result = sharedPrefer.getString(key, "")
-//                return result?.let { getUserData(it, klass) }
-//            }
-//        }
-//        return null
-//    }
 
     override fun clearByKey(key: String): Boolean {
         val data = sharedPrefer.contains(key)
@@ -86,3 +67,11 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
         return false
     }
 }
+
+//abstract class Hello(val sharedPref: EncryptedSharedPreferences){
+//
+//}
+//
+//class share(val sharedPrefs: EncryptedSharedPreferences):Hello(sharedPrefs){
+//
+//}

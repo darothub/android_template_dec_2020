@@ -33,10 +33,10 @@ class DashboardActivity : BaseActivity() {
     val profileName by lazy{
         profile_drawer_view.findViewById<TextView>(R.id.profile_name)
     }
-    //Get logged-in user
-//    private val currentUser: User? by lazy {
-//        authViewModel.currentUser
-//    }
+//    Get logged-in user
+    private val currentUser: User? by lazy {
+        authViewModel.currentUser
+    }
 
     private val header by lazy {
         authViewModel.header
@@ -71,7 +71,7 @@ class DashboardActivity : BaseActivity() {
 //        setBottomNavController()
 
         profile_header.show()
-//        getUserData()
+
         menuIcon?.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)
         }
@@ -122,23 +122,14 @@ class DashboardActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
-        val  lastFragmentId = authViewModel.lastFragmentId!!
-        i(title, "lastFragmentId $lastFragmentId")
-        if(lastFragmentId == 0) {
-            bottomNav.selectedItemId = bottomNav.menu[0].itemId
-        }else{
-            bottomNav.selectedItemId = lastFragmentId
-        }
-
-//
+        bottomNav.selectedItemId = authViewModel.lastFragmentId ?: 0
+        getUserData()
 
 
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-//        outState.putSerializable(loggedInUserKey, currentUser)
-//        outState.putString("header", header)
 
 
     }
@@ -160,14 +151,15 @@ class DashboardActivity : BaseActivity() {
 
 //        val user = authViewModel.currentUser
 
-//        getUserData()
+
 
     }
 
 
     override fun onPause() {
         super.onPause()
-        Log.i(title, "On pause")
+        authViewModel.lastFragmentId = bottomNav.selectedItemId
+        Log.i(title, "On pause idsaved ${authViewModel.lastFragmentId} bottomNavId ${bottomNav.selectedItemId}")
     }
 
     override fun onRestart() {
@@ -183,6 +175,7 @@ class DashboardActivity : BaseActivity() {
 
     private fun getUserData(){
         val request = authViewModel.getUserData(header.toString())
+        i(title, "header $header")
         val response = observeRequest(request, null, null)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
@@ -191,7 +184,7 @@ class DashboardActivity : BaseActivity() {
                 val user = userDetails?.data
                 greeting.text = "Hi ${user?.firstName}"
                 profileName.text = "${user?.firstName} ${user?.lastName}"
-                authViewModel?.currentUser = user
+//                authViewModel?.currentUser = user
 //                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
             }
         })

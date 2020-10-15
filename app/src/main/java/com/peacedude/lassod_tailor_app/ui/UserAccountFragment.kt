@@ -56,27 +56,27 @@ class UserAccountFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {instateBundle ->
-            instateBundle.apply {
-                authViewModel.header = this["header"] as String?
-                (this[loggedInUserKey] as User).let {
-                    authViewModel.currentUser = it
-                }
-                (this[profileDataKey] as User).let {
-                    authViewModel.profileData = it
-                }
-            }
-
-        }
-        arguments?.let {
-        }
+//        savedInstanceState?.let {instateBundle ->
+//            instateBundle.apply {
+//                authViewModel.header = this["header"] as String?
+//                (this[loggedInUserKey] as User).let {
+//                    authViewModel.currentUser = it
+//                }
+//                (this[profileDataKey] as User).let {
+//                    authViewModel.profileData = it
+//                }
+//            }
+//
+//        }
+//        arguments?.let {
+//        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(loggedInUserKey, currentUser)
-        outState.putSerializable(profileDataKey, authViewModel.profileData)
-        outState.putString("header", header)
+//        outState.putSerializable(loggedInUserKey, currentUser)
+//        outState.putSerializable(profileDataKey, authViewModel.profileData)
+//        outState.putString("header", header)
 
     }
 
@@ -107,13 +107,13 @@ class UserAccountFragment : DaggerFragment() {
             saveBtn.background = saveBtnBackground
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
-//        getUserData()
+        getUserData()
     }
 
     @SuppressLint("SetTextI18n")
     private fun getUserData(){
         val request = authViewModel.getUserData(header.toString())
-        val response = requireActivity().observeRequest(request, null, null)
+        val response = requireActivity().observeRequest(request, null, null, true)
         response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it
             onRequestResponseTask(bool, result){

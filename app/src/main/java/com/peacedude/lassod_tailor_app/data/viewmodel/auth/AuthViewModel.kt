@@ -33,17 +33,7 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.getUserData(header)
-        request.enqueue(object : Callback<UserResponse<User>> {
-            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
-                onFailureResponse(responseLiveData, t)
-            }
-
-            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
-                onResponseTask(response as Response<ParentData>, responseLiveData)
-            }
-
-        })
-        return responseLiveData
+       return enqueueRequest<User>(request, responseLiveData)
     }
 
    override fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>> {
@@ -53,17 +43,7 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.updateUserData(header, user)
-        request.enqueue(object : Callback<UserResponse<User>> {
-            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
-                onFailureResponse(responseLiveData, t)
-            }
-
-            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
-                onResponseTask(response as Response<ParentData>, responseLiveData)
-            }
-
-        })
-        return responseLiveData
+       return enqueueRequest<User>(request, responseLiveData)
     }
 
     override fun forgetPassword(field: String): LiveData<ServicesResponseWrapper<ParentData>> {
@@ -72,18 +52,7 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.forgetPassword(field)
-        request.enqueue(object : Callback<UserResponse<String>> {
-            override fun onFailure(call: Call<UserResponse<String>>, t: Throwable) {
-                Log.i(title, "Thrown")
-                onFailureResponse(responseLiveData, t)
-            }
-
-            override fun onResponse(call: Call<UserResponse<String>>, response: Response<UserResponse<String>>) {
-                onResponseTask(response as Response<ParentData>, responseLiveData)
-            }
-
-        })
-        return responseLiveData
+        return enqueueRequest<String>(request, responseLiveData)
     }
     override fun resetPassword(token:String?, password:String?, cPassword:String?): LiveData<ServicesResponseWrapper<ParentData>> {
         responseLiveData.value = ServicesResponseWrapper.Loading(
@@ -91,18 +60,7 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.resetPassword(token.toString(), password.toString(), cPassword.toString())
-        request.enqueue(object : Callback<UserResponse<String>> {
-            override fun onFailure(call: Call<UserResponse<String>>, t: Throwable) {
-                Log.i(title, " ${t.localizedMessage}")
-                onFailureResponse(responseLiveData, t)
-            }
-
-            override fun onResponse(call: Call<UserResponse<String>>, response: Response<UserResponse<String>>) {
-                onResponseTask(response as Response<ParentData>, responseLiveData)
-            }
-
-        })
-        return responseLiveData
+        return enqueueRequest<String>(request, responseLiveData)
     }
 
     override fun addClient(
@@ -114,18 +72,7 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.addClient(header.toString(), client)
-        request.enqueue(object : Callback<UserResponse<Client>> {
-            override fun onFailure(call: Call<UserResponse<Client>>, t: Throwable) {
-                Log.i(title, " ${t.localizedMessage}")
-                onFailureResponse(responseLiveData, t)
-            }
-
-            override fun onResponse(call: Call<UserResponse<Client>>, response: Response<UserResponse<Client>>) {
-                onResponseTask(response as Response<ParentData>, responseLiveData)
-            }
-
-        })
-        return responseLiveData
+        return enqueueRequest<Client>(request, responseLiveData)
     } 
 
 }
