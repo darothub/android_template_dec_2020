@@ -160,6 +160,7 @@ class PhoneSignupFragment : DaggerFragment() {
                 signupRequest()
             }
 
+
         })
 
         phone_signup_password_et.doOnTextChanged { text, start, count, after ->
@@ -211,7 +212,7 @@ class PhoneSignupFragment : DaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun signupRequest() {
         var dialCodePattern = Regex("""(\d{1,3})""")
-        val country = phone_signup_category_spinner.selectedItem as String
+        val country = phone_signup_country_spinner.selectedItem as String
         var dialCode = dialCodePattern.find(country)?.value
         var phoneNumber = phone_signup_phone_number_et.text.toString().trim()
         val passwordString = phone_signup_password_et.text.toString().trim()
@@ -233,13 +234,17 @@ class PhoneSignupFragment : DaggerFragment() {
             validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
             !checkPhoneStandard -> requireActivity().gdErrorToast("Invalid phone number", Gravity.BOTTOM)
             checkFirstZero -> {
-                phoneNumber = dialCode+phoneNumber.removePrefix("0")
+                phoneNumber = phoneNumber.removePrefix("0")
                 phone_signup_phone_number_et.setText(phoneNumber)
             }
 
 
             else -> {
-                val userData = User("", "", "", "", phoneNumber)
+                phoneNumber = dialCode + phoneNumber
+                val category = phone_signup_category_spinner.selectedItem as String
+                val userData = User()
+                userData.category = category
+                userData.phone = phoneNumber
                 userData.password = passwordString
                 requireActivity().gdToast("$phoneNumber", Gravity.BOTTOM)
                 val request = userViewModel.registerUser(userData)
@@ -282,6 +287,19 @@ class PhoneSignupFragment : DaggerFragment() {
                 })
 
             }
+
+        }
+        resendCodeBtn.setOnClickListener {
+            val request = userViewModel.resendCode(phone)
+            val response =
+                requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
+            response.observe(viewLifecycleOwner, Observer {
+                val (bool, result) = it
+                onRequestResponseTask(
+                    bool,
+                    result
+                ){}
+            })
 
         }
         dialog.show{

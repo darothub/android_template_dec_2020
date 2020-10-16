@@ -17,6 +17,14 @@ interface UserServices {
         @Field("password") password:String
     ): Call<UserResponse<User>>
 
+    @POST("auth/signup")
+    @FormUrlEncoded
+    fun registerUserWithEmail(
+        @Field("category") category:String,
+        @Field("email") email:String,
+        @Field("password") password:String
+    ): Call<UserResponse<User>>
+
     @POST("auth/activate")
     @FormUrlEncoded
     fun activateUser(@Field("phoneNumber") phoneNumber:String, @Field("code") code:String  ):Call<UserResponse<User>>
@@ -31,8 +39,8 @@ interface UserServices {
     @POST("auth/signin")
     @FormUrlEncoded
     fun login(
-        @Field("field") field:String,
-        @Field("password") password:String
+        @Field("email") field:String?,
+        @Field("password") password:String?
     ):Call<UserResponse<User>>
 
     @POST("auth/signup")
@@ -49,6 +57,12 @@ interface UserServices {
     @POST("auth/signin/google")
     fun loginWithGoogle(
         @Header("Authorization") header: String?
+    ): Call<UserResponse<User>>
+
+    @POST("auth/resendcode")
+    @FormUrlEncoded
+    fun resendCode(
+        @Field("phoneNumber") phoneNumber: String?
     ): Call<UserResponse<User>>
 
 }

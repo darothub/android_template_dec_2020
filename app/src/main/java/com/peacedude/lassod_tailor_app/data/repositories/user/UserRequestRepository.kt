@@ -22,10 +22,19 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
 
     override fun registerUser(user: User?): Call<UserResponse<User>> {
         return userServices.registerUser(user)
+
     }
 
     override fun registerUser(header: String, user: User?): Call<UserResponse<User>> {
         return userServices.registerUser(header, user)
+    }
+
+    override fun registerUserWithEmail(
+        category: String,
+        email: String,
+        password: String
+    ): Call<UserResponse<User>> {
+        return userServices.registerUserWithEmail(category, email, password)
     }
 
     override fun activateUser(phoneNumber: String, code: String): Call<UserResponse<User>> {
@@ -37,8 +46,19 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
         return userServices.loginRequest(phoneNumber, password)
     }
 
+    override fun loginWithEmailOrPhoneNumber(
+        field: String?,
+        password: String?
+    ): Call<UserResponse<User>> {
+        return userServices.login(field, password)
+    }
+
     override fun loginWithGoogle(header: String?): Call<UserResponse<User>> {
         return userServices.loginWithGoogle(header)
+    }
+
+    override fun resendCode(phoneNumber: String): Call<UserResponse<User>> {
+        return userServices.resendCode(phoneNumber)
     }
 
 

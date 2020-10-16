@@ -199,11 +199,12 @@ class EmailSignupFragment : DaggerFragment() {
                 }
             }
             else -> {
-                val category = arg.category
-                val newUser = User("", "", "", category, "")
+                val category = email_signup_category_spinner.selectedItem as String
+                val newUser = User()
+                newUser.category = category
                 newUser.email = email
                 newUser.password = passwordString
-                var req = userViewModel.registerUser(newUser)
+                val req = userViewModel.registerUserWithEmail(category, email, passwordString)
                 val observer =
                     requireActivity().observeRequest(req, progressBar, emailSignupBtn)
                 observer.observe(viewLifecycleOwner, Observer {

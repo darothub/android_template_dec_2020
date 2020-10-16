@@ -4,26 +4,24 @@ import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
-open class User(
+open class User: Serializable, ParentData{
     @SerializedName("firstName")
-    var firstName: String?="",
+    var firstName: String?=null
     @SerializedName("lastName")
-    var lastName: String?="",
+    var lastName: String?=null
     @SerializedName("otherName")
-    var otherName:String?="",
+    var otherName:String?=null
     @SerializedName("category")
-    var category:String?="",
+    var category:String?=null
     @SerializedName("phoneNumber")
-    var phone:String?=""
-
-) : Serializable, ParentData{
+    var phone:String?=null
     @SerializedName("password")
-    var password:String?=""
+    var password:String?=null
     @SerializedName("user_id")
-    var userId: String? = ""
-    var id:String? = ""
-    var token: String?= ""
-    var isVerified: Boolean = false
+    var userId: String? = null
+    var id:String? = null
+    var token: String?= null
+    var isVerified: Boolean? = null
     var gender:String?=null
     var workshopAddress:String?=null
     var showroomAddress:String?=null
@@ -31,18 +29,18 @@ open class User(
     var legalStatus:String?=null
     var specialty:String?=null
     var genderFocus:String?=null
-    var obiomaCert:String?="NO"
-    var visitUsMeasurement:String?="YES"
-    var acceptSelfMeasurement:String?="NO"
+    var obiomaCert:String?=null
+    var visitUsMeasurement:String?=null
+    var acceptSelfMeasurement:String?=null
     var deliveryTime:String?=null
-    var paymentOptions:String?=""
+    var paymentOptions:String?=null
     var name_union:String?=null
     var ward:String?=null
     var lga:String?=null
     var state:String?=null
-    var country:String? = ""
-    var email:String?=""
-    var loggedIn:Boolean = false
+    var country:String? = null
+    var email:String?=null
+    var loggedIn:Boolean? = null
     var imageUrl:String?=null
 }
 

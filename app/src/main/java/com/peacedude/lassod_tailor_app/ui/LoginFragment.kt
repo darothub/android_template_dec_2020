@@ -118,7 +118,6 @@ class LoginFragment : DaggerFragment() {
             login_phone_number_input.animation =
                 AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
             login_phone_number_input.invisible()
-            login_phone_number_input.hint = ""
 
             login_with_phone_tv.show()
             login_with_phone_tv.animation = leftAnimation
@@ -134,7 +133,6 @@ class LoginFragment : DaggerFragment() {
                 AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
             login_email_input.invisible()
             login_email_address_et.invisible()
-            login_email_address_et.hint = ""
 
             login_with_email_tv.show()
             login_with_email_tv.animation = leftAnimation
@@ -207,7 +205,7 @@ class LoginFragment : DaggerFragment() {
             login_phone_number_input.invisible()
     //                requireActivity().gdToast("Email", Gravity.BOTTOM)
             validateAndLogin(login_email_address_et, "email") { email, password ->
-                loginWithPhoneNumber(email, password)
+                loginWithEmail(email, password)
             }
         }
     }
@@ -234,7 +232,10 @@ class LoginFragment : DaggerFragment() {
                             "Authentication successful",
                             Gravity.BOTTOM
                         )
-                        val user = User(firstName, lastName, otherName)
+                        val user = User()
+                        user.firstName = firstName
+                        user.lastName = lastName
+                        user.otherName = otherName
                         user.email = email
                         user.token = account?.idToken
                         loginWithGoogle(user)
@@ -296,11 +297,16 @@ class LoginFragment : DaggerFragment() {
         }
         val result=validateField(editText, """email|phone_number""")
         val resultPassword=validateField(login_password_et, """password""")
-        requireActivity().gdToast("$result", Gravity.BOTTOM)
+//        requireActivity().gdToast("$result", Gravity.BOTTOM)
         when {
             result && resultPassword ->{
                 if (v != null){
-                    requireActivity().gdToast("$v is invalid", Gravity.BOTTOM)
+                    if(filter == "phone"){
+                        requireActivity().gdToast("$v must be 13 character long", Gravity.BOTTOM)
+                    }
+                    else{
+                        requireActivity().gdToast("$v is invalid", Gravity.BOTTOM)
+                    }
                 }
                 else{
                     action(phoneNumberOrEmailAddress, passwordString)
@@ -315,6 +321,24 @@ class LoginFragment : DaggerFragment() {
         requireActivity().requestObserver(
             progressBar, loginBtn,
             userViewModel.loginUserRequest(phoneNumberOrEmail, passwordString)
+        ) { b, any ->
+            onRequestResponseTask(b, any) {
+                val userDetails = any as? UserResponse<User>
+                val user = userDetails?.data
+                user?.loggedIn = true
+                userViewModel.currentUser = user
+                val res = userViewModel.saveUser
+                val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
+                Log.i("$this", "res ${res.size}")
+                startActivity(loginIntent)
+                requireActivity().finish()
+            }
+        }
+    }
+    private fun loginWithEmail(email: String, passwordString: String) {
+        requireActivity().requestObserver(
+            progressBar, loginBtn,
+            userViewModel.loginWithEmailOrPhoneNumber(email, passwordString)
         ) { b, any ->
             onRequestResponseTask(b, any) {
                 val userDetails = any as? UserResponse<User>

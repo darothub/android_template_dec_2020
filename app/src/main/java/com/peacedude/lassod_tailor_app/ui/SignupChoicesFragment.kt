@@ -129,7 +129,11 @@ class SignupChoicesFragment : DaggerFragment() {
                             val otherName = account?.displayName
                             val imageUrl = account?.photoUrl
                             val category = arg.category
-                            val newUser = User(firstName, lastName, otherName, category, null)
+                            val newUser = User()
+                            newUser.firstName = firstName
+                            newUser.lastName = lastName
+                            newUser.otherName = otherName
+                            newUser.category = category
                             newUser.email = email
                             newUser.imageUrl = imageUrl.toString()
                             userViewModel.currentUser = newUser

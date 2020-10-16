@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import com.peacedude.lassod_tailor_app.R
 
 
@@ -16,6 +17,8 @@ import com.peacedude.lassod_tailor_app.R
  * create an instance of this fragment.
  */
 class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
+
+    private val arg: ConfirmationFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

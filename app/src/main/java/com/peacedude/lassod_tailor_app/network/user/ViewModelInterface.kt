@@ -36,6 +36,13 @@ interface ViewModelInterface {
     ): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
+    fun registerUserWithEmail(
+        category: String,
+        email: String,
+        password: String
+    ): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
 
     fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
@@ -54,6 +61,13 @@ interface ViewModelInterface {
     }
 
     fun loginWithGoogle(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
+    fun loginWithEmailOrPhoneNumber(field:String?, password: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
+
+    fun resendCode(phoneNumber: String): LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
 }

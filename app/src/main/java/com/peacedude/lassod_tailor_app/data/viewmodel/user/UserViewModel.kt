@@ -22,13 +22,15 @@ class UserViewModel @Inject constructor(
     val storage: StorageRequest
 ) : GeneralViewModel(retrofit,storage), ViewModelInterface {
 
+    private val responseLiveData by lazy{
+        MutableLiveData<ServicesResponseWrapper<ParentData>>()
+    }
+
 
     override val title: String by lazy {
         this.getName()
     }
     override fun registerUser(user: User?): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
@@ -43,7 +45,6 @@ class UserViewModel @Inject constructor(
         user: User?
     ): LiveData<ServicesResponseWrapper<ParentData>> {
 
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
@@ -65,7 +66,6 @@ class UserViewModel @Inject constructor(
 
     ): LiveData<ServicesResponseWrapper<ParentData>> {
 
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
@@ -81,10 +81,25 @@ class UserViewModel @Inject constructor(
         return enqueueRequest<User>(request, responseLiveData)
     }
 
+    override fun registerUserWithEmail(
+        category: String,
+        email: String,
+        password: String
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = userRequestInterface.registerUserWithEmail(
+            category,
+            email,
+            password
+        )
+        return enqueueRequest<User>(request, responseLiveData)
+    }
 
 
     override fun loginWithGoogle(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
@@ -94,9 +109,29 @@ class UserViewModel @Inject constructor(
 
     }
 
+    override fun loginWithEmailOrPhoneNumber(
+        field: String?,
+        password: String?
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = userRequestInterface.loginWithEmailOrPhoneNumber(field, password)
+        return enqueueRequest<User>(request, responseLiveData)
+    }
+
+    override fun resendCode(phoneNumber: String): LiveData<ServicesResponseWrapper<ParentData>>  {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = userRequestInterface.resendCode(phoneNumber)
+        return enqueueRequest<User>(request, responseLiveData)
+    }
+
     override fun activateUser(phoneNumber:String, code: String): LiveData<ServicesResponseWrapper<ParentData>> {
         Log.i(title, "$phoneNumber $code")
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
@@ -110,8 +145,6 @@ class UserViewModel @Inject constructor(
         emailOrPhone: String,
         password: String
     ): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."

@@ -98,11 +98,12 @@
         tools:layout="@layout/fragment_confirmation">
         <deepLink
             android:id="@+id/deepLink"
-            app:uri="www.obioma-staging.herokuapp.com/api/v1/auth/verify?authorization={token}" />
+            android:autoVerify="true"
+            app:uri="https://obioma-staging.vercel.app/?verification={verification}" />
         <argument
-            android:name="token"
+            android:name="verification"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
 </navigation>

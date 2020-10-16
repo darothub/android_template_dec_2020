@@ -18,6 +18,13 @@ interface UserRequestInterface {
         return TODO()
     }
 
+    fun registerUserWithEmail(
+        category: String,
+        email: String,
+        password: String
+    ): Call<UserResponse<User>> {
+        return TODO()
+    }
     fun activateUser(phoneNumber: String, code: String): Call<UserResponse<User>> {
         return TODO()
     }
@@ -26,6 +33,9 @@ interface UserRequestInterface {
         return TODO()
     }
 
+    fun loginWithEmailOrPhoneNumber(field: String?, password: String?): Call<UserResponse<User>> {
+        return TODO()
+    }
    fun registerUser(
         user: User?
     ):Call<UserResponse<User>> {
@@ -40,6 +50,12 @@ interface UserRequestInterface {
     }
     fun loginWithGoogle(
         header:String?
+    ):Call<UserResponse<User>> {
+        return TODO()
+    }
+
+    fun resendCode(
+        phoneNumber: String
     ):Call<UserResponse<User>> {
         return TODO()
     }

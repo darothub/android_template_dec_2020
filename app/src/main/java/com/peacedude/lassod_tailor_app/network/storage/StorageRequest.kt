@@ -24,6 +24,7 @@ interface StorageRequest {
     fun clearByKey(key: String):Boolean {
         return TODO()
     }
+
 }
 
 inline fun<reified T> StorageRequest.getData(data:String):T? = this.gson.fromJson(data, object :TypeToken<T>(){}.type)
