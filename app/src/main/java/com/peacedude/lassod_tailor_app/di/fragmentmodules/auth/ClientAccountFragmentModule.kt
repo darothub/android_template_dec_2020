@@ -13,4 +13,5 @@ abstract class ClientAccountFragmentModule {
      */
     @ContributesAndroidInjector()
     abstract fun provideClientAccountFragment(): ClientAccountFragment
+
 }

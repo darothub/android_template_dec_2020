@@ -70,4 +70,8 @@ interface ViewModelInterface {
     fun resendCode(phoneNumber: String): LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
+
+    fun getAllClient(header: String?, tailorId:String?): LiveData<ServicesResponseWrapper<ParentData>> {
+        TODO()
+    }
 }

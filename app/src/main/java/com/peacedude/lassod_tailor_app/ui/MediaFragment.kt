@@ -20,22 +20,25 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import com.amplifyframework.core.Amplify
+import com.amplifyframework.storage.options.StorageUploadFileOptions
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.RegisterForActivityResult
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.i
-import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.squareup.picasso.Picasso
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.jar.Manifest
+import javax.inject.Inject
 
 const val REQUEST_CODE = 1
 const val GALLERY_PHOTO_CODE = 0
@@ -44,7 +47,7 @@ const val GALLERY_PHOTO_CODE = 0
  * Use the [MediaFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MediaFragment : Fragment() {
+class MediaFragment : DaggerFragment() {
     private val title by lazy {
         getName()
     }
@@ -61,12 +64,17 @@ class MediaFragment : Fragment() {
         (dialog.findViewById(R.id.add_photo_loading_ll) as LinearLayout)
     }
 
+    lateinit var observer : StartActivityForResults
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
 
         }
+        observer = StartActivityForResults(requireActivity().activityResultRegistry)
+        lifecycle.addObserver(observer as StartActivityForResults)
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,7 +114,7 @@ class MediaFragment : Fragment() {
                     android.Manifest.permission.CAMERA
                 )
             ) {
-                i(title, "second if here we aee")
+                i(title, "second if here we are")
                 val alertBuilder = AlertDialog.Builder(requireActivity())
                 alertBuilder.setTitle(R.string.allow_camera)
                 alertBuilder.setMessage(R.string.camera_str)
@@ -145,7 +153,7 @@ class MediaFragment : Fragment() {
                 }
                 alertDialog.show()
             } else {
-                i(title, "second else Here we aee")
+                i(title, "second else Here we are")
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(android.Manifest.permission.CAMERA),
@@ -160,17 +168,14 @@ class MediaFragment : Fragment() {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             val chooser = Intent.createChooser(galleryIntent, "Photo options")
             chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
-            val registerForActivity = RegisterForActivityResult.getInstance(
-                requireActivity().activityResultRegistry,
-                requireActivity()
-            )
-            registerForActivity.onCreate(this, chooser){result ->
+            observer.getResultLiveData.observe(viewLifecycleOwner, Observer { result->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val data = result.data
                     val imageUri = data?.data ?: getImageUriFromBitmap(
                         requireContext(),
                         data?.extras?.get("data") as Bitmap
                     )
+                    i(title, "Uri $imageUri")
                     addPhotoLoaderLayout.show()
                     addPhotoFab.hide()
 //                    Picasso.get().load(imageUri).into()
@@ -178,7 +183,7 @@ class MediaFragment : Fragment() {
                 } else {
                     i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
                 }
-            }
+            })
 
 //            requireActivity().gdToast(getString(R.string.permission_granted_str), Gravity.BOTTOM)
         }

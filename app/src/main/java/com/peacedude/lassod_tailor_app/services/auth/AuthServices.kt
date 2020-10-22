@@ -28,11 +28,18 @@ interface AuthServices {
         @Field("confirmPassword") cpassword: String
     ): Call<UserResponse<String>>
 
-    @POST("auth/client")
+    @POST("client")
     fun addClient(
         @Header("Authorization") header: String,
         @Body client: Client
     ): Call<UserResponse<Client>>
+
+    @POST("client")
+    @FormUrlEncoded
+    fun getAllClient(
+        @Header("Authorization") header: String?,
+        @Field("tailorId") tailorId: String?
+    ): Call<UserResponse<List<Client>>>
 
 
 }

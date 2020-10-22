@@ -135,7 +135,7 @@ class SpecialtyFragment : DaggerFragment() {
         val response = requireActivity().observeRequest(request, null, null)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
-            onRequestResponseTask(bool, result) {
+            onRequestResponseTask<User>(bool, result) {
                 val resp = result as? UserResponse<User>
                 val user = resp?.data
 
@@ -277,7 +277,7 @@ class SpecialtyFragment : DaggerFragment() {
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
-            onRequestResponseTask(bool, result) {
+            onRequestResponseTask<User>(bool, result) {
                 val response = result as? UserResponse<User>
                 val msg = response?.message
                 val profileData = response?.data

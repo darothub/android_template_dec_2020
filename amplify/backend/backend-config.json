@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "obioma68e0754c": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "storage": {
+    "obiomafriendly": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
+  }
+}

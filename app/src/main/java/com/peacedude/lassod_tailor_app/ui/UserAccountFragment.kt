@@ -116,7 +116,7 @@ class UserAccountFragment : DaggerFragment() {
         val response = requireActivity().observeRequest(request, null, null, true)
         response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it
-            onRequestResponseTask(bool, result){
+            onRequestResponseTask<User>(bool, result){
                 val resp = result as? UserResponse<User>
                 val user = resp?.data
                 first_name_et.setText(user?.firstName)
@@ -163,12 +163,12 @@ class UserAccountFragment : DaggerFragment() {
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
         response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it
-            onRequestResponseTask(bool, result){
+            onRequestResponseTask<User>(bool, result){
                 val response = result as? UserResponse<User>
                 val msg = response?.message
                 val profileData = response?.data
                 authViewModel.profileData = profileData
-                Log.i(title, "msg $msg ${profileData?.firstName}")
+                i(title, "msg $msg ${profileData?.firstName}")
             }
         })
     }

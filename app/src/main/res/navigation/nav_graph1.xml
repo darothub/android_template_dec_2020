@@ -99,7 +99,7 @@
         <deepLink
             android:id="@+id/deepLink"
             android:autoVerify="true"
-            app:uri="https://obioma-staging.vercel.app/?verification={verification}" />
+            app:uri="https://https://obioma-staging.herokuapp.com/?verification={verification}" />
         <argument
             android:name="verification"
             android:defaultValue="@null"

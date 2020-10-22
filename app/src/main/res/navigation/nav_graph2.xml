@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_media" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.ProfileFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.profile.ProfileFragment"
         android:label=" "
         tools:layout="@layout/fragment_profile" />
 </navigation>

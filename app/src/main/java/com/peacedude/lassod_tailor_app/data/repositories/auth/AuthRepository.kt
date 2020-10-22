@@ -37,23 +37,10 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.addClient(header, client)
     }
 
-    fun doSomething(header: String):LiveData<ServicesResponseWrapper<ParentData>>{
-        responseLiveData.value = ServicesResponseWrapper.Loading(
-            null,
-            "Loading..."
-        )
-        val request = authServices.getUserData(header)
-        request.enqueue(object : Callback<UserResponse<User>> {
-            override fun onFailure(call: Call<UserResponse<User>>, t: Throwable) {
-
-            }
-
-            override fun onResponse(call: Call<UserResponse<User>>, response: Response<UserResponse<User>>) {
-
-            }
-
-        })
-        return responseLiveData
+    override fun getAllClient(header:String?, tailorId: String?): Call<UserResponse<List<Client>>> {
+        return authServices.getAllClient(header, tailorId)
     }
+
+
 }
 

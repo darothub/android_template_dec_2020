@@ -15,23 +15,24 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.peacedude.gdtoast.gdErrorToast
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getEditTextName
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.goto
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client.*
 import kotlinx.android.synthetic.main.fragment_client_account.*
+import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import javax.inject.Inject
@@ -48,6 +49,9 @@ class ClientAccountFragment : DaggerFragment(){
     }
     private lateinit var nextBtn: Button
     private lateinit var progressBar: ProgressBar
+    val header by lazy {
+        authViewModel.header
+    }
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -80,11 +84,17 @@ class ClientAccountFragment : DaggerFragment(){
         val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
         val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
 
+        setupCategorySpinner(
+            requireContext(),
+            client_account_gender_spinner,
+            R.array.gender_list
+        )
+
         buttonTransactions({
             nextBtn = client_account_next_btn.findViewById(R.id.btn)
             progressBar = client_account_next_btn.findViewById(R.id.progress_bar)
 
-            nextBtn.text = getString(R.string.next)
+            nextBtn.text = getString(R.string.add_client)
             nextBtn.background = nextBtnBackground
             nextBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         }) {
@@ -107,12 +117,28 @@ class ClientAccountFragment : DaggerFragment(){
                     validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
 
                     else->{
-
+                        Log.i(title, " header $header")
                         val client = Client(clientName, clientPhoneNumber, clientEmail, clientShippingAddress)
+                        val gender = client_account_gender_spinner.selectedItem as String
+                        client.gender = gender
                         authViewModel.newClient = client
-                        Log.i(title, "newclient ${client.name}")
+
+                        val req = authViewModel.addClient(header, client)
+                        val observer =
+                            requireActivity().observeRequest(req, progressBar, nextBtn)
+                        observer.observe(viewLifecycleOwner, Observer {
+                            val (bool, result) = it
+                            onRequestResponseTask<Client>(bool, result) {
+                                requireActivity().gdToast(
+                                    "Client added successfully",
+                                    Gravity.BOTTOM
+                                )
+//
+                                i(title, getString(R.string.check_email))
+                            }
+                        })
 //                        val action = "android-app://obioma/nativemeasurement/$client".toUri()
-                        parent.setItem(1)
+//                        parent.setItem(1)
                     }
                 }
             }

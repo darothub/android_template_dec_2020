@@ -22,4 +22,7 @@ interface AuthRequestInterface {
     fun addClient(header: String, client: Client): Call<UserResponse<Client>>{
         return TODO()
     }
+    fun getAllClient(header: String?, tailorId:String?): Call<UserResponse<List<Client>>>{
+        return TODO()
+    }
 }

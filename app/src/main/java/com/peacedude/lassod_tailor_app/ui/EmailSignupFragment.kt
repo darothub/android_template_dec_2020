@@ -90,8 +90,8 @@ class EmailSignupFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_email_signup, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val toolbar = email_signup_appbar.findViewById<Toolbar>(R.id.reusable_toolbar)
         val navController = Navigation.findNavController(email_signup_appbar)
 
@@ -138,6 +138,11 @@ class EmailSignupFragment : DaggerFragment() {
         setupLoginSpannableString()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+    }
+
     private fun signupRequest() {
         val email = email_field.text.toString().trim()
         val passwordString = password_field.text.toString().trim()
@@ -170,6 +175,7 @@ class EmailSignupFragment : DaggerFragment() {
                 } else {
                     val googleAuthHeader = "$bearer ${user?.token.toString()}"
                     user?.password = passwordString
+                    user?.category = email_signup_category_spinner.selectedItem as String
                     var req = userViewModel.registerUser(googleAuthHeader, user)
                     i(title, "header ${user?.token}")
                     requireActivity().requestObserver(
@@ -177,7 +183,7 @@ class EmailSignupFragment : DaggerFragment() {
                         emailSignupBtn,
                         req
                     ) { bool, result ->
-                        onRequestResponseTask(bool, result) {
+                        onRequestResponseTask<User>(bool, result) {
                             val userDetails = result as? UserResponse<User>
                             val user = userDetails?.data
                             currentUser?.loggedIn = true
@@ -209,13 +215,11 @@ class EmailSignupFragment : DaggerFragment() {
                     requireActivity().observeRequest(req, progressBar, emailSignupBtn)
                 observer.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
-                    onRequestResponseTask(bool, result) {
+                    onRequestResponseTask<User>(bool, result) {
                         requireActivity().gdToast(
                             "Check your email for verification",
                             Gravity.BOTTOM
                         )
-//                        goto(R.id.loginFragment)
-                        //                                requireActivity().gdToast(getString(R.string.check_email), Gravity.BOTTOM)
                         Log.i(title, getString(R.string.check_email))
                     }
                 })

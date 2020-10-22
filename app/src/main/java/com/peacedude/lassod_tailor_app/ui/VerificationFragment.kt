@@ -1,7 +1,10 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +14,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.hide
-import com.peacedude.lassod_tailor_app.helpers.i
+import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
@@ -126,4 +130,46 @@ class VerificationFragment : Fragment() {
         super.onPause()
         navController.removeOnDestinationChangedListener(destinationChangedListener)
     }
+
+//    if (result.resultCode == Activity.RESULT_OK) {
+//        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+//        task.addOnCompleteListener {
+//            if (it.isSuccessful) {
+//                val account: GoogleSignInAccount? =
+//                    it.getResult(ApiException::class.java)
+//                val idToken = it.result?.idToken
+//                val email = account?.email
+//                val lastName = account?.familyName
+//                val firstName = account?.givenName
+//                val otherName = account?.displayName
+//                val imageUrl = account?.photoUrl
+//                val category = arg.category
+//                val newUser = User()
+//                newUser.firstName = firstName
+//                newUser.lastName = lastName
+//                newUser.otherName = otherName
+//                newUser.category = category
+//                newUser.email = email
+//                newUser.imageUrl = imageUrl.toString()
+//                userViewModel.currentUser = newUser
+//                newUser.token = idToken
+//
+//                i(title, "idToken $idToken")
+//
+//                requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
+//                val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
+//                action.newUser = newUser
+//                goto(action)
+//            } else {
+//                requireActivity().gdToast(
+//                    "Authentication Unsuccessful",
+//                    Gravity.BOTTOM
+//                )
+//                Log.i(title, "Task not successful")
+//            }
+//
+//        }
+//    } else {
+//        Log.i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
+//    }
 }

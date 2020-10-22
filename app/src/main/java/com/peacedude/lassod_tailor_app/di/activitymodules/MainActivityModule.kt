@@ -7,7 +7,6 @@ import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.*
 import com.peacedude.lassod_tailor_app.di.networkmodules.auth.AuthRequestModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.user.UserRequestsModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
-import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.ViewModelFactoryModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.user.UserViewModelModule
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import dagger.Module

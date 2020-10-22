@@ -136,7 +136,7 @@ class ResetPasswordFragment : DaggerFragment() {
                 resetBtn,
                 authViewModel.resetPassword(token, password, cpassword)
             ) { b, any ->
-                onRequestResponseTask(b, any) {
+                onRequestResponseTask<String>(b, any) {
                     val userDetails = any as? UserResponse<String>
                     val user = userDetails?.data
                     Log.i(title, "User $user")

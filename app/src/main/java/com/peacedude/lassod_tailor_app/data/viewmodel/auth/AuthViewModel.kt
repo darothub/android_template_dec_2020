@@ -73,6 +73,15 @@ open class AuthViewModel @Inject constructor(
         )
         val request = authRequestInterface.addClient(header.toString(), client)
         return enqueueRequest<Client>(request, responseLiveData)
-    } 
+    }
+
+    override fun getAllClient(header: String?, tailorId: String?): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.getAllClient(header, tailorId)
+        return enqueueRequest<List<Client>>(request, responseLiveData)
+    }
 
 }

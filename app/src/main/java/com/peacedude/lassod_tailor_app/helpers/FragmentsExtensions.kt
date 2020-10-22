@@ -97,7 +97,7 @@ private fun Fragment.hideKeyboard() {
  * @param bool
  * @param result
  */
-fun Fragment.onRequestResponseTask(
+inline fun <reified T>Fragment.onRequestResponseTask(
     bool: Boolean,
     result: Any?,
     action:()-> Unit
@@ -106,10 +106,10 @@ fun Fragment.onRequestResponseTask(
 
         true -> {
             try {
-                val res = result as UserResponse<User>
+                val res = result as UserResponse<T>
                 requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
                 action()
-//                Log.i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
+//                i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
             }
             catch (e:java.lang.Exception){
                 requireActivity().gdErrorToast(e.localizedMessage, Gravity.BOTTOM)

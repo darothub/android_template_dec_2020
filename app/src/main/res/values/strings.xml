@@ -17,10 +17,10 @@
         <item>Military and para-military Uniform</item>
     </string-array>
     <string-array name="gender_list">
-        <item>Male</item>
-        <item>Female</item>
-        <item>Kids</item>
-        <item>Unisex</item>
+        <item>male</item>
+        <item>female</item>
+        <item>kids</item>
+        <item>unisex</item>
     </string-array>
     <string-array name="measurement_options_list">
         <item>Visit us for your measurement</item>

@@ -20,6 +20,7 @@
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/name"
             android:layout_marginTop="@dimen/_10sdp"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -32,6 +33,7 @@
             android:layout_marginTop="6dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/client_account_phone_tv"
@@ -49,6 +51,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"
+            android:maxLength="13"
             app:layout_constraintBottom_toBottomOf="@id/client_account_phone_tv"
             app:layout_constraintTop_toBottomOf="@id/client_account_name_et"
              />
@@ -72,13 +75,31 @@
             app:layout_constraintBottom_toBottomOf="@id/client_account_email_tv"
             app:layout_constraintTop_toBottomOf="@id/client_account_phone_number_et"
             />
+        <TextView
+            android:id="@+id/client_account_gender_tv"
+            style="@style/EditProfileTextViewCustomStyle"
+            android:text="@string/gender"
+            android:gravity="bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/client_account_email_et"
+            />
 
+        <Spinner
+            android:id="@+id/client_account_gender_spinner"
+            style="@style/SpinnerCustomStyle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/client_account_gender_tv"
+            app:layout_constraintBottom_toBottomOf="@id/client_account_gender_tv"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:transitionName="@string/spinner"
+            />
         <TextView
             android:id="@+id/client_account_shipping_add_tv"
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/shipping_addresss_str"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/client_account_email_et"
+            app:layout_constraintTop_toBottomOf="@id/client_account_gender_spinner"
             />
 
         <EditText
@@ -93,7 +114,7 @@
             android:layout_marginTop="@dimen/_70sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/client_account_shipping_add_tv"
-            app:layout_constraintTop_toBottomOf="@id/client_account_email_et"
+            app:layout_constraintTop_toBottomOf="@id/client_account_gender_spinner"
             />
         <include
             android:id="@+id/client_account_next_btn"

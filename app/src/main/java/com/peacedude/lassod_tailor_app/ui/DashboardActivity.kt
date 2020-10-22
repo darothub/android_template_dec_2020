@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class DashboardActivity : BaseActivity() {
     private val navController by lazy {
-        Navigation.findNavController(this, R.id.fragment2)
+        Navigation.findNavController(this, R.id.dashboard_fragment)
     }
     val title: String by lazy {
         getName()
@@ -186,7 +186,7 @@ class DashboardActivity : BaseActivity() {
                 greeting.text = "Hi ${user?.firstName}"
                 profileName.text = "${user?.firstName} ${user?.lastName}"
 //                authViewModel?.currentUser = user
-//                Log.i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
+                i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
             }
         })
 

@@ -1,40 +1,22 @@
 package com.peacedude.lassod_tailor_app.ui
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.activity.ComponentActivity
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.navigation.fragment.navArgs
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 import javax.inject.Inject
-import kotlin.properties.Delegates.observable
 
 
 /**
@@ -54,24 +36,18 @@ class SignupChoicesFragment : DaggerFragment() {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
 
-//    private val gso: GoogleSignInOptions by lazy {
-//        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//            .requestEmail()
-//            .build()
-//    }
-//    private val mGoogleSignInClient: GoogleSignInClient by lazy{ GoogleSignIn.getClient(requireContext(), gso)}
     @Inject
     lateinit var mGoogleSignInClient:GoogleSignInClient
-
+    lateinit var observer : StartActivityForResults
     val arg:SignupChoicesFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        observer = StartActivityForResults(requireActivity().activityResultRegistry)
+        lifecycle.addObserver(observer)
         arguments?.let {
 
         }
-//        var maxCount: Int by observable(initialValue = 0) { property, oldValue, newValue ->
-//            println("${property.name} is being changed from $oldValue to $newValue")
-//        }
+
     }
 
     override fun onCreateView(
@@ -84,6 +60,7 @@ class SignupChoicesFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val intent = mGoogleSignInClient.signInIntent
 
         val backgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_outline)
@@ -110,55 +87,10 @@ class SignupChoicesFragment : DaggerFragment() {
 
 
         google_sign_in_button.setOnClickListener {
-            val registerForActivity = RegisterForActivityResult.getInstance(
-                requireActivity().activityResultRegistry,
-                requireActivity()
-            )
-            val intent = mGoogleSignInClient.signInIntent
-            registerForActivity.onCreate(this, intent){result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                    task.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val account: GoogleSignInAccount? =
-                                it.getResult(ApiException::class.java)
-                            val idToken = it.result?.idToken
-                            val email = account?.email
-                            val lastName = account?.familyName
-                            val firstName = account?.givenName
-                            val otherName = account?.displayName
-                            val imageUrl = account?.photoUrl
-                            val category = arg.category
-                            val newUser = User()
-                            newUser.firstName = firstName
-                            newUser.lastName = lastName
-                            newUser.otherName = otherName
-                            newUser.category = category
-                            newUser.email = email
-                            newUser.imageUrl = imageUrl.toString()
-                            userViewModel.currentUser = newUser
-                            newUser.token = idToken
-
-                            i(title, "idToken $idToken")
-
-                            requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
-                            val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
-                            action.newUser = newUser
-                            goto(action)
-                        } else {
-                            requireActivity().gdToast(
-                                "Authentication Unsuccessful",
-                                Gravity.BOTTOM
-                            )
-                            Log.i(title, "Task not successful")
-                        }
-
-                    }
-                } else {
-                    Log.i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
-                }
-            }
-
+            observer.launchIntentToSignIn(intent, viewLifecycleOwner)
+            observer.getUserLiveData.observe(viewLifecycleOwner, Observer {
+                i(title, "Firstname ${it.firstName}")
+            })
         }
 
     }
@@ -175,6 +107,8 @@ class SignupChoicesFragment : DaggerFragment() {
 //        }
 
     }
+
+
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 //        super.onActivityResult(requestCode, resultCode, data)

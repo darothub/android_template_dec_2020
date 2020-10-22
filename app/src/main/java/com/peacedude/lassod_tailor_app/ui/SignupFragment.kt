@@ -234,7 +234,7 @@ class SignupFragment : DaggerFragment() {
                 val response = requireActivity().observeRequest(request, progressBar, continueBtn)
                 response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
-                    onRequestResponseTask(bool, result){
+                    onRequestResponseTask<User>(bool, result){
                         activateUserRequest(phoneNumber)
                     }
                 })
@@ -262,7 +262,7 @@ class SignupFragment : DaggerFragment() {
                     requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
                 response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
-                    onRequestResponseTask(
+                    onRequestResponseTask<User>(
                         bool,
                         result
                     ){

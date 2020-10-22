@@ -20,19 +20,12 @@ import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.hide
 import com.peacedude.lassod_tailor_app.helpers.show
-import com.peacedude.lassod_tailor_app.ui.PaymentMethodFragment
-import com.peacedude.lassod_tailor_app.ui.ProfileFragment
-import com.peacedude.lassod_tailor_app.ui.SpecialtyFragment
-import com.peacedude.lassod_tailor_app.ui.UserAccountFragment
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client.*
-import kotlinx.android.synthetic.main.fragment_client_account.*
-import kotlinx.android.synthetic.main.fragment_profile_management.*
 
 
 /**

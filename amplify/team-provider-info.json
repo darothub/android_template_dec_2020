@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-obioma-dev-111152-authRole",
+      "UnauthRoleArn": "arn:aws:iam::712907142333:role/amplify-obioma-dev-111152-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::712907142333:role/amplify-obioma-dev-111152-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-obioma-dev-111152-deployment",
+      "UnauthRoleName": "amplify-obioma-dev-111152-unauthRole",
+      "StackName": "amplify-obioma-dev-111152",
+      "StackId": "arn:aws:cloudformation:us-east-2:712907142333:stack/amplify-obioma-dev-111152/b18b7370-12bc-11eb-a0cb-06709238a494",
+      "AmplifyAppId": "d1twmy6uol1ltk"
+    },
+    "categories": {
+      "auth": {
+        "obioma68e0754c": {}
+      }
+    }
+  }
+}

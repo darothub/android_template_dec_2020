@@ -11,13 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorAccent"
-        tools:context=".ui.ProfileFragment">
+        tools:context=".ui.profile.ProfileFragment">
 
         <include
             android:id="@+id/no_client_included_layout"
             layout="@layout/no_client_layout"
              />
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profile_fragment_client_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
