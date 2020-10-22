@@ -40,7 +40,7 @@ class StartActivityForResults @Inject constructor(private val registry: Activity
             })
     }
 
-    fun launchIntentToSignIn(intent: Intent, owner: LifecycleOwner):LiveData<User> {
+    fun launchIntentToSignIn(intent: Intent, owner: LifecycleOwner, action:(User)->Unit):LiveData<User> {
         getIntentResult.launch(intent)
         getResultLiveData.observe(owner, Observer {result->
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -63,6 +63,7 @@ class StartActivityForResults @Inject constructor(private val registry: Activity
                     newUser.email = email
                     newUser.token = idToken
                     getUserLiveData.value = newUser
+                    action(newUser)
                     i(title, "Task is successful")
 
                 } else {

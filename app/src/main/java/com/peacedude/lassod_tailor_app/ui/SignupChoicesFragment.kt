@@ -87,9 +87,14 @@ class SignupChoicesFragment : DaggerFragment() {
 
 
         google_sign_in_button.setOnClickListener {
-            observer.launchIntentToSignIn(intent, viewLifecycleOwner)
+            observer.launchIntentToSignIn(intent, viewLifecycleOwner){}
             observer.getUserLiveData.observe(viewLifecycleOwner, Observer {
                 i(title, "Firstname ${it.firstName}")
+                userViewModel.currentUser = it
+                val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
+                action.newUser = it
+                goto(action)
+
             })
         }
 

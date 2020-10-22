@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -20,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -37,6 +39,9 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.jar.Manifest
 import javax.inject.Inject
 
@@ -57,6 +62,7 @@ class MediaFragment : DaggerFragment() {
             customView(R.layout.add_photo_dialog_layout)
         }
     }
+    lateinit var currentPhotoPath: String
     private val addPhotoFab by lazy {
         (dialog.findViewById(R.id.add_photo_dialog_fab) as FloatingActionButton)
     }
@@ -167,23 +173,46 @@ class MediaFragment : DaggerFragment() {
             galleryIntent.action = Intent.ACTION_GET_CONTENT
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             val chooser = Intent.createChooser(galleryIntent, "Photo options")
-            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
-            observer.getResultLiveData.observe(viewLifecycleOwner, Observer { result->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val data = result.data
-                    val imageUri = data?.data ?: getImageUriFromBitmap(
-                        requireContext(),
-                        data?.extras?.get("data") as Bitmap
-                    )
-                    i(title, "Uri $imageUri")
-                    addPhotoLoaderLayout.show()
-                    addPhotoFab.hide()
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent)).also { takePictureIntent->
+                takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                    // Create the File where the photo should go
+                    val photoFile: File? = try {
+                        createImageFile()
+                    } catch (ex: IOException) {
+                        // Error occurred while creating the File
+                        null
+                    }
+                    i(title, "file $photoFile")
+                    // Continue only if the File was successfully created
+                    photoFile?.also {
+                        val photoURI: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            getString(R.string.provider_authority_str),
+                            it
+                        )
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        val result = observer.launchImageIntent(takePictureIntent, viewLifecycleOwner)
+                        result.observe(viewLifecycleOwner, Observer { result->
+                            if (result.resultCode == Activity.RESULT_OK) {
+                                val data = result.data
+                                val imageUri = data?.data ?: getImageUriFromBitmap(
+                                    requireContext(),
+                                    data?.extras?.get("data") as Bitmap
+                                )
+                                i(title, "Uri $imageUri")
+                                addPhotoLoaderLayout.show()
+                                addPhotoFab.hide()
 //                    Picasso.get().load(imageUri).into()
-                    requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
-                } else {
-                    i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
+                                requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
+                            } else {
+                                i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
+                            }
+                        })
+
+//                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
+                    }
                 }
-            })
+            }
 
 //            requireActivity().gdToast(getString(R.string.permission_granted_str), Gravity.BOTTOM)
         }
@@ -215,5 +244,20 @@ class MediaFragment : DaggerFragment() {
         val path =
             MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
         return Uri.parse(path.toString())
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
+        }
     }
 }

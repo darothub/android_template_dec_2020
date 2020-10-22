@@ -213,11 +213,13 @@ class LoginFragment : DaggerFragment() {
 
     private fun authWithGoogle() {
         val intent = mGoogleSignInClient.signInIntent
-        observer.launchIntentToSignIn(intent, viewLifecycleOwner)
-        observer.getUserLiveData.observe(viewLifecycleOwner, Observer {
-            i(title, "Firstname ${it.firstName}")
-            loginWithGoogle(it)
-        })
+        observer.launchIntentToSignIn(intent, viewLifecycleOwner){user->
+            loginWithGoogle(user)
+        }
+//        observer.getUserLiveData.observe(viewLifecycleOwner, Observer {
+//            i(title, "Firstname ${it.firstName}")
+//
+//        })
     }
 
     private fun loginWithGoogle(user: User) {

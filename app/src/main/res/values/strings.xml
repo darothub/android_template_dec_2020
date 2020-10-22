@@ -143,4 +143,5 @@
     <string name="sample_image_str">https://guardian.ng/wp-content/uploads/2020/03/FASHION.jpg</string>
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
+    <string name="provider_authority_str">com.peacedude.lassod_tailor_app.fileprovider</string>
 </resources>
