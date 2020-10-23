@@ -66,7 +66,7 @@ fun Activity.observeRequest(
                     if(loader) dialog.show() else dialog.hide()
                     progressBar?.show()
                     button?.hide()
-                    Log.i(title, "Loading..")
+                    i(title, "Loading..")
                 }
                 is ServicesResponseWrapper.Success -> {
                     dialog.hide()
@@ -74,7 +74,7 @@ fun Activity.observeRequest(
                     button?.show()
                     result.postValue(Pair(true, responseData))
 
-                    Log.i("Observer", "success ${it.data}")
+                    i(title, "success ${it.data}")
                 }
                 is ServicesResponseWrapper.Error -> {
                     dialog.hide()
@@ -111,14 +111,14 @@ fun Activity.observeRequest(
                     startActivity(Intent(this as? Context, MainActivity::class.java))
                     result.postValue(Pair(false, unAuthorizedString))
 
-                    Log.i(title, "Log out $unAuthorizedString")
+                    i(title, "Log out $unAuthorizedString")
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
                 }
             }
         } catch (e: Exception) {
             dialog.hide()
-            Log.i(title, e.localizedMessage)
+            i(title, e.localizedMessage)
         }
 
     })
@@ -130,10 +130,11 @@ fun Activity.requestObserver(
     progressBar: ProgressBar?,
     btn: Button?,
     req: LiveData<ServicesResponseWrapper<ParentData>>,
+    loader: Boolean=false,
     action: (Boolean, Any?) -> Unit
 ) {
 
-    val response = observeRequest(req, progressBar, btn)
+    val response = observeRequest(req, progressBar, btn, loader)
     response.observe(this as LifecycleOwner, Observer {
         val (bool, result) = it
         action(bool, result)
@@ -158,11 +159,11 @@ inline fun <reified T>Activity.onRequestResponseTask(
                 when(T::class.java){
                     User::class.java ->{
                         val res = result as UserResponse<User>
-                        gdToast(res.message.toString(), Gravity.BOTTOM)
+//                        gdToast(res.message.toString(), Gravity.BOTTOM)
                     }
                     String::class.java ->{
                         val res = result as UserResponse<String>
-                        gdToast(res.message.toString(), Gravity.BOTTOM)
+//                        gdToast(res.message.toString(), Gravity.BOTTOM)
                     }
                 }
 

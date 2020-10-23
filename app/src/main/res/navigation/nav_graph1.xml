@@ -99,9 +99,9 @@
         <deepLink
             android:id="@+id/deepLink"
             android:autoVerify="true"
-            app:uri="https://https://obioma-staging.herokuapp.com/?verification={verification}" />
+            app:uri="https://obioma-staging.herokuapp.com/api/v1/auth/verify?authorization={token}" />
         <argument
-            android:name="verification"
+            android:name="token"
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />

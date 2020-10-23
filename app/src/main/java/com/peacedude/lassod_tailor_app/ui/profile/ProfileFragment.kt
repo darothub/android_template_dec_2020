@@ -3,15 +3,9 @@ package com.peacedude.lassod_tailor_app.ui.profile
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.MediaController
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -60,6 +55,8 @@ class ProfileFragment : DaggerFragment() {
             customView(R.layout.single_client_layout)
         }
     }
+
+    lateinit var dialogDeleteProgressBar: ProgressBar
 
     private val dialogNameTv by lazy {
         (dialog.findViewById(R.id.single_client_name_tv) as TextView)
@@ -112,6 +109,7 @@ class ProfileFragment : DaggerFragment() {
             val includedViewForEditBtn = (dialog.findViewById(R.id.single_client_edit_btn) as View)
             dialogDeleteBtn = includedViewForDeleteBtn.findViewById(R.id.btn)
             dialogEditBtn = includedViewForEditBtn.findViewById(R.id.btn)
+            dialogDeleteProgressBar = includedViewForDeleteBtn.findViewById(R.id.progress_bar)
             dialogDeleteBtn.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
@@ -131,8 +129,6 @@ class ProfileFragment : DaggerFragment() {
 
             dialogEditBtn.text = getString(R.string.edit_str)
             dialogDeleteBtn.text = getString(R.string.delete)
-
-
 
         }, {})
 
@@ -171,34 +167,26 @@ class ProfileFragment : DaggerFragment() {
                                     cornerRadius(10F)
                                 }
                             }
+                            dialogDeleteBtn.setOnClickListener {
+                                val req = authViewModel.deleteClient(header, item?.id)
+                                requireActivity().requestObserver(
+                                    dialogDeleteProgressBar,
+                                    dialogDeleteBtn,
+                                    req,
+                                    true
+                                ) { bool, result ->
+                                    onRequestResponseTask<ClientsList>(bool, result) {
+                                        val res = result as UserResponse<NothingSpoil>
+                                        requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+                                        dialog.dismiss()
+                                    }
+                                }
+                                adapter.notifyDataSetChanged()
+                            }
                         }
                         setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false))
                         submitList(listOfClient)
                     }
-
-                    //Swipe listener for left swipe(to delete)
-//                    ItemTouchHelper(object :ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT){
-//                        override fun onMove(
-//                            recyclerView: RecyclerView,
-//                            viewHolder: RecyclerView.ViewHolder,
-//                            target: RecyclerView.ViewHolder
-//                        ): Boolean {
-//                            return false
-//                        }
-//                        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                            val req = authViewModel.deleteClient(header, item?.id)
-//                            requireActivity().requestObserver(
-//                                null,
-//                                null,
-//                                req
-//                            ) { bool, result ->
-//                                onRequestResponseTask<NothingSpoil>(bool, result) {
-//
-//                                }
-//                            }
-//                        }
-//
-//                    }).attachToRecyclerView(profile_fragment_client_rv)
 
                 }
                 else{
