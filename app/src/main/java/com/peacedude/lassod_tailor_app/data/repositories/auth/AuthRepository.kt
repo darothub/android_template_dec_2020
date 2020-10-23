@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
@@ -37,8 +38,8 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.addClient(header, client)
     }
 
-    override fun getAllClient(header:String?, tailorId: String?): Call<UserResponse<List<Client>>> {
-        return authServices.getAllClient(header, tailorId)
+    override fun getAllClient(header:String?): Call<UserResponse<ClientsList>> {
+        return authServices.getAllClient(header)
     }
 
 

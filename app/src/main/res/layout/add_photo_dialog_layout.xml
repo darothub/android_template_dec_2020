@@ -1,89 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/rounded_corner_background">
+
     <RelativeLayout
         android:id="@+id/add_photo_dashed_rl"
         android:layout_width="0dp"
         android:layout_height="@dimen/_200sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/dashed_border_drawable"
         android:layout_marginStart="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_30sdp"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:background="@drawable/dashed_border_drawable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/add_photo_dialog_iv"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_60sdp"
             android:layout_centerHorizontal="true"
-            android:scaleType="centerCrop"
             android:layout_marginTop="@dimen/_12sdp"
-            app:srcCompat="@drawable/cloud_upload_24px"/>
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/cloud_upload_24px" />
+
         <TextView
             android:id="@+id/add_photo_dialog_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/add_photo_dialog_iv"
             android:layout_centerHorizontal="true"
-            android:textSize="@dimen/_12sdp"
-            android:text="@string/upload_photo"/>
+            android:text="@string/upload_photo"
+            android:textSize="@dimen/_12sdp" />
+
         <LinearLayout
             android:id="@+id/add_photo_loading_ll"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
             android:layout_height="wrap_content"
             android:layout_below="@id/add_photo_dialog_tv"
             android:layout_alignParentStart="true"
             android:layout_marginTop="@dimen/_20sdp"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="20dp"
-            android:visibility="gone"
-            >
-            <com.devzone.fillprogresslayout.FillProgressLayout
-                android:id="@+id/add_photo_fill_pl"
-                app:fpl_backgroundColor="@color/colorGray"
-                app:fpl_progressColor="@color/colorPrimary"
-                app:fpl_isRounded="true"
-                app:fpl_progress="10"
+            android:visibility="gone">
 
-                app:fpl_progressDuration="3000"
-                app:fpl_progressDirection="left_to_right"
-                app:fpl_shouldRestart="false"
-                android:layout_height="15dp"
+            <com.skydoves.progressview.ProgressView
+                android:id="@+id/add_photo_fill_pl"
+                android:layout_width="0dp"
+                android:layout_height="17dp"
+                app:progressView_autoAnimate="true"
                 android:layout_weight="1"
-                android:layout_width="0dp">
-            </com.devzone.fillprogresslayout.FillProgressLayout>
+                app:progressView_colorBackground="@color/colorAccent"
+                app:progressView_colorProgress="@color/colorPrimary"
+                app:progressView_labelColorInner="@color/colorAccent"
+                app:progressView_labelColorOuter="@color/colorPrimaryDark"
+                app:progressView_labelSize="13sp"
+                app:progressView_labelSpace="10dp"
+                app:progressView_labelTypeface="bold"
+                app:progressView_max="1.0"
+                app:progressView_min="0"
+                app:progressView_padding="1dp"
+                app:progressView_progress="40"
+                app:progressView_progressFromPrevious="true"
+                app:progressView_radius="12dp" />
+
             <ImageView
                 android:id="@+id/add_photo_dialog_cancel_iv"
                 android:layout_width="@dimen/_15sdp"
                 android:layout_height="@dimen/_15sdp"
-                android:scaleType="fitCenter"
                 android:layout_gravity="center_vertical"
-
-                app:srcCompat="@drawable/ic_baseline_cancel_24"/>
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_baseline_cancel_24" />
         </LinearLayout>
 
     </RelativeLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_photo_dialog_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/add"
-        android:background="@color/colorPrimary"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias=".75"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/_200sdp"
         android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/add"
+        app:backgroundTint="@color/colorPrimary"
         app:fabCustomSize="90dp"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".75" />
 </androidx.constraintlayout.widget.ConstraintLayout>

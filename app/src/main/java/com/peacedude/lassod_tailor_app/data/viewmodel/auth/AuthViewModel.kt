@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
@@ -75,13 +76,13 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<Client>(request, responseLiveData)
     }
 
-    override fun getAllClient(header: String?, tailorId: String?): LiveData<ServicesResponseWrapper<ParentData>> {
+    override fun getAllClient(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
         )
-        val request = authRequestInterface.getAllClient(header, tailorId)
-        return enqueueRequest<List<Client>>(request, responseLiveData)
+        val request = authRequestInterface.getAllClient(header)
+        return enqueueRequest<ClientsList>(request, responseLiveData)
     }
 
 }

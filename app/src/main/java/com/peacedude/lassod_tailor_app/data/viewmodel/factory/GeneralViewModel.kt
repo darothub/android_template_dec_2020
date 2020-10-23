@@ -57,6 +57,7 @@ open class GeneralViewModel @Inject constructor(
 
     override var profileData = storageRequest.checkData<User>(profileDataKey)
         set(currentUser) = storageRequest.keepData(currentUser, profileDataKey)
+
     final override var header: String? = "$bearer ${currentUser?.token}"
 
     override var newClient: Client? = storageRequest.checkData<Client>(newClientKey)

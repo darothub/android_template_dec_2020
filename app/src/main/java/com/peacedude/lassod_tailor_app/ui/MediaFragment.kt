@@ -3,7 +3,6 @@ package com.peacedude.lassod_tailor_app.ui
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -18,6 +17,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,15 +26,14 @@ import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.storage.StorageAccessLevel
 import com.amplifyframework.storage.options.StorageUploadFileOptions
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.squareup.picasso.Picasso
+import com.skydoves.progressview.ProgressView
+import com.skydoves.progressview.progressView
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import java.io.ByteArrayOutputStream
@@ -42,8 +41,6 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.jar.Manifest
-import javax.inject.Inject
 
 const val REQUEST_CODE = 1
 const val GALLERY_PHOTO_CODE = 0
@@ -63,13 +60,20 @@ class MediaFragment : DaggerFragment() {
         }
     }
     lateinit var currentPhotoPath: String
-    private val addPhotoFab by lazy {
+    private val addPhotoDialogFab by lazy {
         (dialog.findViewById(R.id.add_photo_dialog_fab) as FloatingActionButton)
     }
     private val addPhotoLoaderLayout by lazy {
         (dialog.findViewById(R.id.add_photo_loading_ll) as LinearLayout)
     }
 
+    private val progressFill by lazy{
+        (dialog.findViewById(R.id.add_photo_fill_pl) as ProgressView)
+    }
+    private val addPhotoCancelIcon by lazy {
+        (dialog.findViewById(R.id.add_photo_dialog_cancel_iv) as ImageView)
+
+    }
     lateinit var observer : StartActivityForResults
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,25 +105,24 @@ class MediaFragment : DaggerFragment() {
 
         ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA), REQUEST_CODE)
 
-        addPhotoFab.setOnClickListener {
-            addPhotoFab.show()
-            checkCameraPermission()
+        addPhotoDialogFab.setOnClickListener {
+            val res = checkCameraPermission()
+            if(res){
+                getPhotoData()
+            }
+            else{
+                i(title, getString(R.string.no_permission))
+                requireActivity().gdToast(getString(R.string.no_permission), Gravity.BOTTOM)
+            }
+
+
         }
     }
 
-    private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-
+    private fun checkCameraPermission():Boolean {
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             i(title, "first if here we aee")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    android.Manifest.permission.CAMERA
-                )
-            ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), android.Manifest.permission.CAMERA)) {
                 i(title, "second if here we are")
                 val alertBuilder = AlertDialog.Builder(requireActivity())
                 alertBuilder.setTitle(R.string.allow_camera)
@@ -130,6 +133,7 @@ class MediaFragment : DaggerFragment() {
                         arrayOf(android.Manifest.permission.CAMERA),
                         REQUEST_CODE
                     )
+                    return@setPositiveButton
                 }
                 alertBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
                     requireActivity().gdToast(
@@ -141,6 +145,7 @@ class MediaFragment : DaggerFragment() {
                     val uri = Uri.fromParts("package", requireActivity().packageName, null)
                     settingIntent.data = uri
                     startActivity(settingIntent)
+                    return@setNegativeButton
                 }
                 val alertDialog = alertBuilder.create()
                 alertDialog.setOnShowListener {
@@ -165,56 +170,101 @@ class MediaFragment : DaggerFragment() {
                     arrayOf(android.Manifest.permission.CAMERA),
                     REQUEST_CODE
                 )
+                return true
             }
         } else {
             i(title, "first else Here we aee")
-            val galleryIntent = Intent()
-            galleryIntent.type = "image/*"
-            galleryIntent.action = Intent.ACTION_GET_CONTENT
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            val chooser = Intent.createChooser(galleryIntent, "Photo options")
-            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent)).also { takePictureIntent->
-                takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
-                    // Create the File where the photo should go
-                    val photoFile: File? = try {
-                        createImageFile()
-                    } catch (ex: IOException) {
-                        // Error occurred while creating the File
-                        null
-                    }
-                    i(title, "file $photoFile")
-                    // Continue only if the File was successfully created
-                    photoFile?.also {
-                        val photoURI: Uri = FileProvider.getUriForFile(
-                            requireContext(),
-                            getString(R.string.provider_authority_str),
-                            it
-                        )
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        val result = observer.launchImageIntent(takePictureIntent, viewLifecycleOwner)
-                        result.observe(viewLifecycleOwner, Observer { result->
-                            if (result.resultCode == Activity.RESULT_OK) {
-                                val data = result.data
-                                val imageUri = data?.data ?: getImageUriFromBitmap(
-                                    requireContext(),
-                                    data?.extras?.get("data") as Bitmap
-                                )
-                                i(title, "Uri $imageUri")
-                                addPhotoLoaderLayout.show()
-                                addPhotoFab.hide()
-//                    Picasso.get().load(imageUri).into()
-                                requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
-                            } else {
-                                i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
-                            }
-                        })
+            return true
+        }
+        return false
+    }
 
-//                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
-                    }
+    private fun getPhotoData() {
+        addPhotoLoaderLayout.hide()
+        progressFill.progress = 0.0F
+        addPhotoCancelIcon.hide()
+        var photoFile:File?=null
+        val galleryIntent = Intent()
+        galleryIntent.type = "image/*"
+        galleryIntent.action = Intent.ACTION_GET_CONTENT
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val chooser = Intent.createChooser(galleryIntent, "Photo options")
+        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent)).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
+                // Create the File where the photo should go
+                photoFile = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    null
+                }
+                i(title, "file $photoFile")
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        requireContext(),
+                        getString(R.string.provider_authority_str),
+                        it
+                    )
+//                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 }
             }
+        }
+        val result = observer.launchImageIntent(chooser, viewLifecycleOwner)
+        result.observe(viewLifecycleOwner, Observer { results ->
+            if (results.resultCode == Activity.RESULT_OK) {
+                val data = results.data
+                val imageUri = data?.data ?: getImageUriFromBitmap(
+                    requireContext(),
+                    data?.extras?.get("data") as Bitmap
+                )
+                val imageFile = File(currentPhotoPath)
+                i(
+                    "MyAmplifyApp",
+                    "Successfully uploaded: $imageFile"
+                )
+                val options = StorageUploadFileOptions.builder()
+                    .accessLevel(StorageAccessLevel.PUBLIC).build()
+                Amplify.Storage.uploadFile(
+                    "obiomaimage.jpg",
+                    imageFile,
+                    options,
+                    { progress ->
 
-//            requireActivity().gdToast(getString(R.string.permission_granted_str), Gravity.BOTTOM)
+                        addPhotoDialogFab.hide()
+                        progressFill.progress = progress.fractionCompleted.toFloat()
+                        Log.i(
+                            "MyAmplifyApp",
+                            "Fraction completed: ${ progress.totalBytes}"
+                        )
+                    },
+                    { resultHere ->
+                        addPhotoLoaderLayout.show()
+                        addPhotoCancelIcon.show()
+
+                        Log.i(
+                            "MyAmplifyApp",
+                            "Successfully uploaded: " + resultHere.key
+                        )
+                    },
+                    { error -> Log.e("MyAmplifyApp", "Upload failed", error) }
+                )
+
+                i(title, "Uri $imageUri")
+                //                    Picasso.get().load(imageUri).into()
+                requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
+            } else {
+                i(
+                    title,
+                    "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
+                )
+            }
+        })
+
+        addPhotoCancelIcon.setOnClickListener {
+            photoFile = null
+            addPhotoLoaderLayout.hide()
+            addPhotoDialogFab.show()
         }
     }
 
@@ -260,4 +310,10 @@ class MediaFragment : DaggerFragment() {
             currentPhotoPath = absolutePath
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        i(title, "Onpause")
+    }
+
 }

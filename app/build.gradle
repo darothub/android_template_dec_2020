@@ -173,7 +173,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
     implementation "com.amplifyframework:aws-storage-s3:$versions.amplify_version"
     implementation "com.amplifyframework:aws-auth-cognito:$versions.amplify_version"
-    
 
-
+    //ProgressView
+    implementation "com.github.skydoves:progressview:1.1.0"
 }

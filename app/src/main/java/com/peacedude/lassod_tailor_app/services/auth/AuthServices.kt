@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.services.auth
 
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
@@ -34,12 +35,10 @@ interface AuthServices {
         @Body client: Client
     ): Call<UserResponse<Client>>
 
-    @POST("client")
-    @FormUrlEncoded
+    @GET("client")
     fun getAllClient(
-        @Header("Authorization") header: String?,
-        @Field("tailorId") tailorId: String?
-    ): Call<UserResponse<List<Client>>>
+        @Header("Authorization") header: String?
+    ): Call<UserResponse<ClientsList>>
 
 
 }

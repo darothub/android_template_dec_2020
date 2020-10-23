@@ -17,6 +17,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
@@ -63,30 +64,31 @@ class ProfileFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val request = authViewModel.getAllClient(header, currentUser?.id)
-        i(title, "header ${currentUser?.id}")
+        val request = authViewModel.getAllClient(header)
+        i(title, "header $header")
         requireActivity().requestObserver(
             null,
             null,
             request
         ) { bool, result ->
-            onRequestResponseTask<List<Client>>(bool, result) {
-                val results = result as UserResponse<List<Client>>
-                val listOfClient = result.data
+            onRequestResponseTask<ClientsList>(bool, result) {
+                val results = result as UserResponse<ClientsList>
+                val listOfClient = result.data.clients
 
                 if (listOfClient.isNotEmpty()){
                     no_client_included_layout.hide()
-                }
-                else{
                     profile_fragment_client_rv.show()
                     profile_fragment_client_rv.setupAdapter<Client>(R.layout.added_client_list_item) { adapter, context, list ->
                         bind { itemView, position, item ->
                             itemView.client_name_tv.text = item?.name
-                            itemView.client_location_tv.text = item?.country
+                            itemView.client_location_tv.text = item?.deliveryAddress
                         }
                         setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false))
                         submitList(listOfClient)
                     }
+                }
+                else{
+                    no_client_included_layout.show()
                 }
             }
         }

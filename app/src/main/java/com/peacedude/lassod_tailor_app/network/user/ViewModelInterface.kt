@@ -71,7 +71,7 @@ interface ViewModelInterface {
         TODO()
     }
 
-    fun getAllClient(header: String?, tailorId:String?): LiveData<ServicesResponseWrapper<ParentData>> {
+    fun getAllClient(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
 }

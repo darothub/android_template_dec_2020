@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.network.auth
 
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
@@ -22,7 +23,7 @@ interface AuthRequestInterface {
     fun addClient(header: String, client: Client): Call<UserResponse<Client>>{
         return TODO()
     }
-    fun getAllClient(header: String?, tailorId:String?): Call<UserResponse<List<Client>>>{
+    fun getAllClient(header: String?): Call<UserResponse<ClientsList>>{
         return TODO()
     }
 }

@@ -144,4 +144,5 @@
     <string name="done">Done</string>
     <string name="cancel">Cancel</string>
     <string name="provider_authority_str">com.peacedude.lassod_tailor_app.fileprovider</string>
+    <string name="no_permission">Permission: You do not have permission</string>
 </resources>
