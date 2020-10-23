@@ -9,6 +9,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
@@ -83,6 +84,18 @@ open class AuthViewModel @Inject constructor(
         )
         val request = authRequestInterface.getAllClient(header)
         return enqueueRequest<ClientsList>(request, responseLiveData)
+    }
+
+    override fun deleteClient(
+        header: String?,
+        id: String?
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.deleteClient(header, id)
+        return enqueueRequest<NothingSpoil>(request, responseLiveData)
     }
 
 }

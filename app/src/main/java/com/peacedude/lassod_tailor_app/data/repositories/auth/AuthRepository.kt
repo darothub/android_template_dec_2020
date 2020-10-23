@@ -6,6 +6,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
@@ -40,6 +41,10 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
 
     override fun getAllClient(header:String?): Call<UserResponse<ClientsList>> {
         return authServices.getAllClient(header)
+    }
+
+    override fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingSpoil>> {
+        return authServices.deleteClient(header, id)
     }
 
 

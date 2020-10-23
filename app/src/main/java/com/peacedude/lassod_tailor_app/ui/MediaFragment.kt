@@ -72,7 +72,6 @@ class MediaFragment : DaggerFragment() {
     }
     private val addPhotoCancelIcon by lazy {
         (dialog.findViewById(R.id.add_photo_dialog_cancel_iv) as ImageView)
-
     }
     lateinit var observer : StartActivityForResults
     override fun onCreate(savedInstanceState: Bundle?) {

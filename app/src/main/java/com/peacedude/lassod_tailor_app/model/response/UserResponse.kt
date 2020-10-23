@@ -12,7 +12,7 @@ class UserResponse<T>(
     val data: T
 ) : ParentData, Serializable
 
-
+interface NothingSpoil
 
 
 

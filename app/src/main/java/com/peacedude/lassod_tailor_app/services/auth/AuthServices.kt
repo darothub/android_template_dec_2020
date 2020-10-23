@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.services.auth
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -39,6 +40,13 @@ interface AuthServices {
     fun getAllClient(
         @Header("Authorization") header: String?
     ): Call<UserResponse<ClientsList>>
+
+    @DELETE("client")
+    @FormUrlEncoded
+    fun deleteClient(
+        @Header("Authorization") header: String?,
+        @Field("id") id:String?
+    ): Call<UserResponse<NothingSpoil>>
 
 
 }

@@ -74,4 +74,8 @@ interface ViewModelInterface {
     fun getAllClient(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
+    fun deleteClient(header:String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
+
 }
