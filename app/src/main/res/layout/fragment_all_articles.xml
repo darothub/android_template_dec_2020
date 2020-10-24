@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".ui.resources.AllArticlesFragment">
+
+    <include
+        android:id="@+id/all_articles_fragment_tb"
+        layout="@layout/activity_client_toolbar"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/all_articles_fragment_videos_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_18sdp"
+        android:text="@string/article_publication_str"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/_15sdp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/all_articles_fragment_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:text="@string/hello_blank_fragment"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        tools:listitem="@layout/article_publication_item_layout" />
+</LinearLayout>

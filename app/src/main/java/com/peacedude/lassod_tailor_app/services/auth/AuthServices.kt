@@ -42,9 +42,10 @@ interface AuthServices {
     ): Call<UserResponse<ClientsList>>
 
     @HTTP(method = "DELETE", path = "client", hasBody = true)
+    @FormUrlEncoded
     fun deleteClient(
         @Header("Authorization") header: String?,
-        @Body id:String?
+        @Field("id") id:String?
     ): Call<UserResponse<NothingSpoil>>
 
 

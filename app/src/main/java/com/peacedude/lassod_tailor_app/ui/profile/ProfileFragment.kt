@@ -134,7 +134,6 @@ class ProfileFragment : DaggerFragment() {
 
 
 
-
         val request = authViewModel.getAllClient(header)
         i(title, "header $header")
         requireActivity().requestObserver(
@@ -173,15 +172,17 @@ class ProfileFragment : DaggerFragment() {
                                     dialogDeleteProgressBar,
                                     dialogDeleteBtn,
                                     req,
-                                    true
+                                    false
                                 ) { bool, result ->
                                     onRequestResponseTask<ClientsList>(bool, result) {
                                         val res = result as UserResponse<NothingSpoil>
                                         requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+                                        listOfClient.toMutableList().removeAt(position)
                                         dialog.dismiss()
+                                        adapter.notifyItemRemoved(position)
                                     }
                                 }
-                                adapter.notifyDataSetChanged()
+
                             }
                         }
                         setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false))

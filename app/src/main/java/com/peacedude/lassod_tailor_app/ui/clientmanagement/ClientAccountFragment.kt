@@ -75,11 +75,11 @@ class ClientAccountFragment : DaggerFragment(){
     override fun onResume() {
         super.onResume()
 
-        val nextBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        nextBtnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
-            PorterDuff.Mode.SRC_IN
-        )
+        val nextBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
+//        nextBtnBackground?.colorFilter = PorterDuffColorFilter(
+//            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+//            PorterDuff.Mode.SRC_IN
+//        )
 
         val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
         val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment

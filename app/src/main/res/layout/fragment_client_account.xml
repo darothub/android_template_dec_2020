@@ -111,10 +111,9 @@
             android:gravity="start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="@dimen/_70sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/client_account_shipping_add_tv"
-            app:layout_constraintTop_toBottomOf="@id/client_account_gender_spinner"
+            app:layout_constraintTop_toBottomOf="@id/client_account_shipping_add_tv"
             />
         <include
             android:id="@+id/client_account_next_btn"

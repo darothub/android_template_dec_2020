@@ -55,4 +55,20 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
         })
     }
 
+    override fun onPause() {
+        super.onPause()
+        requireActivity().window.statusBarColor = ContextCompat.getColor(
+            requireContext(),
+            R.color.colorPrimary
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().window.statusBarColor = ContextCompat.getColor(
+            requireContext(),
+            R.color.colorPrimary
+        )
+    }
+
 }

@@ -118,5 +118,8 @@ class ResourcesFragment : Fragment() {
         resource_fragment_view_all_video_tv.setOnClickListener {
             goto(R.id.allVideoFragment)
         }
+        resource_fragment_view_all_publication_tv.setOnClickListener {
+            goto(R.id.allArticlesFragment)
+        }
     }
 }
