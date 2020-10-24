@@ -41,6 +41,8 @@ import javax.inject.Inject
  * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+const val PHONE = "phone"
+const val EMAIL = "email"
 class LoginFragment : DaggerFragment() {
 
     val title: String by lazy {
@@ -113,6 +115,21 @@ class LoginFragment : DaggerFragment() {
             loginBtn.text = getString(R.string.login)
         })
 
+        val lastLoginForm = userViewModel.lastLoginForm
+
+        if (lastLoginForm == PHONE){
+            login_phone_number_input.show()
+            login_with_email_tv.show()
+            login_email_input.invisible()
+            login_with_phone_tv.invisible()
+        }
+        else{
+            login_email_input.show()
+            login_with_phone_tv.show()
+            login_phone_number_input.invisible()
+            login_with_email_tv.invisible()
+        }
+
         login_with_email_tv.setOnClickListener {
             login_email_input.show()
             login_email_input.animation = leftAnimation
@@ -133,7 +150,7 @@ class LoginFragment : DaggerFragment() {
             login_email_input.animation =
                 AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
             login_email_input.invisible()
-            login_email_address_et.invisible()
+
 
             login_with_email_tv.show()
             login_with_email_tv.animation = leftAnimation
@@ -149,7 +166,6 @@ class LoginFragment : DaggerFragment() {
 
         loginBtn.setOnClickListener {
             emailOrPhoneNumberLoginRequest()
-
         }
         initEnterKeyToSubmitForm(login_password_et) {
             emailOrPhoneNumberLoginRequest()
@@ -294,9 +310,10 @@ class LoginFragment : DaggerFragment() {
                 val user = userDetails?.data
                 user?.loggedIn = true
                 userViewModel.currentUser = user
-                val res = userViewModel.saveUser
+                userViewModel.lastLoginForm = PHONE
+//                val res = userViewModel.saveUser
                 val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
-                Log.i("$this", "res ${res.size}")
+//                Log.i("$this", "res ${res.size}")
                 startActivity(loginIntent)
                 requireActivity().finish()
             }
@@ -312,9 +329,10 @@ class LoginFragment : DaggerFragment() {
                 val user = userDetails?.data
                 user?.loggedIn = true
                 userViewModel.currentUser = user
-                val res = userViewModel.saveUser
+                userViewModel.lastLoginForm = EMAIL
+//                val res = userViewModel.saveUser
                 val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
-                Log.i("$this", "res ${res.size}")
+//                Log.i("$this", "res ${res.size}")
                 startActivity(loginIntent)
                 requireActivity().finish()
             }

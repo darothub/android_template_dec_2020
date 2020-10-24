@@ -39,13 +39,16 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val okBtnBackground =
+            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
         buttonTransactions({
             okBtn = confirmation_include_btn.findViewById(R.id.btn)
+            okBtn.background = okBtnBackground
             okBtn.text = getString(R.string.ok)
             okBtn.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.colorPrimary
+                    R.color.colorAccent
                 )
             )
         }, {

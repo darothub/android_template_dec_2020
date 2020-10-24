@@ -62,6 +62,8 @@ open class GeneralViewModel @Inject constructor(
 
     override var newClient: Client? = storageRequest.checkData<Client>(newClientKey)
         set(currentClient) = storageRequest.keepData(currentClient, newClientKey)
+    override var lastLoginForm: String? = storageRequest.getLastLoginForm()
+        set(lastLoginForm) = storageRequest.saveLastLoginForm(lastLoginForm.toString())
     override var saveClient = storageRequest.saveData(newClient, newClientKey)
 
     protected fun onFailureResponse(

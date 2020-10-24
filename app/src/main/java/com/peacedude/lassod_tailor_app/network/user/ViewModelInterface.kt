@@ -17,6 +17,7 @@ interface ViewModelInterface {
     var profileData:User?
     var header:String?
     var newClient:Client?
+    var lastLoginForm:String?
     fun activateUser(phoneNumber:String, code: String):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }

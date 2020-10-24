@@ -147,4 +147,7 @@
     <string name="no_permission">Permission: You do not have permission</string>
     <string name="edit_str">Edit</string>
     <string name="country_str">Country</string>
+    <string name="stay_in_touch_str">Stay in touch</string>
+    <string name="email_sent_by_str">email sent by Obioma</string>
+    <string name="copy_right_str">Copy right 2020. All Rights Reserved</string>
 </resources>

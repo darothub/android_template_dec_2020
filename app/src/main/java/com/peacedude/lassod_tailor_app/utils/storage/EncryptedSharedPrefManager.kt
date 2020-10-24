@@ -8,6 +8,7 @@ import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import javax.inject.Inject
 import kotlin.reflect.KClass
 const val LASTFRAGMENT = "lastFragment"
+const val LOGINFORM = "lastLoginWith"
 class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: EncryptedSharedPreferences):StorageRequest {
 
 
@@ -31,6 +32,17 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
 
     override fun getLastFragmentId(): Int {
         return sharedPref.getInt(LASTFRAGMENT, 0)
+    }
+
+    override fun saveLastLoginForm(emailorphone: String) {
+        editor.apply {
+            putString(LOGINFORM, emailorphone)
+            apply()
+        }
+    }
+
+    override fun getLastLoginForm(): String? {
+        return sharedPref.getString(LOGINFORM, "phone")
     }
 
     override fun <T> saveData(user: T?, key: String): ArrayList<String> {

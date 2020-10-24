@@ -24,16 +24,6 @@ class MainActivity : BaseActivity() {
 
     }
 
-    fun corouteTest(){
-        val job = Job()
-        val errorHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-
-        }
-        val coroutineScope = CoroutineScope(job+Main)
-        coroutineScope.launch {
-
-        }
-    }
 }
 
 //

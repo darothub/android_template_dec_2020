@@ -11,6 +11,9 @@ import kotlin.reflect.KClass
 interface StorageRequest {
     fun saveLastFragment(id:Int?)
     fun getLastFragmentId():Int
+    fun saveLastLoginForm(emailorphone:String)
+    fun getLastLoginForm():String?
+
     var sharedPrefer: EncryptedSharedPreferences
     var editor:SharedPreferences.Editor
     var gson:Gson
