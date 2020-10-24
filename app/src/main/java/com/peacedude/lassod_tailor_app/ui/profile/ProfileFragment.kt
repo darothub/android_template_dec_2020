@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +27,7 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.DashboardActivity
+import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientFragment
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.added_client_list_item.view.*
@@ -97,6 +99,7 @@ class ProfileFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        i(title, "onviewcreated")
         //Drawable background for resend code button
         val editBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
@@ -172,14 +175,16 @@ class ProfileFragment : DaggerFragment() {
                                     dialogDeleteProgressBar,
                                     dialogDeleteBtn,
                                     req,
-                                    false
+                                    true
                                 ) { bool, result ->
-                                    onRequestResponseTask<ClientsList>(bool, result) {
+                                    onRequestResponseTask<NothingSpoil>(bool, result) {
                                         val res = result as UserResponse<NothingSpoil>
                                         requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
                                         listOfClient.toMutableList().removeAt(position)
+                                        adapter.notifyDataSetChanged()
                                         dialog.dismiss()
-                                        adapter.notifyItemRemoved(position)
+                                        goto(R.id.profileFragment)
+
                                     }
                                 }
 
@@ -196,6 +201,11 @@ class ProfileFragment : DaggerFragment() {
             }
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        i(title, "onresume")
     }
 
 }
