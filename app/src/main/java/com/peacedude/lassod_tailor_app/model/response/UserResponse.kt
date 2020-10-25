@@ -9,7 +9,7 @@ class UserResponse<T>(
     val status: Int?,
     val message: String?,
     val error: List<String>?,
-    val data: T
+    val data: T?
 ) : ParentData, Serializable
 
 interface NothingSpoil

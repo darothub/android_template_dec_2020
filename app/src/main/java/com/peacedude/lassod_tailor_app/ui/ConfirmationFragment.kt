@@ -1,5 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.style.ClickableSpan
 import androidx.fragment.app.Fragment
@@ -28,8 +30,9 @@ class ConfirmationFragment : Fragment(R.layout.fragment_confirmation) {
     override fun onCreate(savedInstanceState: Bundle?) {
         requireActivity().window.statusBarColor = ContextCompat.getColor(
             requireContext(),
-            R.color.colorAccent
+            R.color.colorTransparentWhite
         )
+        requireActivity().window.setBackgroundDrawableResource(R.color.colorTransparentWhite)
         super.onCreate(savedInstanceState)
         arguments?.let {
         }

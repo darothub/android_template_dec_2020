@@ -5,9 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
@@ -16,17 +13,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.peacedude.gdtoast.gdErrorToast
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
-import kotlinx.android.synthetic.main.fragment_phone_signup.*
-import kotlinx.android.synthetic.main.fragment_signup.*
-import validateField
 import javax.inject.Inject
 
 
@@ -95,11 +87,14 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
 
     private fun forgotPasswordRequest() {
         val field = forgot_password_email_et.text.toString().trim()
-
-        validateField(forgot_password_email_et, "email")
+        val emptyEditText = IsEmptyCheck(forgot_password_email_et)
         val validationResult = IsEmptyCheck.fieldsValidation(email = field)
 
         when {
+            emptyEditText != null ->{
+                emptyEditText.error = getString(R.string.field_required)
+                requireActivity().gdErrorToast("${emptyEditText.tag} is empty", Gravity.BOTTOM)
+            }
             validationResult != null -> requireActivity().gdErrorToast(
                 "$validationResult is an invalid email",
                 Gravity.BOTTOM
@@ -110,7 +105,7 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
                 val response = requireActivity().observeRequest(request, progressBar, sendBtn)
                 response.observe(viewLifecycleOwner, Observer {
                     val (bool, result) = it
-                    requireActivity().onRequestResponseTask<String>(bool, result) {
+                    onRequestResponseTask<String>(bool, result) {
                         Log.i(title, "Request successful action needed")
                     }
                 })

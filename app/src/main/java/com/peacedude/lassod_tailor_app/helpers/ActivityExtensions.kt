@@ -54,7 +54,6 @@ fun Activity.observeRequest(
         }
     }
 
-
     hideKeyboard()
     request?.observe(this as LifecycleOwner, Observer {
         try {
@@ -152,38 +151,26 @@ inline fun <reified T>Activity.onRequestResponseTask(
     result: Any?,
     action: () -> Unit
 ) {
+    val title = this.getName()
     when (bool) {
 
         true -> {
             try {
-                when(T::class.java){
-                    User::class.java ->{
-                        val res = result as UserResponse<User>
-//                        gdToast(res.message.toString(), Gravity.BOTTOM)
-                    }
-                    String::class.java ->{
-                        val res = result as UserResponse<String>
-//                        gdToast(res.message.toString(), Gravity.BOTTOM)
-                    }
-                }
-
-
+                val res = result as UserResponse<T>
+                Log.i(title, "OnResponseTaskFrag ${res.message}")
+//                requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
                 action()
-//                Log.i(
-//                    "onResponseTask",
-//                    "result of registration ${res.message} ${res.data.firstName}\n${res.data.userId}"
-//                )
+//                i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
             } catch (e: java.lang.Exception) {
-                gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
+                Log.i(title, "OnResponseTaskFrag error ${e.localizedMessage}")
             }
 
-//               Log.i(title, "clearedRegister $clearRegister")
         }
         else -> Log.i("onResponseTask", "error $result")
     }
 }
 
-private fun Activity.hideKeyboard() {
+fun Activity.hideKeyboard() {
 
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
         val view: View? = currentFocus

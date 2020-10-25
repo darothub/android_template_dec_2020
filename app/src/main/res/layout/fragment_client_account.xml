@@ -31,6 +31,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="6dp"
+            android:imeOptions="actionNext"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,6 +53,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintStart_toStartOf="parent"
             android:maxLength="13"
+            android:imeOptions="actionNext"
             app:layout_constraintBottom_toBottomOf="@id/client_account_phone_tv"
             app:layout_constraintTop_toBottomOf="@id/client_account_name_et"
              />
@@ -80,6 +82,7 @@
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/gender"
             android:gravity="bottom"
+            android:imeOptions="actionNext"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/client_account_email_et"
             />
@@ -113,6 +116,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="@dimen/_20sdp"
             app:layout_constraintStart_toStartOf="parent"
+            android:imeOptions="actionNext"
             app:layout_constraintTop_toBottomOf="@id/client_account_shipping_add_tv"
             />
         <include

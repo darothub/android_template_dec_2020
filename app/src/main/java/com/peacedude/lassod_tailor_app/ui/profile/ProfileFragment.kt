@@ -139,16 +139,14 @@ class ProfileFragment : DaggerFragment() {
 
         val request = authViewModel.getAllClient(header)
         i(title, "header $header")
-        requireActivity().requestObserver(
-            null,
-            null,
-            request
-        ) { bool, result ->
+        //Observer for get all clients request
+        requestObserver(null, null, request) { bool, result ->
+            //Task to be done on successful
             onRequestResponseTask<ClientsList>(bool, result) {
                 val results = result as UserResponse<ClientsList>
-                val listOfClient = result.data.clients
+                val listOfClient = result.data?.clients
 
-                if (listOfClient.isNotEmpty()){
+                if (listOfClient?.isNotEmpty()!!){
                     no_client_included_layout.hide()
                     profile_fragment_client_rv.show()
                     profile_fragment_client_rv.setupAdapter<Client>(R.layout.added_client_list_item) { adapter, context, list ->
@@ -157,7 +155,7 @@ class ProfileFragment : DaggerFragment() {
                             itemView.client_name_tv.text = item?.name
                             itemView.client_location_tv.text = "Nigeria"
 
-
+                            //Set on click listener for item view
                             itemView.setOnClickListener {
                                 dialogNameTv.text = itemView.client_name_tv.text
                                 dialogPhoneNumberTv.text = item?.phone
@@ -169,18 +167,14 @@ class ProfileFragment : DaggerFragment() {
                                     cornerRadius(10F)
                                 }
                             }
+                            //When dialog delete button is clicked
                             dialogDeleteBtn.setOnClickListener {
                                 val req = authViewModel.deleteClient(header, item?.id)
-                                requireActivity().requestObserver(
-                                    dialogDeleteProgressBar,
-                                    dialogDeleteBtn,
-                                    req,
-                                    true
-                                ) { bool, result ->
+                                requestObserver(dialogDeleteProgressBar, dialogDeleteBtn, req, true) { bool, result ->
                                     onRequestResponseTask<NothingSpoil>(bool, result) {
                                         val res = result as UserResponse<NothingSpoil>
                                         requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-                                        listOfClient.toMutableList().removeAt(position)
+//                                        listOfClient.toMutableList().removeAt(position)
                                         adapter.notifyDataSetChanged()
                                         dialog.dismiss()
                                         goto(R.id.profileFragment)

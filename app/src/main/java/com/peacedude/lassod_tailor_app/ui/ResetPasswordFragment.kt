@@ -100,7 +100,6 @@ class ResetPasswordFragment : DaggerFragment() {
             )
             resetPasswordProgressabar = reset_password_btn.findViewById(R.id.progress_bar)
 
-
         }, {
             resetBtn.setOnClickListener {
                 resetPasswordRequest()
@@ -131,11 +130,8 @@ class ResetPasswordFragment : DaggerFragment() {
         } else if (password != cpassword) {
             requireActivity().gdErrorToast("passwords do not match", Gravity.BOTTOM)
         } else {
-            val req = requireActivity().requestObserver(
-                resetPasswordProgressabar,
-                resetBtn,
-                authViewModel.resetPassword(token, password, cpassword)
-            ) { b, any ->
+            val req = authViewModel.resetPassword(token, password, cpassword)
+            requestObserver(resetPasswordProgressabar, resetBtn, req) { b, any ->
                 onRequestResponseTask<String>(b, any) {
                     val userDetails = any as? UserResponse<String>
                     val user = userDetails?.data

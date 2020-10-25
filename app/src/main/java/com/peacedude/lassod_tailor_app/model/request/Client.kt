@@ -20,5 +20,5 @@ class Client(
     var tailorId:String?=null
 }
 
-class ClientsList(val clients:List<Client>): Serializable,
+class ClientsList(val clients:List<Client?>?): Serializable,
     ParentData

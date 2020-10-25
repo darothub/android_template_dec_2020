@@ -74,7 +74,7 @@
                 style="@style/EditTextCustomStyle"
                 android:singleLine="true"
                 android:inputType="textEmailAddress"
-
+                android:tag="@string/email_address_str"
                 android:textColorHint="@color/colorGray"
                 android:transitionName="@string/email_or_phone_et"
                 />
@@ -99,7 +99,7 @@
                 style="@style/EditTextCustomStyle"
                 android:singleLine="true"
                 android:inputType="phone"
-
+                android:tag="@string/phone_number"
                 android:textColorHint="@color/colorGray"
                 android:transitionName="@string/email_or_phone_et"
                 />
@@ -125,6 +125,7 @@
                 android:id="@+id/login_password_et"
                 android:inputType="textPassword"
                 android:hint="@string/password"
+                android:tag="@string/password"
                 android:layout_marginStart="@dimen/_20sdp"
                 android:transitionName="@string/password_et"
                 />

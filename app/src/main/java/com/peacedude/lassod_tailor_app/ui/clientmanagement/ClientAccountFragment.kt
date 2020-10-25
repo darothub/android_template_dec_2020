@@ -134,7 +134,7 @@ class ClientAccountFragment : DaggerFragment(){
                                     Gravity.BOTTOM
                                 )
 //
-                                i(title, getString(R.string.check_email))
+//                                i(title, getString(R.string.check_email))
                             }
                         })
 //                        val action = "android-app://obioma/nativemeasurement/$client".toUri()

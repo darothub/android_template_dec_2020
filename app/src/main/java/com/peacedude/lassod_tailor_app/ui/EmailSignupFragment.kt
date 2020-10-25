@@ -146,19 +146,14 @@ class EmailSignupFragment : DaggerFragment() {
     private fun signupRequest() {
         val email = email_field.text.toString().trim()
         val passwordString = password_field.text.toString().trim()
-        val checkForEmpty =
+        val emptyEditText =
             IsEmptyCheck(email_field, password_field)
         val validation = IsEmptyCheck.fieldsValidation(null, passwordString)
 
         when {
-            checkForEmpty != null -> {
-                checkForEmpty.error = getString(R.string.field_required)
-                requireActivity().gdErrorToast(
-                    "${resources.getResourceEntryName(
-                        checkForEmpty.id
-                    )} is empty", Gravity.BOTTOM
-                )
-
+            emptyEditText != null -> {
+                emptyEditText.error = getString(R.string.field_required)
+                requireActivity().gdErrorToast("${emptyEditText.tag} is empty", Gravity.BOTTOM)
             }
             validation != null -> requireActivity().gdErrorToast(
                 "$validation is invalid",
@@ -178,11 +173,7 @@ class EmailSignupFragment : DaggerFragment() {
                     user?.category = email_signup_category_spinner.selectedItem as String
                     var req = userViewModel.registerUser(googleAuthHeader, user)
                     i(title, "header ${user?.token}")
-                    requireActivity().requestObserver(
-                        progressBar,
-                        emailSignupBtn,
-                        req
-                    ) { bool, result ->
+                    requestObserver(progressBar, emailSignupBtn, req) { bool, result ->
                         onRequestResponseTask<User>(bool, result) {
                             val userDetails = result as? UserResponse<User>
                             val user = userDetails?.data

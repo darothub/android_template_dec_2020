@@ -4,7 +4,6 @@ import IsEmptyCheck
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
-import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,11 +16,11 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -32,7 +31,6 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
-import validateField
 import javax.inject.Inject
 
 
@@ -43,6 +41,7 @@ import javax.inject.Inject
  */
 const val PHONE = "phone"
 const val EMAIL = "email"
+
 class LoginFragment : DaggerFragment() {
 
     val title: String by lazy {
@@ -76,7 +75,7 @@ class LoginFragment : DaggerFragment() {
 
     @Inject
     lateinit var mGoogleSignInClient: GoogleSignInClient
-    lateinit var observer : StartActivityForResults
+    lateinit var observer: StartActivityForResults
 
     private val leftAnimation: Animation? by lazy {
         AnimationUtils.loadAnimation(requireContext(), R.anim.left_animation)
@@ -90,6 +89,7 @@ class LoginFragment : DaggerFragment() {
         observer = StartActivityForResults(requireActivity().activityResultRegistry)
         lifecycle.addObserver(observer)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -117,13 +117,12 @@ class LoginFragment : DaggerFragment() {
 
         val lastLoginForm = userViewModel.lastLoginForm
 
-        if (lastLoginForm == PHONE){
+        if (lastLoginForm == PHONE) {
             login_phone_number_input.show()
             login_with_email_tv.show()
             login_email_input.invisible()
             login_with_phone_tv.invisible()
-        }
-        else{
+        } else {
             login_email_input.show()
             login_with_phone_tv.show()
             login_phone_number_input.invisible()
@@ -212,7 +211,6 @@ class LoginFragment : DaggerFragment() {
 
         if (phoneInputLayout) {
             login_email_input.invisible()
-    //                requireActivity().gdToast("Phone", Gravity.BOTTOM)
             validateAndLogin(
                 login_phone_number_et, "phone"
             ) { phoneNumber, password ->
@@ -220,7 +218,6 @@ class LoginFragment : DaggerFragment() {
             }
         } else {
             login_phone_number_input.invisible()
-    //                requireActivity().gdToast("Email", Gravity.BOTTOM)
             validateAndLogin(login_email_address_et, "email") { email, password ->
                 loginWithEmail(email, password)
             }
@@ -229,24 +226,16 @@ class LoginFragment : DaggerFragment() {
 
     private fun authWithGoogle() {
         val intent = mGoogleSignInClient.signInIntent
-        observer.launchIntentToSignIn(intent, viewLifecycleOwner){user->
+        observer.launchIntentToSignIn(intent, viewLifecycleOwner) { user ->
             loginWithGoogle(user)
         }
-//        observer.getUserLiveData.observe(viewLifecycleOwner, Observer {
-//            i(title, "Firstname ${it.firstName}")
-//
-//        })
     }
 
     private fun loginWithGoogle(user: User) {
         val googleAuthHeader = "$bearer ${user.token.toString()}"
         val req = userViewModel.loginWithGoogle(googleAuthHeader)
         i(title, "header ${user.token}")
-        requireActivity().requestObserver(
-            null,
-            null,
-            req
-        ) { bool, result ->
+        requestObserver(null, null, req) { bool, result ->
             onRequestResponseTask<User>(bool, result) {
                 val userDetails = result as? UserResponse<User>
                 val user = userDetails?.data
@@ -267,44 +256,43 @@ class LoginFragment : DaggerFragment() {
     }
 
 
-    private inline fun validateAndLogin(editText: EditText, filter:String, action:(String, String)->Unit) {
+    private inline fun validateAndLogin(
+        editText: EditText,
+        filter: String,
+        action: (String, String) -> Unit
+    ) {
         val input = editText.text.toString().trim()
-        val phoneNumberOrEmailAddress = editText.text.toString().trim()
         val passwordString = login_password_et.text.toString()
-        var v:String? = ""
-        if(filter == "email"){
-            v = IsEmptyCheck.fieldsValidation(email =input, password = passwordString )
+        val emptyEditText = IsEmptyCheck(editText, login_password_et)
+        var v: String? = ""
+        if (filter == "email") {
+            v = IsEmptyCheck.fieldsValidation(email = input, password = passwordString)
+        } else if (filter == "phone") {
+            v = IsEmptyCheck.fieldsValidation(phone_number = input, password = passwordString)
         }
-        else if(filter == "phone"){
-            v = IsEmptyCheck.fieldsValidation(phone_number = input, password = passwordString )
-        }
-        val result=validateField(editText, """email|phone_number""")
-        val resultPassword=validateField(login_password_et, """password""")
-//        requireActivity().gdToast("$result", Gravity.BOTTOM)
-        when {
-            result && resultPassword ->{
-                if (v != null){
-                    if(filter == "phone"){
-                        requireActivity().gdToast("$v must be 13 character long", Gravity.BOTTOM)
-                    }
-                    else{
-                        requireActivity().gdToast("$v is invalid", Gravity.BOTTOM)
-                    }
-                }
-                else{
-                    action(phoneNumberOrEmailAddress, passwordString)
-                }
 
+        when {
+            emptyEditText != null -> {
+                emptyEditText.error = getString(R.string.field_required)
+                requireActivity().gdErrorToast("${emptyEditText.tag} is empty", Gravity.BOTTOM)
+            }
+            v != null -> {
+                if (filter == "phone") {
+                    requireActivity().gdToast("$v must be 13 character long", Gravity.BOTTOM)
+                } else {
+                    requireActivity().gdToast("$v is invalid", Gravity.BOTTOM)
+                }
+            }
+            else -> {
+                action(input, passwordString)
             }
         }
 
     }
 
     private fun loginWithPhoneNumber(phoneNumberOrEmail: String, passwordString: String) {
-        requireActivity().requestObserver(
-            progressBar, loginBtn,
-            userViewModel.loginUserRequest(phoneNumberOrEmail, passwordString)
-        ) { b, any ->
+        val req = userViewModel.loginUserRequest(phoneNumberOrEmail, passwordString)
+        requestObserver(progressBar, loginBtn, req) { b, any ->
             onRequestResponseTask<User>(b, any) {
                 val userDetails = any as? UserResponse<User>
                 val user = userDetails?.data
@@ -319,13 +307,12 @@ class LoginFragment : DaggerFragment() {
             }
         }
     }
+
     private fun loginWithEmail(email: String, passwordString: String) {
-        requireActivity().requestObserver(
-            progressBar, loginBtn,
-            userViewModel.loginWithEmailOrPhoneNumber(email, passwordString)
-        ) { b, any ->
-            onRequestResponseTask<User>(b, any) {
-                val userDetails = any as? UserResponse<User>
+        val req = userViewModel.loginWithEmailOrPhoneNumber(email, passwordString)
+        requestObserver(progressBar, loginBtn, req) { b, result ->
+            onRequestResponseTask<User>(b, result) {
+                val userDetails = result as? UserResponse<User>
                 val user = userDetails?.data
                 user?.loggedIn = true
                 userViewModel.currentUser = user

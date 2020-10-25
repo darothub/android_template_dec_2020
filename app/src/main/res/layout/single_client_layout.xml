@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingStart="@dimen/_25sdp"
     android:paddingEnd="@dimen/_20sdp"
+    android:clipToPadding="false"
     android:background="@drawable/rounded_corner_background">
 
     <ImageView
@@ -152,9 +153,13 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toEndOf="@id/single_client_edit_btn"
         app:layout_constraintTop_toBottomOf="@id/single_client_country_tv"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_10sdp"
+
+
         />
     <include
         android:id="@+id/single_client_edit_btn"
@@ -162,10 +167,13 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginEnd="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/single_client_delete_btn"
         app:layout_constraintTop_toBottomOf="@id/single_client_country_tv"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_10sdp"
+
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
