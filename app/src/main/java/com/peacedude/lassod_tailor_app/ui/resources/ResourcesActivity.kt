@@ -47,7 +47,7 @@ class ResourcesActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar?.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-
+//        toolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
 
     }
 

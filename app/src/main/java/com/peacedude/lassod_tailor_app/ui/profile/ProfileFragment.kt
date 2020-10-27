@@ -1,40 +1,28 @@
 package com.peacedude.lassod_tailor_app.ui.profile
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
-import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.ui.DashboardActivity
-import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientFragment
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.added_client_list_item.view.*
-import kotlinx.android.synthetic.main.fragment_phone_signup.*
+import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_resources.*
-import kotlinx.android.synthetic.main.resource_video_item.view.*
 import javax.inject.Inject
 
 /**
@@ -149,7 +137,7 @@ class ProfileFragment : DaggerFragment() {
                 if (listOfClient?.isNotEmpty()!!){
                     no_client_included_layout.hide()
                     profile_fragment_client_rv.show()
-                    profile_fragment_client_rv.setupAdapter<Client>(R.layout.added_client_list_item) { adapter, context, list ->
+                    profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
 
                         bind { itemView, position, item ->
                             itemView.client_name_tv.text = item?.name

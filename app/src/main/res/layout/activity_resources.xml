@@ -7,7 +7,7 @@ android:layout_height="match_parent"
     tools:context=".ui.resources.ResourcesActivity">
 <include
     android:id="@+id/resources_activity_toolbar"
-    layout="@layout/activity_client_toolbar" />
+    layout="@layout/reusable_toolbar" />
 
 <fragment
     android:id="@+id/resourcesFragment"

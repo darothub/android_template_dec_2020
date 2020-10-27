@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -73,6 +74,17 @@ class MediaFragment : DaggerFragment() {
     private val addPhotoCancelIcon by lazy {
         (dialog.findViewById(R.id.add_photo_dialog_cancel_iv) as ImageView)
     }
+
+    private val noDataFirstIcon by lazy {
+        no_data_included_layout.findViewById<ImageView>(R.id.no_data_first_icon_iv)
+    }
+    private val noDataSecondIcon by lazy {
+        no_data_included_layout.findViewById<ImageView>(R.id.no_data_second_icon_iv)
+    }
+    private val noDataText by lazy{
+        no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
+    }
+
     lateinit var observer : StartActivityForResults
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +107,10 @@ class MediaFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        noDataFirstIcon.hide()
+        noDataSecondIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.media_icon))
+        noDataText.text = getString(R.string.you_have_no_photo_str)
 
         add_photo_iv.setOnClickListener {
             dialog.show{

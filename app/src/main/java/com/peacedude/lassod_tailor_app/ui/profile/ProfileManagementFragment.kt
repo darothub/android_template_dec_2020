@@ -3,8 +3,10 @@ package com.peacedude.lassod_tailor_app.ui.profile
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
@@ -42,6 +44,11 @@ class ProfileManagementFragment : Fragment() {
 
     private fun setupViewPager() {
 
+//        val newView = View.inflate(requireContext(), R.layout.tab_custom_layout, null)
+//        val tv = newView.findViewById<TextView>(R.id.textViewTab)
+
+
+
         adapter = ViewPagerAdapter(requireActivity(), 3) { position->
             when(position){
                 0 -> UserAccountFragment()
@@ -59,7 +66,9 @@ class ProfileManagementFragment : Fragment() {
                         when(position){
                             0 -> tab.text = "Account"
                             1 -> tab.text = "Specialty"
-                            2 -> tab.text = "Payment method"
+                            2 -> {
+                                tab.text = "Payment method"
+                            }
                             else -> ProfileFragment()
                         }
                     }).apply {

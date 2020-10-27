@@ -48,8 +48,8 @@
         <include
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:id="@+id/no_media_included_layout"
-            layout="@layout/no_media_layout"
+            android:id="@+id/no_data_included_layout"
+            layout="@layout/no_data_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

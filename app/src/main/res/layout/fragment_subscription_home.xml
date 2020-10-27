@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        tools:context=".ui.subscription.SubscriptionHomeFragment">
+
+        <include
+            android:id="@+id/subscription_home_fragment_tb"
+            layout="@layout/reusable_toolbar" />
+        <include
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/subscription_home_fragment_no_data_included_layout"
+            layout="@layout/no_data_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintTop_toBottomOf="@id/subscription_home_fragment_tb"
+            />
+        <TextView
+            android:id="@+id/subscription_home_fragment_subscription_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_12sdp"
+            android:textSize="@dimen/_13sdp"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toBottomOf="@id/subscription_home_fragment_tb"
+            app:layout_constraintStart_toStartOf="@id/subscription_home_fragment_rv"
+            android:visibility="gone"
+            android:text="@string/subscription_str"/>
+
+        <TextView
+            android:id="@+id/subscription_home_fragment_exp_date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_12sdp"
+            android:textSize="@dimen/_13sdp"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toTopOf="@id/subscription_home_fragment_subscription_tv"
+            app:layout_constraintEnd_toEndOf="@id/subscription_home_fragment_rv"
+            app:layout_constraintBottom_toBottomOf="@id/subscription_home_fragment_subscription_tv"
+            android:text="@string/exp_date_str"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/subscription_home_fragment_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/subscription_home_fragment_exp_date_tv"
+            tools:listitem="@layout/subscription_list_item"
+            android:layout_margin="@dimen/_15sdp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/subscription_home_fragment_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add"
+            android:background="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.8"
+            android:layout_marginEnd="15dp"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

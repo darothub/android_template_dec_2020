@@ -150,4 +150,7 @@
     <string name="stay_in_touch_str">Stay in touch</string>
     <string name="email_sent_by_str">email sent by Obioma</string>
     <string name="copy_right_str">Copy right 2020. All Rights Reserved</string>
+    <string name="subscription_str">Subscription</string>
+    <string name="exp_date_str">Expiry Date</string>
+    <string name="you_have_no_sub">You have no subscription</string>
 </resources>

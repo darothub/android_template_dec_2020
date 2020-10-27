@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/profile_activity_toolbar"
-        layout="@layout/activity_client_toolbar" />
+        layout="@layout/reusable_toolbar" />
 
     <fragment
         android:id="@+id/profile_fragment"

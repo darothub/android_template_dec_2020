@@ -20,6 +20,7 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity
 import com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity
+import com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionActivity
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import javax.inject.Inject
 
@@ -55,6 +56,8 @@ class DashboardActivity : BaseActivity() {
     private lateinit var clientText:TextView
     private lateinit var resourcesTv:TextView
     private lateinit var resourcesIv:ImageView
+    private lateinit var subscriptionTv:TextView
+    private lateinit var subscriptionIv:ImageView
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
@@ -68,6 +71,7 @@ class DashboardActivity : BaseActivity() {
 
         i(title, "Oncreate")
         bottomNav.setupWithNavController(navController)
+
 //        setBottomNavController()
 
         profile_header.show()
@@ -84,6 +88,8 @@ class DashboardActivity : BaseActivity() {
             clientImage = profile_drawer_view.findViewById(R.id.client_image)
             resourcesTv = profile_drawer_view.findViewById(R.id.resources_tv)
             resourcesIv = profile_drawer_view.findViewById(R.id.resources_image)
+            subscriptionTv = profile_drawer_view.findViewById(R.id.subscription_text)
+            subscriptionIv = profile_drawer_view.findViewById(R.id.subscription_image)
 
         },{
             editBtn.setOnClickListener {
@@ -113,6 +119,18 @@ class DashboardActivity : BaseActivity() {
             resourcesIv.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
                 startActivity(Intent(this, ResourcesActivity::class.java))
+            }
+            resourcesIv.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                startActivity(Intent(this, ResourcesActivity::class.java))
+            }
+            subscriptionTv.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                startActivity(Intent(this, SubscriptionActivity::class.java))
+            }
+            subscriptionIv.setOnClickListener {
+                drawer_layout.closeDrawer(profile_drawer_view, true)
+                startActivity(Intent(this, SubscriptionActivity::class.java))
             }
         })
         Log.i(title, "Oncreate")
