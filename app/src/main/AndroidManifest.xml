@@ -83,6 +83,7 @@
         <activity android:name="com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionActivity"
             android:theme="@style/ProfileActivityTheme"
             android:parentActivityName=".ui.DashboardActivity"
+            android:label="@string/subscription"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

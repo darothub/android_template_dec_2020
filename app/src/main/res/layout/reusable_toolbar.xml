@@ -4,9 +4,10 @@
     android:id="@+id/reusable_toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    android:theme="@style/ToolBarTheme"
     app:popupTheme="@style/MyPopupTheme"
     android:fitsSystemWindows="true"
+    android:elevation="@dimen/_10sdp"
+    android:background="@color/colorAccent"
     app:navigationIcon="@drawable/ic_baseline_arrow_back_24">
 
 </androidx.appcompat.widget.Toolbar>

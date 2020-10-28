@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.helpers.hide
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_media.*
@@ -58,6 +59,10 @@ class SubscriptionHomeFragment : Fragment() {
         noDataFirstIcon.hide()
         noDataSecondIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.shopping_cart_24px))
         noDataText.text = getString(R.string.you_have_no_sub)
+
+        subscription_home_fragment_fab.setOnClickListener {
+            goto(R.id.addCardFragment)
+        }
     }
 
 

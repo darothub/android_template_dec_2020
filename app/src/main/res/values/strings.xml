@@ -153,4 +153,11 @@
     <string name="subscription_str">Subscription</string>
     <string name="exp_date_str">Expiry Date</string>
     <string name="you_have_no_sub">You have no subscription</string>
+    <string name="add_card">Add card</string>
+    <string name="pay_str">Pay NGN10000</string>
+    <string name="card_details_instruction_str">Enter your card details to pay \nfor subscription</string>
+    <string name="card_number_str">Card Number</string>
+    <string name="card_month_str">MM/YY</string>
+    <string name="card_cvv_str">CVV</string>
+    <string name="secure_by_paystack_str">Secure by Paystack</string>
 </resources>

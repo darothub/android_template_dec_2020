@@ -20,8 +20,9 @@ class SubscriptionActivity : AppCompatActivity() {
     }
     val listener = NavController.OnDestinationChangedListener{controller, destination, bundle->
         when(destination.id){
-            R.id.subscription_fragment ->{
-                toolbar?.title = "Hello"
+            R.id.addCardFragment ->{
+                setTitle(getString(R.string.add_card))
+
             }
         }
     }

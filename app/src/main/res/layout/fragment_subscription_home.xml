@@ -15,6 +15,7 @@
 
         <include
             android:id="@+id/subscription_home_fragment_tb"
+            android:visibility="gone"
             layout="@layout/reusable_toolbar" />
         <include
             android:layout_height="wrap_content"
