@@ -1,8 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
 import IsEmptyCheck
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -11,30 +9,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_client.*
 import kotlinx.android.synthetic.main.fragment_client_account.*
-import kotlinx.android.synthetic.main.fragment_email_signup.*
-import kotlinx.android.synthetic.main.fragment_phone_signup.*
-import kotlinx.android.synthetic.main.fragment_user_account.*
 import javax.inject.Inject
 
 

@@ -28,6 +28,10 @@ class SubscriptionActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(
+            this,
+            R.color.colorWhite
+        )
         setContentView(R.layout.activity_subscription)
 
         setSupportActionBar(toolbar)

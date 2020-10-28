@@ -160,4 +160,6 @@
     <string name="card_month_str">MM/YY</string>
     <string name="card_cvv_str">CVV</string>
     <string name="secure_by_paystack_str">Secure by Paystack</string>
+    <string name="pay">Pay</string>
+    <string name="successful_str">Successful</string>
 </resources>

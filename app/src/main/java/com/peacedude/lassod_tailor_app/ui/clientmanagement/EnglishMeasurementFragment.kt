@@ -22,7 +22,6 @@ import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.model.request.Client
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_english_measurement.*
-import kotlinx.android.synthetic.main.fragment_native_measurement.*
 
 /**
  * A simple [Fragment] subclass.

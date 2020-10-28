@@ -1,22 +1,9 @@
 package com.peacedude.lassod_tailor_app.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.model.request.User
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.forEach
-import kotlin.reflect.KClass
 
 class MainActivity : BaseActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +13,4 @@ class MainActivity : BaseActivity() {
 
 }
 
-//
-//fun <T:Any> getitDone(klass:KClass<T>):KClass<T>{
-//    return klass
-//}
 

@@ -18,9 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -34,11 +32,7 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
-import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
-import kotlinx.android.synthetic.main.fragment_signup.*
-import kotlinx.android.synthetic.main.fragment_signup_category.*
-import kotlinx.android.synthetic.main.fragment_signup_choices.*
 import validatePasswordAndAdvise
 import java.util.*
 

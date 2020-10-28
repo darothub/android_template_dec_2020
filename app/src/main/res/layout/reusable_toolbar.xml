@@ -7,18 +7,7 @@
     app:popupTheme="@style/MyPopupTheme"
     android:fitsSystemWindows="true"
     android:elevation="@dimen/_10sdp"
-    android:background="@color/colorAccent"
+    android:background="@color/colorWhite"
     app:navigationIcon="@drawable/ic_baseline_arrow_back_24">
 
 </androidx.appcompat.widget.Toolbar>
-
-    <!--<?xml version="1.0" encoding="utf-8"?>-->
-    <!--<androidx.appcompat.widget.Toolbar android:id="@+id/reusable_toolbar"-->
-    <!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="wrap_content"-->
-    <!--    android:theme="@style/ToolBarTheme"-->
-    <!--    app:popupTheme="@style/MyPopupTheme"-->
-    <!--    xmlns:app="http://schemas.android.com/apk/res-auto">-->
-
-    <!--</androidx.appcompat.widget.Toolbar>-->

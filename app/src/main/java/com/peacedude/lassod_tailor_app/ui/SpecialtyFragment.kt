@@ -22,14 +22,11 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.utils.RecyclerItem
 import com.peacedude.lassod_tailor_app.utils.bearer
-import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_specialty.*
-import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.specialty_layout_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main

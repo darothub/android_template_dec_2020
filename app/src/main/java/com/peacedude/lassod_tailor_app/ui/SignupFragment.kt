@@ -1,8 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import IsEmptyCheck
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
@@ -11,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import android.widget.AdapterView.OnItemSelectedListener
 import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -26,7 +23,6 @@ import androidx.navigation.ui.NavigationUI
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.alimuzaffar.lib.pin.PinEntryEditText
-import com.google.android.material.appbar.AppBarLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -34,7 +30,6 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup.*
 import validatePasswordAndAdvise

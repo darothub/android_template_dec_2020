@@ -13,9 +13,7 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.textfield.TextInputEditText
@@ -28,19 +26,10 @@ import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.Measurement
-import com.peacedude.lassod_tailor_app.utils.RecyclerItem
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_client_account.*
 import kotlinx.android.synthetic.main.fragment_native_measurement.*
-import kotlinx.android.synthetic.main.fragment_signup.*
-import kotlinx.android.synthetic.main.fragment_specialty.*
 import kotlinx.android.synthetic.main.measurement_item.view.*
-import kotlinx.android.synthetic.main.specialty_layout_item.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
