@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.annotation.ColorRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -20,9 +21,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.hide
-import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client.*
@@ -43,6 +42,12 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
     val clientManagementViewPager by lazy {
         (client_management_included_viewPager as? ViewPager2)
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        changeStatusBarColor(R.color.colorTransparentWhite)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -73,24 +78,25 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
         val nextBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         nextBtnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+            setCustomColor(R.color.colorPrimary),
             PorterDuff.Mode.SRC_IN
         )
 
         nextBtn.text = getString(R.string.next)
         nextBtn.background = nextBtnBackground
-        nextBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+        nextBtn.setTextColor(setCustomColor(R.color.colorWhite))
 
         nextBtn.setOnClickListener {
             clientManagementViewPager?.currentItem = 1
         }
 
-        clientManagementViewPager?.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+        clientManagementViewPager?.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                when(position){
+                when (position) {
                     1 -> nextBtn.hide()
-                    0-> nextBtn.show()
+                    0 -> nextBtn.show()
                 }
             }
 
@@ -125,16 +131,18 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
                 }
             }
 
+        client_management_tabLayout.setBackgroundColor(setCustomColor(R.color.colorWhite))
         client_management_tabLayout.setSelectedTabIndicatorColor(
-            ContextCompat.getColor(
-                requireContext(),
+            setCustomColor(
                 R.color.colorPrimary
             )
         )
 
     }
 
-    fun setItem(item:Int){
+
+
+    fun setItem(item: Int) {
         Log.i(title, "here")
         clientManagementViewPager?.currentItem = item
     }

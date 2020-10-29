@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_client.*
@@ -24,7 +25,7 @@ class ClientActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_client)
-
+        changeStatusBarColor(R.color.colorWhite)
         val toolbar = (client_activity_toolbar as Toolbar?)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

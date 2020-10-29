@@ -49,6 +49,7 @@ class ClientAccountFragment : DaggerFragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        changeStatusBarColor(R.color.colorTransparentWhite)
     }
 
     override fun onCreateView(

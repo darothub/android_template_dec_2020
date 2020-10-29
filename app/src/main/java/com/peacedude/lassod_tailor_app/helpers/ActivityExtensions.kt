@@ -218,4 +218,16 @@ fun Any.i(tag:String, message:String){
 fun Any.e(tag:String, message:String){
     Log.e(tag, message)
 }
+fun Activity.changeStatusBarColor(colorRes: Int) {
+    window.statusBarColor = ContextCompat.getColor(
+        this,
+        colorRes
+    )
+}
 
+fun Activity.setCustomColor(colorRes: Int): Int {
+    return ContextCompat.getColor(
+        this,
+        colorRes
+    )
+}

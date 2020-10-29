@@ -68,7 +68,7 @@ class DashboardActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
-
+        changeStatusBarColor(R.color.colorWhite)
         i(title, "Oncreate")
         bottomNav.setupWithNavController(navController)
 

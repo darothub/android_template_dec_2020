@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -114,4 +115,11 @@ fun Fragment.requestObserver(
     action: (Boolean, Any?) -> Unit
 ) {
     requireActivity().requestObserver(progressBar, btn, req, loader, action)
+}
+
+fun Fragment.changeStatusBarColor(colorRes: Int) {
+    requireActivity().changeStatusBarColor(colorRes)
+}
+fun Fragment.setCustomColor(colorRes: Int): Int {
+    return requireActivity().setCustomColor(colorRes)
 }
