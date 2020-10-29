@@ -1,19 +1,18 @@
 package com.peacedude.lassod_tailor_app.data.repositories.auth
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
+import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
+import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 class AuthRepository@Inject constructor(private val authServices: AuthServices):AuthRequestInterface {
@@ -43,8 +42,15 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.getAllClient(header)
     }
 
-    override fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingSpoil>> {
+    override fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>> {
         return authServices.deleteClient(header, id)
+    }
+
+    override fun addPhoto(
+        header: String?,
+        photo: MultipartBody.Part
+    ): Call<UserResponse<List<UploadFileResponse>>> {
+        return authServices.addPhoto(header, photo)
     }
 
 

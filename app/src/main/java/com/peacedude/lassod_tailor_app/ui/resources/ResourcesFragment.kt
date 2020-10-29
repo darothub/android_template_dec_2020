@@ -18,7 +18,6 @@ import coil.request.ImageRequest
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.goto
-import com.peacedude.lassod_tailor_app.model.request.Measurement
 import com.peacedude.lassod_tailor_app.model.request.ResourcesArticlePublication
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.squareup.picasso.Picasso

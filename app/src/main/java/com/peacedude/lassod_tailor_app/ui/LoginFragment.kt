@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.auth0.android.jwt.JWT
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
@@ -26,11 +27,13 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
+import java.io.Serializable
 import javax.inject.Inject
 
 
@@ -227,6 +230,10 @@ class LoginFragment : DaggerFragment() {
     private fun authWithGoogle() {
         val intent = mGoogleSignInClient.signInIntent
         observer.launchIntentToSignIn(intent, viewLifecycleOwner) { user ->
+            i(
+                "$this",
+                "res $user \ntoken ${user.role}\ntoken 2${user?.token}"
+            )
             loginWithGoogle(user)
         }
     }
@@ -237,23 +244,31 @@ class LoginFragment : DaggerFragment() {
         i(title, "header ${user.token}")
         requestObserver(null, null, req) { bool, result ->
             onRequestResponseTask<User>(bool, result) {
+
                 val userDetails = result as? UserResponse<User>
-                val user = userDetails?.data
-                user?.loggedIn = true
-                user?.token = user?.token
+                val remoteDetails = userDetails?.data
+                user.loggedIn = true
+                user.token = remoteDetails?.token
+
+                val payloadString = user<User>(user.token.toString())
+                user.role = payloadString?.category
+                user.category = payloadString?.category
                 userViewModel.currentUser = user
                 //                            val res = userViewModel.saveUser
                 val loginIntent =
                     Intent(requireContext(), DashboardActivity::class.java)
                 i(
-                    "$this",
-                    "res $user \ntoken ${user?.token}\ntoken 2${user?.token}"
+                    title,
+                    "res $user \nCategory ${payloadString?.category}\ntoken 2${remoteDetails}"
                 )
+                requireActivity().gdToast(getString(R.string.you_are_signed) + " ${user.email}", Gravity.BOTTOM)
                 startActivity(loginIntent)
                 requireActivity().finish()
             }
         }
     }
+
+
 
 
     private inline fun validateAndLogin(
@@ -312,6 +327,7 @@ class LoginFragment : DaggerFragment() {
         val req = userViewModel.loginWithEmailOrPhoneNumber(email, passwordString)
         requestObserver(progressBar, loginBtn, req) { b, result ->
             onRequestResponseTask<User>(b, result) {
+
                 val userDetails = result as? UserResponse<User>
                 val user = userDetails?.data
                 user?.loggedIn = true
@@ -320,9 +336,19 @@ class LoginFragment : DaggerFragment() {
 //                val res = userViewModel.saveUser
                 val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
 //                Log.i("$this", "res ${res.size}")
+                requireActivity().gdToast(getString(R.string.you_are_signed) + " ${user?.email}", Gravity.BOTTOM)
                 startActivity(loginIntent)
                 requireActivity().finish()
             }
         }
     }
 }
+
+//data class Data (
+//    val email: String?=null,
+//    val category: String?=null
+//)
+//data class DataTwo (
+//    val token: String?=null,
+//    val role: String?=null
+//):Serializable, ParentData

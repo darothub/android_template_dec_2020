@@ -60,7 +60,7 @@ open class GeneralViewModel @Inject constructor(
 
     final override var header: String? = "$bearer ${currentUser?.token}"
 
-    override var newClient: Client? = storageRequest.checkData<Client>(newClientKey)
+    final override var newClient: Client? = storageRequest.checkData<Client>(newClientKey)
         set(currentClient) = storageRequest.keepData(currentClient, newClientKey)
     override var lastLoginForm: String? = storageRequest.getLastLoginForm()
         set(lastLoginForm) = storageRequest.saveLastLoginForm(lastLoginForm.toString())
@@ -114,8 +114,6 @@ open class GeneralViewModel @Inject constructor(
                 } catch (e: java.lang.Exception) {
                     Log.i(title, e.message.toString())
                 }
-
-
             }
         }
 

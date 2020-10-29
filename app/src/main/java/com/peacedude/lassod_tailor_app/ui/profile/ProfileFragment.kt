@@ -17,7 +17,7 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
+import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -159,8 +159,8 @@ class ProfileFragment : DaggerFragment() {
                             dialogDeleteBtn.setOnClickListener {
                                 val req = authViewModel.deleteClient(header, item?.id)
                                 requestObserver(dialogDeleteProgressBar, dialogDeleteBtn, req, true) { bool, result ->
-                                    onRequestResponseTask<NothingSpoil>(bool, result) {
-                                        val res = result as UserResponse<NothingSpoil>
+                                    onRequestResponseTask<NothingExpected>(bool, result) {
+                                        val res = result as UserResponse<NothingExpected>
                                         requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
 //                                        listOfClient.toMutableList().removeAt(position)
                                         adapter.notifyDataSetChanged()

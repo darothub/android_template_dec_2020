@@ -3,8 +3,10 @@ package com.peacedude.lassod_tailor_app.services.auth
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.NothingSpoil
+import com.peacedude.lassod_tailor_app.model.response.NothingExpected
+import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -46,8 +48,14 @@ interface AuthServices {
     fun deleteClient(
         @Header("Authorization") header: String?,
         @Field("id") id:String?
-    ): Call<UserResponse<NothingSpoil>>
+    ): Call<UserResponse<NothingExpected>>
 
+    @Multipart
+    @POST("media")
+    fun addPhoto(
+        @Header("Authorization") header: String?,
+        @Part photo:MultipartBody.Part
+    ): Call<UserResponse<List<UploadFileResponse>>>
 
 }
 

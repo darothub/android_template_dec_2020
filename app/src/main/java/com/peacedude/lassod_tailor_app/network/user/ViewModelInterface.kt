@@ -6,8 +6,12 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
+import okhttp3.MultipartBody
+import retrofit2.Call
 
 interface ViewModelInterface {
     var lastFragmentId:Int?
@@ -78,5 +82,7 @@ interface ViewModelInterface {
     fun deleteClient(header:String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-
+    fun addPhoto(header: String?, photo: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>> {
+        return TODO()
+    }
 }

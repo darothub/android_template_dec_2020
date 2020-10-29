@@ -121,12 +121,13 @@ class ClientAccountFragment : DaggerFragment(){
                                     "Client added successfully",
                                     Gravity.BOTTOM
                                 )
+                                parent.setItem(1)
 //
 //                                i(title, getString(R.string.check_email))
                             }
                         })
 //                        val action = "android-app://obioma/nativemeasurement/$client".toUri()
-//                        parent.setItem(1)
+//
                     }
                 }
             }

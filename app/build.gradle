@@ -176,4 +176,6 @@ dependencies {
 
     //ProgressView
     implementation "com.github.skydoves:progressview:1.1.0"
+
+    implementation 'com.auth0.android:jwtdecode:2.0.0'
 }

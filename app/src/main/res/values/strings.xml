@@ -162,4 +162,5 @@
     <string name="secure_by_paystack_str">Secure by Paystack</string>
     <string name="pay">Pay</string>
     <string name="successful_str">Successful</string>
+    <string name="you_are_signed">You are signed in as</string>
 </resources>

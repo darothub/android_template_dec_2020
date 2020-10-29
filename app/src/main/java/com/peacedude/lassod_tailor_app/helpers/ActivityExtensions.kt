@@ -166,7 +166,7 @@ inline fun <reified T>Activity.onRequestResponseTask(
             }
 
         }
-        else -> Log.i("onResponseTask", "error $result")
+        else -> Log.i(title, "errorOnResponseTask $result")
     }
 }
 

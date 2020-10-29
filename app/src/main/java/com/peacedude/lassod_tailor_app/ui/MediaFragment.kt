@@ -35,6 +35,7 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.skydoves.progressview.ProgressView
 import com.skydoves.progressview.progressView
+import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import java.io.ByteArrayOutputStream
@@ -221,6 +222,7 @@ class MediaFragment : DaggerFragment() {
                         getString(R.string.provider_authority_str),
                         it
                     )
+                    i(title, "Uri2 $photoURI")
 //                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 }
             }
@@ -234,39 +236,10 @@ class MediaFragment : DaggerFragment() {
                     data?.extras?.get("data") as Bitmap
                 )
                 val imageFile = File(currentPhotoPath)
-                i(
-                    "MyAmplifyApp",
-                    "Successfully uploaded: $imageFile"
-                )
-                val options = StorageUploadFileOptions.builder()
-                    .accessLevel(StorageAccessLevel.PUBLIC).build()
-                Amplify.Storage.uploadFile(
-                    "obiomaimage.jpg",
-                    imageFile,
-                    options,
-                    { progress ->
-
-                        addPhotoDialogFab.hide()
-                        progressFill.progress = progress.fractionCompleted.toFloat()
-                        Log.i(
-                            "MyAmplifyApp",
-                            "Fraction completed: ${ progress.totalBytes}"
-                        )
-                    },
-                    { resultHere ->
-                        addPhotoLoaderLayout.show()
-                        addPhotoCancelIcon.show()
-
-                        Log.i(
-                            "MyAmplifyApp",
-                            "Successfully uploaded: " + resultHere.key
-                        )
-                    },
-                    { error -> Log.e("MyAmplifyApp", "Upload failed", error) }
-                )
 
                 i(title, "Uri $imageUri")
-                //                    Picasso.get().load(imageUri).into()
+                Picasso.get().load(imageUri).into(noDataSecondIcon)
+                dialog.dismiss()
                 requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
             } else {
                 i(

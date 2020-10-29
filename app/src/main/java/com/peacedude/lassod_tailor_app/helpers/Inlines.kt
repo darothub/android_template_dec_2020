@@ -1,10 +1,9 @@
 package com.peacedude.lassod_tailor_app.helpers
 
-import android.app.Activity
 import android.os.Build
 import android.view.KeyEvent
 import android.widget.EditText
-import androidx.fragment.app.Fragment
+import com.auth0.android.jwt.JWT
 
 
 inline fun buildVersion(forSdkGreaterThankM:()->Unit, forSdkLesserThanM:()->Unit){
@@ -14,7 +13,10 @@ inline fun buildVersion(forSdkGreaterThankM:()->Unit, forSdkLesserThanM:()->Unit
         forSdkLesserThanM()
     }
 }
-
+inline fun <reified T>user(json: String): T? {
+    val jwt = JWT(json)
+    return jwt.claims["payload"]?.asObject(T::class.java)
+}
 /**
  * Set enter key for form submission
  *

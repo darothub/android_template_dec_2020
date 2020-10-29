@@ -62,9 +62,10 @@ class StartActivityForResults @Inject constructor(private val registry: Activity
                     newUser.imageUrl = imageUrl.toString()
                     newUser.email = email
                     newUser.token = idToken
+                    i(title, "Task is successful $email")
                     getUserLiveData.value = newUser
                     action(newUser)
-                    i(title, "Task is successful")
+
 
                 } else {
                     i(title, "Task not successful")

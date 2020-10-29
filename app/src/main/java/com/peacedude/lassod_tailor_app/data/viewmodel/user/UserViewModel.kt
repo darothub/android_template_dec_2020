@@ -37,7 +37,7 @@ class UserViewModel @Inject constructor(
         )
         val request = userRequestInterface.registerUser(
             user)
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest(request, responseLiveData)
     }
 
     override fun registerUser(
