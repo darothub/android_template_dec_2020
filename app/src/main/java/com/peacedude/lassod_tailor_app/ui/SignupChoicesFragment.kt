@@ -1,19 +1,29 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import androidx.navigation.fragment.navArgs
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_signup_choices.*
 import javax.inject.Inject
@@ -96,6 +106,7 @@ class SignupChoicesFragment : DaggerFragment() {
                 goto(action)
 
             })
+//            startActivityForResult(intent, RC_SIGN_IN)
         }
 
     }
@@ -114,38 +125,43 @@ class SignupChoicesFragment : DaggerFragment() {
     }
 
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN){
+            Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            task.addOnCompleteListener {
+                if(it.isSuccessful){
+                    val account: GoogleSignInAccount? =
+                        it.getResult(ApiException::class.java)
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (resultCode == RC_SIGN_IN){
-//            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-//            task.addOnCompleteListener {
-//                if(it.isSuccessful){
-//                    val account: GoogleSignInAccount? =
-//                        it.getResult(ApiException::class.java)
-//
-//                    val email = account?.email
-//                    val lastName = account?.familyName
-//                    val firstName = account?.givenName
-//                    val otherName = account?.displayName
-//                    val imageUrl = account?.photoUrl
-//                    val category = arg.category
-//                    val newUser = User(firstName, lastName, otherName, category, null)
-//                    newUser.email = email
-//
-//                    requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
+                    val email = account?.email
+                    val lastName = account?.familyName
+                    val firstName = account?.givenName
+                    val otherName = account?.displayName
+                    val imageUrl = account?.photoUrl
+                    val category = arg.category
+                    val newUser = User()
+                    newUser.email = email
+
+                    requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
 //                    val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
 //                    action.newUser = newUser
 //                    goto(action)
 //
-//                    Log.i(title, "token $firstName")
-////                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
-//                }
-//            }
-//        }
-//
-//    }
+//                    i(title, "token $firstName")
+//                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
+                }
+                else{
+                    Toast.makeText(requireContext(), "unSuccessful", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        else{
+            Toast.makeText(requireContext(), "unSuccessful", Toast.LENGTH_LONG).show()
+        }
+    }
+
 
 
 

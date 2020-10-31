@@ -148,7 +148,7 @@ open class GeneralViewModel @Inject constructor(
             when (logoutTask.isSuccessful) {
                 true -> {
                     activity.startActivity(Intent(activity, MainActivity::class.java))
-                    activity.gdToast("Sign-out not request successful", Gravity.BOTTOM)
+                    activity.gdToast("Sign-out request successful", Gravity.BOTTOM)
                     activity.finish()
                     logoutLiveData.postValue(true)
                     Log.i(title, "logout")

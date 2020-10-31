@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "962135252978",
+    "firebase_url": "https://peacedudeproject.firebaseio.com",
+    "project_id": "peacedudeproject",
+    "storage_bucket": "peacedudeproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962135252978:android:f79f414138cbb3b6e7d56b",
+        "android_client_info": {
+          "package_name": "com.peacedude.lassod_tailor_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962135252978-ilsci8l17bv22v4t520gigokn7spu6f9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.peacedude.lassod_tailor_app",
+            "certificate_hash": "48758b494bfe9cbb29165af6bd75d69b3ac86d47"
+          }
+        },
+        {
+          "client_id": "962135252978-i8gkqo18js5nlal1d5l4guqqb53gqth2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.peacedude.lassod_tailor_app",
+            "certificate_hash": "9a52d78d2f7f62e2e420939059b0fdcb904740ba"
+          }
+        },
+        {
+          "client_id": "962135252978-2lr1b25bpmrjcahu6u106kgimeagl0sp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8QAWmOiWY2-4_-iMBe6-thmvBM_fTplA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962135252978-8mcotdb8jec29alk20v8lcne67fm5gib.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

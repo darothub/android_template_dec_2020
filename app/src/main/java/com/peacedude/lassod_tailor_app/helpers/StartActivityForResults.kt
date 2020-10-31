@@ -76,20 +76,8 @@ class StartActivityForResults @Inject constructor(private val registry: Activity
         return getUserLiveData
     }
 
-    fun launchImageIntent(intent: Intent, owner: LifecycleOwner):LiveData<ActivityResult>{
+    fun launchImageIntent(intent: Intent):LiveData<ActivityResult>{
         getIntentResult.launch(intent)
         return getResultLiveData
-    }
-}
-
-interface IntentContract : DefaultLifecycleObserver{
-//    var getIntentResult: ActivityResultLauncher<Intent>
-//    var getUserLiveData: MutableLiveData<User>
-//    var getResultLiveData: MutableLiveData<ActivityResult>
-    fun launchIntentToSignIn(intent: Intent, owner: LifecycleOwner):LiveData<User>{
-        TODO()
-    }
-    fun launchImageIntent(intent: Intent, owner: LifecycleOwner):LiveData<ActivityResult>{
-        TODO()
     }
 }
