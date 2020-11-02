@@ -5,13 +5,11 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
-import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import javax.inject.Inject
 
@@ -48,9 +46,9 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
 
     override fun addPhoto(
         header: String?,
-        photo: MultipartBody.Part
-    ): Call<UserResponse<List<UploadFileResponse>>> {
-        return authServices.addPhoto(header, photo)
+        body: RequestBody
+    ): Call<UserResponse<NothingExpected>> {
+        return authServices.addPhoto(header, body)
     }
 
 

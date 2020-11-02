@@ -7,14 +7,12 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
-import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -97,14 +95,14 @@ open class AuthViewModel @Inject constructor(
 
     override fun addPhoto(
         header: String?,
-        photo: MultipartBody.Part
+        body: RequestBody
     ): LiveData<ServicesResponseWrapper<ParentData>> {
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
             "Loading..."
         )
-        val request = authRequestInterface.addPhoto(header, photo)
-        return enqueueRequest<List<UploadFileResponse>>(request, responseLiveData)
+        val request = authRequestInterface.addPhoto(header, body)
+        return enqueueRequest<NothingExpected>(request, responseLiveData)
     }
 
 }

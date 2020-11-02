@@ -2,13 +2,12 @@ package com.peacedude.lassod_tailor_app.ui
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.media.MediaScannerConnection
-import android.media.MediaScannerConnection.OnScanCompletedListener
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -22,25 +21,34 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.StartActivityForResults
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.hide
-import com.peacedude.lassod_tailor_app.helpers.i
+import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.NothingExpected
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.skydoves.progressview.ProgressView
 import com.squareup.picasso.Picasso
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
-import java.io.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 const val REQUEST_CODE = 1
 const val GALLERY_PHOTO_CODE = 0
@@ -83,6 +91,16 @@ class MediaFragment : DaggerFragment() {
     }
     private val noDataText by lazy {
         no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
+    }
+
+    val header by lazy {
+        authViewModel.header
+    }
+
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val authViewModel: AuthViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
 
     lateinit var observer: StartActivityForResults
@@ -213,77 +231,55 @@ class MediaFragment : DaggerFragment() {
         addPhotoLoaderLayout.hide()
         progressFill.progress = 0.0F
         addPhotoCancelIcon.hide()
-        var photoFile: File? = null
         val galleryIntent = Intent()
         galleryIntent.type = "image/*"
         galleryIntent.action = Intent.ACTION_GET_CONTENT
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val chooser =Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        chooser.also { takePictureIntent ->
-            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
-                // Create the File where the photo should go
-                photoFile = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    null
+        val chooser = Intent.createChooser(galleryIntent, "Photo options")
+        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
+        val result = observer.launchImageIntent(chooser)
+        result.observe(viewLifecycleOwner, Observer { results ->
+            if (results.resultCode == Activity.RESULT_OK) {
+                val data = results.data
+                val imageBitmap =
+                    data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
+                val imageFile = saveBitmap(imageBitmap)
+                if (imageFile != null) {
+                    Picasso.get().load(imageFile).into(noDataSecondIcon)
                 }
-                i(title, "file $photoFile")
-                // Continue only if the File was successfully created
-                photoFile?.also { file ->
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        requireContext(),
-                        getString(R.string.provider_authority_str),
-                        file
-                    )
-                    i(title, "Uri2 $photoURI")
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    val result = observer.launchImageIntent(takePictureIntent)
-                    result.observe(viewLifecycleOwner, Observer { results ->
-                        if (results.resultCode == Activity.RESULT_OK) {
-                            val data = results.data
-                            val imageFile = File(currentPhotoPath)
-
-                            val imageUri = data?.data ?: getImageUriFromBitmap(
-                                requireContext(),
-                                data?.extras?.get("data") as Bitmap
-                            )
-//                            val `in`: InputStream? =
-//                                requireActivity().contentResolver.openInputStream(imageUri)
-//                            val out: OutputStream = FileOutputStream(File(currentPhotoPath))
-//                            val buf = ByteArray(1024)
-//                            var len: Int = 0
-//                            while (`in`?.read(buf).also {
-//                                    if (it != null) {
-//                                        len = it
-//                                    }
-//                                }!! > 0) {
-//                                out.write(buf, 0, len)
-//                            }
-//                            out.close()
-//                            `in`?.close()
-//                            galleryAddPic()
-
-
-//                            i(title, "out $out $imageUri")
-                            Picasso.get().load(imageUri).into(noDataSecondIcon)
-                            dialog.dismiss()
-                            requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
-                        } else {
-                            i(
-                                title,
-                                "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
-                            )
-                        }
-                    })
-//
+                val requestBody: RequestBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("photo", imageFile.toString())
+                    .build()
+//                val requestBody = imageFile?.asRequestBody("image/*".toMediaTypeOrNull())
+//                val filePart: MultipartBody.Part? = requestBody.let {
+//                    MultipartBody.Part.createFormData(
+//                        "photo",
+//                        imageFile?.name,
+//                        it
+//                    )
+//                }
+                val req = authViewModel.addPhoto(header, requestBody)
+                requestObserver(null, null, req) { bool, result ->
+                    onRequestResponseTask<User>(bool, result) {
+                        val response = result as UserResponse<NothingExpected>
+//                        val responseData = response.data
+                        i(title, "URL ${response.message}")
+                    }
                 }
+                i(title, "File $imageFile")
+                dialog.dismiss()
+                requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
+            } else {
+                i(
+                    title,
+                    "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
+                )
             }
-        }
+        })
 
 
         addPhotoCancelIcon.setOnClickListener {
-            photoFile = null
             addPhotoLoaderLayout.hide()
             addPhotoDialogFab.show()
         }
@@ -313,43 +309,46 @@ class MediaFragment : DaggerFragment() {
         }
     }
 
-    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
-        i(title, "originalpath $path")
-        return Uri.parse(path.toString())
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
+    private fun saveBitmap(bmp: Bitmap): File? {
+        val extStorageDirectory = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        var outStream: OutputStream? = null
+        var file:File?=null
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
-        val storageDir: File? =
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = this.absolutePath
-
+        val child = "JPEG_${timeStamp}_" + ".jpg"
+        // String temp = null;
+        if (extStorageDirectory != null){
+            file = File(extStorageDirectory, child)
+            if (file.exists()) {
+                file.delete()
+                file = File(extStorageDirectory, child)
+            }
+            try {
+                outStream = FileOutputStream(file)
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+                outStream.flush()
+                outStream.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return null
+            }
         }
+
+        return file
     }
 
-    private fun galleryAddPic() {
-        val file = File(currentPhotoPath)
-        i(title, "Absolutepath $currentPhotoPath")
-        MediaScannerConnection.scanFile(requireContext(), arrayOf(file.path),
-            null, OnScanCompletedListener { path, uri ->
-                // now visible in gallery
-                i(title, "path $path uri  $uri")
-            })
-
+    private fun uriToBitmap(uriImage: Uri): Bitmap? {
+        var mBitmap: Bitmap? = null
+        if(Build.VERSION.SDK_INT < 28) {
+            mBitmap = MediaStore.Images.Media.getBitmap(
+                requireActivity().contentResolver,
+                uriImage
+            )
+        } else {
+            val source = ImageDecoder.createSource(requireActivity().contentResolver, uriImage)
+            mBitmap = ImageDecoder.decodeBitmap(source)
+        }
+        return mBitmap
     }
-
     override fun onPause() {
         super.onPause()
         i(title, "Onpause")

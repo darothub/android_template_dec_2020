@@ -1,17 +1,19 @@
 package com.peacedude.lassod_tailor_app.model.response
 
+import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
 data class UploadFileResponse (
     val id: String,
+    @SerializedName("tailorId")
     val tailorID: String,
     val photo: String,
     val info: String,
     val photoAwsDetails: PhotoAwsDetails,
     val createdAt: String,
     val updatedAt: String
-): Serializable, ParentData
+): Serializable
 
 data class PhotoAwsDetails (
     val fieldname: String,
@@ -34,3 +36,5 @@ data class PhotoAwsDetails (
 data class Metadata (
     val fieldName: String
 ):Serializable
+
+data class UploadedPhoto(val the0:UploadFileResponse):ParentData, Serializable

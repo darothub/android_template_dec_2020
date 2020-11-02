@@ -5,8 +5,10 @@ import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
+import com.peacedude.lassod_tailor_app.model.response.UploadedPhoto
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 
 interface AuthRequestInterface {
@@ -32,7 +34,7 @@ interface AuthRequestInterface {
     fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>>{
         return TODO()
     }
-    fun addPhoto(header: String?, photo: MultipartBody.Part): Call<UserResponse<List<UploadFileResponse>>>{
+    fun addPhoto(header: String?, body: RequestBody): Call<UserResponse<NothingExpected>>{
         return TODO()
     }
 }

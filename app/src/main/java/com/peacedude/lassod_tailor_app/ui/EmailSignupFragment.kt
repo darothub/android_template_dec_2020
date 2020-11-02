@@ -171,7 +171,7 @@ class EmailSignupFragment : DaggerFragment() {
                     val googleAuthHeader = "$bearer ${user?.token.toString()}"
                     user?.password = passwordString
                     user?.category = email_signup_category_spinner.selectedItem as String
-                    var req = userViewModel.registerUser(googleAuthHeader, user)
+                    val req = userViewModel.registerUser(googleAuthHeader, user)
                     i(title, "header ${user?.token}")
                     requestObserver(progressBar, emailSignupBtn, req) { bool, result ->
                         onRequestResponseTask<User>(bool, result) {

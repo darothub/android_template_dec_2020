@@ -133,10 +133,10 @@ class LoginFragment : DaggerFragment() {
         }
 
         login_with_email_tv.setOnClickListener {
-            login_email_input.show()
             login_email_input.animation = leftAnimation
             login_phone_number_input.animation =
                 AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
+            login_email_input.show()
             login_phone_number_input.invisible()
 
             login_with_phone_tv.show()
@@ -147,17 +147,16 @@ class LoginFragment : DaggerFragment() {
 
         }
         login_with_phone_tv.setOnClickListener {
-            login_phone_number_input.show()
             login_phone_number_input.animation = leftAnimation
             login_email_input.animation =
                 AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
+            login_phone_number_input.show()
             login_email_input.invisible()
 
-
-            login_with_email_tv.show()
             login_with_email_tv.animation = leftAnimation
             login_with_phone_tv.animation =
                 AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
+            login_with_email_tv.show()
             login_with_phone_tv.invisible()
 
         }

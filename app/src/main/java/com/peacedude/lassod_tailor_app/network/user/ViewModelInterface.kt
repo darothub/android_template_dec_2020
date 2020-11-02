@@ -11,6 +11,7 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 
 interface ViewModelInterface {
@@ -82,7 +83,7 @@ interface ViewModelInterface {
     fun deleteClient(header:String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun addPhoto(header: String?, photo: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>> {
+    fun addPhoto(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> {
         return TODO()
     }
 }

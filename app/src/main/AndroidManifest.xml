@@ -17,10 +17,11 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@drawable/obioma_logo_blue"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme.NoActionBar"
 
         tools:replace="android:fullBackupContent"
-        tools:targetApi="n">
+        tools:targetApi="q">
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -40,16 +41,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/ProfileActivityTheme"
             tools:ignore="AllowBackup">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
         <activity
             android:name=".ui.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".ui.MainActivity"
