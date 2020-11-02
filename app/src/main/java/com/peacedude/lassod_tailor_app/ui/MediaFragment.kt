@@ -314,7 +314,7 @@ class MediaFragment : DaggerFragment() {
         var outStream: OutputStream? = null
         var file:File?=null
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
-        val child = "JPEG_${timeStamp}_" + ".jpg"
+        val child = "JPEG_${timeStamp}_.jpg"
         // String temp = null;
         if (extStorageDirectory != null){
             file = File(extStorageDirectory, child)

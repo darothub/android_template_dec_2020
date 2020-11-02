@@ -51,28 +51,6 @@ class UserAccountFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        savedInstanceState?.let {instateBundle ->
-//            instateBundle.apply {
-//                authViewModel.header = this["header"] as String?
-//                (this[loggedInUserKey] as User).let {
-//                    authViewModel.currentUser = it
-//                }
-//                (this[profileDataKey] as User).let {
-//                    authViewModel.profileData = it
-//                }
-//            }
-//
-//        }
-//        arguments?.let {
-//        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-//        outState.putSerializable(loggedInUserKey, currentUser)
-//        outState.putSerializable(profileDataKey, authViewModel.profileData)
-//        outState.putString("header", header)
-
     }
 
     override fun onCreateView(
