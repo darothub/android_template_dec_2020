@@ -173,4 +173,6 @@
     <string name="ok">Ok</string>
     <string name="female">Female</string>
     <string name="male">Male</string>
+    <string name="city">City</string>
+    <string name="street_str">Street</string>
 </resources>

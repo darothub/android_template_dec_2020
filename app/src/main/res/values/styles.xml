@@ -93,11 +93,22 @@
     <style name="EditProfileTextViewCustomStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginTop">20dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textSize">@dimen/_10sdp</item>
         <item name="android:layout_marginStart">28dp</item>
+    </style>
+    <style name="EditProfileTextViewValueStyle" parent="EditProfileTextViewCustomStyle">
+        <item name="android:layout_marginEnd">@dimen/_20sdp</item>
+
+    </style>
+    <style name="LineCustomStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginEnd">@dimen/_20sdp</item>
+        <item name="android:layout_marginStart">@dimen/_20sdp</item>
+        <item name="background">@color/colorGray</item>
     </style>
     <style name="SpecialtyTextViewCustomStyle">
         <item name="android:layout_width">wrap_content</item>

@@ -1,111 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:background="@color/colorWhite"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        android:id="@+id/first_name_tv"
-        style="@style/EditProfileTextViewCustomStyle"
-        android:text="@string/first_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/_10sdp"
+    android:padding="@dimen/_20sdp"
+
+
+   >
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/multipurpose_name_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-       android:layout_marginTop="@dimen/_30sdp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/first_name_tv"
+        android:padding="@dimen/_30sdp"
+        android:background="@drawable/rounded_corner_background"
         >
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/multipurpose_name_dialog_input"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:imeOptions="actionNext"
-            android:textColorHint="@color/colorGray"
-            android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintEnd_toEndOf="parent"
+        <TextView
+            android:id="@+id/multipurpose_title_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:hint="@string/dash"
-            >
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/multipurpose_name_dialog_et"
-                android:textColor="@color/colorGray"
-                style="@style/EditTextCustomStyle"
-                android:singleLine="true"
-                android:inputType="textEmailAddress"
-                android:tag="@string/email_address_str"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/multipurpose_name_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/multipurpose_dialog_cancel_tv"
+            app:layout_constraintTop_toBottomOf="@id/multipurpose_title_name_tv">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/multipurpose_name_dialog_input"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:hint="@string/dash"
+                android:imeOptions="actionNext"
                 android:textColorHint="@color/colorGray"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/multipurpose_name_dialog_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:tag="@string/email_address_str"
+                    android:textColor="@color/colorGray"
+                    android:textColorHint="@color/colorGray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/multipurpose_name_dialog_text_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:text="@string/text_count"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/multipurpose_name_dialog_input" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/multipurpose_gender_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/multipurpose_dialog_cancel_tv"
+            app:layout_constraintTop_toBottomOf="@id/multipurpose_title_name_tv">
+
+            <RadioButton
+                android:id="@+id/multipurpose_gender_dialog_female_rbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/female"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioButton
+                android:id="@+id/multipurpose_gender_dialog_male_rbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/male"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/multipurpose_gender_dialog_female_rbtn" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/multipurpose_workshop_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/multipurpose_dialog_cancel_tv"
+            app:layout_constraintTop_toBottomOf="@id/multipurpose_title_name_tv">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/multipurpose_workshop_dialog_street_input"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:hint="@string/street_str"
+                android:imeOptions="actionNext"
+                android:textColorHint="@color/colorGray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/multipurpose_workshop_dialog_street_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:tag="@string/email_address_str"
+                    android:textColor="@color/colorGray"
+                    android:textColorHint="@color/colorGray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/multipurpose_workshop_dialog_city_input"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:hint="@string/city"
+                android:imeOptions="actionNext"
+                android:textColorHint="@color/colorGray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/multipurpose_workshop_dialog_street_input">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/multipurpose_workshop_dialog_city_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:tag="@string/email_address_str"
+                    android:textColor="@color/colorGray"
+                    android:textColorHint="@color/colorGray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/multipurpose_workshop_dialog_state_input"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:hint="@string/state"
+                android:imeOptions="actionNext"
+                android:textColorHint="@color/colorGray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/multipurpose_workshop_dialog_city_input">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/multipurpose_workshop_dialog_state_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"
+                    android:tag="@string/email_address_str"
+                    android:textColor="@color/colorGray"
+                    android:textColorHint="@color/colorGray" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
-            android:id="@+id/multipurpose_name_dialog_text_count_tv"
+            android:id="@+id/multipurpose_dialog_cancel_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_count"
             android:layout_marginEnd="@dimen/_20sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/multipurpose_name_dialog_input"
-            />
-
-        <TextView
-            android:id="@+id/multipurpose_name_dialog_cancel_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:text="@string/cancel"
             android:textAllCaps="true"
-            android:layout_marginEnd="@dimen/_20sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias=".9"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/multipurpose_dialog_ok_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:text="@string/ok"
+
+            android:textAllCaps="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="parent"
 
-            android:layout_marginTop="@dimen/_17sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/multipurpose_name_dialog_text_count_tv"
-            />
-        <TextView
-            android:id="@+id/multipurpose_name_dialog_ok_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ok"
-            android:textAllCaps="true"
-            android:layout_marginEnd="@dimen/_20sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/_17sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintTop_toBottomOf="@id/multipurpose_name_dialog_text_count_tv"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/multipurpose_gender_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:padding="@dimen/_20sdp"
-        app:layout_constraintTop_toBottomOf="@id/first_name_tv"
-        >
-        <RadioButton
-            android:id="@+id/multipurpose_gender_dialog_female_rbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/female"/>
-        <RadioButton
-            android:id="@+id/multipurpose_gender_dialog_male_rbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/multipurpose_gender_dialog_female_rbtn"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:text="@string/male"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
