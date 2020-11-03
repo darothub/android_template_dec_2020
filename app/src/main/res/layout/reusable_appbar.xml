@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorWhite"
+    app:elevation="0dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/reusable_appbar_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:fitsSystemWindows="true"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        >
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/reusable_appbar_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dash"
+        android:textSize="@dimen/_18sdp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        />
+
+</com.google.android.material.appbar.AppBarLayout>

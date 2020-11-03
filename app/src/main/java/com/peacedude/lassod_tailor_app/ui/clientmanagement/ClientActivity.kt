@@ -1,22 +1,17 @@
 package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.ActionBar
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
+import com.peacedude.lassod_tailor_app.ui.DashboardActivity
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_client.*
-import kotlinx.android.synthetic.main.fragment_client.*
 
 class ClientActivity : BaseActivity() {
     lateinit var adapter : ViewPagerAdapter
@@ -26,10 +21,13 @@ class ClientActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_client)
         changeStatusBarColor(R.color.colorWhite)
-        val toolbar = (client_activity_toolbar as Toolbar?)
+
+
+        val toolbar = client_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)
+        val activityTitle = client_activity_appbar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
+        activityTitle.text = getString(R.string.add_client)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar?.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
 
     }
 }

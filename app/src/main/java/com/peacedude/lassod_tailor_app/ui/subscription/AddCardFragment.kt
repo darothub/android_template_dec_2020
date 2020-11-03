@@ -1,30 +1,22 @@
 package com.peacedude.lassod_tailor_app.ui.subscription
 
 import android.app.Dialog
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.hide
-import com.peacedude.lassod_tailor_app.helpers.observeRequest
 import com.peacedude.lassod_tailor_app.helpers.show
 import kotlinx.android.synthetic.main.activity_subscription.*
 import kotlinx.android.synthetic.main.fragment_add_card.*
-import kotlinx.android.synthetic.main.profile_header.*
 
 
 /**
@@ -87,7 +79,7 @@ class AddCardFragment : Fragment() {
             add_card_fragment_card_detail_layout.show()
             add_card_fragment_add_card_layout.hide()
         }
-        (requireActivity().subscription_activity_tb as androidx.appcompat.widget.Toolbar).setNavigationOnClickListener {
+        (requireActivity().subscription_activity_appbar as androidx.appcompat.widget.Toolbar).setNavigationOnClickListener {
             if(add_card_fragment_add_card_layout.hide()){
                 add_card_fragment_add_card_layout.show()
                 add_card_fragment_card_detail_layout.hide()

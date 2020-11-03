@@ -17,7 +17,7 @@
         <include
             android:id="@+id/client_management_toolbar"
             android:visibility="gone"
-            layout="@layout/activity_client_toolbar" />
+            layout="@layout/reusable_appbar" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/client_management_tabLayout"

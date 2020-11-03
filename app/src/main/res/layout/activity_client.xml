@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".ui.clientmanagement.ClientActivity">
     <include
-        android:id="@+id/client_activity_toolbar"
-        layout="@layout/activity_client_toolbar" />
+        android:id="@+id/client_activity_appbar"
+        layout="@layout/reusable_appbar" />
 
     <fragment
         android:id="@+id/fragment"
@@ -16,7 +17,7 @@
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-       app:layout_constraintTop_toBottomOf="@id/client_activity_toolbar"
+       app:layout_constraintTop_toBottomOf="@id/client_activity_appbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:defaultNavHost="true"
         app:navGraph="@navigation/client_viewpager_nav_graph"

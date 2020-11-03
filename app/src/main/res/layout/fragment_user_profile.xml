@@ -47,6 +47,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:listitem="@layout/user_profile_name_item"
+
             />
         <TextView
             android:id="@+id/workshop_address_tv"
@@ -154,5 +155,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:listitem="@layout/user_profile_name_item"
             />
+        <include
+            android:id="@+id/account_save_changes_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_name_union_rv"
+            android:layout_marginTop="@dimen/_8sdp"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

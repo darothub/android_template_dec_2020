@@ -60,18 +60,18 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewPager()
-        val toolbar = (client_management_toolbar as Toolbar)
-        toolbar.setTitleTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                R.color.colorPrimaryDark
-            )
-        )
-
-        val navController = Navigation.findNavController(client_management_appBar)
-
-
-        NavigationUI.setupWithNavController(toolbar, navController)
+//        val toolbar = (client_management_toolbar as Toolbar)
+//        toolbar.setTitleTextColor(
+//            ContextCompat.getColor(
+//                requireContext(),
+//                R.color.colorPrimaryDark
+//            )
+//        )
+//
+//        val navController = Navigation.findNavController(client_management_appBar)
+//
+//
+//        NavigationUI.setupWithNavController(toolbar, navController)
         nextBtn = client_account_next_btn2.findViewById(R.id.btn)
         progressBar = client_account_next_btn2.findViewById(R.id.progress_bar)
 

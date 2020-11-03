@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".ui.profile.ProfileActivity">
 
     <include
-        android:id="@+id/profile_activity_toolbar"
-        layout="@layout/reusable_toolbar" />
+        android:id="@+id/profile_activity_appbar"
+        layout="@layout/reusable_appbar" />
 
     <fragment
         android:id="@+id/profile_fragment"
@@ -19,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profile_activity_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/profile_activity_appbar"
         app:navGraph="@navigation/profile_nav_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

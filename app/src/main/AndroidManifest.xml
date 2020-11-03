@@ -64,7 +64,7 @@
         </activity>
         <activity
             android:name="com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity"
-            android:label="@string/edit_profile"
+            android:label=" "
             android:parentActivityName=".ui.DashboardActivity"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustResize|stateHidden">
@@ -72,7 +72,7 @@
         </activity>
         <activity
             android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity"
-            android:label="@string/add_client"
+            android:label=" "
             android:parentActivityName=".ui.DashboardActivity"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustResize">
@@ -81,14 +81,14 @@
         <activity
             android:name="com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/resources_str"
+            android:label=" "
             android:parentActivityName=".ui.DashboardActivity"
             android:theme="@style/ProfileActivityTheme"
             android:windowSoftInputMode="adjustPan|adjustResize" />
         <activity android:name="com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionActivity"
             android:theme="@style/ProfileActivityTheme"
             android:parentActivityName=".ui.DashboardActivity"
-            android:label="@string/subscription"
+            android:label=" "
             >
 
         </activity>

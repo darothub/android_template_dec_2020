@@ -2,13 +2,14 @@ package com.peacedude.lassod_tailor_app.ui.subscription
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.peacedude.lassod_tailor_app.R
-import kotlinx.android.synthetic.main.activity_client.*
+import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
+import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.activity_subscription.*
 
 class SubscriptionActivity : AppCompatActivity() {
@@ -16,27 +17,26 @@ class SubscriptionActivity : AppCompatActivity() {
         Navigation.findNavController(this, R.id.subscription_fragment)
     }
     val toolbar by lazy {
-        (subscription_activity_tb as Toolbar?)
+        subscription_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)
     }
     val listener = NavController.OnDestinationChangedListener{controller, destination, bundle->
         when(destination.id){
             R.id.addCardFragment ->{
-                setTitle(getString(R.string.add_card))
+                title = getString(R.string.add_card)
 
             }
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = ContextCompat.getColor(
-            this,
-            R.color.colorWhite
-        )
+        changeStatusBarColor(R.color.colorWhite)
         setContentView(R.layout.activity_subscription)
 
+        subscription_activity_appbar.elevation = 10F
+        val activityTitle = subscription_activity_appbar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
+        activityTitle.text = getString(R.string.subscription)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar?.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
 
     }
 

@@ -11,8 +11,11 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
+import com.peacedude.lassod_tailor_app.helpers.setCustomColor
 import com.peacedude.lassod_tailor_app.ui.*
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
+import kotlinx.android.synthetic.main.fragment_client.*
 import kotlinx.android.synthetic.main.fragment_profile_management.*
 
 
@@ -26,6 +29,7 @@ class ProfileManagementFragment : Fragment() {
     lateinit var adapter : ViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        changeStatusBarColor(R.color.colorWhite)
     }
 
     override fun onCreateView(
@@ -58,6 +62,7 @@ class ProfileManagementFragment : Fragment() {
             }
         }
         val profileManagementViewPager = (profile_management_included_viewPager as? ViewPager2)
+        profile_management_tabLayout.setBackgroundColor(setCustomColor(R.color.colorWhite))
         (profile_management_included_viewPager as? ViewPager2)?.adapter = adapter
         val tabLayoutMediator =
             profileManagementViewPager?.let {

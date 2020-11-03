@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:elevation="@dimen/_15sdp"
     android:background="@color/colorAccent"
     tools:context=".ui.profile.ProfileManagementFragment">
 
@@ -14,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:elevation="@dimen/_15sdp"
         app:layout_constraintTop_toTopOf="parent">
 
 
