@@ -22,7 +22,6 @@ class ClientActivity : BaseActivity() {
         setContentView(R.layout.activity_client)
         changeStatusBarColor(R.color.colorWhite)
 
-
         val toolbar = client_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)
         val activityTitle = client_activity_appbar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
         activityTitle.text = getString(R.string.add_client)

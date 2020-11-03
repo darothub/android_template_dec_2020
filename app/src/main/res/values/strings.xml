@@ -22,6 +22,12 @@
         <item>kids</item>
         <item>unisex</item>
     </string-array>
+    <string-array name="name_list">
+        <item>first Name</item>
+        <item>last Name</item>
+        <item>other Name</item>
+        <item>gender</item>
+    </string-array>
     <string-array name="measurement_options_list">
         <item>Visit us for your measurement</item>
         <item>Will accept self-measurement</item>
@@ -38,9 +44,9 @@
     <string name="signup">Sign up</string>
     <string name="create_an_account">Create an account</string>
     <string name="lets_get_to_know_you">Let\'s get to know you</string>
-    <string name="first_name">First name</string>
-    <string name="last_name">Last name</string>
-    <string name="other_name">Other name</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="other_name">Other Name</string>
     <string name="choose_category">Choose category</string>
     <string name="phone_number">Phone number</string>
     <string name="password">Password</string>
@@ -165,4 +171,6 @@
     <string name="successful_str">Successful</string>
     <string name="you_are_signed">You are signed in as</string>
     <string name="ok">Ok</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
 </resources>

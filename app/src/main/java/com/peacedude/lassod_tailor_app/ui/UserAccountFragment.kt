@@ -18,6 +18,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.utils.RecyclerItem
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_user_account.*
 import javax.inject.Inject
@@ -80,6 +81,7 @@ class UserAccountFragment : DaggerFragment() {
             saveBtn.background = saveBtnBackground
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
+
         getUserData()
     }
 
@@ -92,6 +94,7 @@ class UserAccountFragment : DaggerFragment() {
             onRequestResponseTask<User>(bool, result){
                 val resp = result as? UserResponse<User>
                 val user = resp?.data
+
                 first_name_et.setText(user?.firstName)
                 last_name_et.setText(user?.lastName)
                 other_name_et.setText(user?.otherName)
@@ -108,44 +111,46 @@ class UserAccountFragment : DaggerFragment() {
 
                 saveBtn.setOnClickListener {
                     if (user != null) {
-                        updateUserData(user)
+//                        updateUserData(user)
                     }
                 }
             }
         })
     }
-    private fun updateUserData(user: User){
-        user.firstName = "Darotudeen"
-        user.isVerified = true
-        user.firstName = first_name_et.text.toString().trim()
-        user.lastName = last_name_et.text.toString().trim()
-        user.otherName = other_name_et.text.toString().trim()
-        user.category = user.category
-        user.phone = user.phone
-        user.gender = gender_name_et.text.toString().toLowerCase().trim()
-        user.workshopAddress = workshop_address_et.text.toString().trim()
-        user.showroomAddress = showroom_address_et.text.toString().trim()
-        user.no_Employee = no_employee_et.text.toString().trim()
-        user.legalStatus = legal_status_et.text.toString().trim()
-        user.name_union = name_of_union_et.text.toString().trim()
-        user.ward = ward_et.text.toString().trim()
-        user.lga =account_lga_et.text.toString().trim()
-        user.state = account_state_et.text.toString().trim()
-//        val newUserData = User(firstName, lastName, otherName,category,phone)
-        val request = authViewModel.updateUserData(header.toString(), user)
-        val response = requireActivity().observeRequest(request, progressBar, saveBtn)
-        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val (bool, result) = it
-            onRequestResponseTask<User>(bool, result){
-                val response = result as? UserResponse<User>
-                val msg = response?.message
-                val profileData = response?.data
-                authViewModel.profileData = profileData
-                i(title, "msg $msg ${profileData?.firstName}")
-            }
-        })
-    }
+//    private fun updateUserData(user: User){
+//        user.firstName = "Darotudeen"
+//        user.isVerified = true
+//        user.firstName = first_name_et.text.toString().trim()
+//        user.lastName = last_name_et.text.toString().trim()
+//        user.otherName = other_name_et.text.toString().trim()
+//        user.category = user.category
+//        user.phone = user.phone
+//        user.gender = gender_name_et.text.toString().toLowerCase().trim()
+//        user.workshopAddress = workshop_address_et.text.toString().trim()
+//        user.showroomAddress = showroom_address_et.text.toString().trim()
+//        user.no_Employee = no_employee_et.text.toString().trim()
+//        user.legalStatus = legal_status_et.text.toString().trim()
+//        user.name_union = name_of_union_et.text.toString().trim()
+//        user.ward = ward_et.text.toString().trim()
+//        user.lga =account_lga_et.text.toString().trim()
+//        user.state = account_state_et.text.toString().trim()
+////        val newUserData = User(firstName, lastName, otherName,category,phone)
+//        val request = authViewModel.updateUserData(header.toString(), user)
+//        val response = requireActivity().observeRequest(request, progressBar, saveBtn)
+//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask<User>(bool, result){
+//                val response = result as? UserResponse<User>
+//                val msg = response?.message
+//                val profileData = response?.data
+//                authViewModel.profileData = profileData
+//                i(title, "msg $msg ${profileData?.firstName}")
+//            }
+//        })
+//    }
 
 
 
 }
+
+class NameItem(var title:String, var serializedname:String, var value:String)

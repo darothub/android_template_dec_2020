@@ -1,168 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true"
-    android:fitsSystemWindows="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:fitsSystemWindows="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite">
+
         <ImageView
             android:id="@+id/user_account_profile_image"
             android:layout_width="150dp"
             android:layout_height="100dp"
-            app:srcCompat="@drawable/profile_image"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.07"
             app:layout_constraintHorizontal_bias="0.5"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.07"
+            app:srcCompat="@drawable/profile_image" />
+
         <TextView
             android:id="@+id/tap_to_change_pic_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/user_account_profile_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/_8sdp"
-            android:text="@string/tap_to_change_picture"/>
+            android:text="@string/tap_to_change_picture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_account_profile_image" />
 
         <View
             android:id="@+id/line1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:background="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/tap_to_change_pic_tv"
-            android:layout_marginTop="@dimen/_8sdp"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/user_profile_name_rv"
-            app:layout_constraintTop_toBottomOf="@id/line1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/user_profile_name_item"
+            app:layout_constraintTop_toBottomOf="@id/tap_to_change_pic_tv" />
 
-            />
-        <TextView
-            android:id="@+id/workshop_address_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/workshop_address"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_profile_name_rv" />
 
-        <EditText
-            android:id="@+id/workshop_address_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textMultiLine|textCapWords"
-            android:maxLines="4"
-            android:maxLength="150"
-            android:gravity="start"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/workshop_address_tv"
 
-            />
-
-        <TextView
-            android:id="@+id/showroom_address_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/showroom_address"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/workshop_address_et" />
-
-        <EditText
-
-            android:id="@+id/showroom_address_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textMultiLine|textCapWords"
-            android:maxLines="4"
-            android:maxLength="150"
-            android:gravity="start"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/showroom_address_tv"
-
-            />
-
-        <TextView
-            android:id="@+id/no_employee_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/no_of_emplyee"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/showroom_address_et" />
-
-        <EditText
-            android:id="@+id/no_employee_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/showroom_address_et"
-            app:layout_constraintBottom_toBottomOf="@id/no_employee_tv"/>
-
-        <TextView
-            android:id="@+id/legal_status_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/legal_status"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/no_employee_et" />
-
-        <EditText
-            android:id="@+id/legal_status_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/no_employee_et"
-            app:layout_constraintBottom_toBottomOf="@id/legal_status_tv"/>
-
-        <TextView
-            android:id="@+id/union_membership"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/union_membership"
-            android:textColor="@color/colorGray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/legal_status_et" />
-
-        <View
-            android:id="@+id/union_membership_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/union_membership"
-            android:layout_marginStart="28dp"
-            android:layout_marginEnd="28dp"
-            android:layout_marginTop="@dimen/_8sdp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/user_profile_name_union_rv"
-            app:layout_constraintTop_toBottomOf="@id/line1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/user_profile_name_item"
-            />
         <include
             android:id="@+id/account_save_changes_btn"
             layout="@layout/button_and_progressbar"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/user_profile_name_union_rv"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
-            />
+            app:layout_constraintTop_toBottomOf="@id/user_profile_name_union_rv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
