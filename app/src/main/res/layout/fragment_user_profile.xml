@@ -51,12 +51,25 @@
             app:layout_constraintTop_toBottomOf="@id/line1"
             tools:listitem="@layout/user_profile_name_item" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_profile_address_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/user_profile_address_item"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_name_rv"
+            />
+
+
         <TextView
             android:id="@+id/workshop_address_tv"
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/workshop_address"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/user_profile_name_rv" />
+
 
         <EditText
             android:id="@+id/workshop_address_et"
@@ -69,7 +82,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/workshop_address_tv"
-
+            android:visibility="gone"
             />
 
         <TextView
@@ -77,6 +90,7 @@
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/showroom_address"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/workshop_address_et" />
 
         <EditText
@@ -91,7 +105,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/showroom_address_tv"
-
+            android:visibility="gone"
             />
 
         <TextView
@@ -99,6 +113,7 @@
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/no_of_emplyee"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/showroom_address_et" />
 
         <EditText
@@ -110,6 +125,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/showroom_address_et" />
 
         <TextView
@@ -117,6 +133,7 @@
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/legal_status"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/no_employee_et" />
 
         <EditText
@@ -128,6 +145,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/no_employee_et" />
 
         <TextView
@@ -136,7 +154,8 @@
             android:text="@string/union_membership"
             android:textColor="@color/colorGray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/legal_status_et" />
+
+            app:layout_constraintTop_toBottomOf="@id/user_profile_address_rv" />
 
         <View
             android:id="@+id/union_membership_line"
@@ -154,7 +173,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line1"
+            app:layout_constraintTop_toBottomOf="@id/union_membership_line"
             tools:listitem="@layout/user_profile_name_item" />
 
         <include
@@ -163,7 +182,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
-            android:visibility="gone"
+
             app:layout_constraintTop_toBottomOf="@id/user_profile_name_union_rv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

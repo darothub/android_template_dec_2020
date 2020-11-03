@@ -78,26 +78,33 @@
             app:layout_constraintBottom_toTopOf="@id/multipurpose_dialog_cancel_tv"
             app:layout_constraintTop_toBottomOf="@id/multipurpose_title_name_tv">
 
-            <RadioButton
-                android:id="@+id/multipurpose_gender_dialog_female_rbtn"
+            <RadioGroup
+                android:id="@+id/multipurpose_gender_dialog_gender_rg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/female"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                >
+                <RadioButton
+                    android:id="@+id/multipurpose_gender_dialog_female_rbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/female"
+                    />
 
-            <RadioButton
-                android:id="@+id/multipurpose_gender_dialog_male_rbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:text="@string/male"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/multipurpose_gender_dialog_female_rbtn" />
+                <RadioButton
+                    android:id="@+id/multipurpose_gender_dialog_male_rbtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:text="@string/male"
+                    />
+            </RadioGroup>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/multipurpose_workshop_dialog"
+            android:id="@+id/multipurpose_address_dialog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/_20sdp"
@@ -107,7 +114,7 @@
             app:layout_constraintTop_toBottomOf="@id/multipurpose_title_name_tv">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/multipurpose_workshop_dialog_street_input"
+                android:id="@+id/multipurpose_address_dialog_street_input"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -119,7 +126,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/multipurpose_workshop_dialog_street_et"
+                    android:id="@+id/multipurpose_address_dialog_street_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
@@ -131,7 +138,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/multipurpose_workshop_dialog_city_input"
+                android:id="@+id/multipurpose_address_dialog_city_input"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -140,10 +147,10 @@
                 android:textColorHint="@color/colorGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/multipurpose_workshop_dialog_street_input">
+                app:layout_constraintTop_toBottomOf="@+id/multipurpose_address_dialog_street_input">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/multipurpose_workshop_dialog_city_et"
+                    android:id="@+id/multipurpose_address_dialog_city_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
@@ -155,7 +162,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/multipurpose_workshop_dialog_state_input"
+                android:id="@+id/multipurpose_address_dialog_state_input"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -164,10 +171,10 @@
                 android:textColorHint="@color/colorGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/multipurpose_workshop_dialog_city_input">
+                app:layout_constraintTop_toBottomOf="@+id/multipurpose_address_dialog_city_input">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/multipurpose_workshop_dialog_state_et"
+                    android:id="@+id/multipurpose_address_dialog_state_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"

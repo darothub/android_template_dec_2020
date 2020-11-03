@@ -6,38 +6,29 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.MediaController
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.fragment_resources.*
-import kotlinx.android.synthetic.main.fragment_user_account.*
 import kotlinx.android.synthetic.main.fragment_user_account.account_save_changes_btn
 import kotlinx.android.synthetic.main.fragment_user_profile.*
-import kotlinx.android.synthetic.main.resource_video_item.view.*
-import kotlinx.android.synthetic.main.user_profile_name_item.*
+import kotlinx.android.synthetic.main.user_profile_address_item.view.*
 import kotlinx.android.synthetic.main.user_profile_name_item.view.*
 import javax.inject.Inject
 
@@ -74,6 +65,16 @@ class UserAccountFragment : DaggerFragment() {
             window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         }
     }
+    private val dialogNameAndOtherLayout by lazy{
+        dialog.findViewById<ViewGroup>(R.id.multipurpose_name_dialog)
+    }
+    private val genderLayout by lazy{
+        dialog.findViewById<ViewGroup>(R.id.multipurpose_gender_dialog)
+    }
+    private val addressLayout by lazy{
+        dialog.findViewById<ViewGroup>(R.id.multipurpose_address_dialog)
+    }
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
@@ -141,28 +142,75 @@ class UserAccountFragment : DaggerFragment() {
                 val nameList = arrayListOf<UserNameClass>(
                     UserNameClass(getString(R.string.first_name), user?.firstName.toString()),
                     UserNameClass(getString(R.string.last_name), user?.lastName.toString()),
-                    UserNameClass(getString(R.string.other_name), user?.otherName.toString())
+                    UserNameClass(getString(R.string.other_name), user?.otherName.toString()),
+                    UserNameClass(getString(R.string.gender), user?.gender.toString()),
+                    UserNameClass(getString(R.string.no_of_emplyee), user?.no_Employee.toString()),
+                    UserNameClass(getString(R.string.legal_status), user?.legalStatus.toString())
                 )
                 user_profile_name_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
                     bind { itemView, position, item ->
                         itemView.user_profile_rv_item_name_title_tv.text = item?.title
                         itemView.user_profile_rv_item_name_value_tv.text = item?.value
 
-                        itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
-                            val nameLayout =
-                                dialog.findViewById<ViewGroup>(R.id.multipurpose_name_dialog)
-                            val dialogTitle =
-                                dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
-                            val dialogEditText =
-                                dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
-                            val dialogInput =
-                                dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
-                            dialogEditText.setText(item?.value)
-                            dialogInput.hint = item?.title
-                            dialogTitle.text = item?.title
-                            nameLayout.show()
-                            dialog.show()
+                        if(item?.title == getString(R.string.gender)){
+                            itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
+
+                                val genderRadioGroup = dialog.findViewById<RadioGroup>(R.id.multipurpose_gender_dialog_gender_rg)
+                                val femaleRadioBtn =
+                                    dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_female_rbtn)
+                                val maleRadioBtn =
+                                    dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_male_rbtn)
+                                val dialogTitle =
+                                    dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
+                                dialogTitle.text = item.title
+                                if(item.value == getString(R.string.female)){
+                                    femaleRadioBtn.isSelected = true
+                                }
+                                else if(item.value == getString(R.string.male)){
+                                    maleRadioBtn.isSelected = true
+                                }
+                                else{
+                                    maleRadioBtn.isSelected = false
+                                    femaleRadioBtn.isSelected = false
+                                }
+                                genderRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+                                    when(checkedId){
+                                        R.id.multipurpose_gender_dialog_female_rbtn ->{
+                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.female)
+                                        }
+                                        R.id.multipurpose_gender_dialog_male_rbtn ->{
+                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.male)
+                                        }
+                                    }
+                                }
+                                genderLayout.show()
+                                dialog.show()
+
+                                dialog.setOnDismissListener {
+                                    genderLayout.hide()
+                                }
+                            }
                         }
+                        else{
+                            itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
+
+                                val dialogTitle =
+                                    dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
+                                val dialogEditText =
+                                    dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
+                                val dialogInput =
+                                    dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
+                                dialogEditText.setText(item?.value)
+                                dialogInput.hint = item?.title
+                                dialogTitle.text = item?.title
+                                dialogNameAndOtherLayout.show()
+                                dialog.show()
+                                dialog.setOnDismissListener {
+                                    dialogNameAndOtherLayout.hide()
+                                }
+                            }
+                        }
+
                     }
                     setLayoutManager(
                         LinearLayoutManager(
@@ -173,19 +221,86 @@ class UserAccountFragment : DaggerFragment() {
                     )
                     submitList(nameList)
                 }
-//                first_name_value_tv.setText(user?.firstName)
-//                last_name_value_tv.setText(user?.lastName)
-//                other_name_et.setText(user?.otherName)
-//                gender_name_et.setText(user?.gender?: "")
-//                workshop_address_et.setText(user?.workshopAddress?: "")
-//                showroom_address_et.setText(user?.showroomAddress?: "")
-//                no_employee_et.setText(user?.no_Employee?: "")
-//                legal_status_et.setText(user?.legalStatus?: "")
-//                name_of_union_et.setText(user?.name_union?: "")
-//                ward_et.setText(user?.ward?: "")
-//                account_lga_et.setText(user?.lga?: "")
-//                account_state_et.setText(user?.state?: "Lagos")
-//                i(title, "UserToken ${currentUser?.token} loggedIn\n${user?.firstName}")
+
+                val addressList = arrayListOf<UserAddressClass>(
+                    UserAddressClass(getString(R.string.workshop_address), user?.workshopAddress.toString()),
+                    UserAddressClass(getString(R.string.showroom_address), user?.showroomAddress.toString())
+                )
+
+                user_profile_address_rv.setupAdapter<UserAddressClass>(R.layout.user_profile_address_item) { adapter, context, list ->
+                    bind { itemView, position, item ->
+                        itemView.user_profile_rv_item_address_title_tv.text = item?.title
+                        itemView.user_profile_rv_item_address_value_tv.text = item?.value
+
+                        itemView.setOnClickListener {
+
+                            val dialogTitle =
+                                dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
+                            val dialogStreetEditText =
+                                dialog.findViewById<TextInputEditText>(R.id.multipurpose_address_dialog_street_et)
+                            val dialogCityEditText =
+                                dialog.findViewById<TextInputEditText>(R.id.multipurpose_address_dialog_city_et)
+                            val dialogStateEditText =
+                                dialog.findViewById<TextInputEditText>(R.id.multipurpose_address_dialog_state_et)
+
+                            dialogTitle.text = item?.title
+                            addressLayout.show()
+                            dialog.show()
+                            dialog.setOnDismissListener {
+                                addressLayout.hide()
+                            }
+                        }
+
+                    }
+                    setLayoutManager(
+                        LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.VERTICAL,
+                            false
+                        )
+                    )
+                    submitList(addressList)
+                }
+
+                val unionList = arrayListOf<UserNameClass>(
+                    UserNameClass(getString(R.string.name_of_union), user?.name_union.toString()),
+                    UserNameClass(getString(R.string.ward), user?.ward.toString()),
+                    UserNameClass(getString(R.string.lga), user?.lga.toString()),
+                    UserNameClass(getString(R.string.state), user?.state.toString())
+                )
+                user_profile_name_union_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
+                    bind { itemView, position, item ->
+                        itemView.user_profile_rv_item_name_title_tv.text = item?.title
+                        itemView.user_profile_rv_item_name_value_tv.text = item?.value
+
+                        itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
+
+                            val dialogTitle =
+                                dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
+                            val dialogEditText =
+                                dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
+                            val dialogInput =
+                                dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
+                            dialogEditText.setText(item?.value)
+                            dialogInput.hint = item?.title
+                            dialogTitle.text = item?.title
+                            dialogNameAndOtherLayout.show()
+                            dialog.show()
+                            dialog.setOnDismissListener {
+                                dialogNameAndOtherLayout.hide()
+                            }
+                        }
+
+                    }
+                    setLayoutManager(
+                        LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.VERTICAL,
+                            false
+                        )
+                    )
+                    submitList(unionList)
+                }
 
                 saveBtn.setOnClickListener {
                     if (user != null) {
@@ -230,3 +345,4 @@ class UserAccountFragment : DaggerFragment() {
 }
 
 data class UserNameClass(var title:String, var value:String)
+data class UserAddressClass(var title:String, var value:String)
