@@ -175,4 +175,6 @@
     <string name="male">Male</string>
     <string name="city">City</string>
     <string name="street_str">Street</string>
+    <string name="no_str">No</string>
+    <string name="yes_str">Yes</string>
 </resources>

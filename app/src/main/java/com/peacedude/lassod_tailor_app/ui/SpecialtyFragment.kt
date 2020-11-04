@@ -13,10 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -85,6 +82,9 @@ class SpecialtyFragment : DaggerFragment() {
     private val dialogCancelTv by lazy{
         dialog.findViewById<TextView>(R.id.multipurpose_dialog_cancel_tv)
     }
+    private val closeOptionLayout by lazy{
+        dialog.findViewById<ViewGroup>(R.id.multipurpose_gender_dialog)
+    }
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     val authViewModel: AuthViewModel by lazy {
@@ -124,6 +124,10 @@ class SpecialtyFragment : DaggerFragment() {
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
         getUserData()
+
+        dialogCancelTv.setOnClickListener {
+            dialog.dismiss()
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -161,24 +165,93 @@ class SpecialtyFragment : DaggerFragment() {
                         }
                         itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
 
-                            val dialogTitle =
-                                dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
-                            val dialogEditText =
-                                dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
-                            val dialogInput =
-                                dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
-                            dialogEditText.setText(item?.value)
-                            dialogInput.hint = item?.title
-                            dialogTitle.text = item?.title
-                            dialogNameAndOtherLayout.show()
-                            dialog.show()
-                            dialogOkTv.setOnClickListener {
-                                item?.value = dialogEditText.text.toString()
-                                adapter.notifyDataSetChanged()
-                                dialog.dismiss()
-                            }
-                            dialog.setOnDismissListener {
-                                dialogNameAndOtherLayout.hide()
+                            //If gender is clicked
+                            if (item?.title == getString(R.string.obioma_trained_str)) {
+                                itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
+                                    //Provide gender layout
+                                    val closeOptionRadioGroup =
+                                        dialog.findViewById<RadioGroup>(R.id.multipurpose_gender_dialog_gender_rg)
+                                    val yesRadioBtn =
+                                        dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_female_rbtn)
+                                    yesRadioBtn.text = getString(R.string.yes_str)
+                                    val noRadioBtn =
+                                        dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_male_rbtn)
+                                    noRadioBtn.text = getString(R.string.no_str)
+                                    val dialogTitle =
+                                        dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
+                                    dialogTitle.text = item.title
+                                    //When
+                                    when (item.value) {
+                                        //female radio is ticked
+                                        getString(R.string.yes_str) -> {
+                                            //Display female radio ticked
+                                            yesRadioBtn.isChecked = true
+
+                                        }
+                                        //male radio is ticked
+                                        getString(R.string.no_str) -> {
+                                            //Display female radio ticked
+                                            noRadioBtn.isChecked = true
+                                        }
+                                        else -> {
+                                            noRadioBtn.isChecked = false
+                                            yesRadioBtn.isChecked = false
+                                        }
+
+                                    }
+                                    closeOptionLayout.show()
+                                    dialog.show()
+
+                                    dialogOkTv.setOnClickListener {
+                                        //When
+                                        when (closeOptionRadioGroup.checkedRadioButtonId) {
+                                            //female radio is ticked
+                                            R.id.multipurpose_gender_dialog_female_rbtn -> {
+                                                itemView.user_profile_rv_item_name_value_tv.text =
+                                                    getString(R.string.female)
+                                                //Update new user data
+//                                                newUserData.gender = yesRadioBtn.text.toString()
+                                            }
+                                            //male radio is ticked
+                                            R.id.multipurpose_gender_dialog_male_rbtn -> {
+                                                itemView.user_profile_rv_item_name_value_tv.text =
+                                                    getString(R.string.male)
+                                                //Update new user data
+//                                                newUserData.gender = noRadioBtn.text.toString()
+                                            }
+                                        }
+                                        dialog.dismiss()
+                                    }
+                                    dialog.setOnDismissListener {
+                                        closeOptionLayout.hide()
+                                    }
+                                }
+                            } else {
+
+                                //If not close option value clicked
+                                itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
+                                    val dialogTitle =
+                                        dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
+                                    val dialogEditText =
+                                        dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
+                                    val dialogInput =
+                                        dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
+                                    dialogEditText.setText(item?.value)
+                                    dialogInput.hint = item?.title
+                                    dialogTitle.text = item?.title
+                                    dialogNameAndOtherLayout.show()
+                                    dialog.show()
+                                    dialogOkTv.setOnClickListener {
+                                        //Update item in the list
+                                        item?.value = dialogEditText.text.toString()
+                                        //Update recycler view
+                                        adapter.notifyDataSetChanged()
+                                        dialog.dismiss()
+                                    }
+                                    dialog.setOnDismissListener {
+                                        dialogNameAndOtherLayout.hide()
+                                    }
+                                }
                             }
                         }
 
