@@ -7,17 +7,15 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -74,6 +72,12 @@ class UserAccountFragment : DaggerFragment() {
     private val addressLayout by lazy{
         dialog.findViewById<ViewGroup>(R.id.multipurpose_address_dialog)
     }
+    private val dialogOkTv by lazy{
+        dialog.findViewById<TextView>(R.id.multipurpose_dialog_ok_tv)
+    }
+    private val dialogCancelTv by lazy{
+        dialog.findViewById<TextView>(R.id.multipurpose_dialog_cancel_tv)
+    }
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -115,18 +119,6 @@ class UserAccountFragment : DaggerFragment() {
 
         getUserData()
 
-//        first_name_value_tv.setOnClickListener {
-//            val nameLayout = dialog.findViewById<ViewGroup>(R.id.multipurpose_name_dialog)
-//            val dialogTitle = dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
-//            val dialogEditText = dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
-//            val dialogInput = dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
-//            dialogEditText.setText(first_name_value_tv.text)
-//            dialogInput.hint = getString(R.string.first_name)
-//            dialogTitle.text = getString(R.string.first_name)
-//            nameLayout.show()
-//            dialog.show()
-//        }
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -139,6 +131,7 @@ class UserAccountFragment : DaggerFragment() {
                 val resp = result as? UserResponse<User>
                 val user = resp?.data
 
+                val newUserData = User()
                 val nameList = arrayListOf<UserNameClass>(
                     UserNameClass(getString(R.string.first_name), user?.firstName.toString()),
                     UserNameClass(getString(R.string.last_name), user?.lastName.toString()),
@@ -151,10 +144,11 @@ class UserAccountFragment : DaggerFragment() {
                     bind { itemView, position, item ->
                         itemView.user_profile_rv_item_name_title_tv.text = item?.title
                         itemView.user_profile_rv_item_name_value_tv.text = item?.value
-
+                        dialogCancelTv.setOnClickListener {
+                            dialog.dismiss()
+                        }
                         if(item?.title == getString(R.string.gender)){
                             itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
-
                                 val genderRadioGroup = dialog.findViewById<RadioGroup>(R.id.multipurpose_gender_dialog_gender_rg)
                                 val femaleRadioBtn =
                                     dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_female_rbtn)
@@ -165,27 +159,42 @@ class UserAccountFragment : DaggerFragment() {
                                 dialogTitle.text = item.title
                                 if(item.value == getString(R.string.female)){
                                     femaleRadioBtn.isSelected = true
+                                    newUserData.gender = femaleRadioBtn.text.toString()
                                 }
                                 else if(item.value == getString(R.string.male)){
                                     maleRadioBtn.isSelected = true
+
                                 }
                                 else{
                                     maleRadioBtn.isSelected = false
                                     femaleRadioBtn.isSelected = false
                                 }
-                                genderRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-                                    when(checkedId){
-                                        R.id.multipurpose_gender_dialog_female_rbtn ->{
-                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.female)
-                                        }
-                                        R.id.multipurpose_gender_dialog_male_rbtn ->{
-                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.male)
-                                        }
-                                    }
-                                }
+//                                genderRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+//                                    when(checkedId){
+//                                        R.id.multipurpose_gender_dialog_female_rbtn ->{
+//                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.female)
+//                                        }
+//                                        R.id.multipurpose_gender_dialog_male_rbtn ->{
+//                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.male)
+//                                        }
+//                                    }
+//                                }
                                 genderLayout.show()
                                 dialog.show()
 
+                                dialogOkTv.setOnClickListener {
+                                    when(genderRadioGroup.checkedRadioButtonId){
+                                        R.id.multipurpose_gender_dialog_female_rbtn ->{
+                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.female)
+                                            newUserData.gender = femaleRadioBtn.text.toString()
+                                        }
+                                        R.id.multipurpose_gender_dialog_male_rbtn ->{
+                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.male)
+                                            newUserData.gender = maleRadioBtn.text.toString()
+                                        }
+                                    }
+                                    dialog.dismiss()
+                                }
                                 dialog.setOnDismissListener {
                                     genderLayout.hide()
                                 }
@@ -193,7 +202,6 @@ class UserAccountFragment : DaggerFragment() {
                         }
                         else{
                             itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
-
                                 val dialogTitle =
                                     dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
                                 val dialogEditText =
@@ -205,6 +213,11 @@ class UserAccountFragment : DaggerFragment() {
                                 dialogTitle.text = item?.title
                                 dialogNameAndOtherLayout.show()
                                 dialog.show()
+                                dialogOkTv.setOnClickListener {
+                                    item?.value = dialogEditText.text.toString()
+                                    adapter.notifyDataSetChanged()
+                                    dialog.dismiss()
+                                }
                                 dialog.setOnDismissListener {
                                     dialogNameAndOtherLayout.hide()
                                 }
@@ -246,6 +259,14 @@ class UserAccountFragment : DaggerFragment() {
                             dialogTitle.text = item?.title
                             addressLayout.show()
                             dialog.show()
+                            dialogOkTv.setOnClickListener {
+                                val street = dialogStreetEditText.text.toString()
+                                val city = dialogCityEditText.text.toString()
+                                val state = dialogStateEditText.text.toString()
+                                item?.value = "$street, $city, $state"
+                                adapter.notifyDataSetChanged()
+                                dialog.dismiss()
+                            }
                             dialog.setOnDismissListener {
                                 addressLayout.hide()
                             }
@@ -286,6 +307,11 @@ class UserAccountFragment : DaggerFragment() {
                             dialogTitle.text = item?.title
                             dialogNameAndOtherLayout.show()
                             dialog.show()
+                            dialogOkTv.setOnClickListener {
+                                item?.value = dialogEditText.text.toString()
+                                adapter.notifyDataSetChanged()
+                                dialog.dismiss()
+                            }
                             dialog.setOnDismissListener {
                                 dialogNameAndOtherLayout.hide()
                             }
@@ -303,44 +329,38 @@ class UserAccountFragment : DaggerFragment() {
                 }
 
                 saveBtn.setOnClickListener {
-                    if (user != null) {
-//                        updateUserData(user)
-                    }
+                    newUserData.firstName = nameList[0].value
+                    newUserData.lastName = nameList[1].value
+                    newUserData.otherName = nameList[2].value
+                    newUserData.no_Employee = nameList[4].value
+                    newUserData.workshopAddress = addressList[0].value
+                    newUserData.showroomAddress = addressList[1].value
+                    newUserData.showroomAddress = addressList[1].value
+                    newUserData.name_union = unionList[0].value
+                    newUserData.ward = unionList[1].value
+                    newUserData.lga = unionList[2].value
+                    newUserData.state = unionList[3].value
+                    i(title, "new user ${newUserData.workshopAddress}")
+                    updateUserData(newUserData)
                 }
             }
         })
     }
-//    private fun updateUserData(user: User){
-//        user.firstName = "Darotudeen"
-//        user.isVerified = true
-//        user.firstName = first_name_value_tv.text.toString().trim()
-//        user.lastName = last_name_value_tv.text.toString().trim()
-//        user.otherName = other_name_et.text.toString().trim()
-//        user.category = user.category
-//        user.phone = user.phone
-//        user.gender = gender_name_et.text.toString().toLowerCase().trim()
-//        user.workshopAddress = workshop_address_et.text.toString().trim()
-//        user.showroomAddress = showroom_address_et.text.toString().trim()
-//        user.no_Employee = no_employee_et.text.toString().trim()
-//        user.legalStatus = legal_status_et.text.toString().trim()
-//        user.name_union = name_of_union_et.text.toString().trim()
-//        user.ward = ward_et.text.toString().trim()
-//        user.lga =account_lga_et.text.toString().trim()
-//        user.state = account_state_et.text.toString().trim()
-////        val newUserData = User(firstName, lastName, otherName,category,phone)
-//        val request = authViewModel.updateUserData(header.toString(), user)
-//        val response = requireActivity().observeRequest(request, progressBar, saveBtn)
-//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-//            val (bool, result) = it
-//            onRequestResponseTask<User>(bool, result){
-//                val response = result as? UserResponse<User>
-//                val msg = response?.message
-//                val profileData = response?.data
-//                authViewModel.profileData = profileData
-//                i(title, "msg $msg ${profileData?.firstName}")
-//            }
-//        })
-//    }
+    private fun updateUserData(user: User){
+//        val newUserData = User(firstName, lastName, otherName,category,phone)
+        val request = authViewModel.updateUserData(header.toString(), user)
+        val response = requireActivity().observeRequest(request, progressBar, saveBtn)
+        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            val (bool, result) = it
+            onRequestResponseTask<User>(bool, result){
+                val response = result as? UserResponse<User>
+                val msg = response?.message
+                val profileData = response?.data
+                authViewModel.profileData = profileData
+                i(title, "msg $msg ${profileData?.firstName}")
+            }
+        })
+    }
 
 }
 

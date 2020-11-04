@@ -98,9 +98,6 @@ class SpecialtyFragment : DaggerFragment() {
 
                 }
 
-
-
-
             }
             setLayoutManager(GridLayoutManager(context, 2))
             submitList(specialtyList)
