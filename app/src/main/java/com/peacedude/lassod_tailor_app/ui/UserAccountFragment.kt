@@ -123,15 +123,21 @@ class UserAccountFragment : DaggerFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun getUserData(){
+        //Get user data request
         val request = authViewModel.getUserData(header.toString())
+        //Get User data response
         val response = requireActivity().observeRequest(request, null, null, true)
+        //Observe response
         response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it
+            //Do on response
             onRequestResponseTask<User>(bool, result) {
                 val resp = result as? UserResponse<User>
                 val user = resp?.data
 
+                //Initialize new user for data update
                 val newUserData = User()
+                //List of fields to be filled with names and others
                 val nameList = arrayListOf<UserNameClass>(
                     UserNameClass(getString(R.string.first_name), user?.firstName.toString()),
                     UserNameClass(getString(R.string.last_name), user?.lastName.toString()),
@@ -140,6 +146,7 @@ class UserAccountFragment : DaggerFragment() {
                     UserNameClass(getString(R.string.no_of_emplyee), user?.no_Employee.toString()),
                     UserNameClass(getString(R.string.legal_status), user?.legalStatus.toString())
                 )
+                //Recycler view to display names and others
                 user_profile_name_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
                     bind { itemView, position, item ->
                         itemView.user_profile_rv_item_name_title_tv.text = item?.title
@@ -147,8 +154,10 @@ class UserAccountFragment : DaggerFragment() {
                         dialogCancelTv.setOnClickListener {
                             dialog.dismiss()
                         }
+                        //If gender is clicked
                         if(item?.title == getString(R.string.gender)){
                             itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
+                                //Provide gender layout
                                 val genderRadioGroup = dialog.findViewById<RadioGroup>(R.id.multipurpose_gender_dialog_gender_rg)
                                 val femaleRadioBtn =
                                     dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_female_rbtn)
@@ -157,18 +166,26 @@ class UserAccountFragment : DaggerFragment() {
                                 val dialogTitle =
                                     dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
                                 dialogTitle.text = item.title
-                                if(item.value == getString(R.string.female)){
-                                    femaleRadioBtn.isSelected = true
-                                    newUserData.gender = femaleRadioBtn.text.toString()
-                                }
-                                else if(item.value == getString(R.string.male)){
-                                    maleRadioBtn.isSelected = true
+                                //When
+                                when(item.value){
+                                    //female radio is ticked
+                                    getString(R.string.female) ->{
+                                        //Display female radio ticked
+                                        femaleRadioBtn.isSelected = true
+                                    }
+                                    //male radio is ticked
+                                    getString(R.string.male) ->{
+                                        //Display female radio ticked
+                                        maleRadioBtn.isSelected = true
+                                    }
+                                    else->{
+                                        maleRadioBtn.isSelected = false
+                                        femaleRadioBtn.isSelected = false
+                                    }
 
                                 }
-                                else{
-                                    maleRadioBtn.isSelected = false
-                                    femaleRadioBtn.isSelected = false
-                                }
+
+
 //                                genderRadioGroup.setOnCheckedChangeListener { group, checkedId ->
 //                                    when(checkedId){
 //                                        R.id.multipurpose_gender_dialog_female_rbtn ->{
@@ -183,13 +200,18 @@ class UserAccountFragment : DaggerFragment() {
                                 dialog.show()
 
                                 dialogOkTv.setOnClickListener {
+                                    //When
                                     when(genderRadioGroup.checkedRadioButtonId){
+                                        //female radio is ticked
                                         R.id.multipurpose_gender_dialog_female_rbtn ->{
                                             itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.female)
+                                            //Update new user data
                                             newUserData.gender = femaleRadioBtn.text.toString()
                                         }
+                                        //male radio is ticked
                                         R.id.multipurpose_gender_dialog_male_rbtn ->{
                                             itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.male)
+                                            //Update new user data
                                             newUserData.gender = maleRadioBtn.text.toString()
                                         }
                                     }
@@ -201,6 +223,8 @@ class UserAccountFragment : DaggerFragment() {
                             }
                         }
                         else{
+
+                            //If not gender value clicked
                             itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
                                 val dialogTitle =
                                     dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
@@ -214,7 +238,9 @@ class UserAccountFragment : DaggerFragment() {
                                 dialogNameAndOtherLayout.show()
                                 dialog.show()
                                 dialogOkTv.setOnClickListener {
+                                    //Update itemin the list
                                     item?.value = dialogEditText.text.toString()
+                                    //Update recycler view
                                     adapter.notifyDataSetChanged()
                                     dialog.dismiss()
                                 }
