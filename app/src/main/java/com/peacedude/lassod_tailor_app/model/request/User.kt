@@ -36,11 +36,11 @@ data class User(
     var showroomAddress: String? = null
     var no_Employee: String? = null
     var legalStatus: String? = null
-    var specialty: String? = null
+    var specialty: ArrayList<String>? = null
     var genderFocus: String? = null
     var obiomaCert: String? = null
-    var visitUsMeasurement: String? = null
-    var acceptSelfMeasurement: String? = null
+    var visitUsMeasurement: Boolean? = false
+    var acceptSelfMeasurement: Boolean? = false
     var deliveryTime: String? = null
     var paymentOptions: String? = null
     var name_union: String? = null

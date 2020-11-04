@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:layout_margin="@dimen/_10sdp"
-    android:padding="@dimen/_20sdp"
-
-
-   >
     <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/_30sdp"
+        android:layout_margin="@dimen/_20sdp"
         android:background="@drawable/rounded_corner_background"
         >
         <TextView
@@ -20,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dash"
+            android:textSize="@dimen/_13sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
+                    android:textSize="@dimen/_11sdp"
                     android:tag="@string/email_address_str"
                     android:textColor="@color/colorGray"
                     android:textColorHint="@color/colorGray" />
@@ -63,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:text="@string/text_count"
+                android:textSize="@dimen/_11sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/multipurpose_name_dialog_input" />
 
@@ -121,6 +117,7 @@
                 android:hint="@string/street_str"
                 android:imeOptions="actionNext"
                 android:textColorHint="@color/colorGray"
+                android:textSize="@dimen/_11sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -131,6 +128,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
+
                     android:tag="@string/email_address_str"
                     android:textColor="@color/colorGray"
                     android:textColorHint="@color/colorGray" />
@@ -144,6 +142,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:hint="@string/city"
                 android:imeOptions="actionNext"
+                android:textSize="@dimen/_11sdp"
                 android:textColorHint="@color/colorGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -169,6 +168,7 @@
                 android:hint="@string/state"
                 android:imeOptions="actionNext"
                 android:textColorHint="@color/colorGray"
+                android:textSize="@dimen/_11sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/multipurpose_address_dialog_city_input">
@@ -195,6 +195,7 @@
             android:layout_marginBottom="@dimen/_10sdp"
             android:text="@string/cancel"
             android:textAllCaps="true"
+            android:textSize="@dimen/_13sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias=".9"
@@ -206,7 +207,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/_10sdp"
             android:text="@string/ok"
-
+            android:textSize="@dimen/_13sdp"
             android:textAllCaps="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -217,4 +218,3 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>

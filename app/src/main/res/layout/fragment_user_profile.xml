@@ -61,100 +61,13 @@
             app:layout_constraintTop_toBottomOf="@id/user_profile_name_rv"
             />
 
-
-        <TextView
-            android:id="@+id/workshop_address_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/workshop_address"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/user_profile_name_rv" />
-
-
-        <EditText
-            android:id="@+id/workshop_address_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:gravity="start"
-            android:inputType="textMultiLine|textCapWords"
-            android:maxLength="150"
-            android:maxLines="4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/workshop_address_tv"
-            android:visibility="gone"
-            />
-
-        <TextView
-            android:id="@+id/showroom_address_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/showroom_address"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/workshop_address_et" />
-
-        <EditText
-
-            android:id="@+id/showroom_address_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:gravity="start"
-            android:inputType="textMultiLine|textCapWords"
-            android:maxLength="150"
-            android:maxLines="4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/showroom_address_tv"
-            android:visibility="gone"
-            />
-
-        <TextView
-            android:id="@+id/no_employee_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/no_of_emplyee"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/showroom_address_et" />
-
-        <EditText
-            android:id="@+id/no_employee_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            app:layout_constraintBottom_toBottomOf="@id/no_employee_tv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/showroom_address_et" />
-
-        <TextView
-            android:id="@+id/legal_status_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/legal_status"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/no_employee_et" />
-
-        <EditText
-            android:id="@+id/legal_status_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            app:layout_constraintBottom_toBottomOf="@id/legal_status_tv"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/no_employee_et" />
-
         <TextView
             android:id="@+id/union_membership"
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/union_membership"
             android:textColor="@color/colorGray"
             app:layout_constraintStart_toStartOf="parent"
-
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/user_profile_address_rv" />
 
         <View
@@ -165,6 +78,7 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginEnd="28dp"
             android:background="@color/colorGray"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/union_membership" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -182,7 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
-
+            android:layout_marginBottom="@dimen/_10sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_profile_name_union_rv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

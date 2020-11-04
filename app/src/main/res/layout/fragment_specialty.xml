@@ -10,8 +10,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/_15sdp"
-        android:paddingEnd="@dimen/_15sdp"
         >
 
         <androidx.recyclerview.widget.RecyclerView
@@ -20,6 +18,8 @@
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:spanCount="2"
             tools:listitem="@layout/specialty_layout_item"
@@ -32,6 +32,8 @@
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_15sdp"
             android:background="@color/colorGray"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@id/specialty_rv" />
 
         <TextView
@@ -39,7 +41,9 @@
             style="@style/SpecialtyTextViewCustomStyle"
             android:text="@string/gender_focus"
             android:textColor="@color/colorGray"
-            android:textSize="@dimen/_13sdp"
+            android:textAllCaps="true"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line1" />
 
@@ -48,6 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/colorGray"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@id/gender_focus_tv" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -58,6 +64,8 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line2"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             tools:listitem="@layout/specialty_layout_item"
 
             />
@@ -68,6 +76,8 @@
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/_3sdp"
             android:background="@color/colorGray"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@id/gender_rv" />
 
         <TextView
@@ -75,38 +85,33 @@
             style="@style/SpecialtyTextViewCustomStyle"
             android:text="@string/quality_asurance_str"
             android:textColor="@color/colorGray"
-            android:textSize="@dimen/_13sdp"
-            app:layout_constraintStart_toStartOf="@id/gender_focus_tv"
-            app:layout_constraintTop_toBottomOf="@id/line3"
-
-            />
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line3" />
 
         <View
             android:id="@+id/line4"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/colorGray"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@id/quality_assurance_tv" />
 
-        <TextView
-            android:id="@+id/obioma_trained_tv"
-            style="@style/SpecialtyTextViewCustomStyle"
-            android:text="@string/obioma_trained_str"
-            app:layout_constraintStart_toStartOf="@id/gender_focus_tv"
-            app:layout_constraintTop_toBottomOf="@id/line4" />
-
-        <EditText
-            android:id="@+id/obioma_trained_value_et"
-            style="@style/SpecialtyEditTextCustomStyle"
-            android:textAllCaps="true"
-            android:maxLength="3"
-            android:includeFontPadding="false"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/specialty_fragment_qa_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line4"
-            app:layout_constraintBottom_toBottomOf="@id/obioma_trained_tv"
-            android:enabled="true"/>
+            tools:listitem="@layout/user_profile_name_item"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+
+            />
 
 
         <TextView
@@ -114,56 +119,39 @@
             style="@style/SpecialtyTextViewCustomStyle"
             android:text="@string/measurement_option_str"
             android:textColor="@color/colorGray"
-            android:textSize="@dimen/_13sdp"
-            app:layout_constraintStart_toStartOf="@id/gender_focus_tv"
-            app:layout_constraintTop_toBottomOf="@id/obioma_trained_value_et" />
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/specialty_fragment_qa_rv" />
 
         <View
             android:id="@+id/line6"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/colorGray"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@id/measurement_options_header_tv" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/measurement_options_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@id/line6"
             tools:listitem="@layout/specialty_layout_item"
 
             />
-        <View
-            android:id="@+id/line7"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/measurement_options_rv" />
 
-        <TextView
-            android:id="@+id/delivery_lead_time_tv"
-            style="@style/SpecialtyTextViewCustomStyle"
-            android:text="@string/delivery_lead_time_str"
-            app:layout_constraintStart_toStartOf="@id/gender_focus_tv"
-            app:layout_constraintTop_toBottomOf="@id/line7" />
-
-        <EditText
-            android:id="@+id/delivery_lead_time_value_et"
-            style="@style/SpecialtyEditTextCustomStyle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line7"
-            android:includeFontPadding="false"
-            app:layout_constraintBottom_toBottomOf="@id/delivery_lead_time_tv"
-            android:enabled="true"/>
 
         <include
             android:id="@+id/specialty_save_changes_btn"
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/delivery_lead_time_value_et"
+            app:layout_constraintTop_toBottomOf="@id/measurement_options_rv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_10sdp"
             />
 
