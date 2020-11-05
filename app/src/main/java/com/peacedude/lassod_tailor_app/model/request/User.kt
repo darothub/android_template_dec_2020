@@ -32,25 +32,29 @@ data class User(
     var id: String? = null
     var isVerified: Boolean? = null
     var gender: String? = null
-    var workshopAddress: String? = null
-    var showroomAddress: String? = null
-    var no_Employee: String? = null
+    var workshopUserAddress: UserAddress? = null
+    var showroomUserAddress: UserAddress? = null
+    var noOfEmployees: Int? = 0
     var legalStatus: String? = null
     var specialty: ArrayList<String>? = null
-    var genderFocus: String? = null
+    var genderFocus: ArrayList<String>? = null
     var obiomaCert: String? = null
-    var visitUsMeasurement: Boolean? = false
-    var acceptSelfMeasurement: Boolean? = false
-    var deliveryTime: String? = null
+    var visitUsMeasurement: Boolean = false
+    var acceptSelfMeasurement: Boolean = false
+    var deliveryTimePeriod: String? = null
+    var deliveryTimeNo: Int? = 0
     var paymentOptions: String? = null
-    var name_union: String? = null
-    var ward: String? = null
-    var lga: String? = null
-    var state: String? = null
+    var paymentTerms: ArrayList<String>? = null
+    var unionName: String? = null
+    var unionWard: String? = null
+    var unionLga: String? = null
+    var unionState: String? = null
     var country: String? = null
     var email: String? = null
     var loggedIn: Boolean? = null
     var imageUrl: String? = null
 
 }
+data class UserAddress(var street:String?, var city:String?, var state:String?):Serializable
+
 

@@ -7,12 +7,10 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -90,13 +89,17 @@ class SpecialtyFragment : DaggerFragment() {
     val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
-    var genderFocusValue = ""
+    var genderFocusValue = ArrayList<String>()
     var visitUsForMeasurementValue:Boolean?= false
     var acceptSelfMeasurementValue:Boolean?= false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
+    }
+
+    val newUserData by lazy{
+        User()
     }
 
     override fun onCreateView(
@@ -140,147 +143,103 @@ class SpecialtyFragment : DaggerFragment() {
                 val resp = result as? UserResponse<User>
                 val user = resp?.data
 
-                Log.i(title, " visitus\n${user?.visitUsMeasurement} accept ${user?.acceptSelfMeasurement}  ")
-
                 setUpSpecialityRv(user)
-
                 val genderList = setupGenderFocusRecyclerView(user)
                 val measurementList = setupMeasurementOptionRv(user)
-
-                //List of fields to be filled with names and others
-                val qaList = arrayListOf<UserNameClass>(
-                    UserNameClass(getString(R.string.obioma_trained_str), user?.obiomaCert.toString()),
-                    UserNameClass(getString(R.string.delivery_lead_time_str), user?.deliveryTime.toString())
-                )
-                specialty_fragment_qa_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
-                    bind { itemView, position, item ->
-                        CoroutineScope(Main).launch {
-                            delay(2000)
-                            itemView.user_profile_rv_item_name_title_tv.text = item?.title
-                            itemView.user_profile_rv_item_name_value_tv.text = item?.value
-                            delay(2000)
-                            itemView.user_profile_name_shimmerLayout.stopShimmer()
-                            itemView.user_profile_name_shimmerLayout.setShimmer(null)
-                            itemView.user_profile_name_item_container.background = null
-                        }
-                        itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
-
-                            //If gender is clicked
-                            if (item?.title == getString(R.string.obioma_trained_str)) {
-                                itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
-                                    //Provide gender layout
-                                    val closeOptionRadioGroup =
-                                        dialog.findViewById<RadioGroup>(R.id.multipurpose_gender_dialog_gender_rg)
-                                    val yesRadioBtn =
-                                        dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_female_rbtn)
-                                    yesRadioBtn.text = getString(R.string.yes_str)
-                                    val noRadioBtn =
-                                        dialog.findViewById<RadioButton>(R.id.multipurpose_gender_dialog_male_rbtn)
-                                    noRadioBtn.text = getString(R.string.no_str)
-                                    val dialogTitle =
-                                        dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
-                                    dialogTitle.text = item.title
-                                    //When
-                                    when (item.value) {
-                                        //female radio is ticked
-                                        getString(R.string.yes_str) -> {
-                                            //Display female radio ticked
-                                            yesRadioBtn.isChecked = true
-
-                                        }
-                                        //male radio is ticked
-                                        getString(R.string.no_str) -> {
-                                            //Display female radio ticked
-                                            noRadioBtn.isChecked = true
-                                        }
-                                        else -> {
-                                            noRadioBtn.isChecked = false
-                                            yesRadioBtn.isChecked = false
-                                        }
-
-                                    }
-                                    closeOptionLayout.show()
-                                    dialog.show()
-
-                                    dialogOkTv.setOnClickListener {
-                                        //When
-                                        when (closeOptionRadioGroup.checkedRadioButtonId) {
-                                            //female radio is ticked
-                                            R.id.multipurpose_gender_dialog_female_rbtn -> {
-                                                itemView.user_profile_rv_item_name_value_tv.text =
-                                                    getString(R.string.female)
-                                                //Update new user data
-//                                                newUserData.gender = yesRadioBtn.text.toString()
-                                            }
-                                            //male radio is ticked
-                                            R.id.multipurpose_gender_dialog_male_rbtn -> {
-                                                itemView.user_profile_rv_item_name_value_tv.text =
-                                                    getString(R.string.male)
-                                                //Update new user data
-//                                                newUserData.gender = noRadioBtn.text.toString()
-                                            }
-                                        }
-                                        dialog.dismiss()
-                                    }
-                                    dialog.setOnDismissListener {
-                                        closeOptionLayout.hide()
-                                    }
-                                }
-                            } else {
-
-                                //If not close option value clicked
-                                itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
-                                    val dialogTitle =
-                                        dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
-                                    val dialogEditText =
-                                        dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
-                                    val dialogInput =
-                                        dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
-                                    dialogEditText.setText(item?.value)
-                                    dialogInput.hint = item?.title
-                                    dialogTitle.text = item?.title
-                                    dialogNameAndOtherLayout.show()
-                                    dialog.show()
-                                    dialogOkTv.setOnClickListener {
-                                        //Update item in the list
-                                        item?.value = dialogEditText.text.toString()
-                                        //Update recycler view
-                                        adapter.notifyDataSetChanged()
-                                        dialog.dismiss()
-                                    }
-                                    dialog.setOnDismissListener {
-                                        dialogNameAndOtherLayout.hide()
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                    setLayoutManager(
-                        LinearLayoutManager(
-                            requireContext(),
-                            LinearLayoutManager.VERTICAL,
-                            false
-                        )
-                    )
-                    submitList(qaList)
-                }
+                val qaList = setupQaRecylerView(user)
 
                 saveBtn.setOnClickListener {
+
+                    try {
+                        user?.deliveryTimePeriod = qaList[1].value
+                        user?.deliveryTimeNo = qaList[1].value.toInt()
+                    }
+                    catch (e:Exception){
+                        requireActivity().gdToast("Invalid data type", Gravity.BOTTOM)
+                    }
+
                     if (user != null) {
-                        Log.i("checkbox", "genderfocus $genderFocusValue")
-                        updateUserData(user)
+//                        updateUserData(user)
                     }
                 }
             }
         })
     }
 
+    private fun setupQaRecylerView(user: User?):ArrayList<UserNameClass> {
+        //List of fields to be filled with names and others
+        val qaList = arrayListOf<UserNameClass>(
+            UserNameClass(getString(R.string.obioma_trained_str), user?.obiomaCert.toString()),
+            UserNameClass(
+                getString(R.string.delivery_time_period_str),
+                user?.deliveryTimePeriod.toString()
+            ),
+            UserNameClass(getString(R.string.delivery_time_no_str), user?.deliveryTimeNo.toString())
+        )
+        specialty_fragment_qa_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
+            bind { itemView, position, item ->
+                CoroutineScope(Main).launch {
+                    itemView.user_profile_rv_item_name_title_tv.text = item?.title
+                    itemView.user_profile_rv_item_name_value_tv.text = item?.value
+                    delay(1000)
+                    itemView.user_profile_name_shimmerLayout.stopShimmer()
+                    itemView.user_profile_name_shimmerLayout.setShimmer(null)
+                    itemView.user_profile_name_item_container.background = null
+                }
+                itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
+                    val dialogTitle =
+                        dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
+                    val dialogEditText =
+                        dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
+                    val dialogInput =
+                        dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
+                    if(item?.title == getString(R.string.delivery_time_no_str)){
+                        if(item.value == null || item.value == "null" ){
+                            item.value = 0.toString()
+                        }
+                        dialogEditText.inputType = InputType.TYPE_CLASS_NUMBER
+                    }
+                    dialogEditText.setText(item?.value)
+
+                    dialogInput.hint = item?.title
+                    dialogTitle.text = item?.title
+                    dialogNameAndOtherLayout.show()
+                    if(item?.title != getString(R.string.obioma_trained_str)){
+                        dialog.show()
+                    }
+                    else{
+                        dialogNameAndOtherLayout.hide()
+                        dialog.hide()
+                    }
+
+                    dialogOkTv.setOnClickListener {
+                        //Update item in the list
+                        item?.value = dialogEditText.text.toString()
+                        //Update recycler view
+                        adapter.notifyDataSetChanged()
+                        dialog.dismiss()
+                    }
+                    dialog.setOnDismissListener {
+                        dialogNameAndOtherLayout.hide()
+                    }
+                }
+
+            }
+            setLayoutManager(
+                LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+            )
+            submitList(qaList)
+        }
+        return qaList
+    }
+
     private fun setUpSpecialityRv(user: User?) {
         val specialtyList = resources.getStringArray(R.array.specialty_list).toList().map { str ->
-            i(title, "Str ${user?.specialty?.toList()}")
-            if (user?.specialty != null && user.specialty?.contains(str)!!) {
-                i(title, "Str1 $str")
+            if (user?.specialty != null && user.specialty?.contains(str.toLowerCase())!!) {
                 RecyclerItemForCheckBox(text = str, selected = true)
             }
             else{
@@ -291,12 +250,11 @@ class SpecialtyFragment : DaggerFragment() {
         specialty_rv.setupAdapter<RecyclerItemForCheckBox>(R.layout.specialty_layout_item) { adapter, context, list ->
             bind { itemView, position, item ->
                 CoroutineScope(Main).launch {
-                    delay(2000)
                     itemView.specialty_item_checkbox.show()
-                    itemView.specialty_item_checkbox.text = item?.text
+                    itemView.specialty_item_checkbox.text = item?.text?.toLowerCase()
                     Log.i(title, "specialty ${item?.text}")
                     itemView.specialty_item_checkbox.isChecked = item?.selected!!
-                    delay(2000)
+                    delay(1000)
                     itemView.shimmerLayout.stopShimmer()
                     itemView.shimmerLayout.setShimmer(null)
                     itemView.item_container.background = null
@@ -306,10 +264,11 @@ class SpecialtyFragment : DaggerFragment() {
                         true -> {
                             user?.specialty?.add(item?.text.toString())
                             item?.selected == true
+                            i(title, "speicalty ${user?.specialty?.toList()}")
                         }
                         false -> item?.selected == false
                     }
-                    adapter.notifyDataSetChanged()
+
                 }
             }
             setLayoutManager(GridLayoutManager(context, 2))
@@ -319,22 +278,22 @@ class SpecialtyFragment : DaggerFragment() {
 
     private fun setupGenderFocusRecyclerView(user: User?):List<RecyclerItemForCheckBox> {
         var genderList = resources.getStringArray(R.array.gender_list).toList().map { str ->
-            if (str.toLowerCase() == user?.genderFocus) {
+            if (user?.genderFocus != null && user.genderFocus?.contains(str.toLowerCase())!!) {
                 RecyclerItemForCheckBox(text = str, selected = true)
             }
-            RecyclerItemForCheckBox(text = str)
-
+            else{
+                RecyclerItemForCheckBox(text = str)
+            }
         }
         val checkboxes = arrayListOf<CheckBox>()
 
         gender_rv.setupAdapter<RecyclerItemForCheckBox>(R.layout.specialty_layout_item) { adapter, context, list ->
             bind { itemView, position, item ->
                 CoroutineScope(Main).launch {
-                    delay(2000)
                     itemView.specialty_item_checkbox.show()
-                    itemView.specialty_item_checkbox.text = item?.text
+                    itemView.specialty_item_checkbox.text = item?.text?.toLowerCase()
                     itemView.specialty_item_checkbox.isChecked = item?.selected!!
-                    delay(2000)
+                    delay(1000)
                     itemView.shimmerLayout.stopShimmer()
                     itemView.shimmerLayout.setShimmer(null)
                     itemView.item_container.background = null
@@ -343,17 +302,8 @@ class SpecialtyFragment : DaggerFragment() {
                 checkboxes.add(itemView.specialty_item_checkbox)
                 itemView.specialty_item_checkbox.setOnCheckedChangeListener { compoundButton, b ->
                     if (b) {
-                        compoundButton.isChecked = true
-                        val otherCheckboxes =
-                            checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
-                        otherCheckboxes.forEach { checkbox ->
-                            if (checkbox.isChecked) {
-                                checkbox.isChecked = !checkbox.isChecked
-                            }
-                        }
-                        val sz = otherCheckboxes.size
-                        genderFocusValue = compoundButton.text.toString()
-                        Log.i("checkbox", "hello ${compoundButton.text} othersSize $sz")
+                        user?.genderFocus?.add(compoundButton.text.toString())
+                        i(title, "genderFocus ${user?.genderFocus?.toList()}")
                     }
                 }
 
@@ -366,28 +316,20 @@ class SpecialtyFragment : DaggerFragment() {
 
     private fun setupMeasurementOptionRv(user: User?):List<RecyclerItemForCheckBox> {
 
-        val measurementOptionsList =
-            resources.getStringArray(R.array.measurement_options_list).toList().map { str ->
-                if (user?.visitUsMeasurement == true && str == "Visit us for your measurement") {
-                    RecyclerItemForCheckBox(text = str, selected = true)
-                }
-                else if(user?.acceptSelfMeasurement == true && str == "Will accept self-measurement"){
-                    RecyclerItemForCheckBox(text = str, selected = true)
-                }
-                else{
-                    RecyclerItemForCheckBox(text = str)
-                }
-            }
+        val measurementOptionsList = arrayListOf<RecyclerItemForCheckBox>(
+            RecyclerItemForCheckBox(getString(R.string.visit_us_for_measurement_str), user?.visitUsMeasurement!!),
+            RecyclerItemForCheckBox(getString(R.string.accept_self_measurement_str), user.acceptSelfMeasurement!!)
+        )
+
         val checkboxes = arrayListOf<CheckBox>()
         measurement_options_rv.setupAdapter<RecyclerItemForCheckBox>(R.layout.specialty_layout_item) { adapter, context, list ->
             bind { itemView, position, item ->
 
                 CoroutineScope(Main).launch {
-                    delay(2000)
                     itemView.specialty_item_checkbox.show()
                     itemView.specialty_item_checkbox.text = item?.text
                     itemView.specialty_item_checkbox.isChecked = item?.selected!!
-                    delay(2000)
+                    delay(1000)
                     itemView.shimmerLayout.stopShimmer()
                     itemView.shimmerLayout.setShimmer(null)
                     itemView.item_container.background = null
@@ -406,13 +348,13 @@ class SpecialtyFragment : DaggerFragment() {
                         }
                         val sz = otherCheckboxes.size
                         if (compoundButton.text == "Visit us for your measurement"){
-                            visitUsForMeasurementValue = true
+                            user.visitUsMeasurement = true
+                            i(title, "visit us ${user.visitUsMeasurement}")
                         }
                         else if(compoundButton.text == "Will accept self-measurement"){
-                            acceptSelfMeasurementValue = true
+                            user.acceptSelfMeasurement = true
+                            i(title, "accept self ${user.acceptSelfMeasurement}")
                         }
-
-                        Log.i("checkbox", "visit us ${visitUsForMeasurementValue} othersSize $sz")
                     }
                 }
             }
@@ -431,10 +373,6 @@ class SpecialtyFragment : DaggerFragment() {
     private fun updateUserData(user: User) {
 //        val newUserData = User(firstName, lastName, otherName,category,phone)
         user.isVerified = true
-        user.genderFocus = genderFocusValue
-
-        user.visitUsMeasurement = visitUsForMeasurementValue
-        user.acceptSelfMeasurement = acceptSelfMeasurementValue
         Log.i(title, "onRequest $visitUsForMeasurementValue $acceptSelfMeasurementValue")
         val request = authViewModel.updateUserData(header, user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)

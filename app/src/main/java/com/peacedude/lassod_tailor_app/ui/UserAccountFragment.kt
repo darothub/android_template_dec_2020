@@ -20,6 +20,7 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.utsman.recycling.setupAdapter
@@ -149,15 +150,15 @@ class UserAccountFragment : DaggerFragment() {
                     newUserData.firstName = nameList[0].value
                     newUserData.lastName = nameList[1].value
                     newUserData.otherName = nameList[2].value
-                    newUserData.no_Employee = nameList[4].value
-                    newUserData.workshopAddress = addressList[0].value
-                    newUserData.showroomAddress = addressList[1].value
-                    newUserData.showroomAddress = addressList[1].value
-                    newUserData.name_union = unionList[0].value
-                    newUserData.ward = unionList[1].value
-                    newUserData.lga = unionList[2].value
-                    newUserData.state = unionList[3].value
-                    i(title, "new user ${newUserData.workshopAddress}")
+                    newUserData.noOfEmployees = nameList[4].value.toInt()
+                    newUserData.workshopUserAddress = addressList[0].value
+                    newUserData.showroomUserAddress = addressList[1].value
+                    newUserData.showroomUserAddress = addressList[1].value
+                    newUserData.unionName = unionList[0].value
+                    newUserData.unionWard = unionList[1].value
+                    newUserData.unionLga = unionList[2].value
+                    newUserData.unionState = unionList[3].value
+                    i(title, "new user ${newUserData.workshopUserAddress}")
                     updateUserData(newUserData)
                 }
             }
@@ -166,10 +167,10 @@ class UserAccountFragment : DaggerFragment() {
 
     private fun setUnionData(user: User?): ArrayList<UserNameClass> {
         val unionList = arrayListOf<UserNameClass>(
-            UserNameClass(getString(R.string.name_of_union), user?.name_union.toString()),
-            UserNameClass(getString(R.string.ward), user?.ward.toString()),
-            UserNameClass(getString(R.string.lga), user?.lga.toString()),
-            UserNameClass(getString(R.string.state), user?.state.toString())
+            UserNameClass(getString(R.string.name_of_union), user?.unionName.toString()),
+            UserNameClass(getString(R.string.ward), user?.unionWard.toString()),
+            UserNameClass(getString(R.string.lga), user?.unionLga.toString()),
+            UserNameClass(getString(R.string.state), user?.unionState.toString())
         )
         user_profile_name_union_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
             bind { itemView, position, item ->
@@ -223,22 +224,31 @@ class UserAccountFragment : DaggerFragment() {
         return unionList
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setUserAddress(user: User?): ArrayList<UserAddressClass> {
+        val workshopStreet = user?.workshopUserAddress?.street
+        val workshopCity = user?.workshopUserAddress?.city
+        val workshopState = user?.workshopUserAddress?.state
+        val workshopAddress = UserAddress(workshopStreet, workshopCity, workshopState)
+        val showroomStreet = user?.showroomUserAddress?.street
+        val showroomCity = user?.showroomUserAddress?.city
+        val showroomState = user?.showroomUserAddress?.state
+        val showroomAddress = UserAddress(showroomStreet, showroomCity, showroomState)
+
         val addressList = arrayListOf<UserAddressClass>(
             UserAddressClass(
                 getString(R.string.workshop_address),
-                user?.workshopAddress.toString()
+                workshopAddress
             ),
-            UserAddressClass(getString(R.string.showroom_address), user?.showroomAddress.toString())
+            UserAddressClass(getString(R.string.showroom_address), showroomAddress)
         )
 
         user_profile_address_rv.setupAdapter<UserAddressClass>(R.layout.user_profile_address_item) { adapter, context, list ->
             bind { itemView, position, item ->
                 CoroutineScope(Dispatchers.Main).launch {
-                    delay(2000)
                     itemView.user_profile_rv_item_address_title_tv.text = item?.title
-                    itemView.user_profile_rv_item_address_value_tv.text = item?.value
-                    delay(2000)
+                    itemView.user_profile_rv_item_address_value_tv.text = "${item?.value?.street}, ${item?.value?.city}, ${item?.value?.state}"
+                    delay(1000)
                     itemView.user_profile_address_shimmerLayout.stopShimmer()
                     itemView.user_profile_address_shimmerLayout.setShimmer(null)
                     itemView.user_profile_address_item_container.background = null
@@ -262,7 +272,7 @@ class UserAccountFragment : DaggerFragment() {
                         val street = dialogStreetEditText.text.toString()
                         val city = dialogCityEditText.text.toString()
                         val state = dialogStateEditText.text.toString()
-                        item?.value = "$street, $city, $state"
+                        item?.value = UserAddress(street, city, state)
                         adapter.notifyDataSetChanged()
                         dialog.dismiss()
                     }
@@ -294,17 +304,16 @@ class UserAccountFragment : DaggerFragment() {
             UserNameClass(getString(R.string.last_name), user?.lastName.toString()),
             UserNameClass(getString(R.string.other_name), user?.otherName.toString()),
             UserNameClass(getString(R.string.gender), user?.gender.toString()),
-            UserNameClass(getString(R.string.no_of_emplyee), user?.no_Employee.toString()),
+            UserNameClass(getString(R.string.no_of_emplyee), user?.noOfEmployees.toString()),
             UserNameClass(getString(R.string.legal_status), user?.legalStatus.toString())
         )
         //Recycler view to display names and others
         user_profile_name_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
             bind { itemView, position, item ->
                 CoroutineScope(Dispatchers.Main).launch {
-                    delay(2000)
                     itemView.user_profile_rv_item_name_title_tv.text = item?.title
                     itemView.user_profile_rv_item_name_value_tv.text = item?.value
-                    delay(2000)
+                    delay(1000)
                     itemView.user_profile_name_shimmerLayout.stopShimmer()
                     itemView.user_profile_name_shimmerLayout.setShimmer(null)
                     itemView.user_profile_name_item_container.background = null
@@ -345,17 +354,6 @@ class UserAccountFragment : DaggerFragment() {
 
                         }
 
-
-    //                                genderRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-    //                                    when(checkedId){
-    //                                        R.id.multipurpose_gender_dialog_female_rbtn ->{
-    //                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.female)
-    //                                        }
-    //                                        R.id.multipurpose_gender_dialog_male_rbtn ->{
-    //                                            itemView.user_profile_rv_item_name_value_tv.text = getString(R.string.male)
-    //                                        }
-    //                                    }
-    //                                }
                         genderLayout.show()
                         dialog.show()
 
@@ -443,4 +441,4 @@ class UserAccountFragment : DaggerFragment() {
 }
 
 data class UserNameClass(var title:String, var value:String)
-data class UserAddressClass(var title:String, var value:String)
+data class UserAddressClass(var title:String, var value:UserAddress)
