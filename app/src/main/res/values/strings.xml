@@ -177,7 +177,7 @@
     <string name="street_str">Street</string>
     <string name="no_str">No</string>
     <string name="yes_str">Yes</string>
-    <string name="visit_us_for_measurement_str">\"Visit us for your measurement\"</string>
+    <string name="visit_us_for_measurement_str">Visit us for your measurement</string>
     <string name="accept_self_measurement_str">Will accept self-measurement</string>
     <string name="delivery_time_period_str">Delivery time period</string>
     <string name="delivery_time_no_str">Delivery time no</string>

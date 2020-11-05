@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.facebook.shimmer.ShimmerFrameLayout
     android:id="@+id/shimmerLayout"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
@@ -11,8 +11,10 @@
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:background="@color/shimmerColor"
-        android:layout_height="50dp"
-        android:layout_width="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:padding="@dimen/_5sdp"
+        android:layout_width="wrap_content">
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/specialty_item_checkbox"
@@ -25,13 +27,12 @@
             android:buttonTint="@color/colorPrimary"
             android:layout_marginTop="@dimen/_8sdp"
             android:layout_marginBottom="@dimen/_8sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
             android:visibility="gone"
             />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/measurement_checkbox"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +43,7 @@
             android:textDirection="ltr"
             android:layoutDirection="rtl"
             android:visibility="gone"
+            android:gravity="left|center_vertical"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

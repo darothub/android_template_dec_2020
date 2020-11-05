@@ -252,7 +252,6 @@ class SpecialtyFragment : DaggerFragment() {
                 CoroutineScope(Main).launch {
                     itemView.specialty_item_checkbox.show()
                     itemView.specialty_item_checkbox.text = item?.text?.toLowerCase()
-                    Log.i(title, "specialty ${item?.text}")
                     itemView.specialty_item_checkbox.isChecked = item?.selected!!
                     delay(1000)
                     itemView.shimmerLayout.stopShimmer()
@@ -262,9 +261,9 @@ class SpecialtyFragment : DaggerFragment() {
                 itemView.specialty_item_checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
                     when (isChecked) {
                         true -> {
-                            user?.specialty?.add(item?.text.toString())
+                            user?.specialty?.add(buttonView.text.toString())
                             item?.selected == true
-                            i(title, "speicalty ${user?.specialty?.toList()}")
+                            i(title, "specialty ${user?.specialty?.toList()}")
                         }
                         false -> item?.selected == false
                     }
@@ -308,7 +307,13 @@ class SpecialtyFragment : DaggerFragment() {
                 }
 
             }
-            setLayoutManager(GridLayoutManager(context, 4))
+            setLayoutManager(
+                LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+            )
             submitList(genderList)
         }
         return genderList
@@ -326,9 +331,9 @@ class SpecialtyFragment : DaggerFragment() {
             bind { itemView, position, item ->
 
                 CoroutineScope(Main).launch {
-                    itemView.specialty_item_checkbox.show()
-                    itemView.specialty_item_checkbox.text = item?.text
-                    itemView.specialty_item_checkbox.isChecked = item?.selected!!
+                    itemView.measurement_checkbox.show()
+                    itemView.measurement_checkbox.text = item?.text
+                    itemView.measurement_checkbox.isChecked = item?.selected!!
                     delay(1000)
                     itemView.shimmerLayout.stopShimmer()
                     itemView.shimmerLayout.setShimmer(null)
@@ -336,17 +341,16 @@ class SpecialtyFragment : DaggerFragment() {
                 }
 
                 checkboxes.add(itemView.measurement_checkbox)
+                i(title, "checkboxes us ${checkboxes.size}")
                 itemView.measurement_checkbox.setOnCheckedChangeListener { compoundButton, b ->
                     if (b) {
-                        compoundButton.isChecked = true
                         val otherCheckboxes =
                             checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
                         otherCheckboxes.forEach { checkbox ->
-                            if (checkbox.isChecked) {
-                                checkbox.isChecked = !checkbox.isChecked
-                            }
+                            checkbox.isChecked = !compoundButton.isChecked
                         }
                         val sz = otherCheckboxes.size
+                        i(title, "others us $sz")
                         if (compoundButton.text == "Visit us for your measurement"){
                             user.visitUsMeasurement = true
                             i(title, "visit us ${user.visitUsMeasurement}")
