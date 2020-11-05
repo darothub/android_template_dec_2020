@@ -1,16 +1,22 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
@@ -22,7 +28,9 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.squareup.picasso.Picasso
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_user_account.account_save_changes_btn
@@ -33,6 +41,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 
@@ -83,7 +95,7 @@ class UserAccountFragment : DaggerFragment() {
     private val dialogCancelTv by lazy{
         dialog.findViewById<TextView>(R.id.multipurpose_dialog_cancel_tv)
     }
-
+    lateinit var observer: StartActivityForResults
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
@@ -92,6 +104,8 @@ class UserAccountFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        observer = StartActivityForResults(requireActivity().activityResultRegistry)
+        lifecycle.addObserver(observer as StartActivityForResults)
     }
 
     override fun onCreateView(
@@ -123,6 +137,24 @@ class UserAccountFragment : DaggerFragment() {
         })
 
         getUserData()
+
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(android.Manifest.permission.CAMERA),
+            REQUEST_CODE
+        )
+
+        tap_to_change_pic_tv.setOnClickListener {
+            val res = checkCameraPermission()
+            if (res) {
+                getPhotoData()
+            } else {
+                i(title, getString(R.string.no_permission))
+                requireActivity().gdToast(getString(R.string.no_permission), Gravity.BOTTOM)
+            }
+
+
+        }
 
     }
 
@@ -438,6 +470,50 @@ class UserAccountFragment : DaggerFragment() {
         })
     }
 
+    private fun getPhotoData() {
+        val galleryIntent = Intent()
+        galleryIntent.type = "image/*"
+        galleryIntent.action = Intent.ACTION_GET_CONTENT
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val chooser = Intent.createChooser(galleryIntent, "Photo options")
+        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
+        val result = observer.launchImageIntent(chooser)
+        result.observe(viewLifecycleOwner, Observer { results ->
+            if (results.resultCode == Activity.RESULT_OK) {
+                val data = results.data
+                val imageBitmap =
+                    data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
+                val imageFile = saveBitmap(imageBitmap)
+                if (imageFile != null) {
+                    Picasso.get().load(imageFile).into(user_account_profile_image)
+//                    val profileImagePart = MultipartBody.Part.createFormData("avatar", imageFile?.getName(), RequestBody.create(
+//                        "image/*".toMediaTypeOrNull(), imageFile!!))
+                    val requestBody: RequestBody = MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("avatar", imageFile.toString())
+                        .build()
+
+                    val req = authViewModel.uploadProfilePicture(header, requestBody)
+                    requestObserver(null, null, req) { bool, result ->
+                        onRequestResponseTask<User>(bool, result) {
+                            val response = result as UserResponse<User>
+                            val responseData = response.data
+                            i(title, "URL ${responseData?.avatar}")
+                        }
+                    }
+                    i(title, "File $imageFile")
+//                    requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
+                }
+
+            } else {
+                i(
+                    title,
+                    "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
+                )
+            }
+        })
+
+    }
 }
 
 data class UserNameClass(var title:String, var value:String)

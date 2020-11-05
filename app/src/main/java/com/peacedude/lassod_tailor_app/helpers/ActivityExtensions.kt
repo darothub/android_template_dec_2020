@@ -1,20 +1,28 @@
 package com.peacedude.lassod_tailor_app.helpers
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
+import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -28,6 +36,13 @@ import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import com.peacedude.lassod_tailor_app.ui.MainActivity
+import com.peacedude.lassod_tailor_app.ui.REQUEST_CODE
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Observe request response
@@ -231,3 +246,129 @@ fun Activity.setCustomColor(colorRes: Int): Int {
         colorRes
     )
 }
+fun Activity.checkCameraPermission(): Boolean {
+    val title = this.getName()
+    if (ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.CAMERA
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        i(title, "first if here we aee")
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                android.Manifest.permission.CAMERA
+            )
+        ) {
+            i(title, "second if here we are")
+            val alertBuilder = AlertDialog.Builder(this)
+            alertBuilder.setTitle(R.string.allow_camera)
+            alertBuilder.setMessage(R.string.camera_str)
+            alertBuilder.setPositiveButton(getString(R.string.ok_str)) { dialog, which ->
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.CAMERA),
+                    REQUEST_CODE
+                )
+                return@setPositiveButton
+            }
+            alertBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                this.gdToast(
+                    "Permission is needed for photo upload",
+                    Gravity.BOTTOM
+                )
+                val settingIntent = Intent()
+                settingIntent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                val uri = Uri.fromParts("package", this.packageName, null)
+                settingIntent.data = uri
+                startActivity(settingIntent)
+                return@setNegativeButton
+            }
+            val alertDialog = alertBuilder.create()
+            alertDialog.setOnShowListener {
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.colorPrimary
+                    )
+                )
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
+                    ContextCompat.getColor(
+                        this,
+                        R.color.colorPrimary
+                    )
+                )
+            }
+            alertDialog.show()
+        } else {
+            i(title, "second else Here we are")
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.CAMERA),
+                REQUEST_CODE
+            )
+            return true
+        }
+    } else {
+        i(title, "first else Here we aee")
+        return true
+    }
+    return false
+}
+
+fun Activity.saveBitmap(bmp: Bitmap): File? {
+    val extStorageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    var outStream: OutputStream? = null
+    var file: File?=null
+    val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+    val child = "JPEG_${timeStamp}_.jpg"
+    // String temp = null;
+    if (extStorageDirectory != null){
+        file = File(extStorageDirectory, child)
+        if (file.exists()) {
+            file.delete()
+            file = File(extStorageDirectory, child)
+        }
+        try {
+            outStream = FileOutputStream(file)
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+            outStream.flush()
+            outStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    return file
+}
+
+
+fun Activity.uriToBitmap(uriImage: Uri): Bitmap? {
+    var mBitmap: Bitmap? = null
+    if(Build.VERSION.SDK_INT < 28) {
+        mBitmap = MediaStore.Images.Media.getBitmap(
+          contentResolver,
+            uriImage
+        )
+    } else {
+        val source = ImageDecoder.createSource(contentResolver, uriImage)
+        mBitmap = ImageDecoder.decodeBitmap(source)
+    }
+    return mBitmap
+}
+fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
+    val locale = Locale.getAvailableLocales()
+    var countriesIsoAndName: HashMap<String, String> = HashMap()
+    locale.associateByTo(countriesIsoAndName, {
+        it.displayCountry
+    },{
+        "${it.displayCountry}(+${PhoneNumberUtil.createInstance(this).getCountryCodeForRegion(it.country)})"
+    })
+    val countries = countriesIsoAndName.values.sorted().toMutableList()
+    countries[0] = header
+    val adapter = ArrayAdapter(this, R.layout.spinner_colored_text_layout, countries)
+    adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
+    spinner.adapter = adapter
+
+}
+

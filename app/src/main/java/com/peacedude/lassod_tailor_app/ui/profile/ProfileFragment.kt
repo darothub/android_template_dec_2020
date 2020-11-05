@@ -1,5 +1,9 @@
 package com.peacedude.lassod_tailor_app.ui.profile
 
+import IsEmptyCheck
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.*
@@ -9,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
+import com.google.android.material.textfield.TextInputEditText
+import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
@@ -16,12 +22,15 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
+import com.peacedude.lassod_tailor_app.model.request.SingleClient
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.client_list_item.view.*
+import kotlinx.android.synthetic.main.fragment_client_account.*
+import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
@@ -46,6 +55,13 @@ class ProfileFragment : DaggerFragment() {
         }
     }
 
+    private val loaderDialog by lazy {
+        Dialog(requireContext(), R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+
     lateinit var dialogDeleteProgressBar: ProgressBar
 
     private val dialogNameTv by lazy {
@@ -66,8 +82,39 @@ class ProfileFragment : DaggerFragment() {
     private val dialogCountryTv by lazy {
         (dialog.findViewById(R.id.single_client_country_tv) as TextView)
     }
+    private val dialogNameEt by lazy {
+        (dialog.findViewById(R.id.single_client_edit_name_et) as TextInputEditText)
+    }
+    private val dialogPhoneNumberEt by lazy {
+        (dialog.findViewById(R.id.single_client_edit_phone_number_et) as TextInputEditText)
+    }
+    private val dialogEmailEt by lazy {
+        (dialog.findViewById(R.id.single_client_edit_email_et) as TextInputEditText)
+    }
+    private val dialogGenderSpinner by lazy {
+        (dialog.findViewById(R.id.single_client_gender_spinner) as Spinner)
+    }
+    private val dialogAddressEt by lazy {
+        (dialog.findViewById(R.id.single_client_edit_delivery_address_et) as TextInputEditText)
+    }
+    private val dialogStateEt by lazy {
+        (dialog.findViewById(R.id.single_client_edit_state_et) as TextInputEditText)
+    }
+
+    private val dialogCountrySpinner by lazy {
+        (dialog.findViewById(R.id.single_client_edit_country_spinner) as Spinner)
+    }
+    private val displayClientDialog by lazy {
+        (dialog.findViewById(R.id.single_client_display_cl) as ViewGroup)
+    }
+    private val editClientDialog by lazy {
+        (dialog.findViewById(R.id.single_client_edit_cl) as ViewGroup)
+    }
     lateinit var  dialogEditBtn:Button
     lateinit var  dialogDeleteBtn:Button
+    lateinit var  dialogUpdateBtn:Button
+    lateinit var dialogUpdateProgressBar:ProgressBar
+
     private val header by lazy {
         authViewModel.header
     }
@@ -94,14 +141,24 @@ class ProfileFragment : DaggerFragment() {
         val deleteBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner__red_background)
         buttonTransactions({
-            //Get included view for confirm button
+            //Get included view for delete button
             val includedViewForDeleteBtn = (dialog.findViewById(R.id.single_client_delete_btn) as View)
-            //Get included view for resend code button
+            //Get included view for edit button
             val includedViewForEditBtn = (dialog.findViewById(R.id.single_client_edit_btn) as View)
+            //Get included view for update button
+            val includedViewForUpdateBtn = (dialog.findViewById(R.id.single_client_edit_update_btn) as View)
             dialogDeleteBtn = includedViewForDeleteBtn.findViewById(R.id.btn)
             dialogEditBtn = includedViewForEditBtn.findViewById(R.id.btn)
+            dialogUpdateBtn = includedViewForUpdateBtn.findViewById(R.id.btn)
             dialogDeleteProgressBar = includedViewForDeleteBtn.findViewById(R.id.progress_bar)
+            dialogUpdateProgressBar = includedViewForUpdateBtn.findViewById(R.id.progress_bar)
             dialogDeleteBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorAccent
+                )
+            )
+            dialogUpdateBtn.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.colorAccent
@@ -118,10 +175,22 @@ class ProfileFragment : DaggerFragment() {
             //Set delete button background
             dialogDeleteBtn.background = deleteBtnBackground
 
+            dialogUpdateBtn.background = editBtnBackground
+
             dialogEditBtn.text = getString(R.string.edit_str)
             dialogDeleteBtn.text = getString(R.string.delete)
+            dialogUpdateBtn.text = getString(R.string.update_str)
 
-        }, {})
+            setupCategorySpinner(
+                requireContext(),
+                dialogGenderSpinner,
+                R.array.gender_normal_list
+            )
+
+
+        }, {
+
+        })
 
 
 
@@ -151,6 +220,7 @@ class ProfileFragment : DaggerFragment() {
                                 dialogGenderTv.text = item?.gender
                                 dialogState.text = "Lasgidi"
                                 dialogCountryTv.text = "Nigeria"
+                                displayClientDialog.show()
                                 dialog.show{
                                     cornerRadius(10F)
                                 }
@@ -167,6 +237,61 @@ class ProfileFragment : DaggerFragment() {
                                         dialog.dismiss()
                                         goto(R.id.profileFragment)
 
+                                    }
+                                }
+
+                            }
+                            dialogEditBtn.setOnClickListener {
+                                loaderDialog.show()
+                                if(item != null){
+                                    displayClientDialog.hide()
+                                    dialogNameEt.setText(item.name)
+                                    dialogPhoneNumberEt.setText(item.phone)
+                                    dialogEmailEt.setText(item.email)
+                                    dialogAddressEt.setText(item.deliveryAddress)
+                                    dialogStateEt.setText(item.state)
+                                    setUpCountrySpinner(item.country.toString(), dialogCountrySpinner)
+                                    editClientDialog.show()
+                                    if(editClientDialog.show()){
+                                        loaderDialog.dismiss()
+                                    }
+                                }
+                            }
+                            dialogUpdateBtn.setOnClickListener {
+                                val name = dialogNameEt.text.toString().trim()
+                                val phoneNumber = dialogPhoneNumberEt.text.toString()
+                                val email = dialogEmailEt.text.toString()
+                                val address = dialogAddressEt.text.toString().trim()
+                                val state = dialogStateEt.text.toString().trim()
+                                val gender = dialogGenderSpinner.selectedItem.toString()
+                                val country = dialogCountrySpinner.selectedItem.toString()
+                                val emptyEditText =
+                                    IsEmptyCheck(dialogNameEt, dialogPhoneNumberEt, dialogAddressEt, dialogStateEt)
+//                                val validation = IsEmptyCheck.fieldsValidation(null, null, )
+                                when {
+                                    emptyEditText != null -> {
+                                        emptyEditText.error = getString(R.string.field_required)
+                                        requireActivity().gdErrorToast(
+                                            "${emptyEditText.tag} is empty",
+                                            Gravity.BOTTOM
+                                        )
+                                    }
+                                    else->{
+                                        val client = Client(name,phoneNumber, email, address)
+                                        client.id = item?.id
+                                        client.country = country
+                                       val editClientReq = authViewModel.editClient(header, client)
+                                        requestObserver(dialogUpdateProgressBar, dialogUpdateBtn, editClientReq){bool, result ->
+                                            //Task to be done on successful
+                                            onRequestResponseTask<ClientsList>(bool, result) {
+                                                val results = result as UserResponse<SingleClient>
+                                                val msg = results.message.toString()
+                                                val newClientData = result.data?.client
+                                                requireActivity().gdToast(msg, Gravity.BOTTOM)
+                                                dialog.dismiss()
+                                            }
+
+                                        }
                                     }
                                 }
 

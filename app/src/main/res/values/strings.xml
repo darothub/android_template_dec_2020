@@ -22,6 +22,10 @@
         <item>kids</item>
         <item>unisex</item>
     </string-array>
+    <string-array name="gender_normal_list">
+        <item>male</item>
+        <item>female</item>
+    </string-array>
     <string-array name="name_list">
         <item>first Name</item>
         <item>last Name</item>
@@ -181,4 +185,6 @@
     <string name="accept_self_measurement_str">Will accept self-measurement</string>
     <string name="delivery_time_period_str">Delivery time period</string>
     <string name="delivery_time_no_str">Delivery time no</string>
+    <string name="delivery_address_str">Delivery address</string>
+    <string name="update_str">Update</string>
 </resources>

@@ -89,7 +89,8 @@ class SpecialtyFragment : DaggerFragment() {
     val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
-    var genderFocusValue = ArrayList<String>()
+    var genderFocusList = ArrayList<String>()
+    var specialtyValueList= ArrayList<String>()
     var visitUsForMeasurementValue:Boolean?= false
     var acceptSelfMeasurementValue:Boolean?= false
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,17 +150,14 @@ class SpecialtyFragment : DaggerFragment() {
                 val qaList = setupQaRecylerView(user)
 
                 saveBtn.setOnClickListener {
-
-                    try {
-                        user?.deliveryTimePeriod = qaList[1].value
-                        user?.deliveryTimeNo = qaList[1].value.toInt()
-                    }
-                    catch (e:Exception){
-                        requireActivity().gdToast("Invalid data type", Gravity.BOTTOM)
-                    }
-
+                    user?.deliveryTimePeriod = qaList[1].value
+                    user?.deliveryTimeNo = qaList[1].value
+                    user?.visitUsMeasurement = measurementList[0].selected
+                    user?.acceptSelfMeasurement = measurementList[1].selected
+                    i(title, "checked1 ${measurementList[0].selected }")
+                    i(title, "checked2 ${measurementList[1].selected }")
                     if (user != null) {
-//                        updateUserData(user)
+                        updateUserData(user)
                     }
                 }
             }
@@ -170,10 +168,7 @@ class SpecialtyFragment : DaggerFragment() {
         //List of fields to be filled with names and others
         val qaList = arrayListOf<UserNameClass>(
             UserNameClass(getString(R.string.obioma_trained_str), user?.obiomaCert.toString()),
-            UserNameClass(
-                getString(R.string.delivery_time_period_str),
-                user?.deliveryTimePeriod.toString()
-            ),
+            UserNameClass(getString(R.string.delivery_time_period_str), user?.deliveryTimePeriod.toString()),
             UserNameClass(getString(R.string.delivery_time_no_str), user?.deliveryTimeNo.toString())
         )
         specialty_fragment_qa_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
@@ -199,6 +194,7 @@ class SpecialtyFragment : DaggerFragment() {
                         }
                         dialogEditText.inputType = InputType.TYPE_CLASS_NUMBER
                     }
+
                     dialogEditText.setText(item?.value)
 
                     dialogInput.hint = item?.title
@@ -261,11 +257,11 @@ class SpecialtyFragment : DaggerFragment() {
                 itemView.specialty_item_checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
                     when (isChecked) {
                         true -> {
-                            user?.specialty?.add(buttonView.text.toString())
-                            item?.selected == true
-                            i(title, "specialty ${user?.specialty?.toList()}")
+                            specialtyValueList.add(buttonView.text.toString())
+                            item?.selected == isChecked
+                            i(title, "specialty ${specialtyValueList.toList()}")
                         }
-                        false -> item?.selected == false
+                        false -> item?.selected == isChecked
                     }
 
                 }
@@ -301,8 +297,8 @@ class SpecialtyFragment : DaggerFragment() {
                 checkboxes.add(itemView.specialty_item_checkbox)
                 itemView.specialty_item_checkbox.setOnCheckedChangeListener { compoundButton, b ->
                     if (b) {
-                        user?.genderFocus?.add(compoundButton.text.toString())
-                        i(title, "genderFocus ${user?.genderFocus?.toList()}")
+                        genderFocusList.add(compoundButton.text.toString())
+                        i(title, "genderFocus ${genderFocusList.toList()}")
                     }
                 }
 
@@ -323,7 +319,7 @@ class SpecialtyFragment : DaggerFragment() {
 
         val measurementOptionsList = arrayListOf<RecyclerItemForCheckBox>(
             RecyclerItemForCheckBox(getString(R.string.visit_us_for_measurement_str), user?.visitUsMeasurement!!),
-            RecyclerItemForCheckBox(getString(R.string.accept_self_measurement_str), user.acceptSelfMeasurement!!)
+            RecyclerItemForCheckBox(getString(R.string.accept_self_measurement_str), user.acceptSelfMeasurement)
         )
 
         val checkboxes = arrayListOf<CheckBox>()
@@ -343,23 +339,18 @@ class SpecialtyFragment : DaggerFragment() {
                 checkboxes.add(itemView.measurement_checkbox)
                 i(title, "checkboxes us ${checkboxes.size}")
                 itemView.measurement_checkbox.setOnCheckedChangeListener { compoundButton, b ->
-                    if (b) {
-                        val otherCheckboxes =
-                            checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
-                        otherCheckboxes.forEach { checkbox ->
-                            checkbox.isChecked = !compoundButton.isChecked
-                        }
-                        val sz = otherCheckboxes.size
-                        i(title, "others us $sz")
-                        if (compoundButton.text == "Visit us for your measurement"){
-                            user.visitUsMeasurement = true
-                            i(title, "visit us ${user.visitUsMeasurement}")
-                        }
-                        else if(compoundButton.text == "Will accept self-measurement"){
-                            user.acceptSelfMeasurement = true
-                            i(title, "accept self ${user.acceptSelfMeasurement}")
-                        }
+                    item?.selected = compoundButton.isChecked
+                    user.visitUsMeasurement = list?.get(0)?.selected!!
+                    user.acceptSelfMeasurement = list?.get(1)?.selected!!
+                    i(title, "checked1 ${list?.get(0)?.selected }")
+                    i(title, "checked2 ${list?.get(1)?.selected }")
+                    val otherCheckboxes =
+                        checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
+                    otherCheckboxes.forEach { checkbox ->
+                        checkbox.isChecked = !compoundButton.isChecked
                     }
+                    val sz = otherCheckboxes.size
+                    i(title, "others us $sz")
                 }
             }
             setLayoutManager(
@@ -377,7 +368,8 @@ class SpecialtyFragment : DaggerFragment() {
     private fun updateUserData(user: User) {
 //        val newUserData = User(firstName, lastName, otherName,category,phone)
         user.isVerified = true
-        Log.i(title, "onRequest $visitUsForMeasurementValue $acceptSelfMeasurementValue")
+        user.specialty = specialtyValueList
+        user.genderFocus = genderFocusList
         val request = authViewModel.updateUserData(header, user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
         response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -387,9 +379,10 @@ class SpecialtyFragment : DaggerFragment() {
                 val msg = response?.message
                 val profileData = response?.data
                 authViewModel.profileData = profileData
+                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
             }
         })
     }
 
 }
-data class RecyclerItemForCheckBox(val text: String, val selected: Boolean = false)
+data class RecyclerItemForCheckBox(val text: String, var selected: Boolean = false)

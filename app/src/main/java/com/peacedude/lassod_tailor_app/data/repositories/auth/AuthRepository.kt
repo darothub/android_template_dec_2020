@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
+import com.peacedude.lassod_tailor_app.model.request.SingleClient
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
@@ -36,6 +37,10 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.addClient(header, client)
     }
 
+    override fun editClient(header: String, client: Client): Call<UserResponse<SingleClient>> {
+        return authServices.editClient(header, client)
+    }
+
     override fun getAllClient(header:String?): Call<UserResponse<ClientsList>> {
         return authServices.getAllClient(header)
     }
@@ -49,6 +54,20 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         body: RequestBody
     ): Call<UserResponse<NothingExpected>> {
         return authServices.addPhoto(header, body)
+    }
+
+    override fun uploadProfilePicture(
+        header: String?,
+        body: RequestBody
+    ): Call<UserResponse<User>> {
+        return authServices.uploadProfilePicture(header, body)
+    }
+
+    override fun uploadProfilePicture(
+        header: String?,
+        body: MultipartBody.Part
+    ): Call<UserResponse<User>> {
+        return authServices.uploadProfilePicture(header, body)
     }
 
 

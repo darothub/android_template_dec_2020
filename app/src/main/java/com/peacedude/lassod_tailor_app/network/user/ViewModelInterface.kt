@@ -65,6 +65,9 @@ interface ViewModelInterface {
     fun addClient(header: String?, client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
+    fun editClient(header: String?, client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
 
     fun loginWithGoogle(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
@@ -84,6 +87,12 @@ interface ViewModelInterface {
         TODO()
     }
     fun addPhoto(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> {
+        return TODO()
+    }
+    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>> {
+        return TODO()
+    }
+    fun uploadProfilePicture(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> {
         return TODO()
     }
 }

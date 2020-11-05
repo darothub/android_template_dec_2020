@@ -32,6 +32,7 @@ data class User(
     var id: String? = null
     var isVerified: Boolean? = null
     var gender: String? = null
+    var avatar:String? = ""
     var workshopUserAddress: UserAddress? = null
     var showroomUserAddress: UserAddress? = null
     var noOfEmployees: Int? = 0
@@ -42,7 +43,7 @@ data class User(
     var visitUsMeasurement: Boolean = false
     var acceptSelfMeasurement: Boolean = false
     var deliveryTimePeriod: String? = null
-    var deliveryTimeNo: Int? = 0
+    var deliveryTimeNo: String? = ""
     var paymentOptions: String? = null
     var paymentTerms: ArrayList<String>? = null
     var unionName: String? = null

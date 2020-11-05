@@ -1,4 +1,4 @@
-package com.peacedude.lassod_tailor_app.ui
+           package com.peacedude.lassod_tailor_app.ui
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -159,73 +159,6 @@ class MediaFragment : DaggerFragment() {
         }
     }
 
-    private fun checkCameraPermission(): Boolean {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            i(title, "first if here we aee")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    requireActivity(),
-                    android.Manifest.permission.CAMERA
-                )
-            ) {
-                i(title, "second if here we are")
-                val alertBuilder = AlertDialog.Builder(requireActivity())
-                alertBuilder.setTitle(R.string.allow_camera)
-                alertBuilder.setMessage(R.string.camera_str)
-                alertBuilder.setPositiveButton(getString(R.string.ok_str)) { dialog, which ->
-                    ActivityCompat.requestPermissions(
-                        requireActivity(),
-                        arrayOf(android.Manifest.permission.CAMERA),
-                        REQUEST_CODE
-                    )
-                    return@setPositiveButton
-                }
-                alertBuilder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
-                    requireActivity().gdToast(
-                        "Permission is needed for photo upload",
-                        Gravity.BOTTOM
-                    )
-                    val settingIntent = Intent()
-                    settingIntent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                    val uri = Uri.fromParts("package", requireActivity().packageName, null)
-                    settingIntent.data = uri
-                    startActivity(settingIntent)
-                    return@setNegativeButton
-                }
-                val alertDialog = alertBuilder.create()
-                alertDialog.setOnShowListener {
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.colorPrimary
-                        )
-                    )
-                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.colorPrimary
-                        )
-                    )
-                }
-                alertDialog.show()
-            } else {
-                i(title, "second else Here we are")
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(android.Manifest.permission.CAMERA),
-                    REQUEST_CODE
-                )
-                return true
-            }
-        } else {
-            i(title, "first else Here we aee")
-            return true
-        }
-        return false
-    }
 
     private fun getPhotoData() {
         addPhotoLoaderLayout.hide()
@@ -251,14 +184,7 @@ class MediaFragment : DaggerFragment() {
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("photo", imageFile.toString())
                     .build()
-//                val requestBody = imageFile?.asRequestBody("image/*".toMediaTypeOrNull())
-//                val filePart: MultipartBody.Part? = requestBody.let {
-//                    MultipartBody.Part.createFormData(
-//                        "photo",
-//                        imageFile?.name,
-//                        it
-//                    )
-//                }
+
                 val req = authViewModel.addPhoto(header, requestBody)
                 requestObserver(null, null, req) { bool, result ->
                     onRequestResponseTask<User>(bool, result) {
@@ -308,50 +234,16 @@ class MediaFragment : DaggerFragment() {
             requireActivity().gdToast("error code", Gravity.BOTTOM)
         }
     }
-
-    private fun saveBitmap(bmp: Bitmap): File? {
-        val extStorageDirectory = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        var outStream: OutputStream? = null
-        var file:File?=null
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
-        val child = "JPEG_${timeStamp}_.jpg"
-        // String temp = null;
-        if (extStorageDirectory != null){
-            file = File(extStorageDirectory, child)
-            if (file.exists()) {
-                file.delete()
-                file = File(extStorageDirectory, child)
-            }
-            try {
-                outStream = FileOutputStream(file)
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-                outStream.flush()
-                outStream.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
-            }
-        }
-
-        return file
-    }
-
-    private fun uriToBitmap(uriImage: Uri): Bitmap? {
-        var mBitmap: Bitmap? = null
-        if(Build.VERSION.SDK_INT < 28) {
-            mBitmap = MediaStore.Images.Media.getBitmap(
-                requireActivity().contentResolver,
-                uriImage
-            )
-        } else {
-            val source = ImageDecoder.createSource(requireActivity().contentResolver, uriImage)
-            mBitmap = ImageDecoder.decodeBitmap(source)
-        }
-        return mBitmap
-    }
-    override fun onPause() {
-        super.onPause()
-        i(title, "Onpause")
-    }
-
 }
+
+
+
+
+           //                val requestBody = imageFile?.asRequestBody("image/*".toMediaTypeOrNull())
+//                val filePart: MultipartBody.Part? = requestBody.let {
+//                    MultipartBody.Part.createFormData(
+//                        "photo",
+//                        imageFile?.name,
+//                        it
+//                    )
+//                }

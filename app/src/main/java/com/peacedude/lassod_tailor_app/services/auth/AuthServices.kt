@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.services.auth
 
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
+import com.peacedude.lassod_tailor_app.model.request.SingleClient
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
@@ -40,6 +41,12 @@ interface AuthServices {
         @Body client: Client
     ): Call<UserResponse<Client>>
 
+    @PATCH("client")
+    fun editClient(
+        @Header("Authorization") header: String,
+        @Body client: Client
+    ): Call<UserResponse<SingleClient>>
+
     @GET("client")
     fun getAllClient(
         @Header("Authorization") header: String?
@@ -58,6 +65,18 @@ interface AuthServices {
         @Header("Authorization") header: String?,
         @Body photo:RequestBody
     ): Call<UserResponse<NothingExpected>>
+
+    @POST("avatar")
+    fun uploadProfilePicture(
+        @Header("Authorization") header: String?,
+        @Body avatar:RequestBody
+    ): Call<UserResponse<User>>
+    @POST("avatar")
+    @Multipart
+    fun uploadProfilePicture(
+        @Header("Authorization") header: String?,
+        @Part avatar:MultipartBody.Part
+    ): Call<UserResponse<User>>
 
 }
 

@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.network.auth
 
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
+import com.peacedude.lassod_tailor_app.model.request.SingleClient
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
@@ -28,6 +29,9 @@ interface AuthRequestInterface {
     fun addClient(header: String, client: Client): Call<UserResponse<Client>>{
         return TODO()
     }
+    fun editClient(header: String, client: Client): Call<UserResponse<SingleClient>>{
+        return TODO()
+    }
     fun getAllClient(header: String?): Call<UserResponse<ClientsList>>{
         return TODO()
     }
@@ -35,6 +39,12 @@ interface AuthRequestInterface {
         return TODO()
     }
     fun addPhoto(header: String?, body: RequestBody): Call<UserResponse<NothingExpected>>{
+        return TODO()
+    }
+    fun uploadProfilePicture(header: String?, body: RequestBody): Call<UserResponse<User>>{
+        return TODO()
+    }
+    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<User>>{
         return TODO()
     }
 }

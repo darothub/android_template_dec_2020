@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
@@ -31,13 +30,10 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
-import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import validatePasswordAndAdvise
-import java.util.*
 
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 
 /**
@@ -96,7 +92,7 @@ class PhoneSignupFragment : DaggerFragment() {
         setupToolbarAndNavigationUI(toolbar, navController)
         buttonAndProgressBarActivity()
 
-        setUpSpinner()
+        setUpCountrySpinner(getString(R.string.select_your_country_str), phone_signup_country_spinner)
         setupLoginSpannableString()
         initEnterKeyToSubmitForm(phone_signup_password_et) { signupRequest() }
     }
@@ -166,21 +162,7 @@ class PhoneSignupFragment : DaggerFragment() {
         setupCategorySpinner(requireContext(), phone_signup_category_spinner, R.array.categories_array)
     }
 
-    fun setUpSpinner(){
-        val locale = Locale.getAvailableLocales()
-        var countriesIsoAndName: HashMap<String, String> = HashMap()
-        locale.associateByTo(countriesIsoAndName, {
-            it.displayCountry
-        },{
-            "${it.displayCountry}(+${PhoneNumberUtil.createInstance(context).getCountryCodeForRegion(it.country)})"
-        })
-        val countries = countriesIsoAndName.values.sorted().toMutableList()
-        countries[0] = getString(R.string.select_your_country_str)
-        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_colored_text_layout, countries)
-        adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
-        phone_signup_country_spinner.adapter = adapter
 
-    }
 
     private fun setupLoginSpannableString() {
         spannableTextColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
@@ -302,3 +284,5 @@ class PhoneSignupFragment : DaggerFragment() {
     }
 
 }
+
+

@@ -9,16 +9,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/item_container"
         android:layout_marginTop="@dimen/_8sdp"
-        android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_2sdp"
         android:background="@color/shimmerColor"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:padding="@dimen/_5sdp"
         android:layout_width="wrap_content">
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/specialty_item_checkbox"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/union_membership"
             android:textSize="@dimen/_10sdp"

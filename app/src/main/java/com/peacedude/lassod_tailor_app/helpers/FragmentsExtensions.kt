@@ -1,37 +1,21 @@
 package com.peacedude.lassod_tailor_app.helpers
 
-import android.app.Activity
-import android.app.Dialog
-import android.content.Context
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.peacedude.gdtoast.gdErrorToast
-import com.peacedude.gdtoast.gdToast
-import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.ui.MainActivity
+import java.io.File
 
 
 fun Fragment.goto(destinationId: Int) {
@@ -122,4 +106,21 @@ fun Fragment.changeStatusBarColor(colorRes: Int) {
 }
 fun Fragment.setCustomColor(colorRes: Int): Int {
     return requireActivity().setCustomColor(colorRes)
+}
+
+fun Fragment.checkCameraPermission():Boolean{
+    return requireActivity().checkCameraPermission()
+}
+
+fun Fragment.saveBitmap(bmp:Bitmap): File? {
+    return requireActivity().saveBitmap(bmp)
+}
+
+fun Fragment.uriToBitmap(image:Uri):Bitmap?{
+    return requireActivity().uriToBitmap(image)
+}
+
+fun Fragment.setUpCountrySpinner(header:String, spinner: Spinner){
+   requireActivity().setUpCountrySpinner(header, spinner)
+
 }

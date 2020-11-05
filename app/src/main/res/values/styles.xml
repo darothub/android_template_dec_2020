@@ -122,13 +122,16 @@
 
     <style name="SpinnerCustomStyle" parent="Widget.AppCompat.Spinner.Underlined">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:textSize">@dimen/_13sdp</item>
         <item name="android:textColorHint">@color/colorGray</item>
         <item name="android:layout_marginStart">@dimen/_20sdp</item>
         <item name="android:layout_marginEnd">@dimen/_20sdp</item>
         <item name="backgroundTint">@color/colorGray</item>
         <item name="android:layout_gravity">center</item>
+        <item name="colorAccent">#ffa000</item>
+        <!-- Default color for the dropdown arrow and line -->
+        <item name="colorControlNormal">#ffc107</item>
 
     </style>
 
