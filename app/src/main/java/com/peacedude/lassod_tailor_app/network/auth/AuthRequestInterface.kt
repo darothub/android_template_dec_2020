@@ -1,9 +1,6 @@
 package com.peacedude.lassod_tailor_app.network.auth
 
-import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.request.ClientsList
-import com.peacedude.lassod_tailor_app.model.request.SingleClient
-import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
 import com.peacedude.lassod_tailor_app.model.response.UploadedPhoto
@@ -45,6 +42,9 @@ interface AuthRequestInterface {
         return TODO()
     }
     fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<User>>{
+        return TODO()
+    }
+    fun addMeasurement(header: String?, body: MeasurementValues): Call<UserResponse<ClientMeasurement>>{
         return TODO()
     }
 }

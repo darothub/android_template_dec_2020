@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.request.ClientsList
-import com.peacedude.lassod_tailor_app.model.request.SingleClient
-import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -129,6 +126,19 @@ open class AuthViewModel @Inject constructor(
         val request = authRequestInterface.uploadProfilePicture(header, body)
         return enqueueRequest<User>(request, responseLiveData)
     }
+
+    override fun addMeasurement(
+        header: String?,
+        body: MeasurementValues
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.addMeasurement(header, body)
+        return enqueueRequest<ClientMeasurement>(request, responseLiveData)
+    }
+
     override fun uploadProfilePicture(
         header: String?,
         body: MultipartBody.Part

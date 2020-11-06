@@ -36,6 +36,33 @@
         <item>Visit us for your measurement</item>
         <item>Will accept self-measurement</item>
     </string-array>
+    <string-array name="measurement_values_list">
+        <item>ankle</item>
+        <item>backWidth</item>
+        <item>bottom</item>
+        <item>cap</item>
+        <item>fullLength</item>
+        <item>highLength</item>
+        <item>lap</item>
+        <item>neckWidth</item>
+        <item>roundSleeve</item>
+        <item>armpit</item>
+        <item>band</item>
+        <item>chest</item>
+        <item>halfLength</item>
+        <item>hip</item>
+        <item>longSleeve</item>
+        <item>shortSleeve</item>
+        <item>thigh</item>
+        <item>shoulderToWaist</item>
+        <item>dart</item>
+        <item>handFit</item>
+        <item>knee</item>
+        <item>napeToWaist</item>
+        <item>roundBody</item>
+        <item>shoulder</item>
+        <item>waist</item>
+    </string-array>
 
 
     <string name="app_name">Obioma</string>
@@ -188,4 +215,6 @@
     <string name="delivery_address_str">Delivery address</string>
     <string name="update_str">Update</string>
     <string name="remember_login_choice">Remember login choice</string>
+    <string name="select_str">Select</string>
+    <string name="edit_measurement_str">Edit measurment</string>
 </resources>

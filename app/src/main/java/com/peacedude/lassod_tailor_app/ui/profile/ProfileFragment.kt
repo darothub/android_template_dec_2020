@@ -209,7 +209,7 @@ class ProfileFragment : DaggerFragment() {
         val request = authViewModel.getAllClient(header)
         i(title, "header $header")
         //Observer for get all clients request
-        requestObserver(null, null, request) { bool, result ->
+        requestObserver(null, null, request, true) { bool, result ->
             //Task to be done on successful
             onRequestResponseTask<ClientsList>(bool, result) {
                 val results = result as UserResponse<ClientsList>
@@ -314,13 +314,12 @@ class ProfileFragment : DaggerFragment() {
                                                 val newClientData = result.data?.client
                                                 requireActivity().gdToast(msg, Gravity.BOTTOM)
                                                 dialog.dismiss()
-
+                                                goto(R.id.profileFragment)
 
                                             }
 
                                         }
 
-                                        adapter.notifyDataSetChanged()
                                     }
                                 }
 
@@ -356,3 +355,4 @@ class ProfileFragment : DaggerFragment() {
     }
 
 }
+

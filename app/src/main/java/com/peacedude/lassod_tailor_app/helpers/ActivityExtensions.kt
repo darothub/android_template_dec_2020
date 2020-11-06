@@ -66,6 +66,7 @@ fun Activity.observeRequest(
     val dialog by lazy {
         Dialog(this, R.style.DialogTheme).apply {
             setContentView(R.layout.loader_layout)
+            setCanceledOnTouchOutside(false)
             window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
     }

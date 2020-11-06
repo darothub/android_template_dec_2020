@@ -7,10 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import com.afollestad.materialdialogs.MaterialDialog
@@ -58,8 +55,15 @@ class EnglishMeasurementFragment : DaggerFragment() {
     private val editTextCountTv by lazy{
         dialog.findViewById<TextView>(R.id.edit_measurement_text_count_tv)
     }
-    lateinit var addMeasurementLayout:View
-    lateinit var dialogTitle: TextView
+    private val measurementValuesSpinner by lazy {
+        dialog.findViewById<Spinner>(R.id.add_measurement_value_spinner)
+    }
+    private val addMeasurementLayout by lazy {
+        dialog.findViewById<ViewGroup>(R.id.add_measurement_ll)
+    }
+    private val dialogTitle by lazy {
+        dialog.findViewById<TextView>(R.id.add_measurement_dialog_title_tv)
+    }
 
     var client: Client? = Client("","", "", "")
 
@@ -82,8 +86,7 @@ class EnglishMeasurementFragment : DaggerFragment() {
         arguments?.let {
 
         }
-        addMeasurementLayout = dialog.findViewById(R.id.add_measurement_ll)
-        dialogTitle = dialog.findViewById(R.id.dialog_title)
+
         val saveBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         saveBtnBackground?.colorFilter = PorterDuffColorFilter(
             ContextCompat.getColor( requireContext(), R.color.colorPrimary),

@@ -2,10 +2,7 @@ package com.peacedude.lassod_tailor_app.data.repositories.auth
 
 import androidx.lifecycle.MutableLiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.request.ClientsList
-import com.peacedude.lassod_tailor_app.model.request.SingleClient
-import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
@@ -68,6 +65,13 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         body: MultipartBody.Part
     ): Call<UserResponse<User>> {
         return authServices.uploadProfilePicture(header, body)
+    }
+
+    override fun addMeasurement(
+        header: String?,
+        body: MeasurementValues
+    ): Call<UserResponse<ClientMeasurement>> {
+        return authServices.addMeasurement(header, body)
     }
 
 

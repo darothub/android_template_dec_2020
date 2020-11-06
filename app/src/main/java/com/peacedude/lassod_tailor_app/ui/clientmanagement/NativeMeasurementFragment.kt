@@ -13,6 +13,7 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -21,15 +22,18 @@ import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientMeasurement
 import com.peacedude.lassod_tailor_app.model.request.Measurement
+import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
+import com.peacedude.lassod_tailor_app.model.response.NothingExpected
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_native_measurement.*
 import kotlinx.android.synthetic.main.measurement_item.view.*
+import java.util.HashMap
 import javax.inject.Inject
 
 
@@ -77,115 +81,178 @@ class NativeMeasurementFragment : DaggerFragment() {
     private val editTextCountTv by lazy {
         dialog.findViewById<TextView>(R.id.edit_measurement_text_count_tv)
     }
-    private lateinit var addMeasurementLayout: View
-    lateinit var dialogTitle: TextView
-
-    //    private val arg:NativeMeasurementFragmentArgs by navArgs()
-    @Inject
-    lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val measurementValuesSpinner by lazy {
+        dialog.findViewById<Spinner>(R.id.add_measurement_value_spinner)
     }
-    var client: Client? = Client("", "", "", "")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val addMeasurementLayout by lazy {
+        dialog.findViewById<ViewGroup>(R.id.add_measurement_ll)
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_native_measurement, container, false)
+    private val dialogTitle by lazy {
+        dialog.findViewById<TextView>(R.id.add_measurement_dialog_title_tv)
+    }
+    private val header by lazy {
+        authViewModel.header
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    val measurementValues: HashMap<String, String> by lazy {
+        HashMap<String, String> ()
+    }
 
-        arguments?.let {
-
+        //    private val arg:NativeMeasurementFragmentArgs by navArgs()
+        @Inject
+        lateinit var viewModelProviderFactory: ViewModelFactory
+        private val authViewModel: AuthViewModel by lazy {
+            ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+        }
+        var client: Client? = Client("", "", "", "")
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
         }
 
-        val measurementList = ArrayList<Measurement>()
+        override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            // Inflate the layout for this fragment
+            return inflater.inflate(R.layout.fragment_native_measurement, container, false)
+        }
 
-        addMeasurementLayout = dialog.findViewById(R.id.add_measurement_ll)
-        dialogTitle = dialog.findViewById(R.id.dialog_title)
-        val saveBtnBackground =
-            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        saveBtnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-            PorterDuff.Mode.SRC_IN
-        )
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+
+            arguments?.let {
+
+            }
+            val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
+            val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
+            val measurementValuesList = resources.getStringArray(R.array.measurement_values_list).toList() as ArrayList<String>
+
+            val measurementList = ArrayList<Measurement>()
+
+            val saveBtnBackground =
+                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
+            saveBtnBackground?.colorFilter = PorterDuffColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN
+            )
 
 //        val client:Client? = arg.client ?: emptyClient
 //        Log.i(title, "client name ${client?.name}")
-        buttonTransactions({
-            saveBtn = native_measurement_included_btn.findViewById(R.id.btn)
-            saveBtn.apply {
-                text = getString(R.string.save)
-                background = saveBtnBackground
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+            native_measurement_fab.setOnClickListener {
+                setUpSpinnerWithList(getString(R.string.select_str), measurementValuesSpinner, measurementValuesList)
+                dialogTitle.text = getString(R.string.add_measurement)
+                addMeasurementButton.apply {
+                    text = getString(R.string.add)
+                    background = saveBtnBackground
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+                }
+                addMeasurementLayout.show()
+                dialog.show()
             }
+            buttonTransactions({
 
-            progressBar = native_measurement_included_btn.findViewById(R.id.progress_bar)
+                saveBtn = native_measurement_included_btn.findViewById(R.id.btn)
+                saveBtn.apply {
+                    text = getString(R.string.save)
+                    background = saveBtnBackground
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+                }
 
-            addMeasurementButton.apply {
-                text = getString(R.string.add)
-                background = saveBtnBackground
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-            }
-            EditMeasurementButton.apply {
-                text = getString(R.string.save)
-                background = saveBtnBackground
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-            }
+                progressBar = native_measurement_included_btn.findViewById(R.id.progress_bar)
 
-        }, {
-            addMeasurementButton.setOnClickListener {
-                val measurementName = dialogAddNameField.text.toString().trim()
-                val measurementValue = dialogAddValueField.text.toString().trim()
+            }, {
+                addMeasurementButton.setOnClickListener {
+                    val measurementName = measurementValuesSpinner.selectedItem.toString().trim()
+                    val measurementValue = dialogAddValueField.text.toString().trim()
+                    val measurement = Measurement(measurementName, measurementValue)
+                    if(measurementList.contains(measurement)){
+                        requireActivity().gdToast("${measurement.name} already exist", Gravity.BOTTOM)
+                    }
+                    else{
+                        measurementList.add(measurement)
+                    }
 
-                measurementList.add(Measurement(measurementName, measurementValue))
 
-                native_measurement_rv.setupAdapter<Measurement>(R.layout.measurement_item) { adapter, context, list ->
-                    bind { itemView, position, item ->
-                        itemView.measurement_name.text = item?.name
-                        itemView.measurement_value.text = item?.value
+                    native_measurement_rv.setupAdapter<Measurement>(R.layout.measurement_item) { adapter, context, list ->
+                        bind { itemView, position, item ->
+                            itemView.measurement_name.text = item?.name
+                            itemView.measurement_value.text = item?.value
+                            itemView.measurement_delete_btn.setOnClickListener {
+                                val m = Measurement(item?.name.toString(), item?.value.toString())
+                                if(measurementList.contains(m)){
+                                    list?.removeAt(position)
+                                    adapter.notifyDataSetChanged()
+                                }
+                                else{
+                                    requireActivity().gdToast("Measurement not found", Gravity.BOTTOM)
+                                }
 
-                        itemView.measurement_delete_btn.setOnClickListener {
-                            requireActivity().gdToast("Hello I clicked", Gravity.BOTTOM)
+                            }
+                            itemView.setOnClickListener {
+                                dialogTitle.text = getString(R.string.edit_measurement_str)
+                                addMeasurementButton.apply {
+                                    text = getString(R.string.update_str)
+                                    background = saveBtnBackground
+                                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+                                }
+                                dialog.show()
+                                setUpSpinnerWithList(item?.name.toString(), measurementValuesSpinner, measurementValuesList)
+                                addMeasurementButton.setOnClickListener {
+                                    item?.value = dialogAddValueField.text.toString().trim()
+                                    dialog.dismiss()
+                                    adapter.notifyDataSetChanged()
+                                }
+                            }
+                        }
+                        setLayoutManager(GridLayoutManager(requireContext(), 3))
+                        submitList(measurementList)
+                    }
+                    dialog.dismiss()
+                }
+                val client =  GlobalVariables.globalClient
+                Log.i(title, "newclient $client")
+                saveBtn.setOnClickListener {
+                    measurementList.associateByTo(measurementValues, {
+                        it.name
+                    },{
+                        it.value
+                    })
+                    val clientMeasurement = MeasurementValues(
+                        client?.name.toString(),
+                        "Type",
+                        client?.id.toString(),
+                        measurementValues
+                    )
+                    Log.i(title, "values $measurementValues")
+
+                    val addMeasurementReq = authViewModel.addMeasurement(header, clientMeasurement)
+                    requestObserver(progressBar, saveBtn, addMeasurementReq, false) { bool, result ->
+                        onRequestResponseTask<ClientMeasurement>(bool, result) {
+                            val res = result as UserResponse<ClientMeasurement>
+                            requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+//                                        listOfClient.toMutableList().removeAt(position)
                         }
                     }
-                    setLayoutManager(GridLayoutManager(requireContext(), 3))
-                    submitList(measurementList)
+
                 }
-                dialog.dismiss()
-            }
-        })
+            })
 
 
 
-        dialogAddNameField.textCountListener(addTextCountTv)
-        dialogEditNameField.textCountListener(editTextCountTv)
+            dialogAddNameField.textCountListener(addTextCountTv)
+            dialogEditNameField.textCountListener(editTextCountTv)
 
-        native_measurement_fab.setOnClickListener {
-            dialogTitle.text = getString(R.string.add_measurement)
-            addMeasurementLayout.show()
-            dialog.show()
+
+
         }
 
-        val c =  authViewModel.newClient
-        Log.i(title, "newclientname ${c?.name}")
-    }
 
-
-    fun EditText.textCountListener(tv: TextView) {
-        this.doOnTextChanged { text, start, count, after ->
-            if (text != null) {
-                tv.text = "${text.length}/15"
+        fun EditText.textCountListener(tv: TextView) {
+            this.doOnTextChanged { text, start, count, after ->
+                if (text != null) {
+                    tv.text = "${text.length}/15"
+                }
+                return@doOnTextChanged
             }
-            return@doOnTextChanged
         }
-    }
-
 }

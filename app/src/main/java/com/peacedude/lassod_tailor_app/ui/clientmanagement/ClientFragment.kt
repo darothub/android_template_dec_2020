@@ -132,7 +132,7 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
             setItem(1)
         }
         else{
-
+            setItem(0)
         }
 
     }
