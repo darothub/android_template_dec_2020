@@ -47,6 +47,19 @@
 
 
         />
+    <TextView
+        android:id="@+id/client_id_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lagos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/client_name_tv"
+        app:layout_constraintBottom_toBottomOf="@id/client_name_tv"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:visibility="gone"
+
+
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -223,9 +223,11 @@ class ProfileFragment : DaggerFragment() {
                         bind { itemView, position, item ->
                             itemView.client_name_tv.text = item?.name
                             itemView.client_location_tv.text = item?.country
+                            itemView.client_id_tv.text = item?.id
 
                             //Set on click listener for item view
                             itemView.setOnClickListener {
+                                GlobalVariables.globalString = item?.id.toString()
                                 dialogNameTv.text = itemView.client_name_tv.text
                                 dialogPhoneNumberTv.text = item?.phone
                                 dialogAddressTv.text = item?.deliveryAddress
@@ -301,7 +303,7 @@ class ProfileFragment : DaggerFragment() {
                                         val client = Client(name,phoneNumber, email, address)
                                         client.state = state
                                         client.gender = gender
-                                        client.id = item?.id
+                                        client.id = GlobalVariables.globalString
                                         client.country = country
                                        val editClientReq = authViewModel.editClient(header, client)
                                         requestObserver(dialogUpdateProgressBar, dialogUpdateBtn, editClientReq){bool, result ->
@@ -312,11 +314,13 @@ class ProfileFragment : DaggerFragment() {
                                                 val newClientData = result.data?.client
                                                 requireActivity().gdToast(msg, Gravity.BOTTOM)
                                                 dialog.dismiss()
-                                                adapter.notifyDataSetChanged()
+
 
                                             }
 
                                         }
+
+                                        adapter.notifyDataSetChanged()
                                     }
                                 }
 
