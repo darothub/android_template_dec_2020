@@ -60,18 +60,6 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewPager()
-//        val toolbar = (client_management_toolbar as Toolbar)
-//        toolbar.setTitleTextColor(
-//            ContextCompat.getColor(
-//                requireContext(),
-//                R.color.colorPrimaryDark
-//            )
-//        )
-//
-//        val navController = Navigation.findNavController(client_management_appBar)
-//
-//
-//        NavigationUI.setupWithNavController(toolbar, navController)
         nextBtn = client_account_next_btn2.findViewById(R.id.btn)
         progressBar = client_account_next_btn2.findViewById(R.id.progress_bar)
 
@@ -81,6 +69,7 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
             setCustomColor(R.color.colorPrimary),
             PorterDuff.Mode.SRC_IN
         )
+
 
         nextBtn.text = getString(R.string.next)
         nextBtn.background = nextBtnBackground
@@ -137,6 +126,14 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
                 R.color.colorPrimary
             )
         )
+        val globalClient = GlobalVariables.globalClient
+        if(globalClient != null){
+            i(title, "globalClient $globalClient")
+            setItem(1)
+        }
+        else{
+
+        }
 
     }
 

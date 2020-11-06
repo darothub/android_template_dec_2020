@@ -160,6 +160,19 @@
             app:layout_constraintTop_toBottomOf="@id/login_page_btn"
             />
 
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/login_fragment_remember_login_choice_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/login_google_sign_in_button"
+            android:text="@string/remember_login_choice"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textColor="@color/colorWhite"
+            android:buttonTint="@color/colorWhite"/>
+
+
         <TextView
             android:id="@+id/new_user"
             android:layout_width="wrap_content"
@@ -167,7 +180,7 @@
             android:text="@string/new_user"
             android:textSize="15sp"
             android:textColor="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/login_google_sign_in_button"
+            app:layout_constraintTop_toBottomOf="@id/login_fragment_remember_login_choice_cb"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="@dimen/_20sdp"

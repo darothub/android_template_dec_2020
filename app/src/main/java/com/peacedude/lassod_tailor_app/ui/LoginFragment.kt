@@ -117,8 +117,7 @@ class LoginFragment : DaggerFragment() {
         }, {
             loginBtn.text = getString(R.string.login)
         })
-
-        val lastLoginForm = userViewModel.lastLoginForm
+        var lastLoginForm = userViewModel.lastLoginForm.toString()
 
         if (lastLoginForm == PHONE) {
             login_phone_number_input.show()
@@ -331,23 +330,20 @@ class LoginFragment : DaggerFragment() {
                 val user = userDetails?.data
                 user?.loggedIn = true
                 userViewModel.currentUser = user
-                userViewModel.lastLoginForm = EMAIL
+                if(login_fragment_remember_login_choice_cb.isChecked){
+                    userViewModel.lastLoginForm = EMAIL
+                }
+                else{
+                    userViewModel.lastLoginForm = PHONE
+                }
+
 //                val res = userViewModel.saveUser
                 val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
 //                Log.i("$this", "res ${res.size}")
-                requireActivity().gdToast(getString(R.string.you_are_signed) + " ${user?.email}", Gravity.BOTTOM)
+                requireActivity().gdToast(getString(R.string.you_are_signed) + " $email", Gravity.BOTTOM)
                 startActivity(loginIntent)
                 requireActivity().finish()
             }
         }
     }
 }
-
-//data class Data (
-//    val email: String?=null,
-//    val category: String?=null
-//)
-//data class DataTwo (
-//    val token: String?=null,
-//    val role: String?=null
-//):Serializable, ParentData

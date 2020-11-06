@@ -21,6 +21,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client_account.*
 import javax.inject.Inject
@@ -76,8 +77,10 @@ class ClientAccountFragment : DaggerFragment(){
         setupCategorySpinner(
             requireContext(),
             client_account_gender_spinner,
-            R.array.gender_list
+            R.array.gender_normal_list
         )
+
+        setUpCountrySpinner(getString(R.string.select_your_country_str), client_account_country_spinner)
 
         buttonTransactions({
             nextBtn = client_account_next_btn.findViewById(R.id.btn)
@@ -93,36 +96,41 @@ class ClientAccountFragment : DaggerFragment(){
                 var clientPhoneNumber = client_account_phone_number_et.text.toString().trim()
                 val clientShippingAddress = client_account_shipping_address_et.text.toString().trim()
                 val clientEmail = client_account_email_et.text.toString().trim()
-                var phonePattern = Regex("""\d{10,13}""")
+                val clientCountry = client_account_country_spinner.selectedItem.toString()
+                var phonePattern = Regex("""\d{10,17}""")
                 val checkPhoneStandard = phonePattern.matches(clientPhoneNumber)
                 val validation = IsEmptyCheck.fieldsValidation(clientEmail, null)
                 val checkForEmpty =
                     IsEmptyCheck(client_account_name_et,client_account_phone_number_et,client_account_email_et,client_account_shipping_address_et )
                 when {
                     checkForEmpty != null -> {
-                        val pattern = Regex("""phone_number|name|shipping_address|email""")
-                        requireActivity().getEditTextName(checkForEmpty, pattern)
+                       requireActivity().gdErrorToast(checkForEmpty.tag.toString(), Gravity.BOTTOM)
                     }
                     validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
-
+                    clientCountry == getString(R.string.select_your_country_str) ->{
+                        requireActivity().gdErrorToast("Please ${getString(R.string.select_your_country_str)}", Gravity.BOTTOM)
+                    }
                     else->{
                         Log.i(title, " header $header")
                         val client = Client(clientName, clientPhoneNumber, clientEmail, clientShippingAddress)
                         val gender = client_account_gender_spinner.selectedItem as String
                         client.gender = gender
-                        authViewModel.newClient = client
+                        client.country = clientCountry
 
                         val req = authViewModel.addClient(header, client)
                         val observer =
                             requireActivity().observeRequest(req, progressBar, nextBtn)
                         observer.observe(viewLifecycleOwner, Observer {
                             val (bool, result) = it
-                            onRequestResponseTask<Client>(bool, result) {
+                            onRequestResponseTask<Client>(bool, result) { res ->
+                                val newClient  = res?.data
                                 requireActivity().gdToast(
                                     "Client added successfully",
                                     Gravity.BOTTOM
                                 )
-                                parent.setItem(1)
+                                authViewModel.newClient = newClient
+                                i(title, "client $newClient Id ${newClient?.id}")
+//                                parent.setItem(1)
 //
 //                                i(title, getString(R.string.check_email))
                             }

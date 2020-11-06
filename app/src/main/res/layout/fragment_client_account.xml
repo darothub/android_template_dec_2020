@@ -14,69 +14,81 @@
         android:layout_height="match_parent"
         android:paddingTop="@dimen/_10sdp"
         >
-
-        <TextView
-            android:id="@+id/client_account_name_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/name"
-            android:layout_marginTop="@dimen/_10sdp"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <EditText
-            android:id="@+id/client_account_name_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textCapWords|textMultiLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="6dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/client_account_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:gravity="start"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/client_account_phone_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/phone_number"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/client_account_name_et"
-            />
-
-        <EditText
-            android:id="@+id/client_account_phone_number_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="phone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:maxLength="13"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/colorGray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/client_account_name_et"
+                style="@style/EditTextCustomStyle"
+                android:hint="@string/name"
+                android:inputType="textCapWords|textMultiLine"
+                android:singleLine="true"
+                android:tag="@string/name"
+                android:imeOptions="actionNext"
+                android:textColor="@color/colorGray"
+                android:textColorHint="@color/colorGray"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/client_account_phone_number_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:imeOptions="actionNext"
-            app:layout_constraintBottom_toBottomOf="@id/client_account_phone_tv"
-            app:layout_constraintTop_toBottomOf="@id/client_account_name_et"
-             />
-
-        <TextView
-            android:id="@+id/client_account_email_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/email_address_str"
+            android:textColorHint="@color/colorGray"
+            android:gravity="start"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/client_account_phone_number_et"
-            />
-
-        <EditText
-            android:id="@+id/client_account_email_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textEmailAddress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/client_account_name_input"
+            android:textColor="@color/colorGray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/client_account_phone_number_et"
+                style="@style/EditTextCustomStyle"
+                android:hint="@string/phone_number"
+                android:inputType="phone"
+                android:singleLine="true"
+                android:maxLength="17"
+                android:tag="@string/phone_number"
+                android:imeOptions="actionNext"
+                android:textColor="@color/colorGray"
+                android:textColorHint="@color/colorGray"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/client_account_email_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:gravity="start"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/client_account_email_tv"
-            app:layout_constraintTop_toBottomOf="@id/client_account_phone_number_et"
-            />
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/client_account_phone_number_input"
+            android:textColor="@color/colorGray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/client_account_email_et"
+                style="@style/EditTextCustomStyle"
+                android:hint="@string/email_address_str"
+                android:inputType="textEmailAddress|textMultiLine"
+                android:singleLine="true"
+                android:tag="@string/email_address_str"
+                android:imeOptions="actionNext"
+                android:textColor="@color/colorGray"
+                android:textColorHint="@color/colorGray"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
         <TextView
             android:id="@+id/client_account_gender_tv"
             style="@style/EditProfileTextViewCustomStyle"
@@ -84,7 +96,7 @@
             android:gravity="bottom"
             android:imeOptions="actionNext"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/client_account_email_et"
+            app:layout_constraintTop_toBottomOf="@id/client_account_email_input"
             />
 
         <Spinner
@@ -97,34 +109,73 @@
             android:layout_marginTop="@dimen/_20sdp"
             android:transitionName="@string/spinner"
             />
-        <TextView
-            android:id="@+id/client_account_shipping_add_tv"
-            style="@style/EditProfileTextViewCustomStyle"
-            android:text="@string/shipping_addresss_str"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/client_account_gender_spinner"
-            />
 
-        <EditText
-            android:id="@+id/client_account_shipping_address_et"
-            style="@style/EditProfileEditTextCustomStyle"
-            android:inputType="textMultiLine|textCapWords"
-            android:maxLines="4"
-            android:maxLength="150"
-            android:gravity="start"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="@dimen/_20sdp"
-            app:layout_constraintStart_toStartOf="parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/client_account_shipping_address_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:imeOptions="actionNext"
-            app:layout_constraintTop_toBottomOf="@id/client_account_shipping_add_tv"
+            android:textColorHint="@color/colorGray"
+            android:gravity="start"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_10sdp"
+
+            app:layout_constraintTop_toBottomOf="@id/client_account_gender_spinner"
+            android:textColor="@color/colorGray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/client_account_shipping_address_et"
+                style="@style/EditTextCustomStyle"
+                android:layout_height="@dimen/_80sdp"
+                android:hint="@string/shipping_addresss_str"
+                android:inputType="textMultiLine|textCapWords"
+                android:maxLines="4"
+                android:maxLength="150"
+                android:gravity="bottom"
+                android:tag="@string/shipping_addresss_str"
+                android:imeOptions="actionNext"
+                android:textColor="@color/colorGray"
+                android:textColorHint="@color/colorGray"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/client_account_state_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:gravity="start"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/client_account_shipping_address_input"
+            android:textColor="@color/colorGray">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/client_account_state_et"
+                style="@style/EditTextCustomStyle"
+                android:hint="@string/state"
+                android:inputType="textCapWords"
+                android:singleLine="true"
+                android:tag="@string/state"
+                android:imeOptions="actionNext"
+                android:textColor="@color/colorGray"
+                android:textColorHint="@color/colorGray"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <Spinner
+            android:id="@+id/client_account_country_spinner"
+            style="@style/SpinnerCustomStyle"
+            app:layout_constraintTop_toBottomOf="@id/client_account_state_input"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
             />
         <include
             android:id="@+id/client_account_next_btn"
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/client_account_shipping_address_et"
+            app:layout_constraintTop_toBottomOf="@id/client_account_country_spinner"
             android:layout_marginTop="@dimen/_10sdp"
 
             />

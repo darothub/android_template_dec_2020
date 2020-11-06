@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
-class Client(
+data class Client(
     val name: String,
     @SerializedName("phoneNumber")
     val phone: String,

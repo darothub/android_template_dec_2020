@@ -2,10 +2,13 @@ package com.peacedude.lassod_tailor_app.ui.profile
 
 import IsEmptyCheck
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -26,11 +29,10 @@ import com.peacedude.lassod_tailor_app.model.request.SingleClient
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.client_list_item.view.*
-import kotlinx.android.synthetic.main.fragment_client_account.*
-import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
@@ -110,6 +112,17 @@ class ProfileFragment : DaggerFragment() {
     private val editClientDialog by lazy {
         (dialog.findViewById(R.id.single_client_edit_cl) as ViewGroup)
     }
+    private val exitClientIv by lazy {
+        (dialog.findViewById(R.id.single_client_edit_exit_iv) as ImageView)
+    }
+    private val addMeasurementTv by lazy {
+        (dialog.findViewById(R.id.single_client_edit_add_measurement_iv) as TextView)
+    }
+    private val dialogEmailTv by lazy {
+        (dialog.findViewById(R.id.single_client_email_address_tv) as TextView)
+    }
+
+
     lateinit var  dialogEditBtn:Button
     lateinit var  dialogDeleteBtn:Button
     lateinit var  dialogUpdateBtn:Button
@@ -181,12 +194,11 @@ class ProfileFragment : DaggerFragment() {
             dialogDeleteBtn.text = getString(R.string.delete)
             dialogUpdateBtn.text = getString(R.string.update_str)
 
-            setupCategorySpinner(
-                requireContext(),
-                dialogGenderSpinner,
-                R.array.gender_normal_list
-            )
 
+
+            exitClientIv.setOnClickListener {
+                dialog.dismiss()
+            }
 
         }, {
 
@@ -210,7 +222,7 @@ class ProfileFragment : DaggerFragment() {
 
                         bind { itemView, position, item ->
                             itemView.client_name_tv.text = item?.name
-                            itemView.client_location_tv.text = "Nigeria"
+                            itemView.client_location_tv.text = item?.country
 
                             //Set on click listener for item view
                             itemView.setOnClickListener {
@@ -218,11 +230,35 @@ class ProfileFragment : DaggerFragment() {
                                 dialogPhoneNumberTv.text = item?.phone
                                 dialogAddressTv.text = item?.deliveryAddress
                                 dialogGenderTv.text = item?.gender
-                                dialogState.text = "Lasgidi"
-                                dialogCountryTv.text = "Nigeria"
+                                dialogState.text = item?.state
+                                dialogEmailTv.text = item?.email
+                                dialogCountryTv.text = item?.country
                                 displayClientDialog.show()
                                 dialog.show{
                                     cornerRadius(10F)
+                                }
+
+                            }
+                            dialogEditBtn.setOnClickListener {
+//                                loaderDialog.show()
+                                if(item != null){
+                                    val lists = resources.getStringArray(R.array.gender_normal_list).toList() as ArrayList<String>
+                                    displayClientDialog.hide()
+                                    dialogNameEt.setText(dialogNameTv.text)
+                                    dialogPhoneNumberEt.setText(dialogPhoneNumberTv.text)
+                                    dialogEmailEt.setText(dialogEmailTv.text)
+                                    dialogAddressEt.setText(dialogAddressTv.text)
+                                    dialogStateEt.setText(dialogState.text)
+                                    setUpSpinnerWithList(
+                                        dialogGenderTv.text.toString(),
+                                        dialogGenderSpinner,
+                                        lists
+                                    )
+                                    setUpCountrySpinner(dialogCountryTv.text.toString(), dialogCountrySpinner)
+                                    editClientDialog.show()
+//                                    if(editClientDialog.show()){
+//                                        loaderDialog.dismiss()
+//                                    }
                                 }
                             }
                             //When dialog delete button is clicked
@@ -241,22 +277,7 @@ class ProfileFragment : DaggerFragment() {
                                 }
 
                             }
-                            dialogEditBtn.setOnClickListener {
-                                loaderDialog.show()
-                                if(item != null){
-                                    displayClientDialog.hide()
-                                    dialogNameEt.setText(item.name)
-                                    dialogPhoneNumberEt.setText(item.phone)
-                                    dialogEmailEt.setText(item.email)
-                                    dialogAddressEt.setText(item.deliveryAddress)
-                                    dialogStateEt.setText(item.state)
-                                    setUpCountrySpinner(item.country.toString(), dialogCountrySpinner)
-                                    editClientDialog.show()
-                                    if(editClientDialog.show()){
-                                        loaderDialog.dismiss()
-                                    }
-                                }
-                            }
+
                             dialogUpdateBtn.setOnClickListener {
                                 val name = dialogNameEt.text.toString().trim()
                                 val phoneNumber = dialogPhoneNumberEt.text.toString()
@@ -278,6 +299,8 @@ class ProfileFragment : DaggerFragment() {
                                     }
                                     else->{
                                         val client = Client(name,phoneNumber, email, address)
+                                        client.state = state
+                                        client.gender = gender
                                         client.id = item?.id
                                         client.country = country
                                        val editClientReq = authViewModel.editClient(header, client)
@@ -289,12 +312,25 @@ class ProfileFragment : DaggerFragment() {
                                                 val newClientData = result.data?.client
                                                 requireActivity().gdToast(msg, Gravity.BOTTOM)
                                                 dialog.dismiss()
+                                                adapter.notifyDataSetChanged()
+
                                             }
 
                                         }
                                     }
                                 }
 
+
+                            }
+                            dialog.setOnDismissListener {
+                                displayClientDialog.hide()
+                                editClientDialog.hide()
+                            }
+                            addMeasurementTv.setOnClickListener {
+                                GlobalVariables.globalClient = item
+                                val measurementIntent = Intent(requireActivity(), ClientActivity::class.java)
+                                dialog.dismiss()
+                                startActivity(measurementIntent)
                             }
                         }
                         setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false))

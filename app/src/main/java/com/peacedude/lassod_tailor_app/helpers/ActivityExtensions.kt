@@ -31,6 +31,7 @@ import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
@@ -164,7 +165,7 @@ fun Activity.requestObserver(
 inline fun <reified T>Activity.onRequestResponseTask(
     bool: Boolean,
     result: Any?,
-    action: () -> Unit
+    action: (UserResponse<T>?) -> Unit
 ) {
     val title = this.getName()
     when (bool) {
@@ -174,7 +175,7 @@ inline fun <reified T>Activity.onRequestResponseTask(
                 val res = result as UserResponse<T>
                 Log.i(title, "OnResponseTaskFrag ${res.message}")
 //                requireActivity().gdToast(res.message.toString(), Gravity.BOTTOM)
-                action()
+                action(res)
 //                i("onResponseTask", "result of registration ${res.message} ${res.data.token}\n${res.data.userId}")
             } catch (e: java.lang.Exception) {
                 Log.i(title, "OnResponseTaskFrag error ${e.localizedMessage}")
@@ -356,7 +357,7 @@ fun Activity.uriToBitmap(uriImage: Uri): Bitmap? {
     }
     return mBitmap
 }
-fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
+fun Activity.setUpCountrySpinnerWithDialCode(header:String, spinner: Spinner){
     val locale = Locale.getAvailableLocales()
     var countriesIsoAndName: HashMap<String, String> = HashMap()
     locale.associateByTo(countriesIsoAndName, {
@@ -370,5 +371,32 @@ fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
     adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
     spinner.adapter = adapter
 
+}
+fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
+    val locale = Locale.getAvailableLocales()
+    var countriesIsoAndName: HashMap<String, String> = HashMap()
+    locale.associateByTo(countriesIsoAndName, {
+        it.displayCountry
+    },{
+        it.displayCountry
+    })
+    val countries = countriesIsoAndName.values.sorted().toMutableList()
+    countries[0] = header
+    val adapter = ArrayAdapter(this, R.layout.spinner_colored_text_layout, countries)
+    adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
+    spinner.adapter = adapter
+}
+
+fun Activity.setUpSpinnerWithList(header:String, spinner: Spinner, list:ArrayList<String>){
+    list[0] = header
+    val adapter = ArrayAdapter(this, R.layout.spinner_colored_text_layout, list)
+    adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
+    spinner.adapter = adapter
+}
+
+object GlobalVariables{
+    var globalClient: Client? = null
+    var globalUser: User? = null
+    var globalString:String = ""
 }
 

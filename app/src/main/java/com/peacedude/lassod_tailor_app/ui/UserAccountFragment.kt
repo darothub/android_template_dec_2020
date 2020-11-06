@@ -145,17 +145,22 @@ class UserAccountFragment : DaggerFragment() {
         )
 
         tap_to_change_pic_tv.setOnClickListener {
-            val res = checkCameraPermission()
-            if (res) {
-                getPhotoData()
-            } else {
-                i(title, getString(R.string.no_permission))
-                requireActivity().gdToast(getString(R.string.no_permission), Gravity.BOTTOM)
-            }
-
+            photoRequest()
 
         }
+        user_account_profile_image.setOnClickListener {
+            photoRequest()
+        }
+    }
 
+    private fun photoRequest() {
+        val res = checkCameraPermission()
+        if (res) {
+            getPhotoData()
+        } else {
+            i(title, getString(R.string.no_permission))
+            requireActivity().gdToast(getString(R.string.no_permission), Gravity.BOTTOM)
+        }
     }
 
     @SuppressLint("SetTextI18n")

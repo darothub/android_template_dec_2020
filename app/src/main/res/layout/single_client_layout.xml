@@ -6,32 +6,59 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-
+        android:background="@drawable/rounded_corner_background"
         >
+        <ImageView
+            android:id="@+id/single_client_edit_exit_iv"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:tint="@color/colorPrimary"
+            app:srcCompat="@drawable/ic_baseline_cancel_24"
+            />
+        <TextView
+            android:id="@+id/single_client_edit_add_measurement_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias=".5"
+            app:layout_constraintEnd_toStartOf="@id/single_client_edit_logo_iv"
+            app:layout_constraintStart_toEndOf="@id/single_client_edit_exit_iv"
+            android:text="@string/add_measurement"
+            android:drawableStart="@drawable/ic_baseline_note_add_24"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorPrimary"
+            android:drawableTint="@color/colorPrimary"
+            />
+        <ImageView
+            android:id="@+id/single_client_edit_logo_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/single_client_edit_exit_iv"
+            app:layout_constraintVertical_bias=".5"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/_20sdp"
+            app:srcCompat="@drawable/obioma_logo_blue"
+
+            />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/single_client_display_cl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/_25sdp"
             android:paddingEnd="@dimen/_20sdp"
-            android:clipToPadding="false"
+            android:animateLayoutChanges="true"
             android:visibility="gone"
-            android:background="@drawable/rounded_corner_background">
+            app:layout_constraintTop_toBottomOf="@id/single_client_edit_exit_iv"
+           >
 
-            <ImageView
-                android:id="@+id/single_client_logo_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"
-                app:srcCompat="@drawable/obioma_logo_blue"
-
-                />
             <TextView
                 android:id="@+id/single_client_name_title_tv"
                 android:layout_width="match_parent"
@@ -41,7 +68,7 @@
                 android:gravity="start"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/single_client_logo_iv"
+                app:layout_constraintTop_toTopOf="parent"
                 android:textColor="@color/colorGray"
                 />
             <TextView
@@ -76,6 +103,28 @@
                 app:layout_constraintTop_toBottomOf="@id/single_client_phone_number_title_tv"
                 app:layout_constraintStart_toStartOf="parent"
                 />
+
+            <TextView
+                android:id="@+id/single_client_email_address_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email_address_str"
+                android:textSize="@dimen/_11sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:layout_constraintTop_toBottomOf="@id/single_client_phone_number_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/colorGray"
+                />
+            <TextView
+                android:id="@+id/single_client_email_address_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_number"
+                android:textSize="@dimen/_13sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@id/single_client_email_address_title_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                />
             <TextView
                 android:id="@+id/single_client_gender_title_tv"
                 android:layout_width="wrap_content"
@@ -83,7 +132,7 @@
                 android:text="@string/gender"
                 android:textSize="@dimen/_11sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/single_client_phone_number_tv"
+                app:layout_constraintTop_toBottomOf="@id/single_client_email_address_tv"
                 app:layout_constraintStart_toStartOf="parent"
                 android:textColor="@color/colorGray"
                 />
@@ -167,11 +216,10 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-
                 app:layout_constraintStart_toEndOf="@id/single_client_edit_btn"
                 app:layout_constraintTop_toBottomOf="@id/single_client_country_tv"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_margin="@dimen/_10sdp"
+
 
 
                 />
@@ -180,13 +228,11 @@
                 layout="@layout/button_and_progressbar"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="5dp"
+                android:layout_margin="10dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/single_client_delete_btn"
                 app:layout_constraintTop_toBottomOf="@id/single_client_country_tv"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_10sdp"
+
 
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -195,19 +241,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
+            android:animateLayoutChanges="true"
             android:visibility="gone"
-            android:background="@drawable/rounded_corner_background">
+            app:layout_constraintTop_toBottomOf="@id/single_client_edit_exit_iv"
+            >
 
-            <ImageView
-                android:id="@+id/single_client_edit_logo_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"
-                app:srcCompat="@drawable/obioma_logo_blue"
 
-                />
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/single_client_edit_name_title_input"
                 android:layout_width="match_parent"
@@ -217,14 +256,14 @@
                 android:gravity="start"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@id/single_client_edit_logo_iv"
+                app:layout_constraintTop_toTopOf="parent"
                 android:textColor="@color/colorGray">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/single_client_edit_name_et"
                     style="@style/EditTextCustomStyle"
                     android:hint="@string/name"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:singleLine="true"
                     android:tag="@string/name"
                     android:textColor="@color/colorGray"
@@ -356,7 +395,7 @@
 
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.core.widget.NestedScrollView>

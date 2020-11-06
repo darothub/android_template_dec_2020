@@ -92,7 +92,7 @@ class PhoneSignupFragment : DaggerFragment() {
         setupToolbarAndNavigationUI(toolbar, navController)
         buttonAndProgressBarActivity()
 
-        setUpCountrySpinner(getString(R.string.select_your_country_str), phone_signup_country_spinner)
+        setUpCountrySpinnerWithDialCode(getString(R.string.select_your_country_str), phone_signup_country_spinner)
         setupLoginSpannableString()
         initEnterKeyToSubmitForm(phone_signup_password_et) { signupRequest() }
     }

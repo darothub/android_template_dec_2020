@@ -15,7 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import java.io.File
+import java.util.ArrayList
 
 
 fun Fragment.goto(destinationId: Int) {
@@ -70,7 +72,7 @@ private fun Fragment.hideKeyboard() {
 inline fun <reified T>Fragment.onRequestResponseTask(
     bool: Boolean,
     result: Any?,
-    action:()-> Unit
+    action:(UserResponse<T>?)-> Unit
 ) {
     requireActivity().onRequestResponseTask<T>(bool, result, action)
 }
@@ -120,7 +122,15 @@ fun Fragment.uriToBitmap(image:Uri):Bitmap?{
     return requireActivity().uriToBitmap(image)
 }
 
-fun Fragment.setUpCountrySpinner(header:String, spinner: Spinner){
-   requireActivity().setUpCountrySpinner(header, spinner)
+fun Fragment.setUpCountrySpinnerWithDialCode(header:String, spinner: Spinner){
+   requireActivity().setUpCountrySpinnerWithDialCode(header, spinner)
 
+}
+
+fun Fragment.setUpCountrySpinner(header:String, spinner: Spinner){
+    requireActivity().setUpCountrySpinner(header, spinner)
+}
+
+fun Fragment.setUpSpinnerWithList(header:String, spinner: Spinner, list: ArrayList<String>){
+    requireActivity().setUpSpinnerWithList(header, spinner, list)
 }
