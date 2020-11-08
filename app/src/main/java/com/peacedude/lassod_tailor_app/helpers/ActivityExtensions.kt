@@ -79,13 +79,13 @@ fun Activity.observeRequest(
             val errorCode = it.code
             when (it) {
                 is ServicesResponseWrapper.Loading<*> -> {
-                    if(loader) dialog.show() else dialog.hide()
+                    if(loader) dialog.show() else dialog.dismiss()
                     progressBar?.show()
                     button?.hide()
                     i(title, "Loading..")
                 }
                 is ServicesResponseWrapper.Success -> {
-                    dialog.hide()
+                    dialog.dismiss()
                     progressBar?.hide()
                     button?.show()
                     result.postValue(Pair(true, responseData))
@@ -93,7 +93,7 @@ fun Activity.observeRequest(
                     i(title, "success ${it.data}")
                 }
                 is ServicesResponseWrapper.Error -> {
-                    dialog.hide()
+                    dialog.dismiss()
                     progressBar?.hide()
                     button?.show()
                     when (errorCode) {
@@ -119,7 +119,7 @@ fun Activity.observeRequest(
                     Log.i(title, "Error ${it.message}")
                 }
                 is ServicesResponseWrapper.Logout -> {
-                    dialog.hide()
+                    dialog.dismiss()
                     val unAuthorizedString = getString(R.string.unauthorized_user)
                     progressBar?.hide()
                     button?.show()
@@ -133,7 +133,9 @@ fun Activity.observeRequest(
                 }
             }
         } catch (e: Exception) {
-            dialog.hide()
+            progressBar?.hide()
+            dialog.dismiss()
+            button?.show()
             i(title, e.localizedMessage)
         }
 

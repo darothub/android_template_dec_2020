@@ -36,7 +36,7 @@ class AllArticlesFragment : Fragment() {
         getName()
     }
     private val toolbar by lazy {
-        (all_articles_fragment_tb as Toolbar)
+        (all_articles_fragment_tb.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

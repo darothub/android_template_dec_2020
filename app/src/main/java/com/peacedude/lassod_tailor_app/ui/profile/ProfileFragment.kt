@@ -265,7 +265,7 @@ class ProfileFragment : DaggerFragment() {
                             }
                             //When dialog delete button is clicked
                             dialogDeleteBtn.setOnClickListener {
-                                val req = authViewModel.deleteClient(header, item?.id)
+                                val req = authViewModel.deleteClient(header, GlobalVariables.globalString)
                                 requestObserver(dialogDeleteProgressBar, dialogDeleteBtn, req, true) { bool, result ->
                                     onRequestResponseTask<NothingExpected>(bool, result) {
                                         val res = result as UserResponse<NothingExpected>

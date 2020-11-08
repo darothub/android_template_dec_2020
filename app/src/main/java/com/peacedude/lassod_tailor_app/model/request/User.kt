@@ -43,7 +43,7 @@ data class User(
     var visitUsMeasurement: Boolean = false
     var acceptSelfMeasurement: Boolean = false
     var deliveryTimePeriod: String? = null
-    var deliveryTimeNo: String? = ""
+    var deliveryTimeNo: Int? = 0
     var paymentOptions: String? = null
     var paymentTerms: ArrayList<String>? = null
     var unionName: String? = null

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@color/colorWhite"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
@@ -24,7 +24,7 @@
         android:layout_marginTop="@dimen/_18sdp"
         android:text="@string/videos_str"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/_15sdp" />
+        android:textSize="@dimen/_13sdp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/all_video_fragment_rv"

@@ -84,6 +84,10 @@ class ResourcesFragment : Fragment() {
                 itemView.resource_video_item_title_tv.text = item?.videoTitle
                 itemView.resource_video_item_time_tv.text = item?.videoMins
 
+
+                itemView.setOnClickListener {
+                    mediaController.show()
+                }
                 resource_fragment_video_rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

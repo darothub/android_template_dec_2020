@@ -151,7 +151,13 @@ class SpecialtyFragment : DaggerFragment() {
 
                 saveBtn.setOnClickListener {
                     user?.deliveryTimePeriod = qaList[1].value
-                    user?.deliveryTimeNo = qaList[1].value
+                    if(qaList[1].value != "null"){
+                        user?.deliveryTimeNo = qaList[1].value.toInt()
+                    }
+                    else{
+                        user?.deliveryTimeNo  = 0
+                    }
+
                     user?.visitUsMeasurement = measurementList[0].selected
                     user?.acceptSelfMeasurement = measurementList[1].selected
                     i(title, "checked1 ${measurementList[0].selected }")

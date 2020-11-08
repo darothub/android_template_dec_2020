@@ -75,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:imeOptions="actionNext"
+                android:textColor="@color/colorGray"
                 android:textColorHint="@color/colorGray">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -89,11 +90,14 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
             <include
                 android:id="@+id/add_measurement_save_btn"
                 layout="@layout/button_and_progressbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_15sdp" />
         </LinearLayout>
 

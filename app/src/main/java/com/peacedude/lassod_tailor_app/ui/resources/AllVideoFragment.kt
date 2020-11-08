@@ -38,7 +38,7 @@ class AllVideoFragment : Fragment() {
         getName()
     }
     private val toolbar by lazy {
-        (all_video_fragment_tb as Toolbar)
+        (all_video_fragment_tb.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

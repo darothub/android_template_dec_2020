@@ -154,8 +154,6 @@ class MediaFragment : DaggerFragment() {
                 i(title, getString(R.string.no_permission))
                 requireActivity().gdToast(getString(R.string.no_permission), Gravity.BOTTOM)
             }
-
-
         }
     }
 
@@ -236,14 +234,3 @@ class MediaFragment : DaggerFragment() {
     }
 }
 
-
-
-
-           //                val requestBody = imageFile?.asRequestBody("image/*".toMediaTypeOrNull())
-//                val filePart: MultipartBody.Part? = requestBody.let {
-//                    MultipartBody.Part.createFormData(
-//                        "photo",
-//                        imageFile?.name,
-//                        it
-//                    )
-//                }

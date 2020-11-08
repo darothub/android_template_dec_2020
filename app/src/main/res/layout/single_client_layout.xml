@@ -18,6 +18,7 @@
             android:layout_height="@dimen/_15sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/single_client_edit_add_measurement_iv"
             android:layout_marginStart="@dimen/_20sdp"
             android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/ic_baseline_cancel_24"
@@ -41,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/single_client_edit_exit_iv"
+            app:layout_constraintBottom_toBottomOf="@id/single_client_edit_add_measurement_iv"
             app:layout_constraintVertical_bias=".5"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="@dimen/_20sdp"
@@ -52,10 +53,9 @@
             android:id="@+id/single_client_display_cl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/_25sdp"
+            android:paddingStart="@dimen/_20sdp"
             android:paddingEnd="@dimen/_20sdp"
             android:animateLayoutChanges="true"
-            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/single_client_edit_exit_iv"
            >
 
@@ -214,25 +214,24 @@
                 android:id="@+id/single_client_delete_btn"
                 layout="@layout/button_and_progressbar"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/single_client_edit_btn"
                 app:layout_constraintTop_toBottomOf="@id/single_client_country_tv"
-                android:layout_margin="@dimen/_10sdp"
-
-
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
 
                 />
             <include
                 android:id="@+id/single_client_edit_btn"
                 layout="@layout/button_and_progressbar"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_width="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/single_client_delete_btn"
                 app:layout_constraintTop_toBottomOf="@id/single_client_country_tv"
-
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
 
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>

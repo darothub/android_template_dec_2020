@@ -349,6 +349,8 @@
             android:layout_width="match_parent"
             app:layout_constraintTop_toBottomOf="@id/account_state_et"
             android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

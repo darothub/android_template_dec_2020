@@ -45,6 +45,7 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
 
 
@@ -187,7 +188,13 @@ class UserAccountFragment : DaggerFragment() {
                     newUserData.firstName = nameList[0].value
                     newUserData.lastName = nameList[1].value
                     newUserData.otherName = nameList[2].value
-                    newUserData.noOfEmployees = nameList[4].value.toInt()
+                    if(nameList[4].value != "null"){
+                        newUserData.noOfEmployees = nameList[4].value.toInt()
+                    }
+                    else{
+                        newUserData.noOfEmployees = 0
+                    }
+
                     newUserData.workshopUserAddress = addressList[0].value
                     newUserData.showroomUserAddress = addressList[1].value
                     newUserData.showroomUserAddress = addressList[1].value
@@ -214,10 +221,9 @@ class UserAccountFragment : DaggerFragment() {
 
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    delay(2000)
                     itemView.user_profile_rv_item_name_title_tv.text = item?.title
                     itemView.user_profile_rv_item_name_value_tv.text = item?.value
-                    delay(2000)
+                    delay(1000)
                     union_membership.show()
                     union_membership_line.show()
                     itemView.user_profile_name_shimmerLayout.stopShimmer()
@@ -491,8 +497,9 @@ class UserAccountFragment : DaggerFragment() {
                 val imageFile = saveBitmap(imageBitmap)
                 if (imageFile != null) {
                     Picasso.get().load(imageFile).into(user_account_profile_image)
-//                    val profileImagePart = MultipartBody.Part.createFormData("avatar", imageFile?.getName(), RequestBody.create(
-//                        "image/*".toMediaTypeOrNull(), imageFile!!))
+//                    val reqBody = imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+//                    val profileImagePart = MultipartBody.Part.createFormData("avatar", imageFile?.getName(), reqBody)
+//                    i(title, "Imagefile $imageFile name ${imageFile.name} path ${imageFile.absolutePath}")
                     val requestBody: RequestBody = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("avatar", imageFile.toString())

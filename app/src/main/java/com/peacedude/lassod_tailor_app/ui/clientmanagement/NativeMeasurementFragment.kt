@@ -1,14 +1,13 @@
 package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
@@ -52,6 +51,13 @@ class NativeMeasurementFragment : DaggerFragment() {
         MaterialDialog(requireContext()).apply {
             noAutoDismiss()
             customView(R.layout.add_measurement_dialog_layout)
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(this.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            val window = this.window
+            window?.attributes = lp
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
     private val dialogIncludedButtonView by lazy {
@@ -129,29 +135,39 @@ class NativeMeasurementFragment : DaggerFragment() {
 
             val measurementList = ArrayList<Measurement>()
 
-            val saveBtnBackground =
-                ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-            saveBtnBackground?.colorFilter = PorterDuffColorFilter(
+
+            val addMeasurementBtnBackground = addMeasurementButton.background
+            addMeasurementBtnBackground?.colorFilter = PorterDuffColorFilter(
                 ContextCompat.getColor(requireContext(), R.color.colorPrimary),
                 PorterDuff.Mode.SRC_IN
             )
+
 
 //        val client:Client? = arg.client ?: emptyClient
 //        Log.i(title, "client name ${client?.name}")
             native_measurement_fab.setOnClickListener {
                 setUpSpinnerWithList(getString(R.string.select_str), measurementValuesSpinner, measurementValuesList)
                 dialogTitle.text = getString(R.string.add_measurement)
-                addMeasurementButton.apply {
-                    text = getString(R.string.add)
-                    background = saveBtnBackground
-                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-                }
+
                 addMeasurementLayout.show()
-                dialog.show()
+                dialog.show{
+                    cornerRadius(10F)
+                }
+            }
+            addMeasurementButton.apply {
+                text = getString(R.string.add)
+                    background = addMeasurementBtnBackground
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
             }
             buttonTransactions({
 
                 saveBtn = native_measurement_included_btn.findViewById(R.id.btn)
+                val saveBtnBackground = saveBtn.background
+
+                saveBtnBackground?.colorFilter = PorterDuffColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                    PorterDuff.Mode.SRC_IN
+                )
                 saveBtn.apply {
                     text = getString(R.string.save)
                     background = saveBtnBackground
@@ -192,10 +208,12 @@ class NativeMeasurementFragment : DaggerFragment() {
                                 dialogTitle.text = getString(R.string.edit_measurement_str)
                                 addMeasurementButton.apply {
                                     text = getString(R.string.update_str)
-                                    background = saveBtnBackground
+                                    background = addMeasurementBtnBackground
                                     setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
                                 }
-                                dialog.show()
+                                dialog.show{
+                                    cornerRadius(10F)
+                                }
                                 setUpSpinnerWithList(item?.name.toString(), measurementValuesSpinner, measurementValuesList)
                                 addMeasurementButton.setOnClickListener {
                                     item?.value = dialogAddValueField.text.toString().trim()
