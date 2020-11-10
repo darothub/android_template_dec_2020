@@ -53,5 +53,8 @@ interface AuthRequestInterface {
     fun getAllPhoto(header: String?) : Call<UserResponse<PhotoList>>{
         return TODO()
     }
+    fun deleteMedia(header: String?, id: String?) : Call<UserResponse<NothingExpected>>{
+        return TODO()
+    }
 
 }

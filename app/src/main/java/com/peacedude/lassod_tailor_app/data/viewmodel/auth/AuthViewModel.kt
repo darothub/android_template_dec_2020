@@ -148,6 +148,18 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<PhotoList>(request, responseLiveData)
     }
 
+    override fun deleteMedia(
+        header: String?,
+        id: String?
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.deleteMedia(header, id)
+        return enqueueRequest<NothingExpected>(request, responseLiveData)
+    }
+
     override fun uploadProfilePicture(
         header: String?,
         body: MultipartBody.Part

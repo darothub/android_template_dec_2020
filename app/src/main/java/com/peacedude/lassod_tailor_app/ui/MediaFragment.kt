@@ -77,6 +77,12 @@ class MediaFragment : DaggerFragment() {
             customView(R.layout.add_photo_dialog_layout)
         }
     }
+    private val singleImageDialog by lazy {
+        MaterialDialog(requireContext()).apply {
+            noAutoDismiss()
+            customView(R.layout.single_image_dialog)
+        }
+    }
     lateinit var currentPhotoPath: String
     private val addPhotoDialogFab by lazy {
         (dialog.findViewById(R.id.add_photo_dialog_fab) as FloatingActionButton)
@@ -101,7 +107,16 @@ class MediaFragment : DaggerFragment() {
     private val noDataText by lazy {
         no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
     }
+    private val singleImageIv by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_photo_iv) as ImageView)
+    }
 
+    private val singleSendTv by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_send_tv) as TextView)
+    }
+    private val singleDeleteTv by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_delete_tv) as TextView)
+    }
     val header by lazy {
         authViewModel.header
     }
@@ -163,7 +178,27 @@ class MediaFragment : DaggerFragment() {
                             Picasso.get().load(item?.photo).into(itemView.media_item_picture_iv)
 
                             itemView.setOnClickListener {
-                                GlobalVariables.globalString = item?.id.toString()
+                                GlobalVariables.globalId = item?.id.toString()
+                                GlobalVariables.globalPosition = position
+                                Picasso.get().load(item?.photo).into(singleImageIv)
+                                singleImageDialog.show {
+                                    cornerRadius(10F)
+                                }
+
+                            }
+
+                            singleDeleteTv.setOnClickListener {
+                                val deleteReq = authViewModel.deleteMedia(header, GlobalVariables.globalId)
+                                //Observer for get request
+                                requestObserver(null, null, deleteReq, true) { bool, result ->
+                                    onRequestResponseTask<NothingExpected>(bool, result) {
+                                        val res = result as UserResponse<NothingExpected>
+                                        list?.removeAt(GlobalVariables.globalPosition)
+                                        requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+                                        singleImageDialog.dismiss()
+                                        adapter.notifyDataSetChanged()
+                                    }
+                                }
                             }
                         }
                         setLayoutManager(GridLayoutManager(requireContext(), 2))
@@ -176,6 +211,7 @@ class MediaFragment : DaggerFragment() {
                 }
 
             }
+
         }
 
 

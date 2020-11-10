@@ -56,14 +56,11 @@ interface AuthServices {
         @Field("id") id:String?
     ): Call<UserResponse<NothingExpected>>
 
-
     @POST("media")
     fun addPhoto(
         @Header("Authorization") header: String?,
         @Body photo:RequestBody
     ): Call<UserResponse<NothingExpected>>
-
-
 
     @POST("avatar")
     fun uploadProfilePicture(
@@ -89,6 +86,13 @@ interface AuthServices {
     fun getAllPhoto(
         @Header("Authorization") header: String?
     ): Call<UserResponse<PhotoList>>
+
+    @HTTP(method = "DELETE", path = "media", hasBody = true)
+    @FormUrlEncoded
+    fun deleteMedia(
+        @Header("Authorization") header: String?,
+        @Field("id") id:String?
+    ): Call<UserResponse<NothingExpected>>
 
 }
 

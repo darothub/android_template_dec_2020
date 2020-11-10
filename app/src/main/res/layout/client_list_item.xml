@@ -3,32 +3,31 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/rounded_blue_outline_white_backgrnd"
-    android:weightSum="3"
-    android:padding="8dp"
+    android:padding="@dimen/_10sdp"
     android:layout_margin="10dp"
-    android:layout_height="40dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/client_profile_thumbnail"
         android:layout_width="22dp"
         android:layout_height="22dp"
-        android:layout_marginStart="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-
+        app:layout_constraintVertical_bias="0.5"
         app:srcCompat="@drawable/profile_image_thumbnail" />
 
     <TextView
         android:id="@+id/client_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment"
-
+        android:text="hello i am very happy to miss you what have you done hhheh"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.5"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:ems="12"
         android:layout_marginStart="@dimen/_15sdp"
         android:layout_marginEnd="@dimen/_15sdp"
         app:layout_constraintStart_toEndOf="@id/client_profile_thumbnail"
@@ -39,7 +38,7 @@
         android:id="@+id/client_location_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lagos"
+        android:text="Lagos hehehehheh"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/client_name_tv"
         app:layout_constraintBottom_toBottomOf="@id/client_name_tv"

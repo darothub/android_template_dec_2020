@@ -103,4 +103,7 @@ interface ViewModelInterface {
     fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
+    fun deleteMedia(header: String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
 }

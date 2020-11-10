@@ -383,5 +383,8 @@ object GlobalVariables{
     var globalClient: Client? = null
     var globalUser: User? = null
     var globalString:String = ""
+    var globalPosition = 0
+    var globalId = ""
+
 }
 

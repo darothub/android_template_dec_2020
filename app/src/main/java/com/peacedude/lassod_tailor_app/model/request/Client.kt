@@ -5,12 +5,12 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
 data class Client(
-    val name: String,
+    var name: String,
     @SerializedName("phoneNumber")
-    val phone: String,
-    val email: String,
+    var phone: String,
+    var email: String,
     @SerializedName("deliveryAddress")
-    val deliveryAddress: String
+    var deliveryAddress: String
 ) : Serializable,
     ParentData {
     var id: String? = null

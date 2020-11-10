@@ -3,15 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/_10sdp"
     android:background="@color/colorAccent">
 
     <ImageView
         android:id="@+id/single_media_photo_iv"
-        android:layout_width="@dimen/_250sdp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/_300sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/media_icon"/>
 
     <ImageView
@@ -22,17 +24,23 @@
         app:layout_constraintStart_toStartOf="@id/single_media_photo_iv"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/delete_24px"
+        android:visibility="gone"
         android:layout_marginStart="15dp"
         />
     <TextView
+        android:id="@+id/single_media_delete_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/delete"
-        app:layout_constraintStart_toEndOf="@id/single_media_delete_icon_iv"
-        app:layout_constraintTop_toTopOf="@id/single_media_delete_icon_iv"
-        app:layout_constraintBottom_toBottomOf="@id/single_media_delete_icon_iv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/_13sdp"/>
+        android:drawableStart="@drawable/delete_24px"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:textSize="@dimen/_8sdp"/>
 
     <ImageView
         android:id="@+id/single_media_send_icon_iv"
@@ -42,6 +50,7 @@
         app:layout_constraintEnd_toStartOf="@id/single_media_send_tv"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/send_24px"
+        android:visibility="gone"
         />
     <TextView
         android:id="@+id/single_media_send_tv"
@@ -50,10 +59,13 @@
         android:text="@string/send"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="@id/single_media_photo_iv"
-        app:layout_constraintTop_toTopOf="@id/single_media_send_icon_iv"
-        app:layout_constraintBottom_toBottomOf="@id/single_media_send_icon_iv"
-        android:layout_marginEnd="15dp"
-        android:textSize="@dimen/_13sdp"/>
+        app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:drawableStart="@drawable/send_24px"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:textSize="@dimen/_8sdp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

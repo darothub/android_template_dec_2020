@@ -215,7 +215,17 @@ class ProfileFragment : DaggerFragment() {
             //Task to be done on successful
             onRequestResponseTask<ClientsList>(bool, result) {
                 val results = result as UserResponse<ClientsList>
-                val listOfClient = result.data?.clients
+                val listOfClient = result.data?.clients?.map {
+                    Client(it?.name.toString(), it?.phone.toString(), it?.email.toString(), it?.deliveryAddress.toString()).apply {
+                        country = it?.country
+                        state = it?.state
+                        tailorId = it?.tailorId
+                        id = it?.id
+                        gender = it?.gender
+                    }
+
+
+                }
 
                 if (listOfClient?.isNotEmpty()!!){
                     no_client_included_layout.hide()
@@ -229,7 +239,9 @@ class ProfileFragment : DaggerFragment() {
 
                             //Set on click listener for item view
                             itemView.setOnClickListener {
-                                GlobalVariables.globalString = item?.id.toString()
+                                GlobalVariables.globalId = item?.id.toString()
+                                GlobalVariables.globalPosition = position
+                                GlobalVariables.globalClient = item
                                 dialogNameTv.text = itemView.client_name_tv.text
                                 dialogPhoneNumberTv.text = item?.phone
                                 dialogAddressTv.text = item?.deliveryAddress
@@ -267,15 +279,15 @@ class ProfileFragment : DaggerFragment() {
                             }
                             //When dialog delete button is clicked
                             dialogDeleteBtn.setOnClickListener {
-                                val req = authViewModel.deleteClient(header, GlobalVariables.globalString)
+                                val req = authViewModel.deleteClient(header, GlobalVariables.globalId)
                                 requestObserver(dialogDeleteProgressBar, dialogDeleteBtn, req, true) { bool, result ->
                                     onRequestResponseTask<NothingExpected>(bool, result) {
                                         val res = result as UserResponse<NothingExpected>
                                         requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
 //                                        listOfClient.toMutableList().removeAt(position)
-                                        adapter.notifyDataSetChanged()
+                                        list?.removeAt(GlobalVariables.globalPosition)
                                         dialog.dismiss()
-                                        goto(R.id.profileFragment)
+                                        adapter.notifyDataSetChanged()
 
                                     }
                                 }
@@ -302,21 +314,34 @@ class ProfileFragment : DaggerFragment() {
                                         )
                                     }
                                     else->{
+                                        item?.apply {
+                                            this.name = name
+                                            this.phone = phoneNumber
+                                            this.email = email
+                                            this.deliveryAddress = address
+                                            this.gender = gender
+                                            this.state = state
+                                            this.gender = gender
+                                            this.tailorId = GlobalVariables.globalClient?.tailorId
+                                            this.country = country
+                                        }!!
                                         val client = Client(name,phoneNumber, email, address)
-                                        client.state = state
-                                        client.gender = gender
-                                        client.id = GlobalVariables.globalString
-                                        client.country = country
-                                       val editClientReq = authViewModel.editClient(header, client)
+//                                        item?.state = state
+//                                        client.gender = gender
+//                                        client.tailorId = GlobalVariables.globalClient?.tailorId
+//                                        client.id = GlobalVariables.globalId
+//                                        client.country = country
+                                       val editClientReq = authViewModel.editClient(header, item)
                                         requestObserver(dialogUpdateProgressBar, dialogUpdateBtn, editClientReq){bool, result ->
                                             //Task to be done on successful
                                             onRequestResponseTask<ClientsList>(bool, result) {
                                                 val results = result as UserResponse<SingleClient>
                                                 val msg = results.message.toString()
+
                                                 val newClientData = result.data?.client
                                                 requireActivity().gdToast(msg, Gravity.BOTTOM)
                                                 dialog.dismiss()
-                                                goto(R.id.profileFragment)
+                                                adapter.notifyDataSetChanged()
 
                                             }
 

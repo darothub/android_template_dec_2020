@@ -67,6 +67,10 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.uploadProfilePicture(header, body)
     }
 
+    override fun deleteMedia(header: String?, id: String?): Call<UserResponse<NothingExpected>> {
+        return authServices.deleteMedia(header, id)
+    }
+
     override fun addMeasurement(
         header: String?,
         body: MeasurementValues
