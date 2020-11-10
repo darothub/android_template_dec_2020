@@ -8,6 +8,8 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Header
 
 interface AuthRequestInterface {
     fun getUserData(header:String): Call<UserResponse<User>> {
@@ -41,10 +43,15 @@ interface AuthRequestInterface {
     fun uploadProfilePicture(header: String?, body: RequestBody): Call<UserResponse<User>>{
         return TODO()
     }
-    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<User>>{
+    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<UploadImageClass>>{
         return TODO()
     }
     fun addMeasurement(header: String?, body: MeasurementValues): Call<UserResponse<ClientMeasurement>>{
         return TODO()
     }
+
+    fun getAllPhoto(header: String?) : Call<UserResponse<PhotoList>>{
+        return TODO()
+    }
+
 }

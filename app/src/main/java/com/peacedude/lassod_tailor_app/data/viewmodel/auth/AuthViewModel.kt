@@ -139,6 +139,15 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<ClientMeasurement>(request, responseLiveData)
     }
 
+    override fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        val request = authRequestInterface.getAllPhoto(header)
+        return enqueueRequest<PhotoList>(request, responseLiveData)
+    }
+
     override fun uploadProfilePicture(
         header: String?,
         body: MultipartBody.Part
@@ -148,7 +157,7 @@ open class AuthViewModel @Inject constructor(
             "Loading..."
         )
         val request = authRequestInterface.uploadProfilePicture(header, body)
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<UploadImageClass>(request, responseLiveData)
     }
 
 }

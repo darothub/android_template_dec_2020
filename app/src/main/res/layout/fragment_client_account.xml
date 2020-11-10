@@ -81,7 +81,8 @@
                 android:id="@+id/client_account_email_et"
                 style="@style/EditTextCustomStyle"
                 android:hint="@string/email_address_str"
-                android:inputType="textEmailAddress|textMultiLine"
+                android:inputType="textEmailAddress"
+                android:textAllCaps="false"
                 android:singleLine="true"
                 android:tag="@string/email_address_str"
                 android:imeOptions="actionNext"
@@ -94,7 +95,6 @@
             style="@style/EditProfileTextViewCustomStyle"
             android:text="@string/gender"
             android:gravity="bottom"
-            android:imeOptions="actionNext"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/client_account_email_input"
             />

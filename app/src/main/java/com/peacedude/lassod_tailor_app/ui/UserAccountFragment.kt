@@ -494,15 +494,16 @@ class UserAccountFragment : DaggerFragment() {
                 val data = results.data
                 val imageBitmap =
                     data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
-                val imageFile = saveBitmap(imageBitmap)
-                if (imageFile != null) {
-                    Picasso.get().load(imageFile).into(user_account_profile_image)
-//                    val reqBody = imageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-//                    val profileImagePart = MultipartBody.Part.createFormData("avatar", imageFile?.getName(), reqBody)
-//                    i(title, "Imagefile $imageFile name ${imageFile.name} path ${imageFile.absolutePath}")
+                val file = saveBitmap(imageBitmap)
+                if (file != null) {
+                    Picasso.get().load(file).into(user_account_profile_image)
+                    val reqBody = file.asRequestBody("image".toMediaTypeOrNull())
+                    val profileImagePart = MultipartBody.Part.createFormData("avatar",
+                        file.name, reqBody)
+                    i(title, "Imagefile $file name ${file.name} path ${file.absolutePath}")
                     val requestBody: RequestBody = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("avatar", imageFile.toString())
+                        .addFormDataPart("avatar", file.toString())
                         .build()
 
                     val req = authViewModel.uploadProfilePicture(header, requestBody)
@@ -513,7 +514,7 @@ class UserAccountFragment : DaggerFragment() {
                             i(title, "URL ${responseData?.avatar}")
                         }
                     }
-                    i(title, "File $imageFile")
+                    i(title, "File $file")
 //                    requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
                 }
 

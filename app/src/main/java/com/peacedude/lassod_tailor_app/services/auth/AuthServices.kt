@@ -63,23 +63,32 @@ interface AuthServices {
         @Body photo:RequestBody
     ): Call<UserResponse<NothingExpected>>
 
+
+
     @POST("avatar")
     fun uploadProfilePicture(
         @Header("Authorization") header: String?,
         @Body avatar:RequestBody
     ): Call<UserResponse<User>>
+
+
     @POST("avatar")
     @Multipart
     fun uploadProfilePicture(
         @Header("Authorization") header: String?,
         @Part avatar:MultipartBody.Part
-    ): Call<UserResponse<User>>
+    ): Call<UserResponse<UploadImageClass>>
 
     @POST("measurement")
     fun addMeasurement(
         @Header("Authorization") header: String?,
         @Body measurementValues: MeasurementValues
     ): Call<UserResponse<ClientMeasurement>>
+
+    @GET("media")
+    fun getAllPhoto(
+        @Header("Authorization") header: String?
+    ): Call<UserResponse<PhotoList>>
 
 }
 

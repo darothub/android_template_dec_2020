@@ -59,3 +59,49 @@ data class User(
 data class UserAddress(var street:String?, var city:String?, var state:String?):Serializable
 
 
+
+data class UploadImageClass (
+    val id: String,
+    val firstName: String,
+    val lastName: String,
+    val otherName: Any? = null,
+    val category: String,
+    val phoneNumber: Any? = null,
+    val email: String,
+    val password: String,
+    val token: String,
+    val code: Any? = null,
+    val authType: Any? = null,
+    val isVerified: Boolean,
+    val isAdmin: Boolean,
+    val isBlocked: Boolean,
+    val isSubscribed: Any? = null,
+    val gender: Any? = null,
+    val bio: Any? = null,
+    val avatar: String,
+    val avatarAwsDetails: AwsDetails,
+    val unionName: Any? = null,
+    val unionWard: Any? = null,
+    val unionLGA: Any? = null,
+    val unionState: Any? = null,
+    val country: Any? = null,
+    val workshopAddress: Any? = null,
+    val showroomAddress: Any? = null,
+    val noOfEmployees: Any? = null,
+    val legalStatus: Any? = null,
+    val specialty: List<String>,
+    val genderFocus: List<String>,
+    val obiomaCERT: Any? = null,
+    val visitUsMeasurement: Boolean,
+    val acceptSelfMeasurement: Boolean,
+    val deliveryTimePeriod: String,
+    val deliveryTimeNo: Long,
+    val paymentTerms: Any? = null,
+    val subscriptions: Any? = null,
+    val paymentOptions: Any? = null,
+    val createdAt: String,
+    val updatedAt: String
+):ParentData
+
+
+

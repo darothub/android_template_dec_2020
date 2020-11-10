@@ -98,6 +98,7 @@ class ClientAccountFragment : DaggerFragment(){
                 var clientPhoneNumber = client_account_phone_number_et.text.toString().trim()
                 val clientShippingAddress = client_account_shipping_address_et.text.toString().trim()
                 val clientEmail = client_account_email_et.text.toString().trim()
+                val clientState = client_account_state_et.text.toString().trim()
                 val clientCountry = client_account_country_spinner.selectedItem.toString()
                 var phonePattern = Regex("""\d{10,17}""")
                 val checkPhoneStandard = phonePattern.matches(clientPhoneNumber)
@@ -118,6 +119,7 @@ class ClientAccountFragment : DaggerFragment(){
                         val gender = client_account_gender_spinner.selectedItem as String
                         client.gender = gender
                         client.country = clientCountry
+                        client.state = clientState
 
                         val req = authViewModel.addClient(header, client)
                         val observer =

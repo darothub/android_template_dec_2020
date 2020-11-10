@@ -8,11 +8,14 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
+import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
@@ -38,7 +41,7 @@ import javax.inject.Inject
 
 open class GeneralViewModel @Inject constructor(
     open var retrofit: Retrofit,
-    val storageRequest: StorageRequest
+    private val storageRequest: StorageRequest
 ) : ViewModel(), ViewModelInterface {
     @Inject
     lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -71,7 +74,7 @@ open class GeneralViewModel @Inject constructor(
         t: Throwable
     ) {
         Log.i(title, "Throwable ${t.localizedMessage}")
-        responseLiveData.postValue(ServicesResponseWrapper.Error(t.localizedMessage, 0, null))
+        responseLiveData.postValue(ServicesResponseWrapper.Error("Bad connection, unable to connect", 0, null))
     }
 
     protected fun onResponseTask(
@@ -85,14 +88,13 @@ open class GeneralViewModel @Inject constructor(
 
 
         when (statusCode) {
-            in 400..599 -> {
+            in 400..499-> {
                 try {
-                    if(statusCode == 401 || statusCode == 403){
+                    if(statusCode == 401){
                         val err = errorConverter(response)
-                        logout()
                         responseLiveData.postValue(
                             ServicesResponseWrapper.Logout(
-                                err.first,
+                                "Access Denied",
                                 err.second
                             )
                         )
@@ -106,6 +108,10 @@ open class GeneralViewModel @Inject constructor(
                     Log.i(title, "Hello" + " " + e.message.toString())
                     responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
                 }
+            }
+            in 500..599-> {
+                val err = errorConverter(response)
+                responseLiveData.postValue(ServicesResponseWrapper.Error("Internal server error", err.second))
             }
             else -> {
                 try {
@@ -164,7 +170,6 @@ open class GeneralViewModel @Inject constructor(
         currentUser?.token = ""
         currentUser?.loggedIn = false
         val res = storageRequest.saveData(currentUser, loggedInUserKey)
-        Log.i(title, "resArray2 ${res.size}")
         mGoogleSignInClient.signOut().addOnCompleteListener { logoutTask ->
             when (logoutTask.isSuccessful) {
                 true -> {

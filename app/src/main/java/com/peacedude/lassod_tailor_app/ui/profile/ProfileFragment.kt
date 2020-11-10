@@ -149,6 +149,8 @@ class ProfileFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         i(title, "onviewcreated")
         //Drawable background for resend code button
+        val updateBtnBackground =
+            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
         val editBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
         val deleteBtnBackground =
@@ -188,7 +190,7 @@ class ProfileFragment : DaggerFragment() {
             //Set delete button background
             dialogDeleteBtn.background = deleteBtnBackground
 
-            dialogUpdateBtn.background = editBtnBackground
+            dialogUpdateBtn.background = updateBtnBackground
 
             dialogEditBtn.text = getString(R.string.edit_str)
             dialogDeleteBtn.text = getString(R.string.delete)

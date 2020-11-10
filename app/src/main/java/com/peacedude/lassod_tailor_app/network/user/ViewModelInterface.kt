@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
+import com.peacedude.lassod_tailor_app.model.request.PhotoList
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
@@ -97,6 +98,9 @@ interface ViewModelInterface {
         return TODO()
     }
     fun addMeasurement(header: String?, body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>> {
+        return TODO()
+    }
+    fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
 }

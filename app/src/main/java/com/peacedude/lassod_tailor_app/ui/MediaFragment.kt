@@ -24,21 +24,30 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.skydoves.progressview.ProgressView
 import com.squareup.picasso.Picasso
+import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_media.*
+import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -133,6 +142,44 @@ class MediaFragment : DaggerFragment() {
             )
         )
         noDataText.text = getString(R.string.you_have_no_photo_str)
+
+        val request = authViewModel.getAllPhoto(header)
+
+        //Observer for get request
+        requestObserver(null, null, request, true) { bool, result ->
+            //Task to be done on successful
+            onRequestResponseTask<ClientsList>(bool, result) {
+                val results = result as UserResponse<PhotoList>
+                val listOfPhoto = result.data?.photo?.map {
+                    Photo(it.id, it.tailorID, it.photo, it.photoAwsDetails, it.info, it.createdAt, it.updatedAt)
+                }
+                if (listOfPhoto?.isNotEmpty()!!){
+                    no_data_included_layout.hide()
+                    media_fragment_rv.show()
+                    media_fragment_rv.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
+
+                        bind { itemView, position, item ->
+                            itemView.media_item_picture_title_tv.text = getString(R.string.elegant_str)
+                            Picasso.get().load(item?.photo).into(itemView.media_item_picture_iv)
+
+                            itemView.setOnClickListener {
+                                GlobalVariables.globalString = item?.id.toString()
+                            }
+                        }
+                        setLayoutManager(GridLayoutManager(requireContext(), 2))
+                        submitList(listOfPhoto)
+                    }
+
+                }
+                else{
+                    no_data_included_layout.show()
+                }
+
+            }
+        }
+
+
+
 
         add_photo_iv.setOnClickListener {
             dialog.show {

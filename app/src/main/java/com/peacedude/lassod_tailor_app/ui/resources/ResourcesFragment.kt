@@ -1,35 +1,30 @@
 package com.peacedude.lassod_tailor_app.ui.resources
 
+import android.R.attr.radius
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
-import androidx.core.widget.NestedScrollView
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
-import coil.request.ImageRequest
-import com.peacedude.gdtoast.gdToast
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
 import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.model.request.ResourcesArticlePublication
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.squareup.picasso.Picasso
 import com.utsman.recycling.setupAdapter
 import kotlinx.android.synthetic.main.article_publication_item_layout.view.*
-import kotlinx.android.synthetic.main.fragment_all_video.*
-import kotlinx.android.synthetic.main.fragment_native_measurement.*
 import kotlinx.android.synthetic.main.fragment_resources.*
-import kotlinx.android.synthetic.main.measurement_item.view.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
-import kotlinx.android.synthetic.main.resource_video_item.view.resource_video_item_time_tv
-import kotlinx.coroutines.launch
 
 
 /**
@@ -40,6 +35,7 @@ import kotlinx.coroutines.launch
 class ResourcesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        changeStatusBarColor(R.color.colorWhite)
     }
 
     val imageLoader by lazy {
@@ -57,19 +53,59 @@ class ResourcesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val videoResourcesList = arrayListOf<ResourcesVideo>(
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str))
+            ResourcesVideo(
+                getString(R.string.sample_video_str), getString(R.string.sample_str), getString(
+                    R.string.sample_min_str
+                )
+            ),
+            ResourcesVideo(
+                getString(R.string.sample_video_str), getString(R.string.sample_str), getString(
+                    R.string.sample_min_str
+                )
+            ),
+            ResourcesVideo(
+                getString(R.string.sample_video_str), getString(R.string.sample_str), getString(
+                    R.string.sample_min_str
+                )
+            ),
+            ResourcesVideo(
+                getString(R.string.sample_video_str), getString(R.string.sample_str), getString(
+                    R.string.sample_min_str
+                )
+            ),
+            ResourcesVideo(
+                getString(R.string.sample_video_str), getString(R.string.sample_str), getString(
+                    R.string.sample_min_str
+                )
+            )
         )
 
         val articleResourcesList = arrayListOf<ResourcesArticlePublication>(
-            ResourcesArticlePublication(getString(R.string.sample_image_str), getString(R.string.sample_str), getString(R.string.by_author_str)),
-            ResourcesArticlePublication(getString(R.string.sample_image_str), getString(R.string.sample_str), getString(R.string.by_author_str)),
-            ResourcesArticlePublication(getString(R.string.sample_image_str), getString(R.string.sample_str), getString(R.string.by_author_str)),
-            ResourcesArticlePublication(getString(R.string.sample_image_str), getString(R.string.sample_str), getString(R.string.by_author_str)),
-            ResourcesArticlePublication(getString(R.string.sample_image_str), getString(R.string.sample_str), getString(R.string.by_author_str))
+            ResourcesArticlePublication(
+                getString(R.string.sample_image_str), getString(R.string.sample_str), getString(
+                    R.string.by_author_str
+                )
+            ),
+            ResourcesArticlePublication(
+                getString(R.string.sample_image_str), getString(R.string.sample_str), getString(
+                    R.string.by_author_str
+                )
+            ),
+            ResourcesArticlePublication(
+                getString(R.string.sample_image_str), getString(R.string.sample_str), getString(
+                    R.string.by_author_str
+                )
+            ),
+            ResourcesArticlePublication(
+                getString(R.string.sample_image_str), getString(R.string.sample_str), getString(
+                    R.string.by_author_str
+                )
+            ),
+            ResourcesArticlePublication(
+                getString(R.string.sample_image_str), getString(R.string.sample_str), getString(
+                    R.string.by_author_str
+                )
+            )
         )
 
         resource_fragment_video_rv.setupAdapter<ResourcesVideo>(R.layout.resource_video_item) { adapter, context, list ->
@@ -77,6 +113,7 @@ class ResourcesFragment : Fragment() {
                 val mediaController = MediaController(requireContext())
                 mediaController.setAnchorView(itemView.resource_video_item_vv)
                 val uri = Uri.parse(item?.videoUri)
+                mediaController.hide()
                 itemView.resource_video_item_vv.setMediaController(mediaController)
                 itemView.resource_video_item_vv.setVideoURI(uri)
                 itemView.resource_video_item_fl.clipToOutline = true
@@ -88,7 +125,8 @@ class ResourcesFragment : Fragment() {
                 itemView.setOnClickListener {
                     mediaController.show()
                 }
-                resource_fragment_video_rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+                resource_fragment_video_rv.addOnScrollListener(object :
+                    RecyclerView.OnScrollListener() {
 
                     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                         super.onScrollStateChanged(recyclerView, newState)
@@ -101,7 +139,13 @@ class ResourcesFragment : Fragment() {
                     mediaController.hide()
                 }
             }
-            setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false))
+            setLayoutManager(
+                LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+            )
             submitList(videoResourcesList)
         }
         resource_fragment_article_publications_rv.setupAdapter<ResourcesArticlePublication>(R.layout.article_publication_item_layout) { adapter, context, list ->
@@ -109,12 +153,33 @@ class ResourcesFragment : Fragment() {
 
                 itemView.resource_article_publication_item_title_tv.text = item?.articleTitle
                 itemView.resource_article_publication_item_author_tv.text = item?.articleAuthor
-                Picasso.get().load(item?.articleImageUri).into(itemView.resource_article_publications_iv)
-
+                itemView.article_pub_item_image_ll.clipToOutline = true
+                Picasso.get().load(item?.articleImageUri).fit().into(itemView.resource_article_publications_iv)
                 itemView.resource_article_publications_iv.clipToOutline = true
+//
+//                val radius = 20F
+//                val shapeAppearanceModel = ShapeAppearanceModel()
+//                    .toBuilder()
+//
+//                    .setTopRightCorner(CornerFamily.ROUNDED, 0F)
+//                    .setBottomLeftCorner(CornerFamily.ROUNDED, 0F)
+//                    .setTopLeftCorner(CornerFamily.ROUNDED, radius)
+//                    .setBottomRightCorner(CornerFamily.ROUNDED, radius)
+//                    .setAllCorners(CornerFamily.ROUNDED, 2F)
+//                    .build()
+//
+//                val shapeDrawable = MaterialShapeDrawable(shapeAppearanceModel)
+//                ViewCompat.setBackground(itemView.resource_article_publications_iv, shapeDrawable)
+//                itemView.resource_article_publications_iv.clipBounds = true
 
             }
-            setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false))
+            setLayoutManager(
+                LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+            )
             submitList(articleResourcesList)
         }
 

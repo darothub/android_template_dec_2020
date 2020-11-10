@@ -63,7 +63,7 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
     override fun uploadProfilePicture(
         header: String?,
         body: MultipartBody.Part
-    ): Call<UserResponse<User>> {
+    ): Call<UserResponse<UploadImageClass>> {
         return authServices.uploadProfilePicture(header, body)
     }
 
@@ -72,6 +72,10 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         body: MeasurementValues
     ): Call<UserResponse<ClientMeasurement>> {
         return authServices.addMeasurement(header, body)
+    }
+
+    override fun getAllPhoto(header: String?): Call<UserResponse<PhotoList>> {
+        return authServices.getAllPhoto(header)
     }
 
 

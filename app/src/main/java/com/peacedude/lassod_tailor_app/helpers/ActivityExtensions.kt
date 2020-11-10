@@ -96,38 +96,20 @@ fun Activity.observeRequest(
                     dialog.dismiss()
                     progressBar?.hide()
                     button?.show()
-                    when (errorCode) {
-                        0 -> {
-                            Log.i(title, "Errorcode ${errorCode}")
-                            gdErrorToast("$errorResponse", Gravity.BOTTOM)
-                        }
-                        in 400..499 -> {
-                            result.postValue(Pair(false, errorResponse))
-//                            toast("$errorResponse")
-                            gdErrorToast("$errorResponse", Gravity.BOTTOM)
-                        }
-                        in 500..600 -> {
-                            gdErrorToast(getString(R.string.server_error), Gravity.BOTTOM)
-                        }
-                        else -> {
-                            result.postValue(Pair(false, errorResponse))
-//                            toast("$errorResponse")
-                            gdErrorToast("$errorResponse", Gravity.BOTTOM)
-                        }
-                    }
+                    result.postValue(Pair(false, errorResponse))
+                    gdErrorToast("$errorResponse", Gravity.BOTTOM)
 
                     Log.i(title, "Error ${it.message}")
                 }
                 is ServicesResponseWrapper.Logout -> {
                     dialog.dismiss()
-                    val unAuthorizedString = getString(R.string.unauthorized_user)
+//                    val unAuthorizedString = getString(R.string.unauthorized_user)
                     progressBar?.hide()
                     button?.show()
-                    gdToast(unAuthorizedString, Gravity.BOTTOM)
+                    gdToast(errorResponse.toString(), Gravity.BOTTOM)
                     startActivity(Intent(this as? Context, MainActivity::class.java))
-                    result.postValue(Pair(false, unAuthorizedString))
-
-                    i(title, "Log out $unAuthorizedString")
+//                    result.postValue(Pair(false, errorResponse.toString()))
+                    i(title, "Log out ${errorResponse.toString()}")
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
                 }
