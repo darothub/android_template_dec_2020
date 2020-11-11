@@ -1,21 +1,17 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.factory
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.util.Log
 import android.view.Gravity
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
+import androidx.lifecycle.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
-import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
@@ -41,14 +37,24 @@ import javax.inject.Inject
 
 open class GeneralViewModel @Inject constructor(
     open var retrofit: Retrofit,
-    private val storageRequest: StorageRequest
+    private val storageRequest: StorageRequest,
+    private val context: Context,
+    private val mGoogleSignInClient: GoogleSignInClient
 ) : ViewModel(), ViewModelInterface {
-    @Inject
-    lateinit var mGoogleSignInClient: GoogleSignInClient
+
+
     protected open val title: String = this.getName()
+    val nLiveData = MediatorLiveData<Boolean>()
+
+
+    init {
+        networkMonitor()
+
+    }
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
+    val netWorkLiveData = MutableLiveData<Boolean>()
     override var lastFragmentId: Int?
         get() = storageRequest.getLastFragmentId()
         set(id) = storageRequest.saveLastFragment(id)
@@ -74,23 +80,32 @@ open class GeneralViewModel @Inject constructor(
         t: Throwable
     ) {
         Log.i(title, "Throwable ${t.localizedMessage}")
-        responseLiveData.postValue(ServicesResponseWrapper.Error("Bad connection, unable to connect", 0, null))
+        responseLiveData.postValue(
+            ServicesResponseWrapper.Error(
+                "Bad connection, unable to connect",
+                0
+            )
+        )
     }
 
     protected fun onResponseTask(
         response: Response<ParentData>,
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
     ) {
+        responseLiveData.value = ServicesResponseWrapper.Loading(
+            null,
+            "Loading..."
+        )
+        i(title, "ViewModel ON")
         val res = response.body()
         val statusCode = response.code()
         Log.i(title, "${response.code()}")
         Log.i(title, "errorbody ${response.raw()}")
 
-
         when (statusCode) {
-            in 400..499-> {
+            in 400..499 -> {
                 try {
-                    if(statusCode == 401){
+                    if (statusCode == 401) {
                         val err = errorConverter(response)
                         responseLiveData.postValue(
                             ServicesResponseWrapper.Logout(
@@ -98,10 +113,14 @@ open class GeneralViewModel @Inject constructor(
                                 err.second
                             )
                         )
-                    }
-                    else{
+                    } else {
                         val err = errorConverter(response)
-                        responseLiveData.postValue(ServicesResponseWrapper.Error(err.first, err.second))
+                        responseLiveData.postValue(
+                            ServicesResponseWrapper.Error(
+                                err.first,
+                                err.second
+                            )
+                        )
                     }
 
                 } catch (e: Exception) {
@@ -109,9 +128,14 @@ open class GeneralViewModel @Inject constructor(
                     responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
                 }
             }
-            in 500..599-> {
+            in 500..599 -> {
                 val err = errorConverter(response)
-                responseLiveData.postValue(ServicesResponseWrapper.Error("Internal server error", err.second))
+                responseLiveData.postValue(
+                    ServicesResponseWrapper.Error(
+                        "Internal server error",
+                        err.second
+                    )
+                )
             }
             else -> {
                 try {
@@ -122,6 +146,7 @@ open class GeneralViewModel @Inject constructor(
                 }
             }
         }
+
 
     }
 
@@ -181,9 +206,10 @@ open class GeneralViewModel @Inject constructor(
         return logoutLiveData
     }
 
-   protected inline fun<reified  T> enqueueRequest(
+    protected inline fun <reified T> enqueueRequest(
         request: Call<UserResponse<T>>,
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
+
     ): MutableLiveData<ServicesResponseWrapper<ParentData>> {
         request.enqueue(object : Callback<UserResponse<T>> {
             override fun onFailure(call: Call<UserResponse<T>>, t: Throwable) {
@@ -194,11 +220,43 @@ open class GeneralViewModel @Inject constructor(
                 call: Call<UserResponse<T>>,
                 response: Response<UserResponse<T>>
             ) {
+
                 onResponseTask(response as Response<ParentData>, responseLiveData)
             }
 
         })
         return responseLiveData
+    }
+
+    protected fun networkMonitor(): MutableLiveData<Boolean> {
+
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                //take action when network connection is gained
+//                i(title, "onAvailable")
+                netWorkLiveData.postValue(true)
+            }
+
+            override fun onLost(network: Network) {
+                //take action when network connection is lost
+//                i(title, "onLost")
+                netWorkLiveData.postValue(false)
+            }
+
+        }
+
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.let {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                it.registerDefaultNetworkCallback(networkCallback)
+            } else {
+                val request: NetworkRequest = NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+                it.registerNetworkCallback(request, networkCallback)
+            }
+        }
+        return netWorkLiveData
     }
 
 }

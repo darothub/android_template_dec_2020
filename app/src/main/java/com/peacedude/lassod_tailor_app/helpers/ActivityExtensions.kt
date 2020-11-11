@@ -9,7 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
+import android.net.*
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
@@ -77,6 +77,7 @@ fun Activity.observeRequest(
             val responseData = it.data
             val errorResponse = it.message
             val errorCode = it.code
+
             when (it) {
                 is ServicesResponseWrapper.Loading<*> -> {
                     if(loader) dialog.show() else dialog.dismiss()
@@ -388,3 +389,34 @@ object GlobalVariables{
 
 }
 
+//fun Activity.networkMonitor():MutableLiveData<Boolean>{
+//    val netWorkLiveData = MutableLiveData<Boolean>()
+//
+//    val networkCallback = object : ConnectivityManager.NetworkCallback() {
+//        override fun onAvailable(network: Network) {
+//            //take action when network connection is gained
+//            i("Network", "onAvailable")
+//            netWorkLiveData.postValue(true)
+//        }
+//
+//        override fun onLost(network: Network) {
+//            //take action when network connection is lost
+//            i("Network", "onLost")
+//            netWorkLiveData.postValue(false)
+//        }
+//
+//    }
+//
+//    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//    connectivityManager.let {
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+//            it.registerDefaultNetworkCallback(networkCallback)
+//        }
+//        else{
+//            val request: NetworkRequest = NetworkRequest.Builder()
+//                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+//            it.registerNetworkCallback(request, networkCallback)
+//        }
+//    }
+//    return netWorkLiveData
+//}

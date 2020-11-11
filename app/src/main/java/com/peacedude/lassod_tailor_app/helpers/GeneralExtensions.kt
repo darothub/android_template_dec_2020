@@ -91,7 +91,7 @@ suspend fun <T> safeApiCall(dispatcher: CoroutineDispatcher, apiCall: suspend ()
     try {
         ServicesResponseWrapper.Success(apiCall.invoke())
     } catch (throwable: Throwable) {
-        Log.i("title", "Errornew ${throwable?.message}")
+        Log.i("title", "Errornew ${throwable.message}")
         when (throwable) {
             is IOException -> ServicesResponseWrapper.Error<T>(throwable.message)
             is HttpException -> {

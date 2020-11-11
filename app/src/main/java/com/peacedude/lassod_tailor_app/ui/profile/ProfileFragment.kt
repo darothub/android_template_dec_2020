@@ -2,16 +2,24 @@ package com.peacedude.lassod_tailor_app.ui.profile
 
 import IsEmptyCheck
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
-import android.view.*
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
+import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -32,9 +40,11 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
+
 
 /**
  * A simple [Fragment] subclass.
@@ -150,18 +160,26 @@ class ProfileFragment : DaggerFragment() {
         i(title, "onviewcreated")
         //Drawable background for resend code button
         val updateBtnBackground =
-            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.rounded_corner_background_primary
+            )
         val editBtnBackground =
-            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_primary)
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.rounded_corner_background_primary
+            )
         val deleteBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner__red_background)
         buttonTransactions({
             //Get included view for delete button
-            val includedViewForDeleteBtn = (dialog.findViewById(R.id.single_client_delete_btn) as View)
+            val includedViewForDeleteBtn =
+                (dialog.findViewById(R.id.single_client_delete_btn) as View)
             //Get included view for edit button
             val includedViewForEditBtn = (dialog.findViewById(R.id.single_client_edit_btn) as View)
             //Get included view for update button
-            val includedViewForUpdateBtn = (dialog.findViewById(R.id.single_client_edit_update_btn) as View)
+            val includedViewForUpdateBtn =
+                (dialog.findViewById(R.id.single_client_edit_update_btn) as View)
             dialogDeleteBtn = includedViewForDeleteBtn.findViewById(R.id.btn)
             dialogEditBtn = includedViewForEditBtn.findViewById(R.id.btn)
             dialogUpdateBtn = includedViewForUpdateBtn.findViewById(R.id.btn)
@@ -204,10 +222,23 @@ class ProfileFragment : DaggerFragment() {
 
         }, {
 
+            authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    clientTransaction()
+                    Log.i(title, "Profile Network  ON")
+                } else {
+                    Log.i(title, "Profile Network  OFF")
+                }
+            })
+
         })
 
 
 
+
+    }
+
+    private fun clientTransaction() {
         val request = authViewModel.getAllClient(header)
         i(title, "header $header")
         //Observer for get all clients request
@@ -216,7 +247,12 @@ class ProfileFragment : DaggerFragment() {
             onRequestResponseTask<ClientsList>(bool, result) {
                 val results = result as UserResponse<ClientsList>
                 val listOfClient = result.data?.clients?.map {
-                    Client(it?.name.toString(), it?.phone.toString(), it?.email.toString(), it?.deliveryAddress.toString()).apply {
+                    Client(
+                        it?.name.toString(),
+                        it?.phone.toString(),
+                        it?.email.toString(),
+                        it?.deliveryAddress.toString()
+                    ).apply {
                         country = it?.country
                         state = it?.state
                         tailorId = it?.tailorId
@@ -227,7 +263,7 @@ class ProfileFragment : DaggerFragment() {
 
                 }
 
-                if (listOfClient?.isNotEmpty()!!){
+                if (listOfClient?.isNotEmpty()!!) {
                     no_client_included_layout.hide()
                     profile_fragment_client_rv.show()
                     profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
@@ -250,15 +286,16 @@ class ProfileFragment : DaggerFragment() {
                                 dialogEmailTv.text = item?.email
                                 dialogCountryTv.text = item?.country
                                 displayClientDialog.show()
-                                dialog.show{
+                                dialog.show {
                                     cornerRadius(10F)
                                 }
 
                             }
                             dialogEditBtn.setOnClickListener {
-//                                loaderDialog.show()
-                                if(item != null){
-                                    val lists = resources.getStringArray(R.array.gender_normal_list).toList() as ArrayList<String>
+    //                                loaderDialog.show()
+                                if (item != null) {
+                                    val lists = resources.getStringArray(R.array.gender_normal_list)
+                                        .toList() as ArrayList<String>
                                     displayClientDialog.hide()
                                     dialogNameEt.setText(dialogNameTv.text)
                                     dialogPhoneNumberEt.setText(dialogPhoneNumberTv.text)
@@ -270,21 +307,32 @@ class ProfileFragment : DaggerFragment() {
                                         dialogGenderSpinner,
                                         lists
                                     )
-                                    setUpCountrySpinner(dialogCountryTv.text.toString(), dialogCountrySpinner)
+                                    setUpCountrySpinner(
+                                        dialogCountryTv.text.toString(),
+                                        dialogCountrySpinner
+                                    )
                                     editClientDialog.show()
-//                                    if(editClientDialog.show()){
-//                                        loaderDialog.dismiss()
-//                                    }
+    //                                    if(editClientDialog.show()){
+    //                                        loaderDialog.dismiss()
+    //                                    }
                                 }
                             }
                             //When dialog delete button is clicked
                             dialogDeleteBtn.setOnClickListener {
-                                val req = authViewModel.deleteClient(header, GlobalVariables.globalId)
-                                requestObserver(dialogDeleteProgressBar, dialogDeleteBtn, req, true) { bool, result ->
+                                val req = authViewModel.deleteClient(
+                                    header,
+                                    GlobalVariables.globalId
+                                )
+                                requestObserver(
+                                    dialogDeleteProgressBar,
+                                    dialogDeleteBtn,
+                                    req,
+                                    true
+                                ) { bool, result ->
                                     onRequestResponseTask<NothingExpected>(bool, result) {
                                         val res = result as UserResponse<NothingExpected>
                                         requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-//                                        listOfClient.toMutableList().removeAt(position)
+    //                                        listOfClient.toMutableList().removeAt(position)
                                         list?.removeAt(GlobalVariables.globalPosition)
                                         dialog.dismiss()
                                         adapter.notifyDataSetChanged()
@@ -303,8 +351,13 @@ class ProfileFragment : DaggerFragment() {
                                 val gender = dialogGenderSpinner.selectedItem.toString()
                                 val country = dialogCountrySpinner.selectedItem.toString()
                                 val emptyEditText =
-                                    IsEmptyCheck(dialogNameEt, dialogPhoneNumberEt, dialogAddressEt, dialogStateEt)
-//                                val validation = IsEmptyCheck.fieldsValidation(null, null, )
+                                    IsEmptyCheck(
+                                        dialogNameEt,
+                                        dialogPhoneNumberEt,
+                                        dialogAddressEt,
+                                        dialogStateEt
+                                    )
+    //                                val validation = IsEmptyCheck.fieldsValidation(null, null, )
                                 when {
                                     emptyEditText != null -> {
                                         emptyEditText.error = getString(R.string.field_required)
@@ -313,7 +366,7 @@ class ProfileFragment : DaggerFragment() {
                                             Gravity.BOTTOM
                                         )
                                     }
-                                    else->{
+                                    else -> {
                                         item?.apply {
                                             this.name = name
                                             this.phone = phoneNumber
@@ -325,14 +378,18 @@ class ProfileFragment : DaggerFragment() {
                                             this.tailorId = GlobalVariables.globalClient?.tailorId
                                             this.country = country
                                         }!!
-                                        val client = Client(name,phoneNumber, email, address)
-//                                        item?.state = state
-//                                        client.gender = gender
-//                                        client.tailorId = GlobalVariables.globalClient?.tailorId
-//                                        client.id = GlobalVariables.globalId
-//                                        client.country = country
-                                       val editClientReq = authViewModel.editClient(header, item)
-                                        requestObserver(dialogUpdateProgressBar, dialogUpdateBtn, editClientReq){bool, result ->
+                                        val client = Client(name, phoneNumber, email, address)
+    //                                        item?.state = state
+    //                                        client.gender = gender
+    //                                        client.tailorId = GlobalVariables.globalClient?.tailorId
+    //                                        client.id = GlobalVariables.globalId
+    //                                        client.country = country
+                                        val editClientReq = authViewModel.editClient(header, item)
+                                        requestObserver(
+                                            dialogUpdateProgressBar,
+                                            dialogUpdateBtn,
+                                            editClientReq
+                                        ) { bool, result ->
                                             //Task to be done on successful
                                             onRequestResponseTask<ClientsList>(bool, result) {
                                                 val results = result as UserResponse<SingleClient>
@@ -358,22 +415,29 @@ class ProfileFragment : DaggerFragment() {
                             }
                             addMeasurementTv.setOnClickListener {
                                 GlobalVariables.globalClient = item
-                                val measurementIntent = Intent(requireActivity(), ClientActivity::class.java)
+                                val measurementIntent = Intent(
+                                    requireActivity(),
+                                    ClientActivity::class.java
+                                )
                                 dialog.dismiss()
                                 startActivity(measurementIntent)
                             }
                         }
-                        setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false))
+                        setLayoutManager(
+                            LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
+                        )
                         submitList(listOfClient)
                     }
 
-                }
-                else{
+                } else {
                     no_client_included_layout.show()
                 }
             }
         }
-
     }
 
     override fun onResume() {

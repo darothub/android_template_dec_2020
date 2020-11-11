@@ -1,12 +1,16 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.get
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -31,10 +35,11 @@ class DashboardActivity : BaseActivity() {
     val title: String by lazy {
         getName()
     }
-    val profileName by lazy{
+    val profileName by lazy {
         profile_drawer_view.findViewById<TextView>(R.id.profile_name)
     }
-//    Get logged-in user
+
+    //    Get logged-in user
     private val currentUser: User? by lazy {
         authViewModel.currentUser
     }
@@ -42,26 +47,39 @@ class DashboardActivity : BaseActivity() {
     private val header by lazy {
         authViewModel.header
     }
-    private val menuIcon: ImageView? by lazy{
+    private val menuIcon: ImageView? by lazy {
         profile_header.findViewById<ImageView>(R.id.menu_icon)
     }
-    private val greeting: TextView by lazy{
+    private val greeting: TextView by lazy {
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
 
-    private lateinit var editBtn:Button
-    private lateinit var logoutText:TextView
-    private lateinit var logoutImage:ImageView
-    private lateinit var clientImage:ImageView
-    private lateinit var clientText:TextView
-    private lateinit var resourcesTv:TextView
-    private lateinit var resourcesIv:ImageView
-    private lateinit var subscriptionTv:TextView
-    private lateinit var subscriptionIv:ImageView
+    private lateinit var editBtn: Button
+    private lateinit var logoutText: TextView
+    private lateinit var logoutImage: ImageView
+    private lateinit var clientImage: ImageView
+    private lateinit var clientText: TextView
+    private lateinit var resourcesTv: TextView
+    private lateinit var resourcesIv: ImageView
+    private lateinit var subscriptionTv: TextView
+    private lateinit var subscriptionIv: ImageView
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    }
+
+    val dialog by lazy {
+        Dialog(this, R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            setCanceledOnTouchOutside(false)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+
+    val checkConnectionTv by lazy{
+        dialog.findViewById<TextView>(R.id.loader_layout_tv)
     }
 
 
@@ -73,6 +91,23 @@ class DashboardActivity : BaseActivity() {
         bottomNav.setupWithNavController(navController)
 
 //        setBottomNavController()
+//
+        dialog.show()
+        checkConnectionTv.show()
+        dashboard_fragment.view?.invisible()
+        authViewModel.netWorkLiveData.observe(this, Observer {
+            if (it) {
+                Log.i(title, "Network On")
+                getUserData()
+                dialog.dismiss()
+                dashboard_fragment.view?.show()
+            } else {
+                dashboard_fragment.view?.invisible()
+                dialog.show()
+                checkConnectionTv.show()
+                Log.i(title, "Network OFF")
+            }
+        })
 
         profile_header.show()
 
@@ -91,7 +126,7 @@ class DashboardActivity : BaseActivity() {
             subscriptionTv = profile_drawer_view.findViewById(R.id.subscription_text)
             subscriptionIv = profile_drawer_view.findViewById(R.id.subscription_image)
 
-        },{
+        }, {
             editBtn.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
                 startActivity(Intent(this, ProfileActivity::class.java))
@@ -142,16 +177,11 @@ class DashboardActivity : BaseActivity() {
 
         //Set last bottom navigation page
         bottomNav.selectedItemId = authViewModel.lastFragmentId ?: 0
-        getUserData()
 
-
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
+//        getUserData()
 
     }
+
 
     private fun logoutRequest() {
         authViewModel.logout(this)
@@ -171,14 +201,16 @@ class DashboardActivity : BaseActivity() {
 //        val user = authViewModel.currentUser
 
 
-
     }
 
 
     override fun onPause() {
         super.onPause()
         authViewModel.lastFragmentId = bottomNav.selectedItemId
-        Log.i(title, "On pause idsaved ${authViewModel.lastFragmentId} bottomNavId ${bottomNav.selectedItemId}")
+        Log.i(
+            title,
+            "On pause idsaved ${authViewModel.lastFragmentId} bottomNavId ${bottomNav.selectedItemId}"
+        )
     }
 
     override fun onRestart() {
@@ -192,13 +224,13 @@ class DashboardActivity : BaseActivity() {
 
     }
 
-    private fun getUserData(){
+    private fun getUserData() {
         val request = authViewModel.getUserData(header.toString())
         i(title, "header $header")
         val response = observeRequest(request, null, null)
         response.observe(this, androidx.lifecycle.Observer {
             val (bool, result) = it
-            onRequestResponseTask<User>(bool, result){
+            onRequestResponseTask<User>(bool, result) {
                 val userDetails = result as? UserResponse<User>
                 val user = userDetails?.data
                 greeting.text = "Hi ${user?.firstName}"
@@ -210,8 +242,6 @@ class DashboardActivity : BaseActivity() {
 
 
     }
-
-
 
 
 }

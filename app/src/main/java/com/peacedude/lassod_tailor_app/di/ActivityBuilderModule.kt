@@ -31,7 +31,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module(
-    includes = [ActivityStaticModule::class, MainActivityModule::class,
+    includes = [
+        ActivityStaticModule::class,
+        MainActivityModule::class,
         DashboardActivityModule::class,
         ProfileActivityModule::class,
         ClientActivityModule::class]

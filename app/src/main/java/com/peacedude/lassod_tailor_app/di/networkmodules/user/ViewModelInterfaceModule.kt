@@ -1,5 +1,7 @@
 package com.peacedude.lassod_tailor_app.di.networkmodules.user
 
+import android.content.Context
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.repositories.user.UserRequestRepository
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -23,9 +25,10 @@ class ViewModelInterfaceModule {
      * @param storageRequest is a shared pref  instance
      */
     @Provides
-    fun provideViewModel(retrofit: Retrofit, storageRequest: StorageRequest): ViewModelInterface {
+    fun provideViewModel(retrofit: Retrofit, storageRequest: StorageRequest, context: Context, mGoogleSignInClient: GoogleSignInClient): ViewModelInterface {
         return GeneralViewModel(
-            retrofit, storageRequest
+            retrofit, storageRequest, context,
+            mGoogleSignInClient
         )
     }
 

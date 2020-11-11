@@ -218,4 +218,5 @@
     <string name="select_str">Select</string>
     <string name="edit_measurement_str">Edit measurment</string>
     <string name="elegant_str">Elegant suit for men</string>
+    <string name="check_ur_connection">Check your connection</string>
 </resources>

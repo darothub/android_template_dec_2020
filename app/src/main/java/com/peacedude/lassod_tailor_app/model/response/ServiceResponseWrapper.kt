@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.model.response
 
+import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 
 /**
@@ -23,5 +24,5 @@ sealed class ServicesResponseWrapper<T>(
     /**
      * An error class wrapper
      */
-    class Error<T>(message: String?, code:Int?= null, data: T? = null) : ServicesResponseWrapper<T>(data, message, code)
+    class Error<T>(message: String?, code:Int?= null,  data: T? = null) : ServicesResponseWrapper<T>(data,  message, code)
 }
