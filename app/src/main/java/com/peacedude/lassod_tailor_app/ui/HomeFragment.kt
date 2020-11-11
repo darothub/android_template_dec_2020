@@ -20,6 +20,8 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.invisible
+import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
@@ -86,6 +88,8 @@ open class HomeFragment : DaggerFragment() {
         val loginBackgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_outline)
 
+
+
         buttonTransactions({
             loginBtn = login_btn.findViewById(R.id.btn)
             signupBtn = signup_btn.findViewById(R.id.btn)
@@ -102,6 +106,19 @@ open class HomeFragment : DaggerFragment() {
             loginBtn.background = loginBackgroundDrawable
         })
 
+        userViewModel.netWorkLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it) {
+                loginBtn.show()
+                signupBtn.show()
+                Log.i("Base", "Network On")
+
+            } else {
+                loginBtn.invisible()
+                signupBtn.invisible()
+
+                Log.i("Base", "Network OFF")
+            }
+        })
 
         signupBtn.setOnClickListener {
             findNavController().navigate(R.id.signupChoicesFragment)

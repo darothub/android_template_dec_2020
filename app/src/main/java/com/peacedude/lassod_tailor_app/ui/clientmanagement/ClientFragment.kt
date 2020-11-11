@@ -130,6 +130,7 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
         if(globalClient != null){
             i(title, "globalClient $globalClient")
             setItem(1)
+            GlobalVariables.globalClient = null
         }
         else{
             setItem(0)

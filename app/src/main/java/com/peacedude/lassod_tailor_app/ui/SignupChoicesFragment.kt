@@ -95,6 +95,17 @@ class SignupChoicesFragment : DaggerFragment() {
         })
 
 
+        userViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                signupEmailBtn.show()
+                signupPhoneBtn.show()
+                google_sign_in_button.show()
+            } else {
+                signupEmailBtn.invisible()
+                signupPhoneBtn.invisible()
+                google_sign_in_button.invisible()
+            }
+        })
 
         google_sign_in_button.setOnClickListener {
             observer.launchIntentToSignIn(intent, viewLifecycleOwner){}
@@ -123,46 +134,6 @@ class SignupChoicesFragment : DaggerFragment() {
 //        }
 
     }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN){
-            Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            task.addOnCompleteListener {
-                if(it.isSuccessful){
-                    val account: GoogleSignInAccount? =
-                        it.getResult(ApiException::class.java)
-
-                    val email = account?.email
-                    val lastName = account?.familyName
-                    val firstName = account?.givenName
-                    val otherName = account?.displayName
-                    val imageUrl = account?.photoUrl
-                    val category = arg.category
-                    val newUser = User()
-                    newUser.email = email
-
-                    requireActivity().gdToast("Authentication successful", Gravity.BOTTOM)
-//                    val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToSignupCategoryFragment()
-//                    action.newUser = newUser
-//                    goto(action)
-//
-//                    i(title, "token $firstName")
-//                           requireActivity().startActivity(Intent(requireActivity(), ProfileActivity::class.java))
-                }
-                else{
-                    Toast.makeText(requireContext(), "unSuccessful", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-        else{
-            Toast.makeText(requireContext(), "unSuccessful", Toast.LENGTH_LONG).show()
-        }
-    }
-
-
 
 
 }

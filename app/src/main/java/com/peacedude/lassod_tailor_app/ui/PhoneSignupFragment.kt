@@ -49,7 +49,7 @@ class PhoneSignupFragment : DaggerFragment() {
     private lateinit var confirmProgressBar: ProgressBar
     private lateinit var resendProgressBar: ProgressBar
     private lateinit var progressBar:ProgressBar
-    lateinit var continueBtn: Button
+    lateinit var phonesignupBtn: Button
 
     private val loginAdviseText: String by lazy {
         getString(R.string.have_an_account)
@@ -109,10 +109,10 @@ class PhoneSignupFragment : DaggerFragment() {
         val signupBackgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         buttonTransactions({
-            continueBtn = phone_signup_btn.findViewById(R.id.btn)
-            continueBtn = phone_signup_btn.findViewById(R.id.btn)
+            phonesignupBtn = phone_signup_btn.findViewById(R.id.btn)
+            phonesignupBtn = phone_signup_btn.findViewById(R.id.btn)
             progressBar = phone_signup_btn.findViewById(R.id.progress_bar)
-            continueBtn.setTextColor(
+            phonesignupBtn.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
                     R.color.colorPrimary
@@ -139,14 +139,22 @@ class PhoneSignupFragment : DaggerFragment() {
             )
             confirmBtn.text = getString(R.string.confirm)
             resendCodeBtn.text = getString(R.string.resend_code)
-            continueBtn.text = getString(R.string.continue_text)
+            phonesignupBtn.text = getString(R.string.continue_text)
             //Set resend code button progress bar
             resendProgressBar = includedViewForResendBtn.findViewById(R.id.progress_bar)
             //Set confirm button progress bar
             confirmProgressBar = includedViewForConfirmBtn.findViewById(R.id.progress_bar)
 
         }, {
-            continueBtn.setOnClickListener {
+
+            userViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    phonesignupBtn.show()
+                } else {
+                    phonesignupBtn.invisible()
+                }
+            })
+            phonesignupBtn.setOnClickListener {
                 signupRequest()
             }
 
@@ -224,7 +232,7 @@ class PhoneSignupFragment : DaggerFragment() {
                 userData.password = passwordString
                 requireActivity().gdToast("$phoneNumber", Gravity.BOTTOM)
                 val request = userViewModel.registerUser(userData)
-                val response = requireActivity().observeRequest(request, progressBar, continueBtn)
+                val response = requireActivity().observeRequest(request, progressBar, phonesignupBtn)
                 response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                     val (bool, result) = it
                     onRequestResponseTask<User>(bool, result){

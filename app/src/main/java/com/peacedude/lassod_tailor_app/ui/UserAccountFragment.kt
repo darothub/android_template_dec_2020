@@ -136,8 +136,15 @@ class UserAccountFragment : DaggerFragment() {
             saveBtn.background = saveBtnBackground
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
+        authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                getUserData()
 
-        getUserData()
+            } else {
+
+            }
+        })
+
 
         ActivityCompat.requestPermissions(
             requireActivity(),

@@ -1,19 +1,26 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buildVersion
+import com.peacedude.lassod_tailor_app.helpers.networkMonitor
+import com.peacedude.lassod_tailor_app.helpers.show
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -23,11 +30,34 @@ class SplashScreenActivity : AppCompatActivity() {
     val topAnimation by lazy{
         AnimationUtils.loadAnimation(this, R.anim.top_animation)
     }
+    val splashDialog by lazy {
+        Dialog(this, R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            setCanceledOnTouchOutside(false)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+    val splashCheckConnectionTv by lazy{
+        splashDialog.findViewById<TextView>(R.id.loader_layout_tv)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
         app_logo.animation = topAnimation
+        val netWorkLiveData = networkMonitor()
+//        netWorkLiveData.observe(this, androidx.lifecycle.Observer {
+//            if (it) {
+//                splashDialog.dismiss()
+//                Log.i("Base", "Network On")
+//
+//            } else {
+//                splashDialog.show()
+//                splashCheckConnectionTv.show()
+//
+//                Log.i("Base", "Network OFF")
+//            }
+//        })
 
 
     }

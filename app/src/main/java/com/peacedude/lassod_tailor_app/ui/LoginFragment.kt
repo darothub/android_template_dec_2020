@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -160,6 +161,15 @@ class LoginFragment : DaggerFragment() {
 
         }
 
+        userViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                loginBtn.show()
+                login_google_sign_in_button.show()
+            } else {
+                loginBtn.invisible()
+                login_google_sign_in_button.invisible()
+            }
+        })
 
         loginBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
 

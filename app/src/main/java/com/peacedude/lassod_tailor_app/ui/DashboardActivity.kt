@@ -92,19 +92,15 @@ class DashboardActivity : BaseActivity() {
 
 //        setBottomNavController()
 //
-        dialog.show()
-        checkConnectionTv.show()
+
         dashboard_fragment.view?.invisible()
         authViewModel.netWorkLiveData.observe(this, Observer {
             if (it) {
                 Log.i(title, "Network On")
                 getUserData()
-                dialog.dismiss()
                 dashboard_fragment.view?.show()
             } else {
                 dashboard_fragment.view?.invisible()
-                dialog.show()
-                checkConnectionTv.show()
                 Log.i(title, "Network OFF")
             }
         })

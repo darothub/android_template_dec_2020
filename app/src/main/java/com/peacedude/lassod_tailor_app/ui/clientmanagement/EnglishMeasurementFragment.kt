@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.textfield.TextInputEditText
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
+import com.peacedude.lassod_tailor_app.helpers.invisible
 import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.model.request.Client
 import dagger.android.support.DaggerFragment
@@ -110,6 +111,14 @@ class EnglishMeasurementFragment : DaggerFragment() {
                 background = saveBtnBackground
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
             }
+//            authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+//                if (it) {
+//                    saveBtn.show()
+//
+//                } else {
+//                    saveBtn.invisible()
+//                }
+//            })
         })
         dialogAddNameField.textCountListener(addTextCountTv)
         dialogEditNameField.textCountListener(editTextCountTv)

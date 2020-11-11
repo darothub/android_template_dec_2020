@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -177,6 +178,15 @@ class NativeMeasurementFragment : DaggerFragment() {
                 progressBar = native_measurement_included_btn.findViewById(R.id.progress_bar)
 
             }, {
+
+                authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+                    if (it) {
+                        saveBtn.show()
+
+                    } else {
+                        saveBtn.invisible()
+                    }
+                })
                 addMeasurementButton.setOnClickListener {
                     val measurementName = measurementValuesSpinner.selectedItem.toString().trim()
                     val measurementValue = dialogAddValueField.text.toString().trim()

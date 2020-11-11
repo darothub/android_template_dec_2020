@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.di.activitymodules.*
+import com.peacedude.lassod_tailor_app.di.networkmodules.auth.AuthRequestModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.user.ViewModelInterfaceModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.GeneralViewModelModule
@@ -44,7 +45,8 @@ abstract class ActivityBuilderModule {
             ViewModelFactoryModule::class,
             GeneralViewModelModule::class,
             ViewModelInterfaceModule::class,
-            AuthViewModelModule::class
+            AuthViewModelModule::class,
+            AuthRequestModule::class
         ]
     )
     abstract fun baseActivity(): BaseActivity

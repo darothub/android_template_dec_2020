@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,6 +45,7 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.skydoves.progressview.ProgressView
 import com.squareup.picasso.Picasso
+import com.utsman.recycling.adapter.RecyclingAdapter
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.client_list_item.view.*
@@ -158,61 +162,15 @@ class MediaFragment : DaggerFragment() {
         )
         noDataText.text = getString(R.string.you_have_no_photo_str)
 
-        val request = authViewModel.getAllPhoto(header)
 
-        //Observer for get request
-        requestObserver(null, null, request, true) { bool, result ->
-            //Task to be done on successful
-            onRequestResponseTask<ClientsList>(bool, result) {
-                val results = result as UserResponse<PhotoList>
-                val listOfPhoto = result.data?.photo?.map {
-                    Photo(it.id, it.tailorID, it.photo, it.photoAwsDetails, it.info, it.createdAt, it.updatedAt)
-                }
-                if (listOfPhoto?.isNotEmpty()!!){
-                    no_data_included_layout.hide()
-                    media_fragment_rv.show()
-                    media_fragment_rv.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
+        authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                mediaTransaction()
 
-                        bind { itemView, position, item ->
-                            itemView.media_item_picture_title_tv.text = getString(R.string.elegant_str)
-                            Picasso.get().load(item?.photo).into(itemView.media_item_picture_iv)
-
-                            itemView.setOnClickListener {
-                                GlobalVariables.globalId = item?.id.toString()
-                                GlobalVariables.globalPosition = position
-                                Picasso.get().load(item?.photo).into(singleImageIv)
-                                singleImageDialog.show {
-                                    cornerRadius(10F)
-                                }
-
-                            }
-
-                            singleDeleteTv.setOnClickListener {
-                                val deleteReq = authViewModel.deleteMedia(header, GlobalVariables.globalId)
-                                //Observer for get request
-                                requestObserver(null, null, deleteReq, true) { bool, result ->
-                                    onRequestResponseTask<NothingExpected>(bool, result) {
-                                        val res = result as UserResponse<NothingExpected>
-                                        list?.removeAt(GlobalVariables.globalPosition)
-                                        requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-                                        singleImageDialog.dismiss()
-                                        adapter.notifyDataSetChanged()
-                                    }
-                                }
-                            }
-                        }
-                        setLayoutManager(GridLayoutManager(requireContext(), 2))
-                        submitList(listOfPhoto)
-                    }
-
-                }
-                else{
-                    no_data_included_layout.show()
-                }
+            } else {
 
             }
-
-        }
+        })
 
 
 
@@ -236,6 +194,99 @@ class MediaFragment : DaggerFragment() {
             } else {
                 i(title, getString(R.string.no_permission))
                 requireActivity().gdToast(getString(R.string.no_permission), Gravity.BOTTOM)
+            }
+        }
+    }
+
+    private fun mediaTransaction() {
+        val request = authViewModel.getAllPhoto(header)
+
+        //Observer for get request
+        requestObserver(null, null, request, true) { bool, result ->
+            //Task to be done on successful
+            onRequestResponseTask<ClientsList>(bool, result) {
+                val results = result as UserResponse<PhotoList>
+                val listOfPhoto = result.data?.photo?.map {
+                    Photo(
+                        it.id,
+                        it.tailorID,
+                        it.photo,
+                        it.photoAwsDetails,
+                        it.info,
+                        it.createdAt,
+                        it.updatedAt
+                    )
+                }
+                if (listOfPhoto?.isNotEmpty()!!) {
+                    no_data_included_layout.hide()
+                    media_fragment_rv.show()
+                    media_fragment_rv.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
+
+                        bind { itemView, position, item ->
+                            itemView.media_item_picture_title_tv.text =
+                                getString(R.string.elegant_str)
+                            Picasso.get().load(item?.photo).into(itemView.media_item_picture_iv)
+
+                            itemView.setOnClickListener {
+                                GlobalVariables.globalId = item?.id.toString()
+                                GlobalVariables.globalPhoto = item
+                                GlobalVariables.globalPosition = position
+                                Picasso.get().load(item?.photo).into(singleImageIv)
+                                singleImageDialog.show {
+                                    cornerRadius(10F)
+                                }
+                                singleSendTv.setOnClickListener {
+                                    val b = getBitmapFromImageView(itemView.media_item_picture_iv)
+                                    val file = saveBitmap(b)
+                                    val mimeType = "image/png"
+                                    if (file != null) {
+                                        val uri = FileProvider.getUriForFile(
+                                            requireActivity(),
+                                            "com.peacedude.lassod_tailor_app.fileprovider", //(use your app signature + ".provider" )
+                                            file)
+                                        val share = ShareCompat.IntentBuilder
+                                            .from(requireActivity())
+                                            .setType(mimeType)
+                                            .setChooserTitle("Share with ")
+                                            .setStream(uri)
+                                            .startChooser()
+                                    }
+
+                                }
+                            }
+
+                            deleteMediaRequest(list, adapter)
+
+                        }
+                        setLayoutManager(GridLayoutManager(requireContext(), 2))
+                        submitList(listOfPhoto)
+                    }
+
+                } else {
+                    no_data_included_layout.show()
+                }
+
+            }
+
+        }
+    }
+
+    private fun deleteMediaRequest(
+        list: MutableList<Photo?>?,
+        adapter: RecyclingAdapter<Photo>
+    ) {
+        singleDeleteTv.setOnClickListener {
+            val deleteReq =
+                authViewModel.deleteMedia(header, GlobalVariables.globalId)
+            //Observer for get request
+            requestObserver(null, null, deleteReq, true) { bool, result ->
+                onRequestResponseTask<NothingExpected>(bool, result) {
+                    val res = result as UserResponse<NothingExpected>
+                    list?.removeAt(GlobalVariables.globalPosition)
+                    requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+                    singleImageDialog.dismiss()
+                    adapter.notifyDataSetChanged()
+                }
             }
         }
     }
@@ -315,5 +366,7 @@ class MediaFragment : DaggerFragment() {
             requireActivity().gdToast("error code", Gravity.BOTTOM)
         }
     }
+
+
 }
 

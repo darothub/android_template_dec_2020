@@ -6,8 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.net.*
 import android.os.Build
@@ -32,6 +31,7 @@ import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.Photo
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
@@ -383,40 +383,54 @@ fun Activity.setUpSpinnerWithList(header:String, spinner: Spinner, list:ArrayLis
 object GlobalVariables{
     var globalClient: Client? = null
     var globalUser: User? = null
+    var globalPhoto: Photo?=null
     var globalString:String = ""
     var globalPosition = 0
     var globalId = ""
 
 }
 
-//fun Activity.networkMonitor():MutableLiveData<Boolean>{
-//    val netWorkLiveData = MutableLiveData<Boolean>()
-//
-//    val networkCallback = object : ConnectivityManager.NetworkCallback() {
-//        override fun onAvailable(network: Network) {
-//            //take action when network connection is gained
-//            i("Network", "onAvailable")
-//            netWorkLiveData.postValue(true)
-//        }
-//
-//        override fun onLost(network: Network) {
-//            //take action when network connection is lost
-//            i("Network", "onLost")
-//            netWorkLiveData.postValue(false)
-//        }
-//
-//    }
-//
-//    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    connectivityManager.let {
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//            it.registerDefaultNetworkCallback(networkCallback)
-//        }
-//        else{
-//            val request: NetworkRequest = NetworkRequest.Builder()
-//                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
-//            it.registerNetworkCallback(request, networkCallback)
-//        }
-//    }
-//    return netWorkLiveData
-//}
+fun Activity.networkMonitor():MutableLiveData<Boolean>{
+    val netWorkLiveData = MutableLiveData<Boolean>()
+
+    val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            //take action when network connection is gained
+            i("Network", "onAvailable")
+            netWorkLiveData.postValue(true)
+        }
+
+        override fun onLost(network: Network) {
+            //take action when network connection is lost
+            i("Network", "onLost")
+            netWorkLiveData.postValue(false)
+        }
+
+    }
+
+    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    connectivityManager.let {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            it.registerDefaultNetworkCallback(networkCallback)
+        }
+        else{
+            val request: NetworkRequest = NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+            it.registerNetworkCallback(request, networkCallback)
+        }
+    }
+    return netWorkLiveData
+}
+
+fun getBitmapFromImageView(view: ImageView):Bitmap{
+    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val bgDrawable = view.background
+    if(bgDrawable != null){
+        bgDrawable.draw(canvas)
+    }else{
+        canvas.drawColor(Color.WHITE)
+    }
+    view.draw(canvas)
+    return bitmap
+}
