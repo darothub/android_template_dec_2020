@@ -28,13 +28,11 @@ data class PhotoAwsDetails (
     val contentDisposition: Any? = null,
     val storageClass: String,
     val serverSideEncryption: Any? = null,
-    val metadata: Metadata,
+    val metadata: Metadatas,
     val location: String,
     val etag: String
 ):Serializable
 
-data class Metadata (
-    val fieldName: String
-):Serializable
+
 
 data class UploadedPhoto(val the0:UploadFileResponse):ParentData, Serializable

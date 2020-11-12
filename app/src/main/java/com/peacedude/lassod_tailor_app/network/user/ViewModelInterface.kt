@@ -1,20 +1,13 @@
 package com.peacedude.lassod_tailor_app.network.user
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
-import com.peacedude.lassod_tailor_app.model.request.PhotoList
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
-import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
-import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
 
 interface ViewModelInterface {
     var lastFragmentId:Int?
@@ -104,6 +97,9 @@ interface ViewModelInterface {
         return TODO()
     }
     fun deleteMedia(header: String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+    fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
 }

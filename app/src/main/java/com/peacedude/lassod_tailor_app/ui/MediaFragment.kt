@@ -1,18 +1,11 @@
            package com.peacedude.lassod_tailor_app.ui
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -28,39 +21,28 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
+import com.peacedude.lassod_tailor_app.model.response.Photo
+import com.peacedude.lassod_tailor_app.model.response.PhotoList
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.skydoves.progressview.ProgressView
 import com.squareup.picasso.Picasso
 import com.utsman.recycling.adapter.RecyclingAdapter
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_media.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 const val REQUEST_CODE = 1
@@ -75,6 +57,7 @@ class MediaFragment : DaggerFragment() {
     private val title by lazy {
         getName()
     }
+
     private val dialog by lazy {
         MaterialDialog(requireContext()).apply {
             noAutoDismiss()

@@ -1,15 +1,10 @@
 package com.peacedude.lassod_tailor_app.network.auth
 
 import com.peacedude.lassod_tailor_app.model.request.*
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.UploadFileResponse
-import com.peacedude.lassod_tailor_app.model.response.UploadedPhoto
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Header
 
 interface AuthRequestInterface {
     fun getUserData(header:String): Call<UserResponse<User>> {
@@ -54,6 +49,9 @@ interface AuthRequestInterface {
         return TODO()
     }
     fun deleteMedia(header: String?, id: String?) : Call<UserResponse<NothingExpected>>{
+        return TODO()
+    }
+    fun getAllVideos(header: String?) : Call<UserResponse<VideoList>>{
         return TODO()
     }
 

@@ -12,10 +12,11 @@ import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.hide
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_resources.*
 
-class ResourcesActivity : AppCompatActivity() {
+class ResourcesActivity : BaseActivity() {
     private val title by lazy {
         getName()
     }

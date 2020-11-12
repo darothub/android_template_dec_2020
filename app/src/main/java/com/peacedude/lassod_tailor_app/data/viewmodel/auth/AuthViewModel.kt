@@ -13,7 +13,6 @@ import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -126,6 +125,11 @@ open class AuthViewModel @Inject constructor(
 
         val request = authRequestInterface.deleteMedia(header, id)
         return enqueueRequest<NothingExpected>(request, responseLiveData)
+    }
+
+    override fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
+        val request = authRequestInterface.getAllVideos(header)
+        return enqueueRequest<VideoList>(request, responseLiveData)
     }
 
     override fun uploadProfilePicture(

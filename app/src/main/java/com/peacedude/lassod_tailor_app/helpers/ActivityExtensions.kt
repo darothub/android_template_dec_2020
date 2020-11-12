@@ -18,24 +18,19 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import com.afollestad.materialdialogs.DialogBehavior
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.internal.main.DialogLayout
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.request.Photo
+import com.peacedude.lassod_tailor_app.model.response.Photo
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
+import com.peacedude.lassod_tailor_app.model.response.VideoResource
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.ui.REQUEST_CODE
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -44,6 +39,7 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Observe request response
@@ -384,6 +380,8 @@ object GlobalVariables{
     var globalClient: Client? = null
     var globalUser: User? = null
     var globalPhoto: Photo?=null
+    var globalVideo: VideoResource?=null
+    var globalVideoList: ArrayList<VideoResource>?=null
     var globalString:String = ""
     var globalPosition = 0
     var globalId = ""

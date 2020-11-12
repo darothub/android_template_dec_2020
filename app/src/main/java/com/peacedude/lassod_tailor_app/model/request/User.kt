@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.model.request
 
 import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.response.AwsDetails
 import java.io.Serializable
 
 data class User(

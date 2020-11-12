@@ -14,12 +14,22 @@
         android:id="@+id/allVideoFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.resources.AllVideoFragment"
         android:label="@string/resources_str"
-        tools:layout="@layout/fragment_all_video" />
+        tools:layout="@layout/fragment_all_video" >
+        <action
+            android:id="@+id/action_allVideoFragment_to_singleVideoFragment"
+            app:destination="@id/singleVideoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/singleVideoFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.resources.SingleVideoFragment"
         android:label=" "
-        tools:layout="@layout/fragment_single_video" />
+        tools:layout="@layout/fragment_single_video" >
+        <argument
+            android:name="video"
+            app:argType="com.peacedude.lassod_tailor_app.model.response.VideoResource"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/allArticlesFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.resources.AllArticlesFragment"

@@ -37,7 +37,9 @@ import javax.inject.Singleton
         MainActivityModule::class,
         DashboardActivityModule::class,
         ProfileActivityModule::class,
-        ClientActivityModule::class]
+        ClientActivityModule::class,
+        ResourceActivityModule::class
+    ]
 )
 abstract class ActivityBuilderModule {
     @ContributesAndroidInjector(
