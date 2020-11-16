@@ -187,7 +187,7 @@ class MediaFragment : DaggerFragment() {
         //Observer for get request
         requestObserver(null, null, request, true) { bool, result ->
             //Task to be done on successful
-            onRequestResponseTask<ClientsList>(bool, result) {
+            onRequestResponseTask<PhotoList>(bool, result) {
                 val results = result as UserResponse<PhotoList>
                 val listOfPhoto = result.data?.photo?.map {
                     Photo(

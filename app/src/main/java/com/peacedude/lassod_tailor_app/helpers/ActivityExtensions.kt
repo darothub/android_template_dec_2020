@@ -26,11 +26,8 @@ import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.response.Photo
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.model.response.VideoResource
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.ui.REQUEST_CODE
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
@@ -123,6 +120,77 @@ fun Activity.observeRequest(
     return result
 }
 
+fun Activity.observeRequests(
+    request: ServicesResponseWrapper<ParentData>?,
+    progressBar: ProgressBar?, button: Button?, loader:Boolean=false
+): LiveData<Pair<Boolean, Any?>> {
+    val result = MutableLiveData<Pair<Boolean, Any?>>()
+    val title: String by lazy {
+        this.getName()
+    }
+    val dialog by lazy {
+        Dialog(this, R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            setCanceledOnTouchOutside(false)
+            window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+    }
+
+    hideKeyboard()
+
+        try {
+            val responseData = request?.data
+            val errorResponse = request?.message
+            val errorCode = request?.code
+
+            when (request) {
+                is ServicesResponseWrapper.Loading<*> -> {
+                    if(loader) dialog.show() else dialog.dismiss()
+                    progressBar?.show()
+                    button?.hide()
+                    i(title, "Loading..")
+                }
+                is ServicesResponseWrapper.Success -> {
+                    dialog.dismiss()
+                    progressBar?.hide()
+                    button?.show()
+                    result.postValue(Pair(true, responseData))
+
+                    i(title, "success ${request?.data}")
+                }
+                is ServicesResponseWrapper.Error -> {
+                    dialog.dismiss()
+                    progressBar?.hide()
+                    button?.show()
+                    result.postValue(Pair(false, errorResponse))
+                    gdErrorToast("$errorResponse", Gravity.BOTTOM)
+
+                    Log.i(title, "Error ${request?.message}")
+                }
+                is ServicesResponseWrapper.Logout -> {
+                    dialog.dismiss()
+//                    val unAuthorizedString = getString(R.string.unauthorized_user)
+                    progressBar?.hide()
+                    button?.show()
+                    gdToast(errorResponse.toString(), Gravity.BOTTOM)
+                    startActivity(Intent(this as? Context, MainActivity::class.java))
+//                    result.postValue(Pair(false, errorResponse.toString()))
+                    i(title, "Log out ${errorResponse.toString()}")
+
+//                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
+                }
+            }
+        } catch (e: Exception) {
+            progressBar?.hide()
+            dialog.dismiss()
+            button?.show()
+            i(title, e.localizedMessage)
+        }
+
+
+    return result
+}
+
 fun Activity.requestObserver(
     progressBar: ProgressBar?,
     btn: Button?,
@@ -137,6 +205,7 @@ fun Activity.requestObserver(
         action(bool, result)
     })
 }
+
 
 /**
  * Handles sign-up request live response
@@ -381,8 +450,14 @@ object GlobalVariables{
     var globalUser: User? = null
     var globalPhoto: Photo?=null
     var globalVideo: VideoResource?=null
-    var globalVideoList: ArrayList<VideoResource>?=null
+    var globalArticle:Article?=null
+    var globalArticleList:List<CommonMediaClass>?=null
+    var globalArticlesList:List<Article>?=null
+    var globalVideosList:List<VideoResource>?=null
+    var globalVideoList: List<CommonMediaClass>?=null
     var globalString:String = ""
+    var globalArticleListLiveData = MutableLiveData<List<Article>>()
+    var globalVideoListLiveData = MutableLiveData<List<CommonMediaClass>>()
     var globalPosition = 0
     var globalId = ""
 

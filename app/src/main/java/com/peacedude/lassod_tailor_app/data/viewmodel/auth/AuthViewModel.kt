@@ -127,6 +127,11 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<NothingExpected>(request, responseLiveData)
     }
 
+    override fun getAllArticles(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
+        val request = authRequestInterface.getAllArticles(header)
+        return enqueueRequest<ArticleList>(request, responseLiveData)
+    }
+
     override fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = authRequestInterface.getAllVideos(header)
         return enqueueRequest<VideoList>(request, responseLiveData)

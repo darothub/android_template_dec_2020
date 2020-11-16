@@ -102,4 +102,7 @@ interface ViewModelInterface {
     fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
+    fun getAllArticles(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
 }

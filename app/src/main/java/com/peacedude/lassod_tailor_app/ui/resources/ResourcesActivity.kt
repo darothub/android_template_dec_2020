@@ -5,16 +5,19 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.hide
-import com.peacedude.lassod_tailor_app.helpers.i
-import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_resources.*
+import javax.inject.Inject
 
 class ResourcesActivity : BaseActivity() {
     private val title by lazy {
@@ -36,10 +39,22 @@ class ResourcesActivity : BaseActivity() {
                        controller.popBackStack()
                    }
                }
+               R.id.allArticlesFragment -> {
+                   toolbar?.show()
+                   toolbar?.setNavigationOnClickListener {
+                       controller.popBackStack()
+                   }
+               }
                R.id.resourcesFragment -> toolbar?.show()
                R.id.singleVideoFragment -> toolbar?.hide()
            }
         }
+
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val authViewModel: AuthViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +66,16 @@ class ResourcesActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 //        toolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
+
+
+        authViewModel.netWorkLiveData.observe(this, Observer {
+            if (it) {
+                resourcesFragment.view?.show()
+
+            } else {
+                resourcesFragment.view?.invisible()
+            }
+        })
 
     }
 

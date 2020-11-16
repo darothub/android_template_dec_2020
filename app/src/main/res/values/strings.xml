@@ -220,4 +220,6 @@
     <string name="elegant_str">Elegant suit for men</string>
     <string name="check_ur_connection">Check your connection</string>
     <string name="no_video_available">No video available</string>
+    <string name="no_article_available">No article available</string>
+    <string name="no_photo_available">No photo available</string>
 </resources>

@@ -96,5 +96,9 @@ interface AuthServices {
         @Header("Authorization") header: String?
     ): Call<UserResponse<VideoList>>
 
+    @GET("article")
+    fun getAllArticles(
+        @Header("Authorization") header: String?
+    ): Call<UserResponse<ArticleList>>
 }
 

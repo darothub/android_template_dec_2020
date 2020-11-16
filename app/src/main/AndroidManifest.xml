@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".di.BaseApplication"
         android:fullBackupContent="false"
@@ -60,7 +59,6 @@
             android:windowSoftInputMode="adjustResize"
             tools:ignore="AllowBackup">
             <nav-graph android:value="@navigation/nav_graph1" />
-
         </activity>
         <activity
             android:name="com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity"

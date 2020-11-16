@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.model.response
 
+import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
@@ -9,13 +10,12 @@ data class VideoList (
 
 data class VideoResource (
     val id: String,
+    @SerializedName("tailorId")
     val tailorID: String,
     val title: String,
-    val videoURL: String,
+    val videoURL: String?=null,
     val description: String,
     val createdAt: String,
-    val updatedAt: String,
-    val placeHolder:Int?=0
+    val updatedAt: String
 ):Serializable, ParentData{
-
 }

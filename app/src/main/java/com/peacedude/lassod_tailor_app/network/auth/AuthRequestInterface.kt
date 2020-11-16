@@ -54,5 +54,8 @@ interface AuthRequestInterface {
     fun getAllVideos(header: String?) : Call<UserResponse<VideoList>>{
         return TODO()
     }
+    fun getAllArticles(header: String?) : Call<UserResponse<ArticleList>>{
+        return TODO()
+    }
 
 }

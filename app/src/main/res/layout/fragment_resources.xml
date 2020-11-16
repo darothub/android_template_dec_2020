@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.core.widget.NestedScrollView
     android:id="@+id/resources_fragment_nsv"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,9 +11,9 @@
     android:fillViewport="true"
     tools:context=".ui.resources.ResourcesFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <TextView
             android:id="@+id/resource_fragment_video_tv"
@@ -23,71 +22,102 @@
             android:text="@string/videos_str"
             android:textSize="@dimen/_13sdp"
             app:layout_constraintTop_toTopOf="parent"
+
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_18sdp"
             android:textColor="@color/colorPrimaryDark"
             />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/resource_fragment_video_rv"
+        <ViewFlipper
+            android:id="@+id/resources_fragment_video_recycler_vf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            tools:listitem="@layout/resource_video_item"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/resource_fragment_video_tv"/>
+            app:layout_constraintTop_toBottomOf="@id/resource_fragment_video_tv"
+
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/resource_fragment_video_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginTop="@dimen/_10sdp"
+
+                tools:listitem="@layout/resource_video_item" />
+
+            <include
+                android:id="@+id/resource_fragment_video_no_data_included_layout"
+                layout="@layout/no_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/resource_fragment_video_tv"
+                app:layout_constraintBottom_toTopOf="@id/resource_fragment_view_all_video_tv"
+                />
+        </ViewFlipper>
+
 
         <TextView
             android:id="@+id/resource_fragment_view_all_video_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/view_all_str"
-            android:textSize="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/resource_fragment_video_rv"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_16sdp"
             android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/view_all_str"
             android:textColor="@color/colorPrimary"
-            />
+            app:layout_constraintTop_toBottomOf="@id/resources_fragment_video_recycler_vf"
+            android:textSize="@dimen/_10sdp" />
 
         <TextView
             android:id="@+id/resource_fragment_article_publication_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/article_publication_str"
-            android:textSize="@dimen/_13sdp"
-            app:layout_constraintTop_toBottomOf="@id/resource_fragment_view_all_video_tv"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginTop="@dimen/_15sdp"
+            android:text="@string/article_publication_str"
             android:textColor="@color/colorPrimaryDark"
-            />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/resource_fragment_article_publications_rv"
+            app:layout_constraintTop_toBottomOf="@id/resource_fragment_view_all_video_tv"
+            android:textSize="@dimen/_13sdp" />
+
+        <ViewFlipper
+            android:id="@+id/resources_fragment_article_recycler_vf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            tools:listitem="@layout/article_publication_item_layout"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/resource_fragment_article_publication_tv"/>
+            app:layout_constraintTop_toBottomOf="@id/resource_fragment_article_publication_tv"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/resource_fragment_article_publications_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/resource_fragment_article_publication_tv"
+                tools:listitem="@layout/article_publication_item_layout" />
+
+            <include
+                android:id="@+id/resources_fragment_article_no_data_included_layout"
+                layout="@layout/no_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                />
+        </ViewFlipper>
+
 
         <TextView
             android:id="@+id/resource_fragment_view_all_publication_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/view_all_str"
-            android:textSize="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/resource_fragment_article_publications_rv"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginTop="@dimen/_5sdp"
-            android:textColor="@color/colorPrimary"
             android:layout_marginBottom="@dimen/_20sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            android:text="@string/view_all_str"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10sdp"
+           app:layout_constraintTop_toBottomOf="@id/resources_fragment_article_recycler_vf" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
