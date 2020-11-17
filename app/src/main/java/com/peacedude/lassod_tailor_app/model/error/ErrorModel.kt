@@ -5,5 +5,7 @@ import java.io.Serializable
 
 class ErrorModel(
     val status:String?,
+    val code:String?,
+    val message:String?,
     val errors:List<String>?
 ):ParentData, Serializable

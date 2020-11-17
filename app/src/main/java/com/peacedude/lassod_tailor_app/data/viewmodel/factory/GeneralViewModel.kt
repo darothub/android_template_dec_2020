@@ -28,10 +28,8 @@ import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import kotlinx.coroutines.flow.FlowCollector
+import retrofit2.*
 import javax.inject.Inject
 
 
@@ -107,25 +105,25 @@ open class GeneralViewModel @Inject constructor(
                 try {
                     if (statusCode == 401) {
                         val err = errorConverter(response)
-                        responseLiveData.postValue(
+                        responseLiveData.value =
                             ServicesResponseWrapper.Logout(
                                 "Access Denied",
                                 err.second
                             )
-                        )
+
                     } else {
                         val err = errorConverter(response)
-                        responseLiveData.postValue(
+                        responseLiveData.value =
                             ServicesResponseWrapper.Error(
                                 err.first,
                                 err.second
                             )
-                        )
+
                     }
 
                 } catch (e: Exception) {
                     Log.i(title, "Hello" + " " + e.message.toString())
-                    responseLiveData.postValue(ServicesResponseWrapper.Error(e.message, statusCode))
+                    responseLiveData.value = ServicesResponseWrapper.Error(e.message, statusCode)
                 }
             }
             in 500..599 -> {
@@ -149,7 +147,52 @@ open class GeneralViewModel @Inject constructor(
 
 
     }
+    protected suspend inline fun <reified T:ParentData>FlowCollector<ServicesResponseWrapper<T>>.onErrorFlowResponse(
+        e: HttpException
+    ) {
+        Log.e("Viewmodel error", "${e.response()}")
+        try{
+            val error = errorConverter(e.response() as Response<ParentData>)
+            when(error.second){
+                401 ->{
+                    emit(
+                        ServicesResponseWrapper.Logout(
+                            "Access Denied",
+                            error.second
+                        )
+                    )
+                }
+                else->{
+                    emit(
+                        ServicesResponseWrapper.Error(
+                            error.first,
+                            error.second
+                        )
+                    )
+                }
+            }
+        }
+        catch (e:Exception){
+            Log.i(title, "CaughtError ${e.message}")
+        }
 
+
+    }
+
+    protected suspend inline fun <reified T> FlowCollector<ServicesResponseWrapper<ParentData>>.onSuccessFlowResponse(
+        request: UserResponse<T>
+    ) {
+        val data = request.data
+        emit(
+            ServicesResponseWrapper.Loading(
+                null,
+                "Loading..."
+            )
+        )
+        emit(
+            ServicesResponseWrapper.Success(data as ParentData)
+        )
+    }
     protected fun errorConverter(
         response: Response<ParentData>
     ): Pair<String, Int> {
@@ -158,6 +201,8 @@ open class GeneralViewModel @Inject constructor(
             retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
         val error = converter.convert(response.errorBody())
         val errors = error?.errors
+        val msg = error?.message
+        Log.i(title, "messages $msg")
         var errorString1 = ""
         if (error?.errors?.size!! > 1) {
             errorString1 = "${errors?.get(0)}, ${errors?.get(1)}"
@@ -168,6 +213,7 @@ open class GeneralViewModel @Inject constructor(
         return Pair(errorString1, response.code())
 
     }
+
 
     fun logout(activity: Activity): LiveData<Boolean> {
 
@@ -228,6 +274,28 @@ open class GeneralViewModel @Inject constructor(
         return responseLiveData
     }
 
+    protected inline fun <reified T> enqueueRequest(
+        request: Call<UserResponse<T>>,
+        responseLiveData: ServicesResponseWrapper<ParentData>
+
+    ): ServicesResponseWrapper<ParentData> {
+        request.enqueue(object : Callback<UserResponse<T>> {
+            override fun onFailure(call: Call<UserResponse<T>>, t: Throwable) {
+
+            }
+
+            override fun onResponse(
+                call: Call<UserResponse<T>>,
+                response: Response<UserResponse<T>>
+            ) {
+
+
+            }
+
+        })
+        return responseLiveData
+    }
+
     protected fun networkMonitor(): MutableLiveData<Boolean> {
 
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -258,5 +326,81 @@ open class GeneralViewModel @Inject constructor(
         }
         return netWorkLiveData
     }
+
+
+//    protected fun onFailureResponse(
+//        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
+//        t: Throwable
+//    ) {
+//        Log.i(title, "Throwable ${t.localizedMessage}")
+//        responseLiveData.postValue(
+//            ServicesResponseWrapper.Error(
+//                "Bad connection, unable to connect",
+//                0
+//            )
+//        )
+//    }
+//
+//    protected fun onResponseTask(
+//        response: Response<ParentData>,
+//        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
+//    ) {
+//        responseLiveData.value = ServicesResponseWrapper.Loading(
+//            null,
+//            "Loading..."
+//        )
+//        i(title, "ViewModel ON")
+//        val res = response.body()
+//        val statusCode = response.code()
+//        Log.i(title, "${response.code()}")
+//        Log.i(title, "errorbody ${response.raw()}")
+//
+//        when (statusCode) {
+//            in 400..499 -> {
+//                try {
+//                    if (statusCode == 401) {
+//                        val err = errorConverter(response)
+//                        responseLiveData.value =
+//                            ServicesResponseWrapper.Logout(
+//                                "Access Denied",
+//                                err.second
+//                            )
+//
+//                    } else {
+//                        val err = errorConverter(response)
+//                        responseLiveData.value =
+//                            ServicesResponseWrapper.Error(
+//                                err.first,
+//                                err.second
+//                            )
+//
+//                    }
+//
+//                } catch (e: Exception) {
+//                    Log.i(title, "Hello" + " " + e.message.toString())
+//                    responseLiveData.value = ServicesResponseWrapper.Error(e.message, statusCode)
+//                }
+//            }
+//            in 500..599 -> {
+//                val err = errorConverter(response)
+//                responseLiveData.postValue(
+//                    ServicesResponseWrapper.Error(
+//                        "Internal server error",
+//                        err.second
+//                    )
+//                )
+//            }
+//            else -> {
+//                try {
+//                    Log.i(title, "success $res")
+//                    responseLiveData.postValue(ServicesResponseWrapper.Success(res))
+//                } catch (e: java.lang.Exception) {
+//                    Log.i(title, e.message.toString())
+//                }
+//            }
+//        }
+//
+//
+//    }
 
 }

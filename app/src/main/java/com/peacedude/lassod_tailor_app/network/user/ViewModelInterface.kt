@@ -6,6 +6,7 @@ import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
@@ -103,6 +104,15 @@ interface ViewModelInterface {
         return TODO()
     }
     fun getAllArticles(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+    suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> {
+        return TODO()
+    }
+    suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+    suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
 }

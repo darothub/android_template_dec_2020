@@ -20,7 +20,8 @@ abstract class ClientActivityModule {
             NativeMeasurementFragmentModule::class,
             EnglishMeasurementFragmentModule::class,
             ClientAccountFragmentModule::class,
-            ClientFragmentModule::class
+            ClientFragmentModule::class,
+            MeasurementFragmentModule::class
         ]
     )
     abstract fun provideClientActivity(): ClientActivity

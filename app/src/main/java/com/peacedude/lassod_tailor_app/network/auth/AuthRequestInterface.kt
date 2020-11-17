@@ -2,9 +2,12 @@ package com.peacedude.lassod_tailor_app.network.auth
 
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Header
 
 interface AuthRequestInterface {
     fun getUserData(header:String): Call<UserResponse<User>> {
@@ -55,6 +58,21 @@ interface AuthRequestInterface {
         return TODO()
     }
     fun getAllArticles(header: String?) : Call<UserResponse<ArticleList>>{
+        return TODO()
+    }
+
+    suspend fun getVideos(header: String?): VideoList{
+        return TODO()
+    }
+
+    suspend fun getArticles(header: String?): ArticleList{
+        return TODO()
+    }
+
+    suspend fun getMeasurementTypes(header: String?): UserResponse<MeasurementTypeList>{
+        return TODO()
+    }
+    suspend fun getM(header:String): Flow<MeasurementTypeList>{
         return TODO()
     }
 

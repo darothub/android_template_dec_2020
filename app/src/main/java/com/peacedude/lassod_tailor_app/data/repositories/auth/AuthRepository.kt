@@ -1,11 +1,16 @@
 package com.peacedude.lassod_tailor_app.data.repositories.auth
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -24,6 +29,14 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
 
     override fun getAllArticles(header: String?): Call<UserResponse<ArticleList>> {
         return authServices.getAllArticles(header)
+    }
+
+    override suspend fun getVideos(header: String?): VideoList {
+        return authServices.getVideos(header)
+    }
+
+    override suspend fun getArticles(header: String?): ArticleList {
+        return authServices.getArticles(header)
     }
 
     override fun updateUserData(header: String, user: User): Call<UserResponse<User>> {
@@ -90,6 +103,16 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         return authServices.getAllPhoto(header)
     }
 
+    override suspend fun getMeasurementTypes(header: String?): UserResponse<MeasurementTypeList> {
+        val h = authServices.getMeasurementTypes(header)
+        Log.i("Repository", "Data ${h.data}")
+        return h
+    }
+
+//    override suspend fun getM(header:String): Flow<MeasurementTypeList> = flow{
+//        val h = authServices.getMeasurementTypes(header)
+//        emit(h)
+//    }.flowOn(IO)
 
 }
 

@@ -1,8 +1,12 @@
 package com.peacedude.lassod_tailor_app.ui.resources
 
 import android.R.attr.radius
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +28,8 @@ import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.gson.annotations.SerializedName
+import com.peacedude.gdtoast.gdErrorToast
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -32,6 +38,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.ResourcesArticlePublication
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.peacedude.lassod_tailor_app.model.response.*
+import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.squareup.picasso.Picasso
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -41,6 +48,11 @@ import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_resources.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.android.synthetic.main.resources_item_sublayout_layout.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -120,172 +132,190 @@ class ResourcesFragment : DaggerFragment() {
         )
         noArticleDataText.text = getString(R.string.no_article_available)
 
-
-        val articleRequest = authViewModel.getAllArticles(header)
-        //Observer for get request
-        requestObserver(null, null, articleRequest, true) { bool, result ->
-            //Task to be done on successful
-            onRequestResponseTask<ArticleList>(bool, result) {
-                val results = result as UserResponse<ArticleList>
-                val listOfArticles = arrayListOf<Article>()
-                i("ResourceScreen", "sizeResourceArticle ${it?.data?.article?.size}")
-                val articles = result.data?.article
-                val articleMap  = articles?.mapTo(listOfArticles, { a ->
-                    Article(
-                        a.id,
-                        a.tailorID,
-                        a.title,
-                        a.description,
-                        a.isBlacklisted,
-                        a.body,
-                        a.articleImage,
-                        a.createdAt,
-                        a.updatedAt
-                    )
-
-                })
-                i(title, "Map $articleMap")
-                if(listOfArticles.isNotEmpty()) {
-                    resource_fragment_article_publications_rv.setupAdapter<Article>(R.layout.article_publication_item_layout) { adapter, context, list ->
-                        bind { itemView, position, item ->
-
-                            if(item?.articleImage != null){
-                                Picasso.get().load(item?.articleImage).fit().into(itemView.resource_article_publications_iv)
-                            }
-                            else{
-                                itemView.resource_article_publications_iv.setImageDrawable(
-                                    ContextCompat.getDrawable(
-                                        requireContext(),
-                                        R.drawable.obioma_logo_blue
-                                    )
-                                )
-                            }
-                            itemView.resource_article_publication_item_title_tv.text = item?.title
-                            itemView.resource_article_publication_item_author_tv.text = item?.title
-                            itemView.article_pub_item_image_ll.clipToOutline = true
-
-                            itemView.resource_article_publications_iv.clipToOutline = true
-
-                        }
-                        setLayoutManager(
-                            LinearLayoutManager(
-                                requireContext(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                            )
-                        )
-                        submitList(listOfArticles)
-                    }
-                }
-                else{
-                    resources_fragment_article_recycler_vf.showNext()
-
-                }
-
-                val videoReq = authViewModel.getAllVideos(header)
-
-
-                //Observer for get request
-                requestObserver(null, null, videoReq, true) { bool, result ->
-                    //Task to be done on successful
-                    onRequestResponseTask<VideoList>(bool, result) {
-                        val results = result as UserResponse<VideoList>
-                        i("ResourceScreen", "sizeResourceArticle ${it?.data?.video?.size}")
-
-                        val listOfVideos = arrayListOf<VideoResource>()
-                        val videos = result.data?.video
-                        val listMap = videos?.mapTo(listOfVideos, {v->
-                            VideoResource(
-                                v.id,
-                                v.tailorID,
-                                v.title,
-                                v.videoURL,
-                                v.description,
-                                v.createdAt,
-                                v.updatedAt
-                            )
-
-                        })
-                        i(title, "Video List $videos")
-                        if(listOfVideos.isNotEmpty()) {
-                            resource_fragment_video_rv.setupAdapter<VideoResource>(R.layout.resource_video_item) { adapter, context, list ->
-                                bind { itemView, position, item ->
-                                    val mediaController = MediaController(requireContext())
-                                    mediaController.hide()
-                                    mediaController.setAnchorView(itemView.resource_video_item_vv)
-                                    itemView.resource_video_item_title_tv.text = item?.title
-                                    itemView.resource_video_item_time_tv.text = item?.title
-                                    if(item?.videoURL != null){
-                                        val uri = Uri.parse(item.videoURL)
-                                        itemView.resource_video_item_vv.setMediaController(mediaController)
-                                        itemView.resource_video_item_vv.setVideoURI(uri)
-                                        itemView.resource_video_item_fl.clipToOutline = true
-                                        itemView.resource_video_item_vv.seekTo(1)
-                                    }
-                                    else{
-                                        val uri = Uri.parse(getString(R.string.sample_video_str))
-                                        itemView.resource_video_item_vv.setMediaController(mediaController)
-                                        itemView.resource_video_item_vv.setVideoURI(uri)
-                                        itemView.resource_video_item_fl.clipToOutline = true
-                                        itemView.resource_video_item_vv.seekTo(1)
-                                    }
-
-
-                                    itemView.setOnClickListener {
-                                        mediaController.show()
-                                    }
-                                    resource_fragment_video_rv.addOnScrollListener(object :
-                                        RecyclerView.OnScrollListener() {
-
-                                        override fun onScrollStateChanged(
-                                            recyclerView: RecyclerView,
-                                            newState: Int
-                                        ) {
-                                            super.onScrollStateChanged(recyclerView, newState)
-                                            mediaController.hide()
-                                        }
-
-                                    })
-
-                                    resources_fragment_nsv.viewTreeObserver.addOnScrollChangedListener {
-                                        mediaController.hide()
-                                    }
-                                }
-                                setLayoutManager(
-                                    LinearLayoutManager(
-                                        requireContext(),
-                                        LinearLayoutManager.HORIZONTAL,
-                                        false
-                                    )
-                                )
-                                submitList(listOfVideos)
-                            }
-                        }
-                        else {
-                            resources_fragment_video_recycler_vf.showNext()
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
+//        CoroutineScope(IO).launch {
+//
+//            val articleRequest = authViewModel.getArticles(header)
+//            articleRequest.collect {
+//                onFlowResponse<ArticleList>(it){
+//
+//                }
+//            }
+//
+//            val videoRequest = authViewModel.getVideos(header)
+//            videoRequest.collect {
+//                onFlowResponse<VideoList>(it){
+//
+//                }
+//            }
+//        }
 
 
 
 
+//        val articleRequest = authViewModel.getAllArticles(header)
+//        //Observer for get request
+//        requestObserver(null, null, articleRequest, true) { bool, result ->
+//            //Task to be done on successful
+//            onRequestResponseTask<ArticleList>(bool, result) {
+//                val results = result as UserResponse<ArticleList>
+//                val listOfArticles = arrayListOf<Article>()
+//                i("ResourceScreen", "sizeResourceArticle ${it?.data?.article?.size}")
+//                val articles = result.data?.article
+//                val articleMap  = articles?.mapTo(listOfArticles, { a ->
+//                    Article(
+//                        a.id,
+//                        a.tailorID,
+//                        a.title,
+//                        a.description,
+//                        a.isBlacklisted,
+//                        a.body,
+//                        a.articleImage,
+//                        a.createdAt,
+//                        a.updatedAt
+//                    )
+//
+//                })
+//                i(title, "Map $articleMap")
+//                if(listOfArticles.isNotEmpty()) {
+//                    resource_fragment_article_publications_rv.setupAdapter<Article>(R.layout.article_publication_item_layout) { adapter, context, list ->
+//                        bind { itemView, position, item ->
+//
+//                            if(item?.articleImage != null){
+//                                Picasso.get().load(item?.articleImage).fit().into(itemView.resource_article_publications_iv)
+//                            }
+//                            else{
+//                                itemView.resource_article_publications_iv.setImageDrawable(
+//                                    ContextCompat.getDrawable(
+//                                        requireContext(),
+//                                        R.drawable.obioma_logo_blue
+//                                    )
+//                                )
+//                            }
+//                            itemView.resource_article_publication_item_title_tv.text = item?.title
+//                            itemView.resource_article_publication_item_author_tv.text = item?.title
+//                            itemView.article_pub_item_image_ll.clipToOutline = true
+//
+//                            itemView.resource_article_publications_iv.clipToOutline = true
+//
+//                        }
+//                        setLayoutManager(
+//                            LinearLayoutManager(
+//                                requireContext(),
+//                                LinearLayoutManager.HORIZONTAL,
+//                                false
+//                            )
+//                        )
+//                        submitList(listOfArticles)
+//                    }
+//                }
+//                else{
+//                    resources_fragment_article_recycler_vf.showNext()
+//
+//                }
+//
+//                val videoReq = authViewModel.getAllVideos(header)
+//
+//
+//                //Observer for get request
+//                requestObserver(null, null, videoReq, true) { bool, result ->
+//                    //Task to be done on successful
+//                    onRequestResponseTask<VideoList>(bool, result) {
+//                        val results = result as UserResponse<VideoList>
+//                        i("ResourceScreen", "sizeResourceArticle ${it?.data?.video?.size}")
+//
+//                        val listOfVideos = arrayListOf<VideoResource>()
+//                        val videos = result.data?.video
+//                        val listMap = videos?.mapTo(listOfVideos, {v->
+//                            VideoResource(
+//                                v.id,
+//                                v.tailorID,
+//                                v.title,
+//                                v.videoURL,
+//                                v.description,
+//                                v.createdAt,
+//                                v.updatedAt
+//                            )
+//
+//                        })
+//                        i(title, "Video List $videos")
+//                        if(listOfVideos.isNotEmpty()) {
+//                            resource_fragment_video_rv.setupAdapter<VideoResource>(R.layout.resource_video_item) { adapter, context, list ->
+//                                bind { itemView, position, item ->
+//                                    val mediaController = MediaController(requireContext())
+//                                    mediaController.hide()
+//                                    mediaController.setAnchorView(itemView.resource_video_item_vv)
+//                                    itemView.resource_video_item_title_tv.text = item?.title
+//                                    itemView.resource_video_item_time_tv.text = item?.title
+//                                    if(item?.videoURL != null){
+//                                        val uri = Uri.parse(item.videoURL)
+//                                        itemView.resource_video_item_vv.setMediaController(mediaController)
+//                                        itemView.resource_video_item_vv.setVideoURI(uri)
+//                                        itemView.resource_video_item_fl.clipToOutline = true
+//                                        itemView.resource_video_item_vv.seekTo(1)
+//                                    }
+//                                    else{
+//                                        val uri = Uri.parse(getString(R.string.sample_video_str))
+//                                        itemView.resource_video_item_vv.setMediaController(mediaController)
+//                                        itemView.resource_video_item_vv.setVideoURI(uri)
+//                                        itemView.resource_video_item_fl.clipToOutline = true
+//                                        itemView.resource_video_item_vv.seekTo(1)
+//                                    }
+//
+//
+//                                    itemView.setOnClickListener {
+//                                        mediaController.show()
+//                                    }
+//                                    resource_fragment_video_rv.addOnScrollListener(object :
+//                                        RecyclerView.OnScrollListener() {
+//
+//                                        override fun onScrollStateChanged(
+//                                            recyclerView: RecyclerView,
+//                                            newState: Int
+//                                        ) {
+//                                            super.onScrollStateChanged(recyclerView, newState)
+//                                            mediaController.hide()
+//                                        }
+//
+//                                    })
+//
+//                                    resources_fragment_nsv.viewTreeObserver.addOnScrollChangedListener {
+//                                        mediaController.hide()
+//                                    }
+//                                }
+//                                setLayoutManager(
+//                                    LinearLayoutManager(
+//                                        requireContext(),
+//                                        LinearLayoutManager.HORIZONTAL,
+//                                        false
+//                                    )
+//                                )
+//                                submitList(listOfVideos)
+//                            }
+//                        }
+//                        else {
+//                            resources_fragment_video_recycler_vf.showNext()
+//
+//                        }
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//        }
+//
+//
+//
+//        resource_fragment_view_all_video_tv.setOnClickListener {
+//            goto(R.id.allVideoFragment)
+//        }
+//        resource_fragment_view_all_publication_tv.setOnClickListener { goto(R.id.allArticlesFragment) }
 
     }
 
 
 
-//        resource_fragment_view_all_video_tv.setOnClickListener {
-//            goto(R.id.allVideoFragment)
-//        }
-//        resource_fragment_view_all_publication_tv.setOnClickListener { goto(R.id.allArticlesFragment) }
 
 }
 

@@ -222,4 +222,6 @@
     <string name="no_video_available">No video available</string>
     <string name="no_article_available">No article available</string>
     <string name="no_photo_available">No photo available</string>
+    <string name="type_str">Type</string>
+    <string name="ankle">Ankle</string>
 </resources>

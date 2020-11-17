@@ -1,8 +1,10 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.auth
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
@@ -11,9 +13,12 @@ import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Retrofit
+import retrofit2.*
+import java.io.IOException
 import javax.inject.Inject
 
 open class AuthViewModel @Inject constructor(
@@ -26,6 +31,9 @@ open class AuthViewModel @Inject constructor(
 
     private val responseLiveData by lazy{
         MutableLiveData<ServicesResponseWrapper<ParentData>>()
+    }
+    val responseLiveDatas by lazy{
+        MutableLiveData<MeasurementTypeList>()
     }
     override fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
         val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
@@ -132,6 +140,54 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<ArticleList>(request, responseLiveData)
     }
 
+//    override suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
+//
+//        try {
+//            val request = authRequestInterface.getVideos(header)
+//            onSuccessFlowResponse(request)
+//        }
+//        catch (e:HttpException){
+//            onErrorFlowResponse(e)
+//        }
+//    }
+
+//    override suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
+//
+//        try {
+//            val request = authRequestInterface.getArticles(header)
+//            onSuccessFlowResponse(request)
+//        }
+//        catch (e:HttpException){
+//            onErrorFlowResponse(e)
+//        }
+//
+//    }
+
+    override suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
+
+        try {
+            val request = authRequestInterface.getMeasurementTypes(header)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
+
+    suspend fun getMea(header: String){
+        viewModelScope.launch {
+            authRequestInterface.getM(header)
+                .catch {e ->
+                    Log.d(title, "Error ${e.message}")
+                }
+                .collect {
+                    responseLiveDatas.value = it
+                }
+        }
+    }
+
+
     override fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = authRequestInterface.getAllVideos(header)
         return enqueueRequest<VideoList>(request, responseLiveData)
@@ -145,5 +201,6 @@ open class AuthViewModel @Inject constructor(
         val request = authRequestInterface.uploadProfilePicture(header, body)
         return enqueueRequest<UploadImageClass>(request, responseLiveData)
     }
+
 
 }

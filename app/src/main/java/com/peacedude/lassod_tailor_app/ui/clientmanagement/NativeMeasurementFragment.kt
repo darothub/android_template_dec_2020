@@ -76,18 +76,18 @@ class NativeMeasurementFragment : DaggerFragment() {
     private val dialogAddValueField by lazy {
         dialog.findViewById<TextInputEditText>(R.id.add_measurement_value_et)
     }
-    private val dialogEditNameField by lazy {
-        dialog.findViewById<TextInputEditText>(R.id.edit_measurement_et)
-    }
-    private val dialogEditValueField by lazy {
-        dialog.findViewById<TextInputEditText>(R.id.edit_measurement_value_et)
-    }
+//    private val dialogEditNameField by lazy {
+//        dialog.findViewById<TextInputEditText>(R.id.edit_measurement_et)
+//    }
+//    private val dialogEditValueField by lazy {
+//        dialog.findViewById<TextInputEditText>(R.id.edit_measurement_value_et)
+//    }
     private val addTextCountTv by lazy {
         dialog.findViewById<TextView>(R.id.add_measurement_text_count_tv)
     }
-    private val editTextCountTv by lazy {
-        dialog.findViewById<TextView>(R.id.edit_measurement_text_count_tv)
-    }
+//    private val editTextCountTv by lazy {
+//        dialog.findViewById<TextView>(R.id.edit_measurement_text_count_tv)
+//    }
     private val measurementValuesSpinner by lazy {
         dialog.findViewById<Spinner>(R.id.add_measurement_value_spinner)
     }
@@ -267,8 +267,8 @@ class NativeMeasurementFragment : DaggerFragment() {
 
 
 
-            dialogAddNameField.textCountListener(addTextCountTv)
-            dialogEditNameField.textCountListener(editTextCountTv)
+//            dialogAddNameField.textCountListener(addTextCountTv)
+//            dialogEditNameField.textCountListener(editTextCountTv)
 
 
 

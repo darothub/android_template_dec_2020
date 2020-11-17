@@ -98,7 +98,7 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
         adapter = ViewPagerAdapter(requireActivity(), 3) { position ->
             when (position) {
                 0 -> ClientAccountFragment()
-                1 -> NativeMeasurementFragment()
+                1 -> MeasurementFragment()
                 2 -> EnglishMeasurementFragment()
                 else -> ClientFragment()
             }
@@ -111,7 +111,7 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
                     TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                         when (position) {
                             0 -> tab.text = "Client Account"
-                            1 -> tab.text = "Native Measurement"
+                            1 -> tab.text = "Measurement"
                             2 -> tab.text = "English Measurement"
                             else -> tab.text = "Client"
                         }

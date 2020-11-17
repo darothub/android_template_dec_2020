@@ -154,7 +154,7 @@ fun Activity.observeRequests(
                     dialog.dismiss()
                     progressBar?.hide()
                     button?.show()
-                    result.postValue(Pair(true, responseData))
+                    result.value = Pair(true, responseData)
 
                     i(title, "success ${request?.data}")
                 }
@@ -162,7 +162,7 @@ fun Activity.observeRequests(
                     dialog.dismiss()
                     progressBar?.hide()
                     button?.show()
-                    result.postValue(Pair(false, errorResponse))
+                    result.value = Pair(false, errorResponse)
                     gdErrorToast("$errorResponse", Gravity.BOTTOM)
 
                     Log.i(title, "Error ${request?.message}")
@@ -506,4 +506,24 @@ fun getBitmapFromImageView(view: ImageView):Bitmap{
     }
     view.draw(canvas)
     return bitmap
+}
+
+inline fun <reified T>onFlowResponse(it: ServicesResponseWrapper<ParentData>, action:(T?)->Unit) {
+
+    when (it) {
+        is ServicesResponseWrapper.Loading<*> -> {
+            Log.i("onFlowResponse", "Loading ${it.message}")
+        }
+        is ServicesResponseWrapper.Success -> {
+            action(it.data as T)
+            Log.i("onFlowResponse", "Code ${it.code}, Message ${it.message}, Success ${it?.data}")
+        }
+        is ServicesResponseWrapper.Error -> {
+
+            Log.e("onFlowResponse", "Error ${it?.message}")
+        }
+        is ServicesResponseWrapper.Logout -> {
+            Log.i("onFlowResponse", "Logout ${it?.message}")
+        }
+    }
 }

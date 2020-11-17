@@ -100,5 +100,20 @@ interface AuthServices {
     fun getAllArticles(
         @Header("Authorization") header: String?
     ): Call<UserResponse<ArticleList>>
+
+    @GET("video")
+    suspend fun getVideos(
+        @Header("Authorization") header: String?
+    ): VideoList
+
+    @GET("article")
+    suspend fun getArticles(
+        @Header("Authorization") header: String?
+    ): ArticleList
+
+    @GET("measurementypes")
+    suspend fun getMeasurementTypes(
+        @Header("Authorization") header: String?
+    ): UserResponse<MeasurementTypeList>
 }
 

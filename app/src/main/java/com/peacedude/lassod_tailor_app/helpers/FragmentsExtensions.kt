@@ -93,6 +93,8 @@ fun Fragment.observeRequest(
 ): LiveData<Pair<Boolean, Any?>> {
     return requireActivity().observeRequest(request, progressBar, button, loader)
 }
+
+
 fun Fragment.requestObserver(
     progressBar: ProgressBar?,
     btn: Button?,
