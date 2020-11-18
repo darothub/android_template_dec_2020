@@ -510,21 +510,40 @@ fun getBitmapFromImageView(view: ImageView):Bitmap{
     return bitmap
 }
 
-inline fun <reified T>onFlowResponse(it: ServicesResponseWrapper<ParentData>, action:(T?)->Unit) {
+inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: ProgressBar?=null, loader:Boolean=false, it: ServicesResponseWrapper<ParentData>, action:(T?)->Unit) {
+
+    val dialog by lazy {
+        Dialog(this, R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            setCanceledOnTouchOutside(false)
+            window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+    }
 
     when (it) {
         is ServicesResponseWrapper.Loading<*> -> {
+            if(loader) dialog.show() else dialog.dismiss()
+            progressBar?.show()
+            button?.hide()
             Log.i("onFlowResponse", "Loading ${it.message}")
         }
         is ServicesResponseWrapper.Success -> {
+            dialog.dismiss()
+            progressBar?.hide()
+            button?.show()
             action(it.data as T)
             Log.i("onFlowResponse", "Code ${it.code}, Message ${it.message}, Success ${it?.data}")
         }
         is ServicesResponseWrapper.Error -> {
-
+            dialog.dismiss()
+            progressBar?.hide()
+            button?.show()
             Log.e("onFlowResponse", "Error ${it?.message}")
         }
         is ServicesResponseWrapper.Logout -> {
+            dialog.dismiss()
+            progressBar?.hide()
+            button?.show()
             Log.i("onFlowResponse", "Logout ${it?.message}")
         }
     }

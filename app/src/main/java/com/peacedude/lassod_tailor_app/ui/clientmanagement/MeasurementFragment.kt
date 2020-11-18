@@ -1,12 +1,16 @@
 package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
+import android.app.Dialog
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.Spinner
@@ -15,6 +19,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.appbar.AppBarLayout
@@ -23,11 +29,14 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.response.ArticleList
+import com.peacedude.lassod_tailor_app.model.response.Form
 import com.peacedude.lassod_tailor_app.model.response.MeasurementTypeList
 import com.skydoves.progressview.ProgressView
+import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.fragment_measurement.*
+import kotlinx.android.synthetic.main.measurement_items.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -56,9 +65,16 @@ class MeasurementFragment : DaggerFragment() {
     }
 
     private val dialog by lazy {
-        MaterialDialog(requireContext()).apply {
-            noAutoDismiss()
-            customView(R.layout.add_measurement_layout_dialog)
+        Dialog(requireContext(), R.style.DialogTheme).apply {
+            setContentView(R.layout.add_measurement_layout_dialog)
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(this.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            val window = this.window
+            window?.attributes = lp
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setCanceledOnTouchOutside(false)
         }
     }
 
@@ -77,6 +93,9 @@ class MeasurementFragment : DaggerFragment() {
     }
     private val dialogToolbar by lazy {
         (dialogAppBar.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
+    }
+    private val dialogRv by lazy {
+        (dialog.findViewById(R.id.add_measurement_layout_dialog_rv) as RecyclerView)
     }
 
     @Inject
@@ -118,6 +137,10 @@ class MeasurementFragment : DaggerFragment() {
             PorterDuff.Mode.SRC_IN
         )
 
+        dialogToolbar.setNavigationOnClickListener {
+            dialog.dismiss()
+        }
+
         buttonTransactions({
             addMeasurementBtn.background = btnBackground
             addMeasurementBtn.text = getString(R.string.add_measurement)
@@ -144,19 +167,26 @@ class MeasurementFragment : DaggerFragment() {
         })
 
         CoroutineScope(Main).launch {
+            val measurementMap = HashMap<Long, String>()
+            val measurementListMap = HashMap<String, List<Form>>()
             authViewModel.getMeasurementTypes(header)
                 .catch {
                     i(title, "Error on flow ${it.message}")
                 }
                 .collect {
-                    onFlowResponse<MeasurementTypeList>(it) {
+                    onFlowResponse<MeasurementTypeList>(response = it) {
                         i(title, "Measure ${it?.measurementTypes}")
 
-                        val measurementMap = HashMap<Long, String>()
+
                         it?.measurementTypes?.associateByTo(measurementMap, { k ->
                             k.id
                         }, { v ->
                             v.name
+                        })
+                        it?.measurementTypes?.associateByTo(measurementListMap, { k ->
+                            k.name
+                        }, { v ->
+                            v.form
                         })
                         val measurementTypes = it?.measurementTypes?.map {
                             it.name
@@ -176,7 +206,22 @@ class MeasurementFragment : DaggerFragment() {
                     position: Int,
                     id: Long
                 ) {
-                    i(title, "Position $position")
+                    val itemSelected = dialogSpinner.selectedItem as String
+                    val measurementOptionList = measurementListMap[itemSelected]?.map {
+                        MeasurementLabelValue(
+                            it.label,
+                            ""
+                        )
+                    }
+                    i(title, "Position $measurementListMap $measurementOptionList")
+                    dialogRv.setupAdapter<MeasurementLabelValue>(R.layout.measurement_items) { adapter, context, list ->
+
+                        bind { itemView, position, item ->
+                            itemView.add_measurement_layout_dialog_input.hint = item?.label
+                        }
+                        setLayoutManager(GridLayoutManager(requireContext(), 2))
+                        submitList(measurementOptionList)
+                    }
                 }
 
             }
@@ -189,4 +234,8 @@ class MeasurementFragment : DaggerFragment() {
 data class MeasurementTypes(
     val id: Long,
     val name: String
+)
+data class MeasurementLabelValue(
+    val label: String,
+    val value: String?
 )

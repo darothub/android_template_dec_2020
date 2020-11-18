@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.helpers
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Button
@@ -135,4 +136,8 @@ fun Fragment.setUpCountrySpinner(header:String, spinner: Spinner){
 
 fun Fragment.setUpSpinnerWithList(header:String, spinner: Spinner, list: ArrayList<String>){
     requireActivity().setUpSpinnerWithList(header, spinner, list)
+}
+
+inline fun <reified T> Fragment.onFlowResponse(button:Button?=null, progressBar: ProgressBar?=null, loader:Boolean=false, response: ServicesResponseWrapper<ParentData>, action:(T?)->Unit) {
+    requireActivity().onFlowResponse<T>(button, progressBar, loader, response, action)
 }

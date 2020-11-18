@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:fillViewport="true"
-    android:background="@color/colorWhite">
+    android:layout_margin="@dimen/_10sdp"
+    android:background="@drawable/rounded_corner_background">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
             android:imeOptions="actionNext"
+
             app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_spinner"
             android:textColorHint="@color/colorGray">
 
@@ -50,6 +52,7 @@
                 android:hint="@string/name"
                 android:inputType="text"
                 android:maxLength="15"
+
                 android:singleLine="true"
                 android:textColor="@color/colorGray"
                 android:textColorHint="@color/colorGray" />
@@ -57,11 +60,12 @@
         </com.google.android.material.textfield.TextInputLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/add_measurement_layout_dialog_rv"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/add_measurement_layout_dialog_input"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            app:layout_constraintEnd_toEndOf="@id/add_measurement_layout_dialog_input"
             tools:listitem="@layout/measurement_items"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
@@ -78,6 +82,7 @@
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginEnd="@dimen/_20sdp"
             android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -103,6 +103,7 @@ class AllVideoFragment : DaggerFragment() {
         noDataText.text = getString(R.string.no_video_available)
         val request = authViewModel.getAllVideos(header)
 
+
         //Observer for get request
         requestObserver(null, null, request, true) { bool, result ->
             //Task to be done on successful
