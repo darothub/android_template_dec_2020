@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -29,8 +31,10 @@ import kotlinx.android.synthetic.main.fragment_measurement.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.ArrayList
 import javax.inject.Inject
 
 
@@ -58,10 +62,15 @@ class MeasurementFragment : DaggerFragment() {
         }
     }
 
-    private val dialogIncludeBtnLayout by lazy{
+    private val dialogIncludeBtnLayout by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_btn) as View)
 
     }
+
+    private val dialogSpinner by lazy {
+        (dialog.findViewById(R.id.add_measurement_layout_dialog_spinner) as Spinner)
+    }
+
 
     private val dialogAppBar by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_appbar) as AppBarLayout)
@@ -99,24 +108,34 @@ class MeasurementFragment : DaggerFragment() {
         addMeasurementBtn = measurement_fragment_add_measurement_btn.findViewById(R.id.btn)
         val btnBackground = addMeasurementBtn.background
         btnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
             PorterDuff.Mode.SRC_IN
         )
         val dialogAddMeasurementBtn = dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
         val dialogBtnBackgound = dialogAddMeasurementBtn.background
         dialogBtnBackgound?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
             PorterDuff.Mode.SRC_IN
         )
 
         buttonTransactions({
             addMeasurementBtn.background = btnBackground
             addMeasurementBtn.text = getString(R.string.add_measurement)
-            addMeasurementBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+            addMeasurementBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorAccent
+                )
+            )
             dialogAddMeasurementBtn.background = dialogBtnBackgound
             dialogAddMeasurementBtn.text = getString(R.string.add_measurement)
-            dialogAddMeasurementBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-        },{
+            dialogAddMeasurementBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorAccent
+                )
+            )
+        }, {
 
             addMeasurementBtn.setOnClickListener {
                 dialog.show()
@@ -126,16 +145,48 @@ class MeasurementFragment : DaggerFragment() {
 
         CoroutineScope(Main).launch {
             authViewModel.getMeasurementTypes(header)
-            .collect {
-                onFlowResponse<MeasurementTypeList>(it){
-                    i(title, "Measure ${it?.measurementTypes}")
+                .catch {
+                    i(title, "Error on flow ${it.message}")
                 }
+                .collect {
+                    onFlowResponse<MeasurementTypeList>(it) {
+                        i(title, "Measure ${it?.measurementTypes}")
+
+                        val measurementMap = HashMap<Long, String>()
+                        it?.measurementTypes?.associateByTo(measurementMap, { k ->
+                            k.id
+                        }, { v ->
+                            v.name
+                        })
+                        val measurementTypes = it?.measurementTypes?.map {
+                            it.name
+                        }
+                        setUpSpinnerWithList(
+                            getString(R.string.select_str), dialogSpinner,
+                            measurementTypes as ArrayList<String>
+                        )
+                    }
+                }
+
+            dialogSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    i(title, "Position $position")
+                }
+
             }
-//            authViewModel.responseLiveDatas.observe(viewLifecycleOwner, Observer {
-//                i(title, "Result ${it.measurementTypes}")
-//            })
 
         }
     }
 
 }
+
+data class MeasurementTypes(
+    val id: Long,
+    val name: String
+)

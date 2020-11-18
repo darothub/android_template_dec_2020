@@ -56,7 +56,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/media_fragment_rv"
+            android:id="@+id/add_measurement_layout_dialog_rv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/media_fragment_rv"
+            app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_rv"
             android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginEnd="@dimen/_20sdp"

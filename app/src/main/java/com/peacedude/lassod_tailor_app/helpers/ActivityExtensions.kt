@@ -439,7 +439,8 @@ fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
 }
 
 fun Activity.setUpSpinnerWithList(header:String, spinner: Spinner, list:ArrayList<String>){
-    list[0] = header
+
+    list.add(0, header)
     val adapter = ArrayAdapter(this, R.layout.spinner_colored_text_layout, list)
     adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
     spinner.adapter = adapter
@@ -451,6 +452,7 @@ object GlobalVariables{
     var globalPhoto: Photo?=null
     var globalVideo: VideoResource?=null
     var globalArticle:Article?=null
+    var gloabalToken:String?= ""
     var globalArticleList:List<CommonMediaClass>?=null
     var globalArticlesList:List<Article>?=null
     var globalVideosList:List<VideoResource>?=null

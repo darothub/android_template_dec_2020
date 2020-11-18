@@ -93,6 +93,7 @@ class DashboardActivity : BaseActivity() {
 //        setBottomNavController()
 //
 
+        Log.i(title, "currentUser $currentUser")
         dashboard_fragment.view?.invisible()
         authViewModel.netWorkLiveData.observe(this, Observer {
             if (it) {

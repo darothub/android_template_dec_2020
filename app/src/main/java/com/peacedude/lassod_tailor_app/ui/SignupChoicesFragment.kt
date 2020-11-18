@@ -111,7 +111,8 @@ class SignupChoicesFragment : DaggerFragment() {
             observer.launchIntentToSignIn(intent, viewLifecycleOwner){}
             observer.getUserLiveData.observe(viewLifecycleOwner, Observer {
                 i(title, "Firstname ${it.firstName}")
-                userViewModel.currentUser = it
+                GlobalVariables.globalUser = it
+                i(title, "UserGlobal ${GlobalVariables.globalUser}")
                 val action = SignupChoicesFragmentDirections.actionSignupChoicesFragmentToEmailSignupFragment()
                 action.newUser = it
                 goto(action)

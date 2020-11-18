@@ -38,6 +38,7 @@ inline fun<reified T> StorageRequest.checkData(key:String):T?{
             val result = sharedPrefer.getString(key, "")
             return result?.let { this.getData(it) }
         }
+        else-> return null
     }
-    return null
+
 }

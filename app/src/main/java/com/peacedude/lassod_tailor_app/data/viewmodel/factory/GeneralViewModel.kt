@@ -11,6 +11,8 @@ import android.util.Log
 import android.view.Gravity
 import androidx.lifecycle.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
@@ -30,7 +32,9 @@ import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import kotlinx.coroutines.flow.FlowCollector
 import retrofit2.*
+import java.io.Reader
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 
 open class GeneralViewModel @Inject constructor(
@@ -47,15 +51,18 @@ open class GeneralViewModel @Inject constructor(
 
     init {
         networkMonitor()
-
     }
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
-    val netWorkLiveData = MutableLiveData<Boolean>()
+    val netWorkLiveData = MutableLiveData<Boolean>(false)
     override var lastFragmentId: Int?
         get() = storageRequest.getLastFragmentId()
         set(id) = storageRequest.saveLastFragment(id)
+
+    var curUser: User by Delegates.vetoable(User()) { property, oldValue, newValue ->
+        newValue != oldValue
+    }
 
     final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey)
         set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
@@ -97,68 +104,76 @@ open class GeneralViewModel @Inject constructor(
         i(title, "ViewModel ON")
         val res = response.body()
         val statusCode = response.code()
-        Log.i(title, "${response.code()}")
-        Log.i(title, "errorbody ${response.raw()}")
+        val msg = response.message()
+        val errorMsg = response.raw().message
+        val errorbody = response.errorBody()?.charStream()
+        Log.i(title, "messages $msg $errorMsg")
+        Log.i(title, "errorbody ${response.raw().message}")
 
-        when (statusCode) {
-            in 400..499 -> {
-                try {
+        try {
+            when (statusCode) {
+                in 400..499 -> {
                     if (statusCode == 401) {
-                        val err = errorConverter(response)
+                        val err = errorConverter(statusCode, errorbody)
                         responseLiveData.value =
                             ServicesResponseWrapper.Logout(
                                 "Access Denied",
-                                err.second
+                                statusCode
                             )
 
                     } else {
-                        val err = errorConverter(response)
+                        val err = errorConverter(statusCode, errorbody)
                         responseLiveData.value =
                             ServicesResponseWrapper.Error(
                                 err.first,
-                                err.second
+                                statusCode
                             )
 
                     }
 
-                } catch (e: Exception) {
-                    Log.i(title, "Hello" + " " + e.message.toString())
-                    responseLiveData.value = ServicesResponseWrapper.Error(e.message, statusCode)
                 }
-            }
-            in 500..599 -> {
-                val err = errorConverter(response)
-                responseLiveData.postValue(
-                    ServicesResponseWrapper.Error(
-                        "Internal server error",
-                        err.second
+                in 500..599 -> {
+                    val err = errorConverter(statusCode, errorbody)
+                    responseLiveData.postValue(
+                        ServicesResponseWrapper.Error(
+                            msg,
+                            err.second
+                        )
                     )
-                )
-            }
-            else -> {
-                try {
-                    Log.i(title, "success $res")
-                    responseLiveData.postValue(ServicesResponseWrapper.Success(res))
-                } catch (e: java.lang.Exception) {
-                    Log.i(title, e.message.toString())
+                }
+                else -> {
+                    try {
+                        Log.i(title, "success $res")
+                        responseLiveData.postValue(ServicesResponseWrapper.Success(res))
+                    } catch (e: java.lang.Exception) {
+                        Log.i(title, "GeneralViewModel success exception ${e.message.toString()}")
+                    }
                 }
             }
+
+        } catch (e: Exception) {
+            Log.i(title, "ViewModel Exception" + " " + e.message.toString())
+            responseLiveData.value = ServicesResponseWrapper.Error(msg, statusCode)
         }
+
 
 
     }
     protected suspend inline fun <reified T:ParentData>FlowCollector<ServicesResponseWrapper<T>>.onErrorFlowResponse(
         e: HttpException
     ) {
+        val msg = e.response()?.message()
+        val errorbody = e.response()?.errorBody()?.charStream()
+        val code = e.code()
         Log.e("Viewmodel error", "${e.response()}")
         try{
-            val error = errorConverter(e.response() as Response<ParentData>)
+            val error = errorConverter(code, errorbody)
             when(error.second){
                 401 ->{
                     emit(
                         ServicesResponseWrapper.Logout(
-                            "Access Denied",
-                            error.second
+                            msg.toString(),
+                            code
                         )
                     )
                 }
@@ -166,14 +181,20 @@ open class GeneralViewModel @Inject constructor(
                     emit(
                         ServicesResponseWrapper.Error(
                             error.first,
-                            error.second
+                            code
                         )
                     )
                 }
             }
         }
         catch (e:Exception){
-            Log.i(title, "CaughtError ${e.message}")
+            emit(
+                ServicesResponseWrapper.Error(
+                    msg,
+                    code
+                )
+            )
+            Log.i(title, "CaughtError $msg")
         }
 
 
@@ -211,6 +232,23 @@ open class GeneralViewModel @Inject constructor(
         }
         Log.i(title, "message $errorString1")
         return Pair(errorString1, response.code())
+
+    }
+    protected fun errorConverter(
+        statusCode:Int,
+        errorbody: Reader?
+    ): Pair<String?, Int> {
+        val gson = Gson()
+        val type = object : TypeToken<ErrorModel>() {}.type
+        val errorResponse: ErrorModel? = gson.fromJson(errorbody, type)
+        val errorBodyString = "Invalid session"
+        var er:String by Delegates.vetoable(errorBodyString, {property, oldValue, newValue ->
+            newValue != "jwt malformed"
+        })
+
+        er = errorResponse?.errors?.get(0).toString()
+
+        return Pair(er, statusCode)
 
     }
 

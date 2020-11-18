@@ -325,7 +325,7 @@ class SpecialtyFragment : DaggerFragment() {
 
         val measurementOptionsList = arrayListOf<RecyclerItemForCheckBox>(
             RecyclerItemForCheckBox(getString(R.string.visit_us_for_measurement_str), user?.visitUsMeasurement!!),
-            RecyclerItemForCheckBox(getString(R.string.accept_self_measurement_str), user.acceptSelfMeasurement)
+            RecyclerItemForCheckBox(getString(R.string.accept_self_measurement_str), user.acceptSelfMeasurement!!)
         )
 
         val checkboxes = arrayListOf<CheckBox>()

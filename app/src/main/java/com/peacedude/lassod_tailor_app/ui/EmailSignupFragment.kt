@@ -33,6 +33,7 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_email_signup.*
 import validatePasswordAndAdvise
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 
 /**
@@ -46,8 +47,10 @@ class EmailSignupFragment : DaggerFragment() {
     }
 
     //Get logged-in user
-    private val currentUser: User? by lazy {
-        userViewModel.currentUser
+
+
+    var currentUser: User by Delegates.vetoable(GlobalVariables.globalUser!!) { property, oldValue, newValue ->
+        newValue != oldValue
     }
 
     private val header by lazy {
@@ -70,14 +73,13 @@ class EmailSignupFragment : DaggerFragment() {
     private val userViewModel: UserViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
+
     private val arg: EmailSignupFragmentArgs by navArgs()
     val user by lazy { arg.newUser }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
 
-        }
     }
 
     override fun onCreateView(
@@ -171,21 +173,24 @@ class EmailSignupFragment : DaggerFragment() {
                     val googleAuthHeader = "$bearer ${user?.token.toString()}"
                     user?.password = passwordString
                     user?.category = email_signup_category_spinner.selectedItem as String
-                    val req = userViewModel.registerUser(googleAuthHeader, user)
+                    val nUser = User()
+                    nUser.password = passwordString
+                    nUser.category = email_signup_category_spinner.selectedItem as String
+                    val req = userViewModel.registerUser(googleAuthHeader, nUser)
                     i(title, "header ${user?.token}")
                     requestObserver(progressBar, emailSignupBtn, req) { bool, result ->
                         onRequestResponseTask<User>(bool, result) {
                             val userDetails = result as? UserResponse<User>
-                            val user = userDetails?.data
-                            currentUser?.loggedIn = true
-                            currentUser?.token = user?.token
+                            var user = userDetails?.data
+                            currentUser.loggedIn = true
+                            currentUser.token = user?.token
                             userViewModel.currentUser = currentUser
-//                            val res = userViewModel.saveUser
+                            val res = userViewModel.currentUser
                             val loginIntent =
                                 Intent(requireContext(), DashboardActivity::class.java)
                             i(
                                 "$this",
-                                "res $currentUser \ntoken ${user?.token}\ntoken 2${currentUser?.token}"
+                                "res ${res}  \ncurUser ${currentUser}\ntoken 2${currentUser.token}"
                             )
                             startActivity(loginIntent)
                             requireActivity().finish()
