@@ -92,7 +92,7 @@ class MeasurementFragment : DaggerFragment() {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_appbar) as AppBarLayout)
     }
     private val dialogToolbar by lazy {
-        (dialogAppBar.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
+        (dialog.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
     }
     private val dialogRv by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_rv) as RecyclerView)

@@ -1,90 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:background="@color/colorWhite"
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fitsSystemWindows="true"
-    android:fillViewport="true"
-    android:layout_margin="@dimen/_10sdp"
-    android:background="@drawable/rounded_corner_background">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/add_measurement_layout_dialog_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:fitsSystemWindows="true"
+
+        >
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/colorPrimary"
+            app:expandedTitleMarginBottom="@dimen/_10sdp"
+            app:expandedTitleMarginStart="@dimen/_15sdp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                >
+                <TextView
+                    android:id="@+id/reusable_appbar_title_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dash"
+                    android:textSize="@dimen/_14sdp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="@dimen/_50sdp"
+                    app:layout_constraintTop_toTopOf="parent"/>
+                <TextView
+                    android:id="@+id/add_measurement_layout_dialog_spinner_title_tv"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_width="match_parent"
+                    android:text="@string/type_str"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/_13sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    app:layout_constraintEnd_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/reusable_appbar_title_tv" />
+
+                <Spinner
+                    style="@style/SpinnerCustomStyle"
+                    android:id="@+id/add_measurement_layout_dialog_spinner"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_spinner_title_tv" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_measurement_layout_dialog_input"
+                    android:imeOptions="actionNext"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_width="match_parent"
+
+                    android:textColorHint="@color/colorGray"
+                    app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_spinner">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        style="@style/EditTextCustomStyle"
+                        android:hint="@string/name"
+                        android:id="@+id/add_measurement_layout_dialog_et"
+                        android:inputType="text"
+                        android:maxLength="15"
+                        android:textSize="@dimen/_13sdp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGray"
+                        android:textColorHint="@color/colorGray" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/reusable_appbar_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:fitsSystemWindows="true"
+                app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+                >
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <include
-            android:id="@+id/add_measurement_layout_dialog_appbar"
-            layout="@layout/reusable_appbar" />
-
-
-        <TextView
-            android:id="@+id/add_measurement_layout_dialog_spinner_title_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_appbar"
-            android:text="@string/type_str"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/_13sdp"
-            android:layout_marginStart="@dimen/_20sdp"
-            />
-
-        <Spinner
-            android:id="@+id/add_measurement_layout_dialog_spinner"
-            style="@style/SpinnerCustomStyle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_spinner_title_tv" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/add_measurement_layout_dialog_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:imeOptions="actionNext"
-
-            app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_spinner"
-            android:textColorHint="@color/colorGray">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/add_measurement_layout_dialog_et"
-                style="@style/EditTextCustomStyle"
-                android:hint="@string/name"
-                android:inputType="text"
-                android:maxLength="15"
-
-                android:singleLine="true"
-                android:textColor="@color/colorGray"
-                android:textColorHint="@color/colorGray" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        >
         <androidx.recyclerview.widget.RecyclerView
+
             android:id="@+id/add_measurement_layout_dialog_rv"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/add_measurement_layout_dialog_input"
-            android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginEnd="@dimen/_20sdp"
-            app:layout_constraintEnd_toEndOf="@id/add_measurement_layout_dialog_input"
-            tools:listitem="@layout/measurement_items"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_width="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintTop_toTopOf="parent"
             app:spanCount="2"
 
-            app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_input"/>
+            tools:listitem="@layout/measurement_items" />
 
-        <include
-            android:id="@+id/add_measurement_layout_dialog_btn"
-            layout="@layout/button_and_progressbar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_rv"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginStart="@dimen/_20sdp"
-            android:layout_marginEnd="@dimen/_20sdp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <include
+        android:id="@+id/add_measurement_layout_dialog_btn"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom|center"
+        app:layout_constraintTop_toBottomOf="@id/add_measurement_layout_dialog_rv"
+        layout="@layout/button_and_progressbar" />
 
-</androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
