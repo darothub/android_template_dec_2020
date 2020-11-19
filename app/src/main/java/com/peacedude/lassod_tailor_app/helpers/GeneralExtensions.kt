@@ -44,18 +44,6 @@ fun setupCategorySpinner(context: Context, spinner: Spinner, textArrayResId:Int)
     )
     categorySpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
 
-    spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-        override fun onNothingSelected(p0: AdapterView<*>?) {}
-
-        override fun onItemSelected(
-            parentView: AdapterView<*>,
-            selectedItemView: View?,
-            position: Int,
-            id: Long
-        ) {
-
-        }
-    }
     spinner.adapter = categorySpinnerAdapter
 }
 

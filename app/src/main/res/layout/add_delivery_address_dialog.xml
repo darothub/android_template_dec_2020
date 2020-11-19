@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_corner_background"
+    android:layout_margin="@dimen/_10sdp"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/add_delivery_address_layout_dialog_appbar"
+            layout="@layout/reusable_appbar" />
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_delivery_address_layout_dialog_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:hint="@string/delivery_address_str"
+            app:layout_constraintTop_toBottomOf="@id/add_delivery_address_layout_dialog_appbar"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/add_delivery_address_layout_dialog_et"
+                style="@style/EditTextCustomStyle"
+                android:inputType="text"
+                android:maxLength="15"
+                android:singleLine="true"
+                android:textColor="@color/colorGray"
+                android:textColorHint="@color/colorGray" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <include
+            android:id="@+id/add_delivery_address_layout_dialog_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_delivery_address_layout_dialog_input" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

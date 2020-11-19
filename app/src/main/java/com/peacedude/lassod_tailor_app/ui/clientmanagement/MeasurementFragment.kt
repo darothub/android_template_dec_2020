@@ -56,9 +56,7 @@ class MeasurementFragment : DaggerFragment() {
     private val title by lazy {
         getName()
     }
-    private val toolbar by lazy {
-        resources_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)
-    }
+
 
     val header by lazy {
         authViewModel.header

@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui.profile
 
 import IsEmptyCheck
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -238,6 +239,7 @@ class ProfileFragment : DaggerFragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun clientTransaction() {
         val request = authViewModel.getAllClient(header)
         i(title, "header $header")
@@ -264,20 +266,29 @@ class ProfileFragment : DaggerFragment() {
                 }
 
                 if (listOfClient?.isNotEmpty()!!) {
-                    no_client_included_layout.hide()
-                    profile_fragment_client_rv.show()
+
                     profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
 
                         bind { itemView, position, item ->
-                            itemView.client_name_tv.text = item?.name
-                            itemView.client_location_tv.text = item?.country
-                            itemView.client_id_tv.text = item?.id
+                            val nameContainsSpace = item?.name?.contains(" ")
+                            if(nameContainsSpace!!){
+                                val nameSplit = item.name.split(" ")
+                                val firstName = nameSplit.get(0)
+                                val lastName = nameSplit.get(1)
+                                itemView.client_item_name_initials_tv.text = "${firstName.get(0)}${lastName.get(0)}"
+                            }
+                            else{
+                                val firstName = item.name[0]
+                                itemView.client_item_name_initials_tv.text = "$firstName"
+                            }
+
+                            itemView.client_location_tv.text = item.deliveryAddress
+                            itemView.client_name_tv.text = item.name
 
                             //Set on click listener for item view
                             itemView.setOnClickListener {
                                 GlobalVariables.globalId = item?.id.toString()
                                 GlobalVariables.globalPosition = position
-                                GlobalVariables.globalClient = item
                                 dialogNameTv.text = itemView.client_name_tv.text
                                 dialogPhoneNumberTv.text = item?.phone
                                 dialogAddressTv.text = item?.deliveryAddress
@@ -294,24 +305,28 @@ class ProfileFragment : DaggerFragment() {
                             dialogEditBtn.setOnClickListener {
     //                                loaderDialog.show()
                                 if (item != null) {
-                                    val lists = resources.getStringArray(R.array.gender_normal_list)
-                                        .toList() as ArrayList<String>
-                                    displayClientDialog.hide()
-                                    dialogNameEt.setText(dialogNameTv.text)
-                                    dialogPhoneNumberEt.setText(dialogPhoneNumberTv.text)
-                                    dialogEmailEt.setText(dialogEmailTv.text)
-                                    dialogAddressEt.setText(dialogAddressTv.text)
-                                    dialogStateEt.setText(dialogState.text)
-                                    setUpSpinnerWithList(
-                                        dialogGenderTv.text.toString(),
-                                        dialogGenderSpinner,
-                                        lists
-                                    )
-                                    setUpCountrySpinner(
-                                        dialogCountryTv.text.toString(),
-                                        dialogCountrySpinner
-                                    )
-                                    editClientDialog.show()
+                                    GlobalVariables.globalClient = item
+                                    Log.i(title, "Client $item  global ${GlobalVariables.globalClient}")
+                                    dialog.dismiss()
+                                    startActivity(Intent(requireActivity(), ClientActivity::class.java))
+//                                    val lists = resources.getStringArray(R.array.gender_normal_list)
+//                                        .toList() as ArrayList<String>
+//                                    displayClientDialog.hide()
+//                                    dialogNameEt.setText(dialogNameTv.text)
+//                                    dialogPhoneNumberEt.setText(dialogPhoneNumberTv.text)
+//                                    dialogEmailEt.setText(dialogEmailTv.text)
+//                                    dialogAddressEt.setText(dialogAddressTv.text)
+//                                    dialogStateEt.setText(dialogState.text)
+//                                    setUpSpinnerWithList(
+//                                        dialogGenderTv.text.toString(),
+//                                        dialogGenderSpinner,
+//                                        lists
+//                                    )
+//                                    setUpCountrySpinner(
+//                                        dialogCountryTv.text.toString(),
+//                                        dialogCountrySpinner
+//                                    )
+//                                    editClientDialog.show()
     //                                    if(editClientDialog.show()){
     //                                        loaderDialog.dismiss()
     //                                    }
@@ -434,7 +449,7 @@ class ProfileFragment : DaggerFragment() {
                     }
 
                 } else {
-                    no_client_included_layout.show()
+                    profile_fragment_recyclerview_vf.showNext()
                 }
             }
         }

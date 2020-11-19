@@ -21,7 +21,8 @@ abstract class ClientActivityModule {
             EnglishMeasurementFragmentModule::class,
             ClientAccountFragmentModule::class,
             ClientFragmentModule::class,
-            MeasurementFragmentModule::class
+            MeasurementFragmentModule::class,
+            DeliveryAddressFragmentModule::class
         ]
     )
     abstract fun provideClientActivity(): ClientActivity

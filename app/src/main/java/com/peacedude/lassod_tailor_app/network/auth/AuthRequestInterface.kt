@@ -6,8 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.*
 
 interface AuthRequestInterface {
     fun getUserData(header:String): Call<UserResponse<User>> {
@@ -73,6 +72,13 @@ interface AuthRequestInterface {
         return TODO()
     }
     suspend fun getM(header:String): Flow<MeasurementTypeList>{
+        return TODO()
+    }
+    suspend fun addDeliveryAddress(
+        header: String?,
+        clientId:String?,
+        deliveryAddress:String?
+    ): UserResponse<AddressData>{
         return TODO()
     }
 

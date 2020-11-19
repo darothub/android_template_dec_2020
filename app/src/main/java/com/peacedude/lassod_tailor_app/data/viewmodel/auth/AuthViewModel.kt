@@ -174,6 +174,20 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    override suspend fun addDeliveryAddress(
+        header: String?,
+        clientId: String?,
+        deliveryAddress: String?
+    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+        try {
+            val request = authRequestInterface.addDeliveryAddress(header, clientId, deliveryAddress)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
 
     suspend fun getMea(header: String){
         viewModelScope.launch {

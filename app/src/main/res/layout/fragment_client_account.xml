@@ -170,17 +170,36 @@
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             />
-        <include
-            android:id="@+id/client_account_next_btn"
-            layout="@layout/button_and_progressbar"
-            android:layout_height="wrap_content"
+        <ViewFlipper
+            android:id="@+id/client_account_fragment_vf"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/client_account_country_spinner"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginStart="@dimen/_20sdp"
-            android:layout_marginEnd="@dimen/_20sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            >
+            <include
+                android:id="@+id/client_account_next_btn"
+                layout="@layout/button_and_progressbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
 
-            />
+                />
+            <include
+                android:id="@+id/client_account_update_btn"
+                layout="@layout/button_and_progressbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+
+                />
+
+        </ViewFlipper>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>

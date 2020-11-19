@@ -5,7 +5,9 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.AddressData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -113,6 +115,13 @@ interface ViewModelInterface {
         return TODO()
     }
     suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+    suspend fun addDeliveryAddress(
+        header: String?,
+        clientId:String?,
+        deliveryAddress:String?
+    ): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
 }

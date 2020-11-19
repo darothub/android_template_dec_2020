@@ -115,5 +115,13 @@ interface AuthServices {
     suspend fun getMeasurementTypes(
         @Header("Authorization") header: String?
     ): UserResponse<MeasurementTypeList>
+
+    @POST("address")
+    @FormUrlEncoded
+    suspend fun addDeliveryAddress(
+        @Header("Authorization") header: String?,
+        @Field("clientId") clientId:String?,
+        @Field("deliveryAddress") deliveryAddress:String?
+    ): UserResponse<AddressData>
 }
 

@@ -99,7 +99,7 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
             when (position) {
                 0 -> ClientAccountFragment()
                 1 -> MeasurementFragment()
-                2 -> EnglishMeasurementFragment()
+                2 -> DeliveryAddressFragment()
                 else -> ClientFragment()
             }
         }
@@ -112,7 +112,7 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
                         when (position) {
                             0 -> tab.text = "Client Account"
                             1 -> tab.text = "Measurement"
-                            2 -> tab.text = "English Measurement"
+                            2 -> tab.text = "Delivery Address"
                             else -> tab.text = "Client"
                         }
                     }).apply {
@@ -126,15 +126,15 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
                 R.color.colorPrimary
             )
         )
-        val globalClient = GlobalVariables.globalClient
-        if(globalClient != null){
-            i(title, "globalClient $globalClient")
-            setItem(1)
-            GlobalVariables.globalClient = null
-        }
-        else{
-            setItem(0)
-        }
+//        val globalClient = GlobalVariables.globalClient
+//        if(globalClient != null){
+//            i(title, "globalClient $globalClient")
+//            setItem(1)
+//            GlobalVariables.globalClient = null
+//        }
+//        else{
+//            setItem(0)
+//        }
 
     }
 

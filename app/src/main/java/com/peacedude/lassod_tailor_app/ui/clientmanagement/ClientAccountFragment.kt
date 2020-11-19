@@ -25,6 +25,7 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client_account.*
+import kotlinx.android.synthetic.main.fragment_client_account.view.*
 import javax.inject.Inject
 
 
@@ -38,6 +39,8 @@ class ClientAccountFragment : DaggerFragment(){
         getName()
     }
     private lateinit var addClientBtn: Button
+    private lateinit var updateClientBtn: Button
+    private lateinit var updateProgressBar: ProgressBar
     private lateinit var progressBar: ProgressBar
     val header by lazy {
         authViewModel.header
@@ -72,24 +75,30 @@ class ClientAccountFragment : DaggerFragment(){
             PorterDuff.Mode.SRC_IN
         )
 
+
         val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
         val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
 
-        setupCategorySpinner(
-            requireContext(),
-            client_account_gender_spinner,
-            R.array.gender_normal_list
-        )
-
+        val genderList =  resources.getStringArray(R.array.gender_normal_list).toList() as ArrayList<String>
+        setUpSpinnerWithList(getString(R.string.gender), client_account_gender_spinner,  genderList)
         setUpCountrySpinner(getString(R.string.select_your_country_str), client_account_country_spinner)
 
         buttonTransactions({
             addClientBtn = client_account_next_btn.findViewById(R.id.btn)
+            updateClientBtn = client_account_update_btn.findViewById(R.id.btn)
             progressBar = client_account_next_btn.findViewById(R.id.progress_bar)
-
+            updateProgressBar = client_account_update_btn.findViewById(R.id.progress_bar)
             addClientBtn.text = getString(R.string.add_client)
+            updateClientBtn.text = getString(R.string.update_str)
             addClientBtn.background = addClientBtnBackground
             addClientBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+            val updateBtnBackground = updateClientBtn.background
+            updateBtnBackground.colorFilter = PorterDuffColorFilter(
+                ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN
+            )
+            updateClientBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+            updateClientBtn.background = updateBtnBackground
         }) {
 
             authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
@@ -106,6 +115,22 @@ class ClientAccountFragment : DaggerFragment(){
             }
 
 
+            val clientToBeEdited = GlobalVariables.globalClient
+            Log.i(title, "ClientAccount $clientToBeEdited")
+            if(clientToBeEdited != null){
+                client_account_fragment_vf.showNext()
+                client_account_name_et.setText(clientToBeEdited.name)
+                client_account_phone_number_et.setText(clientToBeEdited.phone)
+                client_account_shipping_address_et.setText(clientToBeEdited.deliveryAddress)
+                client_account_email_et.setText(clientToBeEdited.email)
+                client_account_state_et.setText(clientToBeEdited.state)
+                setUpCountrySpinner(clientToBeEdited.country.toString(), client_account_country_spinner)
+                setUpSpinnerWithList(clientToBeEdited.gender.toString(), client_account_gender_spinner,  genderList)
+                GlobalVariables.globalClient = null
+            }
+            else{
+                client_account_fragment_vf.showPrevious()
+            }
         }
     }
 

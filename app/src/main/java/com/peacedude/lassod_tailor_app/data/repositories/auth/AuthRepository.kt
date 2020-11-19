@@ -16,7 +16,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import javax.inject.Inject
 
-class AuthRepository@Inject constructor(private val authServices: AuthServices):AuthRequestInterface {
+class AuthRepository @Inject constructor(private val authServices: AuthServices):AuthRequestInterface {
     val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
 
     override fun getUserData(header: String): Call<UserResponse<User>> {
@@ -107,6 +107,14 @@ class AuthRepository@Inject constructor(private val authServices: AuthServices):
         val h = authServices.getMeasurementTypes(header)
         Log.i("Repository", "Data ${h.data}")
         return h
+    }
+
+    override suspend fun addDeliveryAddress(
+        header: String?,
+        clientId: String?,
+        deliveryAddress: String?
+    ): UserResponse<AddressData> {
+        return authServices.addDeliveryAddress(header, clientId, deliveryAddress)
     }
 
 //    override suspend fun getM(header:String): Flow<MeasurementTypeList> = flow{

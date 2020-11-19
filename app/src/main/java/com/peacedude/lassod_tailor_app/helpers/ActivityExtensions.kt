@@ -417,7 +417,7 @@ fun Activity.setUpCountrySpinnerWithDialCode(header:String, spinner: Spinner){
         "${it.displayCountry}(+${PhoneNumberUtil.createInstance(this).getCountryCodeForRegion(it.country)})"
     })
     val countries = countriesIsoAndName.values.sorted().toMutableList()
-    countries[0] = header
+    countries.add(0, header)
     val adapter = ArrayAdapter(this, R.layout.spinner_colored_text_layout, countries)
     adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
     spinner.adapter = adapter
@@ -432,7 +432,7 @@ fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
         it.displayCountry
     })
     val countries = countriesIsoAndName.values.sorted().toMutableList()
-    countries[0] = header
+    countries.add(0, header)
     val adapter = ArrayAdapter(this, R.layout.spinner_colored_text_layout, countries)
     adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
     spinner.adapter = adapter

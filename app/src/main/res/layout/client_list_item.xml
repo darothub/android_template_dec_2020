@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/rounded_blue_outline_white_backgrnd"
+
     android:padding="@dimen/_10sdp"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
     android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/client_account_name_cv"
+        android:layout_width="@dimen/_45sdp"
+        android:layout_height="@dimen/_45sdp"
+        app:cardCornerRadius="@dimen/_40sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardBackgroundColor="@color/colorAccent"
+        >
+
+        <TextView
+            android:id="@+id/client_item_name_initials_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="YK"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            />
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/client_profile_thumbnail"
@@ -15,37 +38,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
+        android:visibility="gone"
         app:srcCompat="@drawable/profile_image_thumbnail" />
 
     <TextView
         android:id="@+id/client_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hello i am very happy to miss you what have you done hhheh"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:ems="12"
+        android:text="Yusuf Kunle"
+        android:textSize="@dimen/_11sdp"
+        app:layout_constraintTop_toTopOf="@id/client_account_name_cv"
+        app:layout_constraintBottom_toBottomOf="@id/client_account_name_cv"
+
         android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginEnd="@dimen/_15sdp"
-        app:layout_constraintStart_toEndOf="@id/client_profile_thumbnail"
-        app:layout_constraintEnd_toStartOf="@id/client_location_tv"
-        app:layout_constraintHorizontal_bias="0"
+
+        app:layout_constraintStart_toEndOf="@id/client_account_name_cv"
+
        />
     <TextView
         android:id="@+id/client_location_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lagos hehehehheh"
+        android:ellipsize="end"
+        android:ems="10"
+        android:gravity="end"
+        android:text="lagos hello hello hello hello hello hello hello hello hello hellohello hellohello hellohello hello"
         app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/_11sdp"
         app:layout_constraintTop_toTopOf="@id/client_name_tv"
-        app:layout_constraintBottom_toBottomOf="@id/client_name_tv"
-        android:layout_marginEnd="@dimen/_10sdp"
-
+        app:layout_constraintHorizontal_bias="1"
+        android:maxLines="2"
 
         />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_1sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/client_account_name_cv"
+        app:layout_constraintEnd_toEndOf="@id/client_location_tv"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@id/client_account_name_cv"
+        android:background="@color/colorAccent"/>
     <TextView
         android:id="@+id/client_id_tv"
         android:layout_width="wrap_content"
