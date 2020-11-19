@@ -141,3 +141,7 @@ fun Fragment.setUpSpinnerWithList(header:String, spinner: Spinner, list: ArrayLi
 inline fun <reified T> Fragment.onFlowResponse(button:Button?=null, progressBar: ProgressBar?=null, loader:Boolean=false, response: ServicesResponseWrapper<ParentData>, action:(T?)->Unit) {
     requireActivity().onFlowResponse<T>(button, progressBar, loader, response, action)
 }
+
+fun Fragment.goto(destination:Class<*>){
+    requireActivity().goto(destination)
+}

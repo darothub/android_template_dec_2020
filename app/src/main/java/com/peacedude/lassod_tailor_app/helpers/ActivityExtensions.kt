@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
+import androidx.navigation.ActivityNavigator
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -532,7 +533,7 @@ inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: 
             progressBar?.hide()
             button?.show()
             action(it.data as T)
-            Log.i("onFlowResponse", "Code ${it.code}, Message ${it.message}, Success ${it?.data}")
+            Log.i("onFlowResponse", "Success ${it?.data}")
         }
         is ServicesResponseWrapper.Error -> {
             dialog.dismiss()
@@ -547,4 +548,8 @@ inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: 
             Log.i("onFlowResponse", "Logout ${it?.message}")
         }
     }
+}
+
+fun Activity.goto(destination:Class<*>){
+    startActivity(Intent(this, destination))
 }

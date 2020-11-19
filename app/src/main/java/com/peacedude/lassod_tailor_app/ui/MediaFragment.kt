@@ -221,9 +221,11 @@ class MediaFragment : DaggerFragment() {
                                 singleSendTv.setOnClickListener {
                                     val b = getBitmapFromImageView(itemView.media_item_picture_iv)
                                     val file = saveBitmap(b)
+
                                     val mimeType = "image/png"
                                     if (file != null) {
-                                        val uri = FileProvider.getUriForFile(
+                                        val uri =
+                                            FileProvider.getUriForFile(
                                             requireActivity(),
                                             "com.peacedude.lassod_tailor_app.fileprovider", //(use your app signature + ".provider" )
                                             file)
@@ -292,6 +294,7 @@ class MediaFragment : DaggerFragment() {
                 val imageBitmap =
                     data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
                 val imageFile = saveBitmap(imageBitmap)
+                i(title, "imageFile $imageFile")
                 if (imageFile != null) {
                     Picasso.get().load(imageFile).into(noDataSecondIcon)
                 }

@@ -9,7 +9,7 @@ data class AddressData (
 
 data class Address (
     val id: String,
-    val clientID: String,
+    val clientId: String,
     val deliveryAddress: String,
     val updatedAt: String,
     val createdAt: String

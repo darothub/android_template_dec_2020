@@ -23,9 +23,12 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
+import com.peacedude.lassod_tailor_app.model.request.SingleClient
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.ui.DashboardActivity
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client_account.*
-import kotlinx.android.synthetic.main.fragment_client_account.view.*
 import javax.inject.Inject
 
 
@@ -111,12 +114,14 @@ class ClientAccountFragment : DaggerFragment(){
             })
             addClientBtn.setOnClickListener {
                 Log.i(title, "here2")
-                addClientRequest()
+                validateClientRequest { client, gender, state, country ->
+                    addClientRequest(client, gender, state, country)
+                }
             }
 
 
             val clientToBeEdited = GlobalVariables.globalClient
-            Log.i(title, "ClientAccount $clientToBeEdited")
+            Log.i(title, "ClientAccount ${clientToBeEdited}")
             if(clientToBeEdited != null){
                 client_account_fragment_vf.showNext()
                 client_account_name_et.setText(clientToBeEdited.name)
@@ -126,15 +131,22 @@ class ClientAccountFragment : DaggerFragment(){
                 client_account_state_et.setText(clientToBeEdited.state)
                 setUpCountrySpinner(clientToBeEdited.country.toString(), client_account_country_spinner)
                 setUpSpinnerWithList(clientToBeEdited.gender.toString(), client_account_gender_spinner,  genderList)
-                GlobalVariables.globalClient = null
+
+                updateClientBtn.setOnClickListener {
+                    validateClientRequest { client, gender, state, country ->
+                        Log.i(title, "ClientAccount ${client.tailorId} ${client.id}")
+                        client.id = clientToBeEdited.id
+                        client.tailorId = clientToBeEdited.tailorId
+                        updateClientRequest(client, gender, state, country)
+                    }
+                }
             }
-            else{
-                client_account_fragment_vf.showPrevious()
-            }
+
+
         }
     }
 
-    private fun addClientRequest() {
+    private fun validateClientRequest(action:(Client, String, String, String)->Unit) {
         val clientName = client_account_name_et.text.toString().trim()
         var clientPhoneNumber = client_account_phone_number_et.text.toString().trim()
         val clientShippingAddress = client_account_shipping_address_et.text.toString().trim()
@@ -143,6 +155,7 @@ class ClientAccountFragment : DaggerFragment(){
         val clientCountry = client_account_country_spinner.selectedItem.toString()
         var phonePattern = Regex("""\d{10,17}""")
         val checkPhoneStandard = phonePattern.matches(clientPhoneNumber)
+        val gender = client_account_gender_spinner.selectedItem as String
         val validation = IsEmptyCheck.fieldsValidation(clientEmail, null)
         val checkForEmpty =
             IsEmptyCheck(
@@ -165,36 +178,76 @@ class ClientAccountFragment : DaggerFragment(){
                     Gravity.BOTTOM
                 )
             }
+            gender == getString(R.string.gender) -> {
+                requireActivity().gdErrorToast(
+                    "Please ${getString(R.string.select_valid_gender_str)}",
+                    Gravity.BOTTOM
+                )
+            }
             else -> {
-                Log.i(title, " header $header")
                 val client =
                     Client(clientName, clientPhoneNumber, clientEmail, clientShippingAddress)
-                val gender = client_account_gender_spinner.selectedItem as String
-                client.gender = gender
-                client.country = clientCountry
-                client.state = clientState
 
-                val req = authViewModel.addClient(header, client)
-                val observer =
-                    requireActivity().observeRequest(req, progressBar, addClientBtn)
-                observer.observe(viewLifecycleOwner, Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask<Client>(bool, result) { res ->
-                        val newClient = res?.data
-                        requireActivity().gdToast(
-                            "Client added successfully",
-                            Gravity.BOTTOM
-                        )
-                        authViewModel.newClient = newClient
-                        i(title, "client $newClient Id ${newClient?.id}")
-    //                                parent.setItem(1)
-    //
-    //                                i(title, getString(R.string.check_email))
-                    }
-                })
-    //                        val action = "android-app://obioma/nativemeasurement/$client".toUri()
+                action(client, gender, clientState, clientCountry)
+                //                        val action = "android-app://obioma/nativemeasurement/$client".toUri()
     //
             }
+        }
+    }
+
+    private fun addClientRequest(
+        client: Client, gender:String, clientState:String, clientCountry:String
+    ) {
+        Log.i(title, " header $header")
+
+        client.gender = gender
+        client.country = clientCountry
+        client.state = clientState
+
+        val req = authViewModel.addClient(header, client)
+        val observer =
+            requireActivity().observeRequest(req, progressBar, addClientBtn)
+        observer.observe(viewLifecycleOwner, Observer {
+            val (bool, result) = it
+            onRequestResponseTask<Client>(bool, result) { res ->
+                val newClient = res?.data
+                requireActivity().gdToast(
+                    "Client added successfully",
+                    Gravity.BOTTOM
+                )
+                authViewModel.newClient = newClient
+                i(title, "client $newClient Id ${newClient?.id}")
+                goto(DashboardActivity::class.java)
+
+            }
+        })
+    }
+
+    private fun updateClientRequest(
+        client: Client, gender:String, clientState:String, clientCountry:String
+    ) {
+        Log.i(title, " header $header")
+
+        client.gender = gender
+        client.country = clientCountry
+        client.state = clientState
+
+        val editClientReq = authViewModel.editClient(header, client)
+        requestObserver(
+            updateProgressBar,
+            updateClientBtn,
+            editClientReq
+        ) { bool, result ->
+            //Task to be done on successful
+            onRequestResponseTask<ClientsList>(bool, result) {
+                val results = result as UserResponse<SingleClient>
+                val msg = results.message.toString()
+
+                val newClientData = result.data?.client
+                requireActivity().gdToast(msg, Gravity.BOTTOM)
+
+            }
+
         }
     }
 

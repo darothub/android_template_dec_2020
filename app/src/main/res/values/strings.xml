@@ -225,4 +225,9 @@
     <string name="type_str">Type</string>
     <string name="ankle">Ankle</string>
     <string name="add_address_str">Add address</string>
+    <string name="select_valid_gender_str">Select valid gender</string>
+    <string name="pbk">pk_test_9ee3a1dc4592104f06fa1f1061e167d466d0ba7a</string>
+    <string name="pstack_secretk">sk_test_e2501627defba456a39af733f31e06b8c94d2a11</string>
+    <string name="invalid_cvv_str">Invalid cvv</string>
+    <string name="invalid_expiry_date_str">Invalid expiry date</string>
 </resources>

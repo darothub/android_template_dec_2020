@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import co.paystack.android.PaystackSdk
 import com.peacedude.lassod_tailor_app.helpers.i
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
@@ -16,7 +17,7 @@ class BaseApplication : DaggerApplication() {
     val netWorkLiveData = MutableLiveData<Boolean>()
     override fun onCreate() {
         super.onCreate()
-
+        PaystackSdk.initialize(applicationContext);
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {

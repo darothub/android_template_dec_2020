@@ -13,22 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/add_card_fragment_add_card_layout"
-            layout="@layout/add_card_layout"
+        <ViewFlipper
+            android:id="@+id/add_fragment_vf"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_60sdp"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:layout_marginEnd="@dimen/_60sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias=".5"
+            >
+            <include
+                android:id="@+id/add_card_fragment_add_card_layout"
+                layout="@layout/add_card_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_60sdp"
+                android:layout_marginEnd="@dimen/_60sdp"
+                android:layout_gravity="center_vertical"
+                />
 
-        <include
-            android:id="@+id/add_card_fragment_card_detail_layout"
-            layout="@layout/card_details_layout"
-            android:visibility="gone" />
+            <include
+                android:id="@+id/add_card_fragment_card_detail_layout"
+                layout="@layout/card_details_layout"
+                 />
+
+        </ViewFlipper>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

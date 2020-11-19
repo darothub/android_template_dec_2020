@@ -287,6 +287,7 @@ class ProfileFragment : DaggerFragment() {
 
                             //Set on click listener for item view
                             itemView.setOnClickListener {
+
                                 GlobalVariables.globalId = item?.id.toString()
                                 GlobalVariables.globalPosition = position
                                 dialogNameTv.text = itemView.client_name_tv.text
@@ -300,15 +301,15 @@ class ProfileFragment : DaggerFragment() {
                                 dialog.show {
                                     cornerRadius(10F)
                                 }
+                                dialogEditBtn.setOnClickListener {
 
-                            }
-                            dialogEditBtn.setOnClickListener {
-    //                                loaderDialog.show()
-                                if (item != null) {
                                     GlobalVariables.globalClient = item
-                                    Log.i(title, "Client $item  global ${GlobalVariables.globalClient}")
-                                    dialog.dismiss()
-                                    startActivity(Intent(requireActivity(), ClientActivity::class.java))
+                                    //                                loaderDialog.show()
+                                    if (item != null) {
+
+                                        Log.i(title, "Client $item  global ${GlobalVariables.globalClient}")
+                                        dialog.dismiss()
+                                        startActivity(Intent(requireActivity(), ClientActivity::class.java))
 //                                    val lists = resources.getStringArray(R.array.gender_normal_list)
 //                                        .toList() as ArrayList<String>
 //                                    displayClientDialog.hide()
@@ -327,11 +328,13 @@ class ProfileFragment : DaggerFragment() {
 //                                        dialogCountrySpinner
 //                                    )
 //                                    editClientDialog.show()
-    //                                    if(editClientDialog.show()){
-    //                                        loaderDialog.dismiss()
-    //                                    }
+                                        //                                    if(editClientDialog.show()){
+                                        //                                        loaderDialog.dismiss()
+                                        //                                    }
+                                    }
                                 }
                             }
+
                             //When dialog delete button is clicked
                             dialogDeleteBtn.setOnClickListener {
                                 val req = authViewModel.deleteClient(
@@ -394,11 +397,6 @@ class ProfileFragment : DaggerFragment() {
                                             this.country = country
                                         }!!
                                         val client = Client(name, phoneNumber, email, address)
-    //                                        item?.state = state
-    //                                        client.gender = gender
-    //                                        client.tailorId = GlobalVariables.globalClient?.tailorId
-    //                                        client.id = GlobalVariables.globalId
-    //                                        client.country = country
                                         val editClientReq = authViewModel.editClient(header, item)
                                         requestObserver(
                                             dialogUpdateProgressBar,

@@ -23,7 +23,6 @@ class SubscriptionActivity : AppCompatActivity() {
         when(destination.id){
             R.id.addCardFragment ->{
                 title = getString(R.string.add_card)
-
             }
         }
     }

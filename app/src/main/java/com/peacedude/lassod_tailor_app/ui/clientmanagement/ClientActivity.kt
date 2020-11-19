@@ -7,13 +7,16 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.viewpager2.widget.ViewPager2
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.ui.DashboardActivity
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import kotlinx.android.synthetic.main.activity_client.*
 
 class ClientActivity : BaseActivity() {
+    val title by lazy {
+        getName()
+    }
     lateinit var adapter : ViewPagerAdapter
     private lateinit var navController: NavController
     private lateinit var clientManagementViewPager:ViewPager2
@@ -28,5 +31,11 @@ class ClientActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+
+        toolbar.setNavigationOnClickListener {
+            i(title, "Toolbar")
+            GlobalVariables.globalClient = null
+            goto(DashboardActivity::class.java)
+        }
     }
 }

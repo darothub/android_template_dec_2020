@@ -45,13 +45,14 @@
         android:id="@+id/client_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Yusuf Kunle"
+        android:text="Yusuf Kunle kunle kunle kunle kunle"
         android:textSize="@dimen/_11sdp"
         app:layout_constraintTop_toTopOf="@id/client_account_name_cv"
         app:layout_constraintBottom_toBottomOf="@id/client_account_name_cv"
-
+        android:ellipsize="end"
+        android:maxLines="1"
         android:layout_marginStart="@dimen/_15sdp"
-
+        android:ems="7"
         app:layout_constraintStart_toEndOf="@id/client_account_name_cv"
 
        />
@@ -60,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:ems="10"
+        android:ems="8"
         android:gravity="end"
         android:text="lagos hello hello hello hello hello hello hello hello hello hellohello hellohello hellohello hello"
         app:layout_constraintEnd_toEndOf="parent"

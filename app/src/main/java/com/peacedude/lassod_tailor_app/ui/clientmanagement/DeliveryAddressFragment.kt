@@ -6,6 +6,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -20,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputEditText
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -52,9 +55,6 @@ class DeliveryAddressFragment : DaggerFragment() {
     private val title by lazy {
         getName()
     }
-    private val toolbar by lazy {
-        resources_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)
-    }
 
     val header by lazy {
         authViewModel.header
@@ -86,12 +86,14 @@ class DeliveryAddressFragment : DaggerFragment() {
     private val dialogIncludeBtnLayout by lazy {
         (dialog.findViewById(R.id.add_delivery_address_layout_dialog_btn) as View)
     }
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
     lateinit var addDeliveryaddressBtn: Button
+    lateinit var addDeliveryaddressProgressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -111,7 +113,9 @@ class DeliveryAddressFragment : DaggerFragment() {
         changeStatusBarColor(R.color.colorWhite)
         val activityTitle = dialogAppBar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
         activityTitle.text = getString(R.string.add_address_str)
-        addDeliveryaddressBtn = delivery_address_fragment_add_delivery_address_btn.findViewById(R.id.btn)
+        addDeliveryaddressBtn =
+            delivery_address_fragment_add_delivery_address_btn.findViewById(R.id.btn)
+        addDeliveryaddressProgressBar = delivery_address_fragment_add_delivery_address_btn.findViewById(R.id.progress_bar)
 
         val btnBackground = addDeliveryaddressBtn.background
         btnBackground?.colorFilter = PorterDuffColorFilter(
@@ -152,22 +156,36 @@ class DeliveryAddressFragment : DaggerFragment() {
                 dialog.show()
             }
 
-            dialogAddDeliveryBtn.setOnClickListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    val clientId = GlobalVariables.globalId
-                    val address = dialogDeliveryAddressEt.text.toString().trim()
-                    authViewModel.addDeliveryAddress(header, clientId, address)
-                        .catch {
-                            i(title, "Error on flow ${it.message}")
-                        }
-                        .collect {
-                            onFlowResponse<AddressData>(response = it) {
-                                i(title, "Address data flow ${it?.address}")
-                            }
-                        }
+            val clientToBeEdited = GlobalVariables.globalClient
+            Log.i(title, "ClientAccountDeliveryAdd ${clientToBeEdited?.tailorId}")
+            if (clientToBeEdited == null) {
+                i(title, "No client found")
+                btnBackground?.colorFilter = PorterDuffColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.colorGray),
+                    PorterDuff.Mode.SRC_IN
+                )
+                addDeliveryaddressBtn.background = btnBackground
+                addDeliveryaddressBtn.isClickable = false
 
+            } else {
+                dialogAddDeliveryBtn.setOnClickListener {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val clientId = clientToBeEdited.id
+                        val address = dialogDeliveryAddressEt.text.toString().trim()
+                        authViewModel.addDeliveryAddress(header, clientId, address)
+                            .catch {
+                                i(title, "Error on flow ${it.message}")
+                            }
+                            .collect {
+                                onFlowResponse<AddressData>(button = dialogAddDeliveryBtn, progressBar = addDeliveryaddressProgressBar, response = it) {
+                                    i(title, "Address data flow $it")
+                                }
+                            }
+
+                    }
                 }
             }
+
 
         })
 

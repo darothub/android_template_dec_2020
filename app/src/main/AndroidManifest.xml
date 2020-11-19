@@ -18,9 +18,11 @@
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme.NoActionBar"
-
         tools:replace="android:fullBackupContent"
         tools:targetApi="q">
+        <meta-data
+            android:name="co.paystack.android.PublicKey"
+            android:value="@string/pbk"/>
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -93,4 +95,3 @@
     </application>
 
 </manifest>
-
