@@ -87,33 +87,35 @@ class AddCardFragment : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.colorGreen),
             PorterDuff.Mode.SRC_IN
         )
-        cardDetailIncludedMonthEt.doOnTextChanged { text, start, before, count ->
-            val expiryMonthYearPattern = Regex("""^(?!.*1[3-9])[0-1][0-9]/2[0-9]$""")
-            when{
+//        cardDetailIncludedMonthEt.doOnTextChanged { text, start, before, count ->
+//            val expiryMonthYearPattern = Regex("""^(?!.*1[3-9])[0-1][0-9]/2[0-9]$""")
+//            when{
+//
+//                text?.length == 2 && text?.length < 3->{
+//                    val t = "$text/"
+//                    cardDetailIncludedMonthEt.setText(t)
+//                    cardDetailIncludedMonthEt.setSelection(cardDetailIncludedMonthEt.text.length )
+//
+//                }
+//                !expiryMonthYearPattern.matches(text.toString()) -> {
+//                    cardDetailIncludedMonthEt.error = getString(R.string.invalid_expiry_date_str)
+//                }
+//            }
+//        }
 
-                text?.length == 2 && text?.length < 3->{
-                    val t = "$text/"
-                    cardDetailIncludedMonthEt.setText(t)
-                    cardDetailIncludedMonthEt.setSelection(cardDetailIncludedMonthEt.text.length )
 
-                }
-                !expiryMonthYearPattern.matches(text.toString()) -> {
-                    cardDetailIncludedMonthEt.error = getString(R.string.invalid_expiry_date_str)
-                }
-            }
-        }
+
         cardDetailIncludedCardNumberEt.doOnTextChanged { text, start, before, count ->
-
+            i(title, "herefirst ${text?.length}")
+            val t = cardDetailIncludedCardNumberEt.text.toString().length
+            i(title, "heresecond $t")
             when{
-
-                text?.length == 4 ->{
-                    val t = "$text "
-                    cardDetailIncludedCardNumberEt.setText(t)
-                    cardDetailIncludedCardNumberEt.text?.length?.let {
-                        cardDetailIncludedCardNumberEt.setSelection(
-                            it
-                        )
-                    }
+                text?.length == 16 && !text.contains("-")->{
+                    val first = text.substring(0..3)
+                    val second = text.substring(4..7)
+                    val third = text.substring(8..11)
+                    val last = text.substring(12..15)
+                    cardDetailIncludedCardNumberEt.setText("$first-$second-$third-$last")
 
                 }
             }
@@ -216,21 +218,23 @@ class AddCardFragment : Fragment() {
             }
         }
 
-//        cardDetailIncludedMonthEt.setOnFocusChangeListener { v, hasFocus ->
-//            if (hasFocus) {
-//                val calendar = Calendar.getInstance()
-//                val defaultYear = calendar.get(Calendar.YEAR)
-//                val defaultMonth = calendar.get(Calendar.MONTH)
-//                val dialogFragment =
-//                    MonthYearPickerDialogFragment.getInstance(defaultMonth, defaultYear)
-//                dialogFragment.show(requireActivity().supportFragmentManager, null)
-//
-//                dialogFragment.setOnDateSetListener { year, monthOfYear ->
-//                    i(title, "Year $year, Month $monthOfYear")
-//                }
-//            }
-//
-//        }
+        cardDetailIncludedMonthEt.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val calendar = Calendar.getInstance()
+                val defaultYear = calendar.get(Calendar.YEAR)
+                val defaultMonth = calendar.get(Calendar.MONTH)
+                val dialogFragment =
+                    MonthYearPickerDialogFragment.getInstance(defaultMonth, defaultYear)
+                dialogFragment.show(requireActivity().supportFragmentManager, null)
+
+                dialogFragment.setOnDateSetListener { year, monthOfYear ->
+                    val y = year.toString().substring(2..3)
+                    cardDetailIncludedMonthEt.setText("$monthOfYear/$y")
+                    cardDetailIncludedMonthEt.clearFocus()
+                }
+            }
+
+        }
 
 
     }
