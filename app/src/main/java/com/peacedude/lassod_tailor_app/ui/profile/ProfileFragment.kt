@@ -3,14 +3,11 @@ package com.peacedude.lassod_tailor_app.ui.profile
 import IsEmptyCheck
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -41,7 +38,6 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
@@ -77,8 +73,14 @@ class ProfileFragment : DaggerFragment() {
 
     lateinit var dialogDeleteProgressBar: ProgressBar
 
+
+
+    private val dialogNameInitialsTv by lazy {
+        (dialog.findViewById(R.id.single_client_name_initials_tv) as TextView)
+    }
+
     private val dialogNameTv by lazy {
-        (dialog.findViewById(R.id.single_client_name_tv) as TextView)
+        (dialog.findViewById(R.id.single_client_nam_tv) as TextView)
     }
     private val dialogPhoneNumberTv by lazy {
         (dialog.findViewById(R.id.single_client_phone_number_tv) as TextView)
@@ -138,6 +140,8 @@ class ProfileFragment : DaggerFragment() {
     lateinit var  dialogDeleteBtn:Button
     lateinit var  dialogUpdateBtn:Button
     lateinit var dialogUpdateProgressBar:ProgressBar
+    lateinit var dialogSendPhotoBtn:Button
+    lateinit var dialogChatBtn:Button
 
     private val header by lazy {
         authViewModel.header
@@ -165,25 +169,45 @@ class ProfileFragment : DaggerFragment() {
                 requireContext(),
                 R.drawable.rounded_corner_background_primary
             )
-        val editBtnBackground =
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.rounded_corner_background_primary
-            )
-        val deleteBtnBackground =
-            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner__red_background)
+        val sendPhotoBtnBackground = ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.rounded_blue_outline_white_backgrnd
+        )
+
+
         buttonTransactions({
             //Get included view for delete button
             val includedViewForDeleteBtn =
-                (dialog.findViewById(R.id.single_client_delete_btn) as View)
+                (dialog.findViewById(R.id.single_client_deletes_btn) as View)
             //Get included view for edit button
-            val includedViewForEditBtn = (dialog.findViewById(R.id.single_client_edit_btn) as View)
+            val includedViewForEditBtn = (dialog.findViewById(R.id.single_client_edits_btn) as View)
             //Get included view for update button
             val includedViewForUpdateBtn =
                 (dialog.findViewById(R.id.single_client_edit_update_btn) as View)
+            val includedViewForSendPhotoBtn = (dialog.findViewById(R.id.single_client_send_photo_btn) as View)
+
+            val includedViewForChatBtn = (dialog.findViewById(R.id.single_client_chat_btn) as View)
             dialogDeleteBtn = includedViewForDeleteBtn.findViewById(R.id.btn)
+            val deleteBtnBackground = dialogDeleteBtn.background
+            deleteBtnBackground?.colorFilter = PorterDuffColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.colorRed),
+                PorterDuff.Mode.SRC_IN
+            )
+
+            dialogChatBtn = includedViewForChatBtn.findViewById(R.id.btn)
+            val chatBtnBackground = dialogChatBtn.background
+            chatBtnBackground?.colorFilter = PorterDuffColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                PorterDuff.Mode.SRC_IN
+            )
             dialogEditBtn = includedViewForEditBtn.findViewById(R.id.btn)
+            val editBtnBackground = dialogEditBtn.background
+            editBtnBackground?.colorFilter = PorterDuffColorFilter(
+                ContextCompat.getColor(requireContext(), R.color.colorGrayDark),
+                PorterDuff.Mode.SRC_IN
+            )
             dialogUpdateBtn = includedViewForUpdateBtn.findViewById(R.id.btn)
+            dialogSendPhotoBtn = includedViewForSendPhotoBtn.findViewById(R.id.btn)
             dialogDeleteProgressBar = includedViewForDeleteBtn.findViewById(R.id.progress_bar)
             dialogUpdateProgressBar = includedViewForUpdateBtn.findViewById(R.id.progress_bar)
             dialogDeleteBtn.setTextColor(
@@ -201,7 +225,7 @@ class ProfileFragment : DaggerFragment() {
             dialogEditBtn.setTextColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.colorAccent
+                    R.color.colorWhite
                 )
             )
             //Set confirm button background
@@ -211,9 +235,21 @@ class ProfileFragment : DaggerFragment() {
 
             dialogUpdateBtn.background = updateBtnBackground
 
+            dialogChatBtn.background = chatBtnBackground
+
+            dialogSendPhotoBtn.background = sendPhotoBtnBackground
+
             dialogEditBtn.text = getString(R.string.edit_str)
             dialogDeleteBtn.text = getString(R.string.delete)
             dialogUpdateBtn.text = getString(R.string.update_str)
+            dialogChatBtn.text = getString(R.string.chat_str)
+            dialogSendPhotoBtn.text = getString(R.string.send_photo_str)
+            dialogSendPhotoBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorPrimary
+                )
+            )
 
 
 
@@ -290,21 +326,34 @@ class ProfileFragment : DaggerFragment() {
 
                                 GlobalVariables.globalId = item?.id.toString()
                                 GlobalVariables.globalPosition = position
-                                dialogNameTv.text = itemView.client_name_tv.text
-                                dialogPhoneNumberTv.text = item?.phone
-                                dialogAddressTv.text = item?.deliveryAddress
-                                dialogGenderTv.text = item?.gender
-                                dialogState.text = item?.state
-                                dialogEmailTv.text = item?.email
-                                dialogCountryTv.text = item?.country
-                                displayClientDialog.show()
+                                val nameContainsSpace = item.name.contains(" ")
+                                if(nameContainsSpace){
+                                    val nameSplit = item.name.split(" ")
+                                    val firstName = nameSplit.get(0)
+                                    val lastName = nameSplit.get(1)
+                                    dialogNameInitialsTv.text = "${firstName.get(0)}${lastName.get(0)}"
+                                }
+                                else{
+                                    val firstName = item.name[0]
+                                    dialogNameInitialsTv.text = "$firstName"
+                                }
+
+//                                itemView.client_location_tv.text = item.deliveryAddress
+                                dialogNameTv.text = item.name
+//                                dialogNameTv.text = itemView.client_name_tv.text
+//                                dialogPhoneNumberTv.text = item?.phone
+//                                dialogAddressTv.text = item?.deliveryAddress
+//                                dialogGenderTv.text = item?.gender
+//                                dialogState.text = item?.state
+//                                dialogEmailTv.text = item?.email
+//                                dialogCountryTv.text = item?.country
+//                                displayClientDialog.show()
                                 dialog.show {
                                     cornerRadius(10F)
                                 }
                                 dialogEditBtn.setOnClickListener {
 
                                     GlobalVariables.globalClient = item
-                                    //                                loaderDialog.show()
                                     if (item != null) {
 
                                         Log.i(title, "Client $item  global ${GlobalVariables.globalClient}")

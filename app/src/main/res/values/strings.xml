@@ -231,4 +231,6 @@
     <string name="invalid_cvv_str">Invalid cvv</string>
     <string name="invalid_expiry_date_str">Invalid expiry date</string>
     <string name="client_address_added_successfully_str">Client address added successfully</string>
+    <string name="chat_str">Chat</string>
+    <string name="send_photo_str">Send photo</string>
 </resources>
