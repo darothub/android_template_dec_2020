@@ -31,11 +31,11 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.getAllArticles(header)
     }
 
-    override suspend fun getVideos(header: String?): VideoList {
+    override suspend fun getVideos(header: String?): UserResponse<VideoList> {
         return authServices.getVideos(header)
     }
 
-    override suspend fun getArticles(header: String?): ArticleList {
+    override suspend fun getArticles(header: String?): UserResponse<ArticleList> {
         return authServices.getArticles(header)
     }
 

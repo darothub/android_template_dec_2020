@@ -140,28 +140,28 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<ArticleList>(request, responseLiveData)
     }
 
-//    override suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
-//
-//        try {
-//            val request = authRequestInterface.getVideos(header)
-//            onSuccessFlowResponse(request)
-//        }
-//        catch (e:HttpException){
-//            onErrorFlowResponse(e)
-//        }
-//    }
+    override suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
 
-//    override suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
-//
-//        try {
-//            val request = authRequestInterface.getArticles(header)
-//            onSuccessFlowResponse(request)
-//        }
-//        catch (e:HttpException){
-//            onErrorFlowResponse(e)
-//        }
-//
-//    }
+        try {
+            val request = authRequestInterface.getVideos(header)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
+    override suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
+
+        try {
+            val request = authRequestInterface.getArticles(header)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+
+    }
 
     override suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
 

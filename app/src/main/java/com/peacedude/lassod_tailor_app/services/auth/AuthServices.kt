@@ -104,12 +104,12 @@ interface AuthServices {
     @GET("video")
     suspend fun getVideos(
         @Header("Authorization") header: String?
-    ): VideoList
+    ):UserResponse<VideoList>
 
     @GET("article")
     suspend fun getArticles(
         @Header("Authorization") header: String?
-    ): ArticleList
+    ):UserResponse<ArticleList>
 
     @GET("measurementypes")
     suspend fun getMeasurementTypes(

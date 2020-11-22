@@ -63,7 +63,6 @@ class LoginFragment : DaggerFragment() {
 
     private val googleBtnTextSpannable: SpannableString by lazy {
         googleBtnText.setAsSpannable()
-
     }
     private val spannableString: SpannableString by lazy {
         newUserText.setAsSpannable()

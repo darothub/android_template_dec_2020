@@ -60,11 +60,11 @@ interface AuthRequestInterface {
         return TODO()
     }
 
-    suspend fun getVideos(header: String?): VideoList{
+    suspend fun getVideos(header: String?): UserResponse<VideoList>{
         return TODO()
     }
 
-    suspend fun getArticles(header: String?): ArticleList{
+    suspend fun getArticles(header: String?): UserResponse<ArticleList>{
         return TODO()
     }
 
