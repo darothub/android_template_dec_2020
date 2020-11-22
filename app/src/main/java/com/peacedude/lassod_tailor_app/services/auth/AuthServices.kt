@@ -123,6 +123,34 @@ interface AuthServices {
         @Field("clientId") clientId:String?,
         @Field("deliveryAddress") deliveryAddress:String?
     ): UserResponse<AddressData>
+
+    @POST("addcard")
+    @FormUrlEncoded
+    suspend fun addCard(
+        @Header("Authorization") header: String?,
+        @Field("email") email:String?,
+        @Field("amount") amount:String?
+    ): UserResponse<AddCardWrapper<AddCardRes>>
+
+
+    @GET("verifypayment")
+    suspend fun verifyPayment(
+        @Header("Authorization") header: String?,
+        @Query("reference") reference:String
+    ): UserResponse<UserResponse<AddCardResponse>>
+
+    @POST("chargecard")
+    suspend fun chargeCard(
+        @Field("email") email:String?,
+        @Field("amount") amount:String?,
+        @Field("authorization_code") authorizationCode: String?
+    ): UserResponse<ChargeCardResponse>
+
+    @GET("addresses")
+    suspend fun getAllAddress(
+        @Header("Authorization") header:String?,
+        @Query("clientId") clientId:String
+    ): UserResponse<DeliveryAddress>
 }
 
 

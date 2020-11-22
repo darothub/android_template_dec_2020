@@ -38,7 +38,8 @@ import javax.inject.Singleton
         DashboardActivityModule::class,
         ProfileActivityModule::class,
         ClientActivityModule::class,
-        ResourceActivityModule::class
+        ResourceActivityModule::class,
+        SubscriptionActivityModule::class
     ]
 )
 abstract class ActivityBuilderModule {

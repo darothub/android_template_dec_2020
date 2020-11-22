@@ -13,7 +13,7 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class DashboardActivityModule {
     /**
-     * A abstract function to provide for ProfileActivity from DaggerGraph
+     * A abstract function to provide for DashboardActivity from DaggerGraph
      */
 
     @ContributesAndroidInjector(

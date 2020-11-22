@@ -526,14 +526,15 @@ inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: 
             if(loader) dialog.show() else dialog.dismiss()
             progressBar?.show()
             button?.hide()
-            Log.i("onFlowResponse", "Loading ${it.message}")
+            Log.i("onFlowResponse", "Loading ${it.message} dialog showin ${dialog.isShowing}")
         }
         is ServicesResponseWrapper.Success -> {
             dialog.dismiss()
             progressBar?.hide()
             button?.show()
             action(it.data as T)
-            Log.i("onFlowResponse", "Success ${it?.data}")
+
+            Log.i("onFlowResponse", "Success ${it?.data} dialog showin ${dialog.isShowing}")
         }
         is ServicesResponseWrapper.Error -> {
             dialog.dismiss()

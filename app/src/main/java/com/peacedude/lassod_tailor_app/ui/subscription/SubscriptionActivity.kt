@@ -9,10 +9,11 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
+import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.activity_subscription.*
 
-class SubscriptionActivity : AppCompatActivity() {
+class SubscriptionActivity : BaseActivity() {
     private val navController by lazy {
         Navigation.findNavController(this, R.id.subscription_fragment)
     }

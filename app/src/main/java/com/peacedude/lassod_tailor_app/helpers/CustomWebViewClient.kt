@@ -1,31 +1,47 @@
 package com.peacedude.lassod_tailor_app.helpers
 
+import android.os.Message
 import android.util.Log
-import android.webkit.ValueCallback
-import android.webkit.WebChromeClient
-import android.webkit.WebView
+import android.webkit.*
+import android.widget.Toast
 
-class CustomWebViewClient:WebChromeClient() {
+class CustomWebViewClient: WebViewClient() {
     val title = getName()
-    val murl = "https://obioma-staging.herokuapp.com/api/v1/auth/google"
-    override fun onProgressChanged(view: WebView?, newProgress: Int) {
-        super.onProgressChanged(view, newProgress)
-        var prog = newProgress
-        var url = view?.url
-        Log.i(title, "url $newProgress")
-        Log.i(title, "url $url")
+    override fun onPageFinished(view: WebView?, url: String?) {
+        i(title, "On page finished $url")
+    }
 
-        if (newProgress > 10){
-            Log.i(title, "new $newProgress")
-            Log.i(title, "url $url")
+    override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
+
+        i(title, "Intercept url $url")
+        return super.shouldInterceptRequest(view, url)
+    }
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest?
+    ): WebResourceResponse? {
+        val reqUrlPattern = Regex("""^https://checkout.paystack.com/\w+""")
+        if(reqUrlPattern.matches(request?.url.toString())){
+            i(title, "Override yes ${request?.url}")
         }
-
+        else{
+            i(title, "Override no ${request?.url}")
+        }
+        i(title, "Intercept request $request")
+        return super.shouldInterceptRequest(view, request)
     }
 
-    override fun onReceivedTitle(view: WebView?, title: String?) {
-        super.onReceivedTitle(view, title)
-        Log.i(title, "new Title $title")
+    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+        i(title, "Override url $url")
+        return super.shouldOverrideUrlLoading(view, url)
     }
+
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        i(title, "Override url $request")
+        return super.shouldOverrideUrlLoading(view, request)
+    }
+
 
 
 }

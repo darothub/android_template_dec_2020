@@ -117,6 +117,36 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.addDeliveryAddress(header, clientId, deliveryAddress)
     }
 
+    override suspend fun addCard(
+        header: String?,
+        email: String?,
+        amount: String?
+    ): UserResponse<AddCardWrapper<AddCardRes>>{
+        return authServices.addCard(header, email, amount)
+    }
+
+    override suspend fun verifyPayment(
+        header: String?,
+        reference: String
+    ): UserResponse<UserResponse<AddCardResponse>> {
+        return authServices.verifyPayment(header, reference)
+    }
+
+    override suspend fun chargeCard(
+        email: String?,
+        amount: String?,
+        authorizationCode: String?
+    ): UserResponse<ChargeCardResponse> {
+        return authServices.chargeCard(email, amount, authorizationCode)
+    }
+
+    override suspend fun getAllAddress(
+        header: String?,
+        clientId: String
+    ): UserResponse<DeliveryAddress> {
+        return authServices.getAllAddress(header, clientId)
+    }
+
 //    override suspend fun getM(header:String): Flow<MeasurementTypeList> = flow{
 //        val h = authServices.getMeasurementTypes(header)
 //        emit(h)

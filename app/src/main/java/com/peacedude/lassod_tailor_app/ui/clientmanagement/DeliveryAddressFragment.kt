@@ -7,11 +7,8 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ProgressBar
@@ -20,19 +17,22 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.annotations.SerializedName
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.response.AddressData
-import com.peacedude.lassod_tailor_app.model.response.Form
-import com.peacedude.lassod_tailor_app.model.response.MeasurementTypeList
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.activity_resources.*
+import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_delivery_address.*
 import kotlinx.android.synthetic.main.fragment_measurement.*
 import kotlinx.android.synthetic.main.measurement_items.view.*
@@ -41,6 +41,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.Serializable
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -58,6 +59,9 @@ class DeliveryAddressFragment : DaggerFragment() {
 
     val header by lazy {
         authViewModel.header
+    }
+    private val clientToBeEdited by lazy{
+        GlobalVariables.globalClient
     }
 
     private val dialogAppBar by lazy {
@@ -133,6 +137,67 @@ class DeliveryAddressFragment : DaggerFragment() {
             dialog.dismiss()
         }
 
+
+
+        CoroutineScope(Dispatchers.Main).launch {
+
+            val clientId = clientToBeEdited?.id
+            authViewModel.getAllAddress(header, clientId.toString())
+                .catch {
+                    i(title, "Error on flow ${it.message}")
+                }
+                .collect {
+                    onFlowResponse<DeliveryAddress>(button = dialogAddDeliveryBtn, progressBar = addDeliveryaddressProgressBar, response = it) {
+                        i(title, "addresses data flow $it")
+                        val listOfAddress = it?.deliveryAddress?.map {address->
+                            Client(
+                                clientToBeEdited?.name.toString(),
+                                clientToBeEdited?.phone.toString(),
+                                clientToBeEdited?.email.toString(),
+                                address.deliveryAddress
+                            ).apply {
+                                this.id =  address.clientId
+                                this.state
+                            }
+                        }
+
+                        if(listOfAddress?.isEmpty()!!){
+                            delivery_address_fragment_recycler_vf.showNext()
+                        }
+                        else{
+                            delivery_address_fragment_delivery_address_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
+
+                                bind { itemView, position, item ->
+                                    val nameContainsSpace = item?.name?.contains(" ")
+                                    if(nameContainsSpace!!){
+                                        val nameSplit = item.name.split(" ")
+                                        val firstName = nameSplit.get(0)
+                                        val lastName = nameSplit.get(1)
+                                        itemView.client_item_name_initials_tv.text = "${firstName.get(0)}${lastName.get(0)}"
+                                    }
+                                    else{
+                                        val firstName = item.name[0]
+                                        itemView.client_item_name_initials_tv.text = "$firstName"
+                                    }
+
+                                    itemView.client_location_tv.text = item.deliveryAddress
+                                    itemView.client_name_tv.text = item.name
+                                }
+                                setLayoutManager(
+                                    LinearLayoutManager(
+                                        requireContext(),
+                                        LinearLayoutManager.VERTICAL,
+                                        false
+                                    )
+                                )
+                                submitList(listOfAddress)
+                            }
+                        }
+
+                    }
+                }
+        }
+
         buttonTransactions({
             addDeliveryaddressBtn.background = btnBackground
             addDeliveryaddressBtn.text = getString(R.string.add_address_str)
@@ -156,7 +221,7 @@ class DeliveryAddressFragment : DaggerFragment() {
                 dialog.show()
             }
 
-            val clientToBeEdited = GlobalVariables.globalClient
+
             Log.i(title, "ClientAccountDeliveryAdd ${clientToBeEdited?.tailorId}")
             if (clientToBeEdited == null) {
                 i(title, "No client found")
@@ -170,7 +235,7 @@ class DeliveryAddressFragment : DaggerFragment() {
             } else {
                 dialogAddDeliveryBtn.setOnClickListener {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val clientId = clientToBeEdited.id
+                        val clientId = clientToBeEdited?.id
                         val address = dialogDeliveryAddressEt.text.toString().trim()
                         authViewModel.addDeliveryAddress(header, clientId, address)
                             .catch {
@@ -178,10 +243,11 @@ class DeliveryAddressFragment : DaggerFragment() {
                             }
                             .collect {
                                 onFlowResponse<AddressData>(button = dialogAddDeliveryBtn, progressBar = addDeliveryaddressProgressBar, response = it) {
+                                    requireActivity().gdToast(getString(R.string.client_address_added_successfully_str), Gravity.BOTTOM)
                                     i(title, "Address data flow $it")
+                                    dialog.dismiss()
                                 }
                             }
-
                     }
                 }
             }

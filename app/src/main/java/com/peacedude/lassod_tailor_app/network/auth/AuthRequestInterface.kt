@@ -81,5 +81,33 @@ interface AuthRequestInterface {
     ): UserResponse<AddressData>{
         return TODO()
     }
+    suspend fun addCard(
+        header: String?,
+        email:String?,
+        amount:String?
+    ): UserResponse<AddCardWrapper<AddCardRes>>{
+        return TODO()
+    }
 
+    suspend fun verifyPayment(
+        header: String?,
+        reference:String
+    ): UserResponse<UserResponse<AddCardResponse>>{
+        return TODO()
+    }
+
+    suspend fun chargeCard(
+        email:String?,
+        amount:String?,
+        authorizationCode: String?
+    ): UserResponse<ChargeCardResponse>{
+        return TODO()
+    }
+
+    suspend fun getAllAddress(
+        header:String?,
+        clientId:String
+    ): UserResponse<DeliveryAddress>{
+        return TODO()
+    }
 }

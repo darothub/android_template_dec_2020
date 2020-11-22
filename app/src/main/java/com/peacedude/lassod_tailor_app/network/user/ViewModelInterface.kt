@@ -5,9 +5,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.AddressData
-import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -121,6 +119,34 @@ interface ViewModelInterface {
         header: String?,
         clientId:String?,
         deliveryAddress:String?
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+    suspend fun addCard(
+        header: String?,
+        email:String?,
+        amount:String?
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+    suspend fun verifyPayment(
+        header: String?,
+        reference:String
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+
+    suspend fun chargeCard(
+        email:String?,
+        amount:String?,
+        authorizationCode: String?
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+
+    suspend fun getAllAddress(
+        header:String?,
+        clientId:String
     ): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }

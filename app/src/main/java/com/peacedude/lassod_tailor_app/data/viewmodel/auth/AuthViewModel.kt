@@ -188,6 +188,20 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    override suspend fun addCard(
+        header: String?,
+        email: String?,
+        amount: String?
+    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+        try {
+            val request = authRequestInterface.addCard(header, email, amount)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
 
     suspend fun getMea(header: String){
         viewModelScope.launch {
@@ -198,6 +212,19 @@ open class AuthViewModel @Inject constructor(
                 .collect {
                     responseLiveDatas.value = it
                 }
+        }
+    }
+
+    override suspend fun getAllAddress(
+        header: String?,
+        clientId: String
+    ): Flow<ServicesResponseWrapper<ParentData>> = flow{
+        try {
+            val request = authRequestInterface.getAllAddress(header, clientId)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
         }
     }
 
