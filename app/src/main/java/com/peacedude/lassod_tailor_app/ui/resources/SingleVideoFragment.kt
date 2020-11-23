@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.ui.resources
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +11,28 @@ import android.view.ViewGroup
 import android.widget.MediaController
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.goto
+import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
+import com.peacedude.lassod_tailor_app.model.response.VideoList
+import com.peacedude.lassod_tailor_app.model.response.VideoResource
 import com.utsman.recycling.setupAdapter
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_single_video.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import java.lang.Exception
+import javax.inject.Inject
 
 
 /**
@@ -28,10 +40,22 @@ import kotlinx.android.synthetic.main.resource_video_item.view.*
  * Use the [SingleVideoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SingleVideoFragment : Fragment() {
+class SingleVideoFragment : DaggerFragment() {
+
+    private val title by lazy {
+        getName()
+    }
+    val header by lazy {
+        authViewModel.header
+    }
 
     private val toolbar by lazy {
         (single_video_fragment_tb as Toolbar)
+    }
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val authViewModel: AuthViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,47 +81,119 @@ class SingleVideoFragment : Fragment() {
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
 
+        val single = GlobalVariables.globalVideo
         val singleMediaController = MediaController(requireContext())
-        singleMediaController.setAnchorView(single_video_fragment_vv)
-        val uri = Uri.parse(getString(R.string.sample_video_str))
-        single_video_fragment_vv.setMediaController(singleMediaController)
-        single_video_fragment_vv.setVideoURI(uri)
-        single_video_fragment_vv.seekTo(1)
+        if(single != null){
+            single_video_fragment_video_title_tv.text = single.title
+            single_video_fragment_video_time_tv.text = single.description
+            singleMediaController.setAnchorView(single_video_fragment_vv)
+            if (single.videoURL != null) {
+                val uri = Uri.parse(single.videoURL)
+                single_video_fragment_vv.setMediaController(singleMediaController)
+                single_video_fragment_vv.setVideoURI(uri)
+                single_video_fragment_vv.seekTo(1)
 
-        val videoResourcesList = arrayListOf<ResourcesVideo>(
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str))
-        )
-
-        single_video_fragment_rv.setupAdapter<ResourcesVideo>(R.layout.resource_video_item) { adapter, context, list ->
-            bind { itemView, position, item ->
-                val mediaController = MediaController(requireContext())
-                mediaController.setAnchorView(itemView.resource_video_item_vv)
-                val uri = Uri.parse(item?.videoUri)
-                itemView.resource_video_item_vv.setMediaController(mediaController)
-                itemView.resource_video_item_vv.setVideoURI(uri)
-                itemView.resource_video_item_fl.clipToOutline = true
-                itemView.resource_video_item_vv.seekTo(1)
-                itemView.resource_video_item_title_tv.text = item?.videoTitle
-                itemView.resource_video_item_time_tv.text = item?.videoMins
-
-                single_video_fragment_rv.addOnScrollListener(object:RecyclerView.OnScrollListener(){
-
-                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                        super.onScrollStateChanged(recyclerView, newState)
-                        mediaController.hide()
-                        singleMediaController.hide()
-                    }
-
-                })
-
+            } else {
+                val uri =
+                    Uri.parse(getString(R.string.sample_video_str))
+                single_video_fragment_vv.setMediaController(singleMediaController)
+                single_video_fragment_vv.setVideoURI(uri)
+                single_video_fragment_vv.seekTo(1)
             }
-            setLayoutManager(GridLayoutManager(requireContext(), 2))
-            submitList(videoResourcesList)
         }
+        else{
+            requireActivity().gdToast("Invalid video resource", Gravity.BOTTOM)
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            supervisorScope {
+                val videoListCall = async { authViewModel.getVideos(header) }
+                try {
+                    videoListCall.await()
+                        .collect {
+                            onFlowResponse<VideoList>(response = it) { videos ->
+                                i(title, "article data flow $it")
+                                val listOfVideos = videos?.video?.map { v ->
+                                    VideoResource(
+                                        v.id,
+                                        v.tailorID,
+                                        v.title,
+                                        v.videoURL,
+                                        v.description,
+                                        v.createdAt,
+                                        v.updatedAt
+                                    )
+                                }?.takeIf {
+                                    it.size > 5
+                                }.let {
+                                    it?.take(5)
+                                }
+
+                                if(!listOfVideos.isNullOrEmpty()){
+                                    single_video_fragment_rv.setupAdapter<VideoResource>(R.layout.resource_video_item) { adapter, context, list ->
+                                        bind { itemView, position, item ->
+                                            val mediaController = MediaController(requireContext())
+                                            mediaController.hide()
+                                            mediaController.setAnchorView(itemView.resource_video_item_vv)
+                                            itemView.resource_video_item_title_tv.text = item?.title
+                                            itemView.resource_video_item_time_tv.text = item?.title
+                                            if (item?.videoURL != null) {
+                                                val uri = Uri.parse(item.videoURL)
+                                                itemView.resource_video_item_vv.setMediaController(
+                                                    mediaController
+                                                )
+                                                itemView.resource_video_item_vv.setVideoURI(uri)
+                                                itemView.resource_video_item_fl.clipToOutline = true
+                                                itemView.resource_video_item_vv.seekTo(1)
+                                            } else {
+                                                val uri =
+                                                    Uri.parse(getString(R.string.sample_video_str))
+                                                itemView.resource_video_item_vv.setMediaController(
+                                                    mediaController
+                                                )
+                                                itemView.resource_video_item_vv.setVideoURI(uri)
+                                                itemView.resource_video_item_fl.clipToOutline = true
+                                                itemView.resource_video_item_vv.seekTo(1)
+                                            }
+
+                                            single_video_fragment_rv.addOnScrollListener(object:RecyclerView.OnScrollListener(){
+
+                                                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                                                    super.onScrollStateChanged(recyclerView, newState)
+                                                    mediaController.hide()
+                                                    singleMediaController.hide()
+                                                }
+
+                                            })
+
+                                        }
+                                        setLayoutManager(GridLayoutManager(requireContext(), 2))
+                                        submitList(listOfVideos)
+                                    }
+                                }
+                                else{
+
+                                }
+                            }
+                        }
+                }catch (e:Exception){
+                    i(title, "Single video error data flow ${e.message}")
+                }
+            }
+        }
+
+
+        i(title, "Single $single")
+
+//        val videoResourcesList = arrayListOf<ResourcesVideo>(
+//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
+//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
+//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
+//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
+//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str))
+//        )
+
+
 
 
 

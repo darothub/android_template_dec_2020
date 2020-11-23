@@ -156,9 +156,9 @@ class ResourcesFragment : DaggerFragment() {
                                         v.updatedAt
                                     )
                                 }?.takeIf {
-                                    it.size > 12
+                                    it.size > 5
                                 }.let {
-                                    it?.take(12)
+                                    it?.take(5)
                                 }
                                 if(!listOfVideos?.isNullOrEmpty()!!) {
                                     resource_fragment_video_rv.setupAdapter<VideoResource>(R.layout.resource_video_item) { adapter, context, list ->
@@ -190,6 +190,8 @@ class ResourcesFragment : DaggerFragment() {
 
                                             itemView.setOnClickListener {
                                                 mediaController.show()
+                                                GlobalVariables.globalVideo = item
+                                                goto(R.id.singleVideoFragment)
                                             }
                                             resource_fragment_video_rv.addOnScrollListener(object :
                                                 RecyclerView.OnScrollListener() {
@@ -227,6 +229,7 @@ class ResourcesFragment : DaggerFragment() {
 
                             }
                         }
+
                     articleListCall.await()
                         .collect {
                             onFlowResponse<ArticleList>(response = it) {
@@ -243,9 +246,9 @@ class ResourcesFragment : DaggerFragment() {
                                         a.updatedAt
                                     )
                                 }?.takeIf {
-                                    it.size > 12
+                                    it.size > 5
                                 }.let {
-                                    it?.take(12)
+                                    it?.take(5)
                                 }
                                 i(title, "video data flow $it")
                                 if (listOfArticles?.isNotEmpty()!!) {
@@ -268,7 +271,7 @@ class ResourcesFragment : DaggerFragment() {
                                             itemView.resource_article_publication_item_title_tv.text =
                                                 item?.title
                                             itemView.resource_article_publication_item_author_tv.text =
-                                                item?.title
+                                                item?.description
                                             itemView.article_pub_item_image_ll.clipToOutline = true
 
                                             itemView.resource_article_publications_iv.clipToOutline =

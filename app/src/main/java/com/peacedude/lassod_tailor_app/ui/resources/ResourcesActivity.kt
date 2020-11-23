@@ -46,7 +46,9 @@ class ResourcesActivity : BaseActivity() {
                    }
                }
                R.id.resourcesFragment -> toolbar?.show()
-               R.id.singleVideoFragment -> toolbar?.hide()
+               R.id.singleVideoFragment -> {
+                   resources_activity_appbar.hide()
+               }
            }
         }
 

@@ -19,7 +19,8 @@ abstract class ResourceActivityModule {
             AuthRequestModule::class,
             AuthViewModelModule::class,
             AllVideoFragmentModule::class,
-            ResourceFragmentModule::class
+            ResourceFragmentModule::class,
+            SingleVideoFragmentModule::class
         ]
     )
     abstract fun provideResourceActivity(): ResourcesActivity
