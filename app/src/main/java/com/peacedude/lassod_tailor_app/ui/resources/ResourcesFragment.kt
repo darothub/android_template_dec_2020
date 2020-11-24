@@ -188,11 +188,6 @@ class ResourcesFragment : DaggerFragment() {
                                             }
 
 
-                                            itemView.setOnClickListener {
-                                                mediaController.show()
-                                                GlobalVariables.globalVideo = item
-                                                goto(R.id.singleVideoFragment)
-                                            }
                                             resource_fragment_video_rv.addOnScrollListener(object :
                                                 RecyclerView.OnScrollListener() {
 
@@ -258,7 +253,7 @@ class ResourcesFragment : DaggerFragment() {
                                         bind { itemView, position, item ->
 
                                             if (item?.articleImage != null) {
-                                                Picasso.get().load(item?.articleImage).fit()
+                                                Picasso.get().load(item.articleImage).fit()
                                                     .into(itemView.resource_article_publications_iv)
                                             } else {
                                                 itemView.resource_article_publications_iv.setImageDrawable(
@@ -276,6 +271,7 @@ class ResourcesFragment : DaggerFragment() {
 
                                             itemView.resource_article_publications_iv.clipToOutline =
                                                 true
+
 
                                         }
                                         setLayoutManager(

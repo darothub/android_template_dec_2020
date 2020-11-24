@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.peacedude.gdtoast.gdToast
@@ -503,7 +505,12 @@ class UserAccountFragment : DaggerFragment() {
                     data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
                 val file = saveBitmap(imageBitmap)
                 if (file != null) {
-                    Picasso.get().load(file).into(user_account_profile_image)
+//                    Picasso.get().load(file).into(user_account_profile_image)
+                    user_account_profile_image.load(file){
+                        crossfade(true)
+                        placeholder(R.drawable.profile_image)
+                        transformations(CircleCropTransformation())
+                    }
                     val reqBody = file.asRequestBody("image".toMediaTypeOrNull())
                     val profileImagePart = MultipartBody.Part.createFormData("avatar",
                         file.name, reqBody)

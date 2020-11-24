@@ -228,6 +228,16 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    override suspend fun getUserDetails(header: String): Flow<ServicesResponseWrapper<ParentData>> =flow{
+        try {
+            val request = authRequestInterface.getUserDetails(header)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
 
     override fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = authRequestInterface.getAllVideos(header)

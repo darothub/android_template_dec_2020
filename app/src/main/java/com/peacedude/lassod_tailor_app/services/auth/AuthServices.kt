@@ -11,6 +11,9 @@ interface AuthServices {
     @GET("auth/profile/me")
     fun getUserData(@Header("Authorization") header: String): Call<UserResponse<User>>
 
+    @GET("auth/profile/me")
+    suspend fun getUserDetails(@Header("Authorization") header: String): UserResponse<User>
+
     @PATCH("auth/profile/me")
     fun updateUserData(
         @Header("Authorization") header: String,

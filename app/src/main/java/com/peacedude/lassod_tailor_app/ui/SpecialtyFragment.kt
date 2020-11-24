@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.peacedude.gdtoast.gdToast
@@ -25,16 +27,20 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.VideoList
+import com.peacedude.lassod_tailor_app.model.response.VideoResource
 import com.peacedude.lassod_tailor_app.utils.bearer
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_single_video.*
 import kotlinx.android.synthetic.main.fragment_specialty.*
+import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.android.synthetic.main.specialty_layout_item.view.*
 import kotlinx.android.synthetic.main.user_profile_name_item.view.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -72,34 +78,35 @@ class SpecialtyFragment : DaggerFragment() {
             window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
         }
     }
-    private val dialogNameAndOtherLayout by lazy{
+    private val dialogNameAndOtherLayout by lazy {
         dialog.findViewById<ViewGroup>(R.id.multipurpose_name_dialog)
     }
-    private val dialogOkTv by lazy{
+    private val dialogOkTv by lazy {
         dialog.findViewById<TextView>(R.id.multipurpose_dialog_ok_tv)
     }
-    private val dialogCancelTv by lazy{
+    private val dialogCancelTv by lazy {
         dialog.findViewById<TextView>(R.id.multipurpose_dialog_cancel_tv)
     }
-    private val closeOptionLayout by lazy{
+    private val closeOptionLayout by lazy {
         dialog.findViewById<ViewGroup>(R.id.multipurpose_gender_dialog)
     }
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
     var genderFocusList = ArrayList<String>()
-    var specialtyValueList= ArrayList<String>()
-    var visitUsForMeasurementValue:Boolean?= false
-    var acceptSelfMeasurementValue:Boolean?= false
+    var specialtyValueList = ArrayList<String>()
+    var visitUsForMeasurementValue: Boolean? = false
+    var acceptSelfMeasurementValue: Boolean? = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
     }
 
-    val newUserData by lazy{
+    val newUserData by lazy {
         User()
     }
 
@@ -138,43 +145,70 @@ class SpecialtyFragment : DaggerFragment() {
     private fun getUserData() {
         val request = authViewModel.getUserData(header)
         val response = requireActivity().observeRequest(request, null, null, true)
-        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val (bool, result) = it
-            onRequestResponseTask<User>(bool, result) {
-                val resp = result as? UserResponse<User>
-                val user = resp?.data
 
-                setUpSpecialityRv(user)
-                val genderList = setupGenderFocusRecyclerView(user)
-                val measurementList = setupMeasurementOptionRv(user)
-                val qaList = setupQaRecylerView(user)
+//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask<User>(bool, result) {
+//                val resp = result as? UserResponse<User>
+//                val user = resp?.data
+//
+//                setUpSpecialityRv(user)
+//                val genderList = setupGenderFocusRecyclerView(user)
+//                val measurementList = setupMeasurementOptionRv(user)
+//                val qaList = setupQaRecylerView(user)
+//
+//                saveBtn.setOnClickListener {
+//                    user?.deliveryTimePeriod = qaList[1].value
+//                    if(qaList[1].value != "null"){
+//                        user?.deliveryTimeNo = qaList[1].value.toInt()
+//                    }
+//                    else{
+//                        user?.deliveryTimeNo  = 0
+//                    }
+//
+//                    user?.visitUsMeasurement = measurementList[0].selected
+//                    user?.acceptSelfMeasurement = measurementList[1].selected
+//                    i(title, "checked1 ${measurementList[0].selected }")
+//                    i(title, "checked2 ${measurementList[1].selected }")
+//                    if (user != null) {
+//                        updateUserData(user)
+//                    }
+//                }
+//            }
+//        })
 
-                saveBtn.setOnClickListener {
-                    user?.deliveryTimePeriod = qaList[1].value
-                    if(qaList[1].value != "null"){
-                        user?.deliveryTimeNo = qaList[1].value.toInt()
-                    }
-                    else{
-                        user?.deliveryTimeNo  = 0
-                    }
+        CoroutineScope(Dispatchers.Main).launch {
+            supervisorScope {
+                val getUserCall = async { authViewModel.getUserDetails(header) }
+                try {
+                    getUserCall.await()
+                        .collect {
+                            onFlowResponse<User>(response = it) { user ->
+                                i(title, "User ${user?.category}")
 
-                    user?.visitUsMeasurement = measurementList[0].selected
-                    user?.acceptSelfMeasurement = measurementList[1].selected
-                    i(title, "checked1 ${measurementList[0].selected }")
-                    i(title, "checked2 ${measurementList[1].selected }")
-                    if (user != null) {
-                        updateUserData(user)
-                    }
+                                setUpSpecialityRv(user)
+                                val qaList = setupQaRecylerView(user)
+                                val genderList = setupGenderFocusRecyclerView(user)
+                                val measurementList = setupMeasurementOptionRv(user)
+
+                            }
+                        }
+
+                } catch (e: Exception) {
+                    i(title, "Get user details error data flow ${e.message}")
                 }
             }
-        })
+        }
     }
 
-    private fun setupQaRecylerView(user: User?):ArrayList<UserNameClass> {
+    private fun setupQaRecylerView(user: User?): ArrayList<UserNameClass> {
         //List of fields to be filled with names and others
         val qaList = arrayListOf<UserNameClass>(
             UserNameClass(getString(R.string.obioma_trained_str), user?.obiomaCert.toString()),
-            UserNameClass(getString(R.string.delivery_time_period_str), user?.deliveryTimePeriod.toString()),
+            UserNameClass(
+                getString(R.string.delivery_time_period_str),
+                user?.deliveryTimePeriod.toString()
+            ),
             UserNameClass(getString(R.string.delivery_time_no_str), user?.deliveryTimeNo.toString())
         )
         specialty_fragment_qa_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
@@ -194,8 +228,8 @@ class SpecialtyFragment : DaggerFragment() {
                         dialog.findViewById<TextInputEditText>(R.id.multipurpose_name_dialog_et)
                     val dialogInput =
                         dialog.findViewById<TextInputLayout>(R.id.multipurpose_name_dialog_input)
-                    if(item?.title == getString(R.string.delivery_time_no_str)){
-                        if(item.value == null || item.value == "null" ){
+                    if (item?.title == getString(R.string.delivery_time_no_str)) {
+                        if (item.value == null || item.value == "null") {
                             item.value = 0.toString()
                         }
                         dialogEditText.inputType = InputType.TYPE_CLASS_NUMBER
@@ -206,10 +240,9 @@ class SpecialtyFragment : DaggerFragment() {
                     dialogInput.hint = item?.title
                     dialogTitle.text = item?.title
                     dialogNameAndOtherLayout.show()
-                    if(item?.title != getString(R.string.obioma_trained_str)){
+                    if (item?.title != getString(R.string.obioma_trained_str)) {
                         dialog.show()
-                    }
-                    else{
+                    } else {
                         dialogNameAndOtherLayout.hide()
                         dialog.hide()
                     }
@@ -243,8 +276,7 @@ class SpecialtyFragment : DaggerFragment() {
         val specialtyList = resources.getStringArray(R.array.specialty_list).toList().map { str ->
             if (user?.specialty != null && user.specialty?.contains(str.toLowerCase())!!) {
                 RecyclerItemForCheckBox(text = str, selected = true)
-            }
-            else{
+            } else {
                 RecyclerItemForCheckBox(text = str)
             }
 
@@ -277,12 +309,11 @@ class SpecialtyFragment : DaggerFragment() {
         }
     }
 
-    private fun setupGenderFocusRecyclerView(user: User?):List<RecyclerItemForCheckBox> {
+    private fun setupGenderFocusRecyclerView(user: User?): List<RecyclerItemForCheckBox> {
         var genderList = resources.getStringArray(R.array.gender_list).toList().map { str ->
             if (user?.genderFocus != null && user.genderFocus?.contains(str.toLowerCase())!!) {
                 RecyclerItemForCheckBox(text = str, selected = true)
-            }
-            else{
+            } else {
                 RecyclerItemForCheckBox(text = str)
             }
         }
@@ -321,11 +352,17 @@ class SpecialtyFragment : DaggerFragment() {
         return genderList
     }
 
-    private fun setupMeasurementOptionRv(user: User?):List<RecyclerItemForCheckBox> {
+    private fun setupMeasurementOptionRv(user: User?): List<RecyclerItemForCheckBox> {
 
         val measurementOptionsList = arrayListOf<RecyclerItemForCheckBox>(
-            RecyclerItemForCheckBox(getString(R.string.visit_us_for_measurement_str), user?.visitUsMeasurement!!),
-            RecyclerItemForCheckBox(getString(R.string.accept_self_measurement_str), user.acceptSelfMeasurement!!)
+            RecyclerItemForCheckBox(
+                getString(R.string.visit_us_for_measurement_str),
+                user?.visitUsMeasurement ?: false
+            ),
+            RecyclerItemForCheckBox(
+                getString(R.string.accept_self_measurement_str),
+                user?.acceptSelfMeasurement ?: false
+            )
         )
 
         val checkboxes = arrayListOf<CheckBox>()
@@ -346,10 +383,10 @@ class SpecialtyFragment : DaggerFragment() {
                 i(title, "checkboxes us ${checkboxes.size}")
                 itemView.measurement_checkbox.setOnCheckedChangeListener { compoundButton, b ->
                     item?.selected = compoundButton.isChecked
-                    user.visitUsMeasurement = list?.get(0)?.selected!!
-                    user.acceptSelfMeasurement = list?.get(1)?.selected!!
-                    i(title, "checked1 ${list?.get(0)?.selected }")
-                    i(title, "checked2 ${list?.get(1)?.selected }")
+                    user?.visitUsMeasurement = list?.get(0)?.selected!!
+                    user?.acceptSelfMeasurement = list?.get(1)?.selected!!
+                    i(title, "checked1 ${list?.get(0)?.selected}")
+                    i(title, "checked2 ${list?.get(1)?.selected}")
                     val otherCheckboxes =
                         checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
                     otherCheckboxes.forEach { checkbox ->
@@ -391,4 +428,5 @@ class SpecialtyFragment : DaggerFragment() {
     }
 
 }
+
 data class RecyclerItemForCheckBox(val text: String, var selected: Boolean = false)

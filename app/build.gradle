@@ -177,6 +177,9 @@ dependencies {
     implementation 'co.paystack.android:paystack:3.1.2'
     implementation 'com.github.dewinjm:monthyear-picker:1.0.2'
 
+    //Rich text
+    implementation 'org.sufficientlysecure:html-textview:4.0'
+
 //    implementation platform('com.google.firebase:firebase-bom:26.0.0')
 //    implementation 'com.google.firebase:firebase-analytics'
 }

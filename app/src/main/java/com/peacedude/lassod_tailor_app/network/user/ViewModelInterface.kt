@@ -150,4 +150,9 @@ interface ViewModelInterface {
     ): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
+
+    suspend fun getUserDetails( header: String): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+
 }

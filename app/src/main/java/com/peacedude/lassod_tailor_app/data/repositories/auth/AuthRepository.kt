@@ -23,6 +23,10 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.getUserData(header)
     }
 
+    override suspend fun getUserDetails(header: String): UserResponse<User> {
+        return authServices.getUserDetails(header)
+    }
+
     override fun getAllVideos(header: String?): Call<UserResponse<VideoList>> {
         return authServices.getAllVideos(header)
     }

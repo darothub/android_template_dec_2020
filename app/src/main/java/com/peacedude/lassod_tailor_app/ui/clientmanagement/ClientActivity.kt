@@ -37,5 +37,7 @@ class ClientActivity : BaseActivity() {
             GlobalVariables.globalClient = null
             goto(DashboardActivity::class.java)
         }
+
+
     }
 }

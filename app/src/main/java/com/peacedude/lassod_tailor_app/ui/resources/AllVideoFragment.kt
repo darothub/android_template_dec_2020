@@ -130,15 +130,29 @@ class AllVideoFragment : DaggerFragment() {
                         bind { itemView, position, item ->
                             val mediaController = MediaController(requireContext())
                             mediaController.setAnchorView(itemView.resource_video_item_vv)
-                            val uri = Uri.parse(item?.videoURL)
-                            itemView.resource_video_item_vv.setMediaController(mediaController)
-                            itemView.resource_video_item_vv.setVideoURI(uri)
-                            itemView.resource_video_item_fl.clipToOutline = true
 
                             itemView.resource_video_item_title_tv.text = item?.title
                             itemView.resource_video_item_time_tv.text = item?.title
 
-                            itemView.resource_video_item_vv.seekTo(1)
+                            if (item?.videoURL != null) {
+                                val uri = Uri.parse(item.videoURL)
+                                itemView.resource_video_item_vv.setMediaController(
+                                    mediaController
+                                )
+                                itemView.resource_video_item_vv.setVideoURI(uri)
+                                itemView.resource_video_item_fl.clipToOutline = true
+                                itemView.resource_video_item_vv.seekTo(1)
+                            } else {
+                                val uri =
+                                    Uri.parse(getString(R.string.sample_video_str))
+                                itemView.resource_video_item_vv.setMediaController(
+                                    mediaController
+                                )
+                                itemView.resource_video_item_vv.setVideoURI(uri)
+                                itemView.resource_video_item_fl.clipToOutline = true
+                                itemView.resource_video_item_vv.seekTo(1)
+                            }
+
 
                             itemView.resource_video_item_vv.setOnClickListener {
                                 actionToDisplaySingleVideo(item)
@@ -164,13 +178,7 @@ class AllVideoFragment : DaggerFragment() {
                 }
             }
         }
-//        val videoResourcesList = arrayListOf<ResourcesVideo>(
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str))
-//        )
+
 
     }
 

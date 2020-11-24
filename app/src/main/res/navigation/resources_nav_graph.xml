@@ -35,4 +35,9 @@
         android:name="com.peacedude.lassod_tailor_app.ui.resources.AllArticlesFragment"
         android:label="fragment_all_articles"
         tools:layout="@layout/fragment_all_articles" />
+    <fragment
+        android:id="@+id/singleArticleFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.resources.SingleArticleFragment"
+        android:label="fragment_single_article"
+        tools:layout="@layout/fragment_single_article" />
 </navigation>

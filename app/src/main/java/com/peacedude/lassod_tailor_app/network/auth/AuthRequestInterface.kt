@@ -12,7 +12,9 @@ interface AuthRequestInterface {
     fun getUserData(header:String): Call<UserResponse<User>> {
         return TODO()
     }
-
+    suspend fun getUserDetails( header: String): UserResponse<User>{
+        return TODO()
+    }
     fun updateUserData(header:String, user: User): Call<UserResponse<User>> {
         return TODO()
     }

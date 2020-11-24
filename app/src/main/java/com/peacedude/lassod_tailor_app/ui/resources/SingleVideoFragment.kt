@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,6 +53,8 @@ class SingleVideoFragment : DaggerFragment() {
     private val toolbar by lazy {
         (single_video_fragment_tb as Toolbar)
     }
+    val singleVideoArg by navArgs<SingleVideoFragmentArgs>()
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by lazy {
@@ -81,8 +84,9 @@ class SingleVideoFragment : DaggerFragment() {
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
 
-        val single = GlobalVariables.globalVideo
+        val single = singleVideoArg.video
         val singleMediaController = MediaController(requireContext())
+
         if(single != null){
             single_video_fragment_video_title_tv.text = single.title
             single_video_fragment_video_time_tv.text = single.description
@@ -185,13 +189,6 @@ class SingleVideoFragment : DaggerFragment() {
 
         i(title, "Single $single")
 
-//        val videoResourcesList = arrayListOf<ResourcesVideo>(
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str)),
-//            ResourcesVideo(getString(R.string.sample_video_str), getString(R.string.sample_str), getString(R.string.sample_min_str))
-//        )
 
 
 

@@ -35,18 +35,26 @@ class ResourcesActivity : BaseActivity() {
            when(destination.id){
                R.id.allVideoFragment -> {
                    toolbar?.show()
+                   resources_activity_appbar.show()
                    toolbar?.setNavigationOnClickListener {
                        controller.popBackStack()
                    }
                }
                R.id.allArticlesFragment -> {
                    toolbar?.show()
+                   resources_activity_appbar.show()
                    toolbar?.setNavigationOnClickListener {
                        controller.popBackStack()
                    }
                }
-               R.id.resourcesFragment -> toolbar?.show()
+               R.id.resourcesFragment -> {
+                   resources_activity_appbar.show()
+                   toolbar?.show()
+               }
                R.id.singleVideoFragment -> {
+                   resources_activity_appbar.hide()
+               }
+               R.id.singleArticleFragment ->{
                    resources_activity_appbar.hide()
                }
            }
