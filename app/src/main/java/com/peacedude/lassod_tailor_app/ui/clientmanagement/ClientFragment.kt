@@ -63,12 +63,8 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
         nextBtn = client_account_next_btn2.findViewById(R.id.btn)
         progressBar = client_account_next_btn2.findViewById(R.id.progress_bar)
 
-        val nextBtnBackground =
-            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        nextBtnBackground?.colorFilter = PorterDuffColorFilter(
-            setCustomColor(R.color.colorPrimary),
-            PorterDuff.Mode.SRC_IN
-        )
+        val nextBtnBackground = nextBtn.background
+        nextBtnBackground?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
 
 
         nextBtn.text = getString(R.string.next)

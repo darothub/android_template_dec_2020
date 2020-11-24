@@ -387,6 +387,7 @@ class SpecialtyFragment : DaggerFragment() {
                     user?.acceptSelfMeasurement = list?.get(1)?.selected!!
                     i(title, "checked1 ${list?.get(0)?.selected}")
                     i(title, "checked2 ${list?.get(1)?.selected}")
+
                     val otherCheckboxes =
                         checkboxes.filter { checkBox -> checkBox.text != compoundButton.text }
                     otherCheckboxes.forEach { checkbox ->

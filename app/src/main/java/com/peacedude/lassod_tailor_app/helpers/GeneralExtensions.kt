@@ -1,11 +1,15 @@
 package com.peacedude.lassod_tailor_app.helpers
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -108,5 +112,11 @@ private fun convertErrorBody(throwable: HttpException): ErrorModel? {
     }
 }
 
+fun Drawable.changeBackgroundColor(context: Context, color:Int){
+    this.colorFilter = PorterDuffColorFilter(
+        ContextCompat.getColor( context, color),
+        PorterDuff.Mode.SRC_IN
+    )
+}
 
 

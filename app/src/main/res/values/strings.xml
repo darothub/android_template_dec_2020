@@ -16,6 +16,11 @@
         <item>Caps</item>
         <item>Military and para-military Uniform</item>
     </string-array>
+    <string-array name="payment_terms_list">
+        <item>100% Deposit</item>
+        <item>50% Deposit and 50% balance on delivery</item>
+        <item>0% Deposit and 100% balance on delivery</item>
+    </string-array>
     <string-array name="gender_list">
         <item>male</item>
         <item>female</item>
@@ -233,4 +238,10 @@
     <string name="client_address_added_successfully_str">Client address added successfully</string>
     <string name="chat_str">Chat</string>
     <string name="send_photo_str">Send photo</string>
+    <string name="security_str">Security</string>
+    <string name="payment_method">Payment method</string>
+    <string name="specialty">Specialty</string>
+    <string name="account_str">Account</string>
+    <string name="payment_terms">Payment Terms</string>
+    <string name="payment_options">Payment Options</string>
 </resources>

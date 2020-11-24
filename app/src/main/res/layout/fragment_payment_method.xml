@@ -1,15 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    tools:context=".ui.PaymentMethodFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+        android:background="@color/White"
+        android:padding="@dimen/_20sdp"
+        tools:context=".ui.PaymentMethodFragment">
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:id="@+id/payment_method_payment_terms_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_terms"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+        <TextView
+            android:id="@+id/payment_method_payment_terms_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_method"
+            android:ems="8"
+            android:maxLines="2"
+            android:gravity="right"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@id/payment_method_payment_terms_tv"
+            app:layout_constraintHorizontal_bias="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/payment_method_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add"
+            android:background="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@id/payment_method_payment_terms_value_tv"
+            app:layout_constraintVertical_bias="0.9"
+            />
+        <View
+            android:id="@+id/payment_method_line1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/payment_method_fab"
+            />
+
+        <TextView
+            android:id="@+id/payment_method_payment_options_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_options"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/payment_method_line1"
+            />
+        <TextView
+            android:id="@+id/payment_method_payment_options_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_terms"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:ems="8"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:gravity="right"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/payment_method_payment_options_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/payment_method_line1"
+            />
+
+        <include
+            android:id="@+id/payment_method_save_btn_include"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/payment_method_payment_options_value_tv"
+            app:layout_constraintVertical_bias=".6"
+            android:layout_marginTop="@dimen/_40sdp"
+
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

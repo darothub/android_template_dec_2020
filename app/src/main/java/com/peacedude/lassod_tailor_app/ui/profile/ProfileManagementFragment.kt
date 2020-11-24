@@ -53,11 +53,12 @@ class ProfileManagementFragment : Fragment() {
 
 
 
-        adapter = ViewPagerAdapter(requireActivity(), 3) { position->
+        adapter = ViewPagerAdapter(requireActivity(), 4) { position->
             when(position){
                 0 -> UserAccountFragment()
                 1 -> SpecialtyFragment()
                 2 -> PaymentMethodFragment()
+                3 -> SecurityFragment()
                 else -> ProfileFragment()
             }
         }
@@ -69,11 +70,10 @@ class ProfileManagementFragment : Fragment() {
                 TabLayoutMediator(profile_management_tabLayout, it,
                     TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                         when(position){
-                            0 -> tab.text = "Account"
-                            1 -> tab.text = "Specialty"
-                            2 -> {
-                                tab.text = "Payment method"
-                            }
+                            0 -> tab.text = getString(R.string.account_str)
+                            1 -> tab.text = getString(R.string.specialty)
+                            2 ->  tab.text = getString(R.string.payment_method)
+                            3 -> tab.text = getString(R.string.security_str)
                             else -> ProfileFragment()
                         }
                     }).apply {

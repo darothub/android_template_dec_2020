@@ -26,6 +26,7 @@
             android:background="@color/colorAccent"
             app:layout_constraintTop_toTopOf="parent"
             app:tabIndicatorHeight="3dp"
+            app:tabMode="scrollable"
             app:tabSelectedTextColor="@color/colorPrimary">
 
         </com.google.android.material.tabs.TabLayout>
