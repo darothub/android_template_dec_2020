@@ -63,6 +63,7 @@ class ProfileManagementFragment : Fragment() {
             }
         }
         val profileManagementViewPager = (profile_management_included_viewPager as? ViewPager2)
+
         profile_management_tabLayout.setBackgroundColor(setCustomColor(R.color.colorWhite))
         (profile_management_included_viewPager as? ViewPager2)?.adapter = adapter
         val tabLayoutMediator =
@@ -70,6 +71,7 @@ class ProfileManagementFragment : Fragment() {
                 TabLayoutMediator(profile_management_tabLayout, it,
                     TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                         when(position){
+
                             0 -> tab.text = getString(R.string.account_str)
                             1 -> tab.text = getString(R.string.specialty)
                             2 ->  tab.text = getString(R.string.payment_method)
