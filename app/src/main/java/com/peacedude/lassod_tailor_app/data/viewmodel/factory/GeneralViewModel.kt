@@ -210,9 +210,17 @@ open class GeneralViewModel @Inject constructor(
                 "Loading..."
             )
         )
-        emit(
-            ServicesResponseWrapper.Success(data as ParentData)
-        )
+        if (data != null){
+            emit(
+                ServicesResponseWrapper.Success(data as? ParentData)
+            )
+        }
+        else{
+            emit(
+                ServicesResponseWrapper.Success(request as? ParentData)
+            )
+        }
+
     }
     protected fun errorConverter(
         response: Response<ParentData>

@@ -1,14 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    android:clipToPadding="false"
     tools:context=".ui.profile.SecurityFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="@dimen/_20sdp"
+        >
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:id="@+id/security_fragment_verified_info_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/verified_info"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/security_fragment_phone_number_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_number"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_verified_info_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <TextView
+            android:id="@+id/security_fragment_phone_number_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_method"
+            android:ems="7"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@id/security_fragment_phone_number_title_tv"
+            app:layout_constraintHorizontal_bias="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_verified_info_tv"
+            />
+        <View
+            android:id="@+id/security_fragment_line1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_phone_number_title_tv"
+            />
+        <TextView
+            android:id="@+id/security_fragment_password_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/verified_info"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_line1"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            />
+        <TextView
+            android:id="@+id/security_fragment_change_password_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/change_password"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_password_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/security_fragment_old_password_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/security_fragment_change_password_title_tv"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_line1"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/security_fragment_old_password_et"
+                android:textColor="@color/colorGray"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="@string/old_password"
+                android:inputType="text"
+                android:textSize="@dimen/_12sdp"
+                android:hint="@string/old_password"
+                android:textColorHint="@color/colorGray"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/security_fragment_new_password_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_15sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/security_fragment_change_password_title_tv"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_old_password_input"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/security_fragment_new_password_et"
+                android:textColor="@color/colorGray"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="@string/new_password"
+                android:inputType="text"
+                android:textSize="@dimen/_12sdp"
+                android:hint="@string/new_password"
+                android:textColorHint="@color/colorGray"
+
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <include
+            android:id="@+id/security_fragment_btn_include"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/security_fragment_new_password_input"
+            android:layout_marginTop="@dimen/_40sdp"
+
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

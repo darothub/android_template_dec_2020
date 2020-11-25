@@ -154,5 +154,12 @@ interface ViewModelInterface {
     suspend fun getUserDetails( header: String): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
+    suspend fun changePassword(
+        header:String?,
+        oldPassword:String?,
+        newPassword:String?
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
 
 }

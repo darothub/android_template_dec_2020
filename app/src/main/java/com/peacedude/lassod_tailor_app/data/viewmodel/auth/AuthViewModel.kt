@@ -253,5 +253,18 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<UploadImageClass>(request, responseLiveData)
     }
 
+    override suspend fun changePassword(
+        header: String?,
+        oldPassword: String?,
+        newPassword: String?
+    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+        try {
+            val request = authRequestInterface.changePassword(header, oldPassword, newPassword)
+            onSuccessFlowResponse(request)
+        } catch (e: HttpException) {
+            onErrorFlowResponse(e)
+        }
+    }
+
 
 }

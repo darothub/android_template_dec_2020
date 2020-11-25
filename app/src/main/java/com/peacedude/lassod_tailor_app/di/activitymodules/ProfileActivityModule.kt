@@ -21,7 +21,8 @@ abstract class ProfileActivityModule {
             SpecialtyFragmentModule::class,
             AuthViewModelModule::class,
             ProfileFragmentModule::class,
-            PaymentMethodFragmentModule::class
+            PaymentMethodFragmentModule::class,
+            SecurityFragmentModule::class
         ]
     )
     abstract fun provideProfileActivity(): ProfileActivity

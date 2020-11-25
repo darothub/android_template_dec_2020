@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.services.auth
 
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import okhttp3.MultipartBody
@@ -154,6 +155,17 @@ interface AuthServices {
         @Header("Authorization") header:String?,
         @Query("clientId") clientId:String
     ): UserResponse<DeliveryAddress>
+
+
+    @PATCH("  auth/chpassword")
+    @FormUrlEncoded
+    suspend fun changePassword(
+        @Header("Authorization") header:String?,
+        @Field("oldPassword") oldPassword:String?,
+        @Field("newPassword") newPassword:String?
+    ): UserResponse<NothingExpected>
+
+
 }
 
 

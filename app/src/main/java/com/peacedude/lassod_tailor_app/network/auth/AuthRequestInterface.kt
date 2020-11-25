@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.network.auth
 
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import kotlinx.coroutines.flow.Flow
@@ -110,6 +111,14 @@ interface AuthRequestInterface {
         header:String?,
         clientId:String
     ): UserResponse<DeliveryAddress>{
+        return TODO()
+    }
+
+    suspend fun changePassword(
+        header:String?,
+        oldPassword:String?,
+        newPassword:String?
+    ): UserResponse<NothingExpected>{
         return TODO()
     }
 }
