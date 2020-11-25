@@ -45,8 +45,8 @@ data class User(
     var acceptSelfMeasurement: Boolean? = null
     var deliveryTimePeriod: String? = null
     var deliveryTimeNo: Int? = null
-    var paymentOptions: String? = null
-    var paymentTerms: ArrayList<String>? = null
+    var paymentOptions: List<String>?  = null
+    var paymentTerms: List<String>? = null
     var unionName: String? = null
     var unionWard: String? = null
     var unionLga: String? = null

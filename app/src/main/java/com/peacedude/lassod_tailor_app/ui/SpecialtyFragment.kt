@@ -122,10 +122,7 @@ class SpecialtyFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         val saveBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        saveBtnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-            PorterDuff.Mode.SRC_IN
-        )
+        saveBtnBackground?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
         buttonTransactions({
             saveBtn = specialty_save_changes_btn.findViewById(R.id.btn)
             progressBar = specialty_save_changes_btn.findViewById(R.id.progress_bar)
@@ -190,6 +187,22 @@ class SpecialtyFragment : DaggerFragment() {
                                 val qaList = setupQaRecylerView(user)
                                 val genderList = setupGenderFocusRecyclerView(user)
                                 val measurementList = setupMeasurementOptionRv(user)
+                                saveBtn.setOnClickListener {
+                                    user?.deliveryTimePeriod = qaList[1].value
+                                    if (qaList[1].value != "null") {
+                                        user?.deliveryTimeNo = qaList[1].value.toInt()
+                                    } else {
+                                        user?.deliveryTimeNo = 0
+                                    }
+
+                                    user?.visitUsMeasurement = measurementList[0].selected
+                                    user?.acceptSelfMeasurement = measurementList[1].selected
+                                    i(title, "checked1 ${measurementList[0].selected}")
+                                    i(title, "checked2 ${measurementList[1].selected}")
+                                    if (user != null) {
+                                        updateUserData(user)
+                                    }
+                                }
 
                             }
                         }
@@ -410,7 +423,6 @@ class SpecialtyFragment : DaggerFragment() {
     }
 
     private fun updateUserData(user: User) {
-//        val newUserData = User(firstName, lastName, otherName,category,phone)
         user.isVerified = true
         user.specialty = specialtyValueList
         user.genderFocus = genderFocusList

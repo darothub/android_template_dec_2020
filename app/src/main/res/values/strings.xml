@@ -21,6 +21,13 @@
         <item>50% Deposit and 50% balance on delivery</item>
         <item>0% Deposit and 100% balance on delivery</item>
     </string-array>
+    <string-array name="payment_options_list">
+        <item>Bank Deposit(Naira)</item>
+        <item>Bank Deposit(USD, GBP, EUR)</item>
+        <item>Cash</item>
+        <item>VCash</item>
+        <item>Payoneer</item>
+    </string-array>
     <string-array name="gender_list">
         <item>male</item>
         <item>female</item>

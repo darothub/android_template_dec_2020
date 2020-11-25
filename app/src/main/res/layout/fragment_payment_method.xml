@@ -32,9 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/payment_method"
-            android:ems="8"
-            android:maxLines="2"
-            android:gravity="right"
+            android:ems="7"
             android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintStart_toEndOf="@id/payment_method_payment_terms_tv"
             app:layout_constraintHorizontal_bias="1"
@@ -52,6 +50,7 @@
             app:backgroundTint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/_20sdp"
+            app:fabSize="mini"
             app:layout_constraintTop_toBottomOf="@id/payment_method_payment_terms_value_tv"
             app:layout_constraintVertical_bias="0.9"
             />
@@ -81,14 +80,26 @@
             android:layout_height="wrap_content"
             android:text="@string/payment_terms"
             android:layout_marginTop="@dimen/_15sdp"
-            android:ems="8"
-            android:maxLines="2"
+            android:ems="7"
             android:ellipsize="end"
-            android:gravity="right"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/payment_method_payment_options_tv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/payment_method_line1"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/payment_options_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add"
+            android:background="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:fabSize="mini"
+            app:layout_constraintTop_toBottomOf="@id/payment_method_payment_options_value_tv"
+            app:layout_constraintVertical_bias="0.9"
             />
 
         <include
@@ -96,7 +107,7 @@
             layout="@layout/button_and_progressbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/payment_method_payment_options_value_tv"
+            app:layout_constraintTop_toBottomOf="@id/payment_options_fab"
             app:layout_constraintVertical_bias=".6"
             android:layout_marginTop="@dimen/_40sdp"
 

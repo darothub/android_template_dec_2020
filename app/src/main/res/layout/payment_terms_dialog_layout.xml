@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/specialty_layout_item"
         />
+
     <LinearLayout
         android:id="@+id/payment_dialog_decision_ll"
         android:layout_width="wrap_content"

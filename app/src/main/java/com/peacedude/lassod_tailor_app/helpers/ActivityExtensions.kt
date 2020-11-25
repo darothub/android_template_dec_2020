@@ -449,6 +449,7 @@ fun Activity.setUpSpinnerWithList(header:String, spinner: Spinner, list:ArrayLis
 
 object GlobalVariables{
     var globalClient: Client? = null
+    var globalListOfString:List<String>?=null
     var globalUser: User? = null
     var globalPhoto: Photo?=null
     var globalVideo: VideoResource?=null
@@ -459,6 +460,7 @@ object GlobalVariables{
     var globalVideosList:List<VideoResource>?=null
     var globalVideoList: List<CommonMediaClass>?=null
     var globalString:String = ""
+    var globalString1:String = ""
     var globalArticleListLiveData = MutableLiveData<List<Article>>()
     var globalVideoListLiveData = MutableLiveData<List<CommonMediaClass>>()
     var globalPosition = 0
