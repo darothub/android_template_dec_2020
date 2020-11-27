@@ -11,35 +11,68 @@ data class MeasurementValues(
     val type: String,
     @SerializedName("clientId")
     val clientID: String,
-    val values: HashMap<String, String>
-):Serializable, ParentData
+    val values: Any
+
+):Serializable, ParentData{
+    val id:String?=null
+    var gender:String?=""
+}
 
 data class Values (
     val ankle: String,
-    val backWidth: Any? = null,
-    val bottom: Any? = null,
-    val cap: Any? = null,
-    val fullLength: Any? = null,
-    val highLength: Any? = null,
-    val lap: Any? = null,
-    val neckWidth: Any? = null,
-    val roundSleeve: Any? = null,
-    val armpit: Any? = null,
-    val band: Any? = null,
-    val chest: Any? = null,
-    val halfLength: Any? = null,
-    val hip: Any? = null,
-    val longSleeve: Any? = null,
-    val shortSleeve: Any? = null,
-    val thigh: Any? = null,
-    val shoulderToWaist: Any? = null,
-    val dart: Any? = null,
-    val handFit: Any? = null,
-    val knee: Any? = null,
-    val napeToWaist: Any? = null,
-    val roundBody: Any? = null,
-    val shoulder: Any? = null,
-    val waist: Any? = null
+    val backWidth: Any? = "",
+    val bottom: Any? = "",
+    val cap: Any? = "",
+    val fullLength: Any? = "",
+    val highLength: Any? = "",
+    val lap: Any? = "",
+    val neckWidth: Any? = "",
+    val roundSleeve: Any? = "",
+    val armpit: Any? = "",
+    val band: Any? = "",
+    val chest: Any? = "",
+    val halfLength: Any? = "",
+    val hip: Any? = "",
+    val longSleeve: Any? = "",
+    val shortSleeve: Any? = "",
+    val thigh: Any? = "",
+    val shoulderToWaist: Any? = "",
+    val dart: Any? = "",
+    val handFit: Any? = "",
+    val knee: Any? = "",
+    val napeToWaist: Any? = "",
+    val roundBody: Any? = "",
+    val shoulder: Any? = "",
+    val waist: Any? = ""
 ):Serializable
 
+data class Valuess(val map:Map<String?, String?>){
+    val ankle by map
+    val backWidth by map
+    val bottom by map
+    val cap by map
+    val fullLength by map
+    val highLength by map
+    val lap by map
+    val neckWidth by map
+    val roundSleeve by map
+    val armpit by map
+    val band by map
+    val chest by map
+    val halfLength by map
+    val hip by map
+    val longSleeve by map
+    val shortSleeve by map
+    val thigh by map
+    val shoulderToWaist by map
+    val dart by map
+    val handFit by map
+    val knee by map
+    val napeToWaist by map
+    val roundBody by map
+    val shoulder by map
+    val waist by map
+}
+
 data class ClientMeasurement(var client:MeasurementValues):Serializable, ParentData
+data class ListOfMeasurement(var measurement:List<MeasurementValues>):Serializable, ParentData

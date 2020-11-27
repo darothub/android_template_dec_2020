@@ -159,6 +159,13 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.changePassword(header, oldPassword, newPassword)
     }
 
+    override suspend fun getAllMeasurements(
+        header: String?,
+        clientId: String
+    ): UserResponse<ListOfMeasurement> {
+        return authServices.getAllMeasurements(header, clientId)
+    }
+
 //    override suspend fun getM(header:String): Flow<MeasurementTypeList> = flow{
 //        val h = authServices.getMeasurementTypes(header)
 //        emit(h)

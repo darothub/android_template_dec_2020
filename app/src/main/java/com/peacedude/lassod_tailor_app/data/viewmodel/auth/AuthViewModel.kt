@@ -266,5 +266,15 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
+    override suspend fun getAllMeasurements(
+        header: String?,
+        clientId: String
+    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+        try {
+            val request = authRequestInterface.getAllMeasurements(header, clientId)
+            onSuccessFlowResponse(request)
+        } catch (e: HttpException) {
+            onErrorFlowResponse(e)
+        }
+    }
 }

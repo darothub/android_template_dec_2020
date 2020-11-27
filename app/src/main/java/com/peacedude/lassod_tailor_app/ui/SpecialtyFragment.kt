@@ -190,7 +190,7 @@ class SpecialtyFragment : DaggerFragment() {
                                 saveBtn.setOnClickListener {
                                     user?.deliveryTimePeriod = qaList[1].value
                                     if (qaList[1].value != "null") {
-                                        user?.deliveryTimeNo = qaList[1].value.toInt()
+                                        user?.deliveryTimeNo = qaList[1].value?.toInt()
                                     } else {
                                         user?.deliveryTimeNo = 0
                                     }

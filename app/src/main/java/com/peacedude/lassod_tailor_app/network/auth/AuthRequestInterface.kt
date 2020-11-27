@@ -50,6 +50,13 @@ interface AuthRequestInterface {
         return TODO()
     }
 
+    suspend fun getAllMeasurements(
+        header: String?,
+        clientId:String
+    ): UserResponse<ListOfMeasurement>{
+        return TODO()
+    }
+
     fun getAllPhoto(header: String?) : Call<UserResponse<PhotoList>>{
         return TODO()
     }

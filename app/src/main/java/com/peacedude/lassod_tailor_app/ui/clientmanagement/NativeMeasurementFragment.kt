@@ -239,30 +239,30 @@ class NativeMeasurementFragment : DaggerFragment() {
                 }
                 val client =  GlobalVariables.globalClient
                 Log.i(title, "newclient $client")
-                saveBtn.setOnClickListener {
-                    measurementList.associateByTo(measurementValues, {
-                        it.name
-                    },{
-                        it.value
-                    })
-                    val clientMeasurement = MeasurementValues(
-                        client?.name.toString(),
-                        "Type",
-                        client?.id.toString(),
-                        measurementValues
-                    )
-                    Log.i(title, "values $measurementValues")
-
-                    val addMeasurementReq = authViewModel.addMeasurement(header, clientMeasurement)
-                    requestObserver(progressBar, saveBtn, addMeasurementReq, false) { bool, result ->
-                        onRequestResponseTask<ClientMeasurement>(bool, result) {
-                            val res = result as UserResponse<ClientMeasurement>
-                            requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-//                                        listOfClient.toMutableList().removeAt(position)
-                        }
-                    }
-
-                }
+//                saveBtn.setOnClickListener {
+//                    measurementList.associateByTo(measurementValues, {
+//                        it.name
+//                    },{
+//                        it.value
+//                    })
+//                    val clientMeasurement = MeasurementValues(
+//                        client?.name.toString(),
+//                        "Type",
+//                        client?.id.toString(),
+//                        measurementValues
+//                    )
+//                    Log.i(title, "values $measurementValues")
+//
+//                    val addMeasurementReq = authViewModel.addMeasurement(header, clientMeasurement)
+//                    requestObserver(progressBar, saveBtn, addMeasurementReq, false) { bool, result ->
+//                        onRequestResponseTask<ClientMeasurement>(bool, result) {
+//                            val res = result as UserResponse<ClientMeasurement>
+//                            requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+////                                        listOfClient.toMutableList().removeAt(position)
+//                        }
+//                    }
+//
+//                }
             })
 
 

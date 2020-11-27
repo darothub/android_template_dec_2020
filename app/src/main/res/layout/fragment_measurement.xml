@@ -21,14 +21,14 @@
             >
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/resource_fragment_measurement_rv"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:orientation="horizontal"
+                android:layout_gravity="center"
+                tools:listitem="@layout/measurement_sub_item"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/resource_fragment_article_publication_tv"
-               />
-
+                android:orientation="vertical"
+                />
             <include
                 android:id="@+id/measurement_fragment_article_no_data_included_layout"
                 layout="@layout/no_data_layout"
@@ -45,10 +45,11 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             app:layout_constraintTop_toBottomOf="@id/measurement_fragment_recycler_vf"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginEnd="@dimen/_20sdp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

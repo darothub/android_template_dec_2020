@@ -127,11 +127,10 @@ class DeliveryAddressFragment : DaggerFragment() {
             PorterDuff.Mode.SRC_IN
         )
         val dialogAddDeliveryBtn = dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
-        val dialogBtnBackgound = dialogAddDeliveryBtn.background
-        dialogBtnBackgound?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-            PorterDuff.Mode.SRC_IN
-        )
+        val dialogBtnBackgound = dialogAddDeliveryBtn.background.apply {
+            this.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+        }
+
 
         dialogToolbar.setNavigationOnClickListener {
             dialog.dismiss()
@@ -199,22 +198,27 @@ class DeliveryAddressFragment : DaggerFragment() {
         }
 
         buttonTransactions({
-            addDeliveryaddressBtn.background = btnBackground
-            addDeliveryaddressBtn.text = getString(R.string.add_address_str)
-            addDeliveryaddressBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
+            addDeliveryaddressBtn.apply {
+                background = btnBackground
+                text = getString(R.string.add_address_str)
+                setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorAccent
+                    )
                 )
-            )
-            dialogAddDeliveryBtn.background = dialogBtnBackgound
-            dialogAddDeliveryBtn.text = getString(R.string.save)
-            dialogAddDeliveryBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
+            }
+
+            dialogAddDeliveryBtn.apply {
+                background = dialogBtnBackgound
+                text = getString(R.string.save)
+                setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorAccent
+                    )
                 )
-            )
+            }
         }, {
 
             addDeliveryaddressBtn.setOnClickListener {

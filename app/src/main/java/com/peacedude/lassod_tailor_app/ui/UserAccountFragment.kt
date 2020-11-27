@@ -198,7 +198,7 @@ class UserAccountFragment : DaggerFragment() {
                     newUserData.lastName = nameList[1].value
                     newUserData.otherName = nameList[2].value
                     if(nameList[4].value != "null"){
-                        newUserData.noOfEmployees = nameList[4].value.toInt()
+                        newUserData.noOfEmployees = nameList[4].value?.toInt()
                     }
                     else{
                         newUserData.noOfEmployees = 0
@@ -543,5 +543,5 @@ class UserAccountFragment : DaggerFragment() {
     }
 }
 
-data class UserNameClass(var title:String, var value:String)
+data class UserNameClass(var title:String, var value:String?)
 data class UserAddressClass(var title:String, var value:UserAddress)

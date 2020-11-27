@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_english_measurement.*
  * Use the [EnglishMeasurementFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class EnglishMeasurementFragment : DaggerFragment() {
+class  EnglishMeasurementFragment : DaggerFragment() {
     private lateinit var saveBtn: Button
     private lateinit var progressBar: ProgressBar
     private val dialog by lazy {

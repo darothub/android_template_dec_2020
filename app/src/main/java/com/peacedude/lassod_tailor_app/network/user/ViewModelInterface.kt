@@ -94,6 +94,8 @@ interface ViewModelInterface {
     fun addMeasurement(header: String?, body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>> {
         return TODO()
     }
+
+
     fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
@@ -158,6 +160,12 @@ interface ViewModelInterface {
         header:String?,
         oldPassword:String?,
         newPassword:String?
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+    suspend fun getAllMeasurements(
+        header: String?,
+        clientId: String
     ): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }

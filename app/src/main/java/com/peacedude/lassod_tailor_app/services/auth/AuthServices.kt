@@ -83,6 +83,12 @@ interface AuthServices {
         @Body measurementValues: MeasurementValues
     ): Call<UserResponse<ClientMeasurement>>
 
+    @GET("measurements")
+    suspend fun getAllMeasurements(
+        @Header("Authorization") header: String?,
+        @Query("clientId") clientId:String
+    ): UserResponse<ListOfMeasurement>
+
     @GET("media")
     fun getAllPhoto(
         @Header("Authorization") header: String?
