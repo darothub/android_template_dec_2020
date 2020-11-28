@@ -25,21 +25,26 @@ import co.paystack.android.model.Card
 import co.paystack.android.model.Charge
 import com.github.dewinjm.monthyearpicker.MonthYearPickerDialogFragment
 import com.google.android.material.textfield.TextInputEditText
+import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.response.AddCardRes
+import com.peacedude.lassod_tailor_app.model.response.AddCardResponse
 import com.peacedude.lassod_tailor_app.model.response.AddCardWrapper
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.activity_subscription.*
 import kotlinx.android.synthetic.main.fragment_add_card.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import java.util.*
 import javax.inject.Inject
 
@@ -110,12 +115,7 @@ class AddCardFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val payBtnBackground =
-            ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        payBtnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.colorGreen),
-            PorterDuff.Mode.SRC_IN
-        )
+
 
 //        cardDetailIncludedMonthEt.doOnTextChanged { text, start, before, count ->
 //            val expiryMonthYearPattern = Regex("""^(?!.*1[3-9])[0-1][0-9]/2[0-9]$""")
@@ -161,6 +161,8 @@ class AddCardFragment : DaggerFragment() {
 
         buttonTransactions({
             button = cardDetailIncludedBtnLayout.findViewById(R.id.btn)
+            val payBtnBackground = button.background
+            payBtnBackground?.changeBackgroundColor(requireContext(), R.color.colorGreen)
             button.background = payBtnBackground
             button.text = getString(R.string.pay)
             button.setTextColor(
@@ -262,43 +264,87 @@ class AddCardFragment : DaggerFragment() {
         add_card_fragment_add_card_layout.setOnClickListener {
 
             customerNameTv.text = currentUser?.firstName
-            add_fragment_vf.showNext()
-//            CoroutineScope(Main).launch {
-//                val email = currentUser?.email
-//                i(title, "User $email")
-//                authViewModel.addCard(header, email, "1000")
-//                    .catch {
-//                        i(title, "Error on flow ${it.message}")
-//                    }
-//                    .collect {
-//                        onFlowResponse<AddCardWrapper<AddCardRes>>( response = it) {
-//                            GlobalVariables.globalString = it?.data?.accessCode.toString()
-//                            val settings: WebSettings = webviewone.settings
-//                            settings.setJavaScriptEnabled(true)
-//                            settings.setAllowContentAccess(true)
-//                            settings.setDomStorageEnabled(true)
-//                            webviewone.setWebViewClient(CustomWebViewClient())
-//                            webviewone.loadUrl("${it?.data?.authorizationURL}")
-//
-//                            webviewone.show()
-//
-//                            i(title, "Address data flow $it")
-//                        }
-//                    }
-//
-//            }
+            CoroutineScope(Main).launch {
+              supervisorScope {
+                  val email = currentUser?.email
+                  i(title, "User $email")
+
+                  authViewModel.addCard(header, email, "1000")
+                      .catch {
+                          i(title, "Error on flow ${it.message}")
+                      }
+                      .collect {
+                          onFlowResponse<AddCardWrapper<AddCardRes>>( response = it) {
+                              GlobalVariables.globalString = it?.data?.reference.toString()
+
+                              val reference = it?.data?.reference
+                              val settings: WebSettings = webviewone.settings
+                              webviewone.show()
+                              settings.setJavaScriptEnabled(true)
+                              settings.setAllowContentAccess(true)
+                              settings.setDomStorageEnabled(true)
+                              webviewone.setWebViewClient(CustomWebViewClient(){
+                                  i(title, "We are here")
+                                  GlobalVariables.globalString =it?.data?.reference.toString()
+                                  CoroutineScope(Main).launch{
+                                      if(webviewone.canGoBack()){
+                                          i(title, "can go back")
+                                          webviewone.goBack()
+                                      }
+                                      else{
+                                          i(title, "hide")
+                                          webviewone.hide()
+                                          authViewModel.verifyPayment(header, reference.toString())
+                                              .catch {
+                                                  val exceptionRegex= Regex("""java.lang.\w+Exception: (\w+\s)+,?\w+,""")
+                                                  val exception = exceptionRegex.find(it.message.toString())?.value
+                                                  val exceptionSplit = exception?.split(":")
+                                                  val errorMessage = exceptionSplit?.get(1).toString()
+                                                  i(title, "Error on flow $errorMessage")
+
+                                                  requireActivity().gdErrorToast(errorMessage, Gravity.BOTTOM)
+                                              }
+                                              .collect {
+
+                                                  onFlowResponse<UserResponse<AddCardResponse>>(response = it, action = {
+                                                      requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+                                                  }, error = {message ->
+                                                      webviewone.hide()
+                                                      i(title, "Error on nested flow  ${message}")
+                                                      if (message.isNotEmpty()){
+
+                                                      }
+
+                                                  })
+                                              }
+                                      }
+                                  }
+
+
+
+                              })
+                              webviewone.loadUrl("${it?.data?.authorizationURL}")
+
+
+
+                          }
+                      }
+                  i(title, "Address data flow ${GlobalVariables.globalString}")
+              }
+
+            }
 
         }
-        (requireActivity().subscription_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)).setNavigationOnClickListener {
-            if (add_card_fragment_add_card_layout.hide()) {
-                add_card_fragment_add_card_layout.show()
-                add_card_fragment_card_detail_layout.hide()
-            } else {
-                add_card_fragment_add_card_layout.show()
-//                requireActivity().gdToast("Here", Gravity.BOTTOM)
-                requireActivity().finish()
-            }
-        }
+//        (requireActivity().subscription_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)).setNavigationOnClickListener {
+//            if (add_card_fragment_add_card_layout.hide()) {
+//                add_card_fragment_add_card_layout.show()
+//                add_card_fragment_card_detail_layout.hide()
+//            } else {
+//                add_card_fragment_add_card_layout.show()
+////                requireActivity().gdToast("Here", Gravity.BOTTOM)
+//                requireActivity().finish()
+//            }
+//        }
 
         cardDetailIncludedMonthEt.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {

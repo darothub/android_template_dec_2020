@@ -148,6 +148,20 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    override suspend fun verifyPayment(
+        header: String?,
+        reference: String
+    ): Flow<ServicesResponseWrapper<ParentData>> = flow {
+
+        try {
+            val request = authRequestInterface.verifyPayment(header, reference)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
     override fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
 
         val request = authRequestInterface.getAllPhoto(header)

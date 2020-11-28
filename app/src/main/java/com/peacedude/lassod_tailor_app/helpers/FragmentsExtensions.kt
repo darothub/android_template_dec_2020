@@ -26,7 +26,6 @@ fun Fragment.goto(destinationId: Int) {
 }
 
 
-
 fun setupToolbarAndNavigationUI(toolbar: Toolbar, navController: NavController) {
     NavigationUI.setupWithNavController(toolbar, navController)
 }
@@ -70,10 +69,10 @@ private fun Fragment.hideKeyboard() {
  * @param bool
  * @param result
  */
-inline fun <reified T>Fragment.onRequestResponseTask(
+inline fun <reified T> Fragment.onRequestResponseTask(
     bool: Boolean,
     result: Any?,
-    action:(UserResponse<T>?)-> Unit
+    action: (UserResponse<T>?) -> Unit
 ) {
     requireActivity().onRequestResponseTask<T>(bool, result, action)
 }
@@ -90,7 +89,7 @@ inline fun <reified T>Fragment.onRequestResponseTask(
  */
 fun Fragment.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>?,
-    progressBar: ProgressBar?, button: Button?, loader:Boolean=false
+    progressBar: ProgressBar?, button: Button?, loader: Boolean = false
 ): LiveData<Pair<Boolean, Any?>> {
     return requireActivity().observeRequest(request, progressBar, button, loader)
 }
@@ -100,7 +99,7 @@ fun Fragment.requestObserver(
     progressBar: ProgressBar?,
     btn: Button?,
     req: LiveData<ServicesResponseWrapper<ParentData>>,
-    loader: Boolean=false,
+    loader: Boolean = false,
     action: (Boolean, Any?) -> Unit
 ) {
     requireActivity().requestObserver(progressBar, btn, req, loader, action)
@@ -109,39 +108,52 @@ fun Fragment.requestObserver(
 fun Fragment.changeStatusBarColor(colorRes: Int) {
     requireActivity().changeStatusBarColor(colorRes)
 }
+
 fun Fragment.setCustomColor(colorRes: Int): Int {
     return requireActivity().setCustomColor(colorRes)
 }
 
-fun Fragment.checkCameraPermission():Boolean{
+fun Fragment.checkCameraPermission(): Boolean {
     return requireActivity().checkCameraPermission()
 }
 
-fun Fragment.saveBitmap(bmp:Bitmap): File? {
+fun Fragment.saveBitmap(bmp: Bitmap): File? {
     return requireActivity().saveBitmap(bmp)
 }
 
-fun Fragment.uriToBitmap(image:Uri):Bitmap?{
+fun Fragment.uriToBitmap(image: Uri): Bitmap? {
     return requireActivity().uriToBitmap(image)
 }
 
-fun Fragment.setUpCountrySpinnerWithDialCode(header:String, spinner: Spinner){
-   requireActivity().setUpCountrySpinnerWithDialCode(header, spinner)
+fun Fragment.setUpCountrySpinnerWithDialCode(header: String, spinner: Spinner) {
+    requireActivity().setUpCountrySpinnerWithDialCode(header, spinner)
 
 }
 
-fun Fragment.setUpCountrySpinner(header:String, spinner: Spinner){
+fun Fragment.setUpCountrySpinner(header: String, spinner: Spinner) {
     requireActivity().setUpCountrySpinner(header, spinner)
 }
 
-fun Fragment.setUpSpinnerWithList(header:String?=null, spinner: Spinner, list: ArrayList<String>){
+fun Fragment.setUpSpinnerWithList(
+    header: String? = null,
+    spinner: Spinner,
+    list: ArrayList<String>
+) {
     requireActivity().setUpSpinnerWithList(header, spinner, list)
 }
 
-inline fun <reified T> Fragment.onFlowResponse(button:Button?=null, progressBar: ProgressBar?=null, loader:Boolean=false, response: ServicesResponseWrapper<ParentData>, action:(T?)->Unit) {
-    requireActivity().onFlowResponse<T>(button, progressBar, loader, response, action)
+inline fun <reified T> Fragment.onFlowResponse(
+    button: Button? = null,
+    progressBar: ProgressBar? = null,
+    loader: Boolean = false,
+    response: ServicesResponseWrapper<ParentData>,
+    noinline error:((String)->Unit)?=null,
+    action: (T?) -> Unit
+
+) {
+    requireActivity().onFlowResponse<T>(button, progressBar, loader, response, error, action)
 }
 
-fun Fragment.goto(destination:Class<*>){
+fun Fragment.goto(destination: Class<*>) {
     requireActivity().goto(destination)
 }

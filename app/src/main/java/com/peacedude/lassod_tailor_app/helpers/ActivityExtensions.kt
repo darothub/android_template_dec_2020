@@ -52,7 +52,7 @@ import kotlin.collections.ArrayList
  */
 fun Activity.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>?,
-    progressBar: ProgressBar?, button: Button?, loader:Boolean=false
+    progressBar: ProgressBar?, button: Button?, loader: Boolean = false
 ): LiveData<Pair<Boolean, Any?>> {
     val result = MutableLiveData<Pair<Boolean, Any?>>()
     val title: String by lazy {
@@ -75,7 +75,7 @@ fun Activity.observeRequest(
 
             when (it) {
                 is ServicesResponseWrapper.Loading<*> -> {
-                    if(loader) dialog.show() else dialog.dismiss()
+                    if (loader) dialog.show() else dialog.dismiss()
                     progressBar?.show()
                     button?.hide()
                     i(title, "Loading..")
@@ -124,7 +124,7 @@ fun Activity.observeRequest(
 
 fun Activity.observeRequests(
     request: ServicesResponseWrapper<ParentData>?,
-    progressBar: ProgressBar?, button: Button?, loader:Boolean=false
+    progressBar: ProgressBar?, button: Button?, loader: Boolean = false
 ): LiveData<Pair<Boolean, Any?>> {
     val result = MutableLiveData<Pair<Boolean, Any?>>()
     val title: String by lazy {
@@ -140,54 +140,54 @@ fun Activity.observeRequests(
 
     hideKeyboard()
 
-        try {
-            val responseData = request?.data
-            val errorResponse = request?.message
-            val errorCode = request?.code
+    try {
+        val responseData = request?.data
+        val errorResponse = request?.message
+        val errorCode = request?.code
 
-            when (request) {
-                is ServicesResponseWrapper.Loading<*> -> {
-                    if(loader) dialog.show() else dialog.dismiss()
-                    progressBar?.show()
-                    button?.hide()
-                    i(title, "Loading..")
-                }
-                is ServicesResponseWrapper.Success -> {
-                    dialog.dismiss()
-                    progressBar?.hide()
-                    button?.show()
-                    result.value = Pair(true, responseData)
+        when (request) {
+            is ServicesResponseWrapper.Loading<*> -> {
+                if (loader) dialog.show() else dialog.dismiss()
+                progressBar?.show()
+                button?.hide()
+                i(title, "Loading..")
+            }
+            is ServicesResponseWrapper.Success -> {
+                dialog.dismiss()
+                progressBar?.hide()
+                button?.show()
+                result.value = Pair(true, responseData)
 
-                    i(title, "success ${request?.data}")
-                }
-                is ServicesResponseWrapper.Error -> {
-                    dialog.dismiss()
-                    progressBar?.hide()
-                    button?.show()
-                    result.value = Pair(false, errorResponse)
-                    gdErrorToast("$errorResponse", Gravity.BOTTOM)
+                i(title, "success ${request?.data}")
+            }
+            is ServicesResponseWrapper.Error -> {
+                dialog.dismiss()
+                progressBar?.hide()
+                button?.show()
+                result.value = Pair(false, errorResponse)
+                gdErrorToast("$errorResponse", Gravity.BOTTOM)
 
-                    Log.i(title, "Error ${request?.message}")
-                }
-                is ServicesResponseWrapper.Logout -> {
-                    dialog.dismiss()
+                Log.i(title, "Error ${request?.message}")
+            }
+            is ServicesResponseWrapper.Logout -> {
+                dialog.dismiss()
 //                    val unAuthorizedString = getString(R.string.unauthorized_user)
-                    progressBar?.hide()
-                    button?.show()
-                    gdToast(errorResponse.toString(), Gravity.BOTTOM)
-                    startActivity(Intent(this as? Context, MainActivity::class.java))
+                progressBar?.hide()
+                button?.show()
+                gdToast(errorResponse.toString(), Gravity.BOTTOM)
+                startActivity(Intent(this as? Context, MainActivity::class.java))
 //                    result.postValue(Pair(false, errorResponse.toString()))
-                    i(title, "Log out ${errorResponse.toString()}")
+                i(title, "Log out ${errorResponse.toString()}")
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
-                }
             }
-        } catch (e: Exception) {
-            progressBar?.hide()
-            dialog.dismiss()
-            button?.show()
-            i(title, e.localizedMessage)
         }
+    } catch (e: Exception) {
+        progressBar?.hide()
+        dialog.dismiss()
+        button?.show()
+        i(title, e.localizedMessage)
+    }
 
 
     return result
@@ -197,7 +197,7 @@ fun Activity.requestObserver(
     progressBar: ProgressBar?,
     btn: Button?,
     req: LiveData<ServicesResponseWrapper<ParentData>>,
-    loader: Boolean=false,
+    loader: Boolean = false,
     action: (Boolean, Any?) -> Unit
 ) {
 
@@ -215,7 +215,7 @@ fun Activity.requestObserver(
  * @param bool
  * @param result
  */
-inline fun <reified T>Activity.onRequestResponseTask(
+inline fun <reified T> Activity.onRequestResponseTask(
     bool: Boolean,
     result: Any?,
     action: (UserResponse<T>?) -> Unit
@@ -281,12 +281,14 @@ fun Activity.getEditTextName(checkForEmpty: EditText, pattern: Regex) {
     gdErrorToast("$editTextName is empty", Gravity.BOTTOM)
 }
 
-fun Any.i(tag:String, message:String){
+fun Any.i(tag: String, message: String) {
     Log.i(tag, message)
 }
-fun Any.e(tag:String, message:String){
+
+fun Any.e(tag: String, message: String) {
     Log.e(tag, message)
 }
+
 fun Activity.changeStatusBarColor(colorRes: Int) {
     window.statusBarColor = ContextCompat.getColor(
         this,
@@ -300,6 +302,7 @@ fun Activity.setCustomColor(colorRes: Int): Int {
         colorRes
     )
 }
+
 fun Activity.checkCameraPermission(): Boolean {
     val title = this.getName()
     if (ContextCompat.checkSelfPermission(
@@ -372,11 +375,11 @@ fun Activity.checkCameraPermission(): Boolean {
 fun Activity.saveBitmap(bmp: Bitmap): File? {
     val extStorageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     var outStream: OutputStream? = null
-    var file: File?=null
+    var file: File? = null
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
     val child = "JPEG_${timeStamp}_.jpg"
     // String temp = null;
-    if (extStorageDirectory != null){
+    if (extStorageDirectory != null) {
         file = File(extStorageDirectory, child)
         if (file.exists()) {
             file.delete()
@@ -399,9 +402,9 @@ fun Activity.saveBitmap(bmp: Bitmap): File? {
 
 fun Activity.uriToBitmap(uriImage: Uri): Bitmap? {
     var mBitmap: Bitmap? = null
-    if(Build.VERSION.SDK_INT < 28) {
+    if (Build.VERSION.SDK_INT < 28) {
         mBitmap = MediaStore.Images.Media.getBitmap(
-          contentResolver,
+            contentResolver,
             uriImage
         )
     } else {
@@ -410,13 +413,16 @@ fun Activity.uriToBitmap(uriImage: Uri): Bitmap? {
     }
     return mBitmap
 }
-fun Activity.setUpCountrySpinnerWithDialCode(header:String, spinner: Spinner){
+
+fun Activity.setUpCountrySpinnerWithDialCode(header: String, spinner: Spinner) {
     val locale = Locale.getAvailableLocales()
     var countriesIsoAndName: HashMap<String, String> = HashMap()
     locale.associateByTo(countriesIsoAndName, {
         it.displayCountry
-    },{
-        "${it.displayCountry}(+${PhoneNumberUtil.createInstance(this).getCountryCodeForRegion(it.country)})"
+    }, {
+        "${it.displayCountry}(+${
+            PhoneNumberUtil.createInstance(this).getCountryCodeForRegion(it.country)
+        })"
     })
     val countries = countriesIsoAndName.values.sorted().toMutableList()
     countries.add(0, header)
@@ -425,12 +431,13 @@ fun Activity.setUpCountrySpinnerWithDialCode(header:String, spinner: Spinner){
     spinner.adapter = adapter
 
 }
-fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
+
+fun Activity.setUpCountrySpinner(header: String, spinner: Spinner) {
     val locale = Locale.getAvailableLocales()
     var countriesIsoAndName: HashMap<String, String> = HashMap()
     locale.associateByTo(countriesIsoAndName, {
         it.displayCountry
-    },{
+    }, {
         it.displayCountry
     })
     val countries = countriesIsoAndName.values.sorted().toMutableList()
@@ -440,7 +447,11 @@ fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
     spinner.adapter = adapter
 }
 
-fun Activity.setUpSpinnerWithList(header:String?=null, spinner: Spinner, list:ArrayList<String>){
+fun Activity.setUpSpinnerWithList(
+    header: String? = null,
+    spinner: Spinner,
+    list: ArrayList<String>
+) {
 
 
     if (header != null) {
@@ -451,21 +462,21 @@ fun Activity.setUpSpinnerWithList(header:String?=null, spinner: Spinner, list:Ar
     spinner.adapter = adapter
 }
 
-object GlobalVariables{
+object GlobalVariables {
     var globalClient: Client? = null
-    var globalListOfString:List<String>?=null
-    var globalMeasuremenValues:MeasurementValues?=null
+    var globalListOfString: List<String>? = null
+    var globalMeasuremenValues: MeasurementValues? = null
     var globalUser: User? = null
-    var globalPhoto: Photo?=null
-    var globalVideo: VideoResource?=null
-    var globalArticle:Article?=null
-    var gloabalToken:String?= ""
-    var globalArticleList:List<CommonMediaClass>?=null
-    var globalArticlesList:List<Article>?=null
-    var globalVideosList:List<VideoResource>?=null
-    var globalVideoList: List<CommonMediaClass>?=null
-    var globalString:String = ""
-    var globalString1:String = ""
+    var globalPhoto: Photo? = null
+    var globalVideo: VideoResource? = null
+    var globalArticle: Article? = null
+    var gloabalToken: String? = ""
+    var globalArticleList: List<CommonMediaClass>? = null
+    var globalArticlesList: List<Article>? = null
+    var globalVideosList: List<VideoResource>? = null
+    var globalVideoList: List<CommonMediaClass>? = null
+    var globalString: String = ""
+    var globalString1: String = ""
     var globalArticleListLiveData = MutableLiveData<List<Article>>()
     var globalVideoListLiveData = MutableLiveData<List<CommonMediaClass>>()
     var globalPosition = 0
@@ -473,7 +484,7 @@ object GlobalVariables{
 
 }
 
-fun Activity.networkMonitor():MutableLiveData<Boolean>{
+fun Activity.networkMonitor(): MutableLiveData<Boolean> {
     val netWorkLiveData = MutableLiveData<Boolean>()
 
     val networkCallback = object : ConnectivityManager.NetworkCallback() {
@@ -491,12 +502,12 @@ fun Activity.networkMonitor():MutableLiveData<Boolean>{
 
     }
 
-    val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val connectivityManager =
+        this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     connectivityManager.let {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             it.registerDefaultNetworkCallback(networkCallback)
-        }
-        else{
+        } else {
             val request: NetworkRequest = NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
             it.registerNetworkCallback(request, networkCallback)
@@ -505,20 +516,28 @@ fun Activity.networkMonitor():MutableLiveData<Boolean>{
     return netWorkLiveData
 }
 
-fun getBitmapFromImageView(view: ImageView):Bitmap{
+fun getBitmapFromImageView(view: ImageView): Bitmap {
     val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     val bgDrawable = view.background
-    if(bgDrawable != null){
+    if (bgDrawable != null) {
         bgDrawable.draw(canvas)
-    }else{
+    } else {
         canvas.drawColor(Color.WHITE)
     }
     view.draw(canvas)
     return bitmap
 }
 
-inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: ProgressBar?=null, loader:Boolean=false, it: ServicesResponseWrapper<ParentData>, action:(T?)->Unit) {
+inline fun <reified T> Activity.onFlowResponse(
+    button: Button? = null,
+    progressBar: ProgressBar? = null,
+    loader: Boolean = false,
+    it: ServicesResponseWrapper<ParentData>,
+    noinline error:((String)->Unit)?=null,
+    action: (T?) -> Unit
+
+) {
 
     val dialog by lazy {
         Dialog(this, R.style.DialogTheme).apply {
@@ -530,7 +549,7 @@ inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: 
 
     when (it) {
         is ServicesResponseWrapper.Loading<*> -> {
-            if(loader) dialog.show() else dialog.dismiss()
+            if (loader) dialog.show() else dialog.dismiss()
             progressBar?.show()
             button?.hide()
             Log.i("onFlowResponse", "Loading ${it.message} dialog showin ${dialog.isShowing}")
@@ -547,6 +566,8 @@ inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: 
             dialog.dismiss()
             progressBar?.hide()
             button?.show()
+            error(it.message.toString())
+//            gdToast(it.message.toString(), Gravity.BOTTOM)
             Log.e("onFlowResponse", "Error ${it?.message}")
         }
         is ServicesResponseWrapper.Logout -> {
@@ -558,6 +579,6 @@ inline fun <reified T>Activity.onFlowResponse(button:Button?=null, progressBar: 
     }
 }
 
-fun Activity.goto(destination:Class<*>){
+fun Activity.goto(destination: Class<*>) {
     startActivity(Intent(this, destination))
 }

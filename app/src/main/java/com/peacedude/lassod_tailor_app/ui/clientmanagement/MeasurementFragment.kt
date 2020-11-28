@@ -264,47 +264,96 @@ class MeasurementFragment : DaggerFragment() {
 
 
                                             itemView.setOnClickListener {
-                                                dialogSpinnerVf.showNext()
-                                                dialogButtonVf.showNext()
+
                                                 GlobalVariables.globalMeasuremenValues = item
                                                 dialog.show()
-                                                i(title, "Item $item")
-                                                if (item !=null){
+
+                                                if (GlobalVariables.globalMeasuremenValues !=null){
+                                                    i(title, "Item ${GlobalVariables.globalMeasuremenValues}")
+                                                    dialogSpinnerVf.showNext()
+                                                    dialogButtonVf.showNext()
                                                     activityTitle.text = getString(R.string.edit_measurement_str)
-                                                    dialogNameEditText.setText(item.name.toString())
+                                                    dialogNameEditText.setText(item?.name.toString())
                                                     val dialogSpinnerList = ArrayList<String>()
-                                                    dialogSpinnerList.add(item.type.toString())
+                                                    dialogSpinnerList.add(item?.type.toString())
                                                     setUpSpinnerWithList(
                                                         null,
                                                         dialogEditSpinner,
                                                         dialogSpinnerList
                                                     )
-                                                    val valuesToBeEdited = (item.values as LinkedTreeMap<String, String>).entries.map{ vtbe->
+                                                    val valuesToBeEdited = (item?.values as LinkedTreeMap<String, String>).entries.map{ vtbe->
                                                         UserNameClass(
                                                             vtbe.key,
-                                                            vtbe.value
+                                                            vtbe.value?:""
                                                         )
                                                     }
                                                     dialogRv.setupAdapter<UserNameClass>(R.layout.measurement_items) { subAdapter, context, list ->
-                                                        bind { itemView, position, editItem ->
-                                                            itemView.add_measurement_layout_dialog_et.setText(editItem?.value)
+                                                        bind { editItemView, position, editItem ->
+                                                            editItemView.add_measurement_layout_dialog_input.hint = editItem?.title
+                                                            editItemView.add_measurement_layout_dialog_et.setText(editItem?.value)
+                                                            editItemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable->
+                                                                editItem?.value = editItemView.add_measurement_layout_dialog_et.text?.toString()
+
+                                                            }
+
+                                                            dialogEditMeasurementBtn.setOnClickListener {
+
+
+                                                                val filtered = list?.filter {
+                                                                    !it?.value.isNullOrEmpty() && it?.value != ""
+                                                                }
+                                                                filtered?.associateByTo(measurementValues, {
+                                                                    it?.title.toString()
+                                                                }, {
+                                                                    it?.value.toString()
+                                                                })
+
+                                                                val valuess = Valuess(measurementValues)
+
+
+                                                                val type = dialogEditSpinner.selectedItem as String
+                                                                val clientMeasurement = MeasurementValues(
+                                                                    clientToBeEdited?.name.toString(),
+                                                                    type,
+                                                                    clientToBeEdited?.id.toString(),
+                                                                    valuess.map
+                                                                )
+                                                                clientMeasurement.gender = clientToBeEdited?.gender
+                                                                clientMeasurement.id = item.id
+                                                                i(title, "Edit measurement $clientMeasurement")
+                                                                CoroutineScope(Main).launch {
+                                                                    supervisorScope {
+                                                                        val updateMeasurementCall = async { authViewModel.editMeasurement(header, clientMeasurement) }
+                                                                        updateMeasurementCall.await()
+                                                                            .catch {
+                                                                                i(title, "RecyclingAdapter delete ${it.message}")
+                                                                            }
+                                                                            .collect {
+                                                                                onFlowResponse<MeasurementValues>(response = it) {
+                                                                                    dialog.dismiss()
+                                                                                    requireActivity().gdToast("${clientMeasurement.name} is updated successfully", Gravity.BOTTOM)
+                                                                                }
+                                                                            }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                         setLayoutManager(GridLayoutManager(requireContext(), 2))
                                                         submitList(valuesToBeEdited)
                                                     }
 
-                                                    dialogEditMeasurementBtn.setOnClickListener {
 
-                                                    }
                                                 }
                                                 else{
-
+                                                    dialogSpinnerVf.showPrevious()
+                                                    dialogButtonVf.showPrevious()
                                                 }
 
                                             }
 
 
                                             val v = item?.values as LinkedTreeMap<String, String>
+
                                             val valueList = arrayListOf<UserNameClass>(
                                                 UserNameClass(
                                                     "Ankle",
@@ -505,7 +554,6 @@ class MeasurementFragment : DaggerFragment() {
 
 
                                 dialogAddMeasurementBtn.setOnClickListener {
-                                    subAdapter.notifyDataSetChanged()
                                     i(title, "Longer ${measurementOptionList?.size}")
 
                                     val filtered = list?.filter {
@@ -535,26 +583,28 @@ class MeasurementFragment : DaggerFragment() {
                                     val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
                                     val parentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
 
-//
-//                                    val addMeasurementReq =
-//                                        authViewModel.addMeasurement(header, clientMeasurement)
-//                                    requestObserver(
-//                                        dialogAddMeasurementProgressBar,
-//                                        dialogAddMeasurementBtn,
-//                                        addMeasurementReq,
-//                                        false
-//                                    ) { bool, result ->
-//                                        onRequestResponseTask<ClientMeasurement>(bool, result) {
-//                                            val res = result as UserResponse<ClientMeasurement>
-//                                            requireActivity().gdToast(
-//                                                res.message.toString(),
-//                                                Gravity.BOTTOM
-//                                            )
-//                                            dialog.dismiss()
-//                                            parentFragment.adapter.notifyDataSetChanged()
-//
-//                                        }
-//                                    }
+
+                                    val addMeasurementReq =
+                                        authViewModel.addMeasurement(header, clientMeasurement)
+                                    requestObserver(
+                                        dialogAddMeasurementProgressBar,
+                                        dialogAddMeasurementBtn,
+                                        addMeasurementReq,
+                                        false
+                                    ) { bool, result ->
+                                        onRequestResponseTask<ClientMeasurement>(bool, result) {
+                                            val res = result as UserResponse<ClientMeasurement>
+                                            requireActivity().gdToast(
+                                                res.message.toString(),
+                                                Gravity.BOTTOM
+                                            )
+
+                                            dialog.dismiss()
+                                            parentFragment.adapter.notifyDataSetChanged()
+                                            subAdapter.notifyDataSetChanged()
+
+                                        }
+                                    }
                                 }
 
 
@@ -600,6 +650,9 @@ class MeasurementFragment : DaggerFragment() {
                                 onFlowResponse<UserResponse<NothingExpected>>(response = it) {
                                     list.removeAt(pos)
                                     this@delete.notifyDataSetChanged()
+                                    if(list.isEmpty()){
+                                        measurement_fragment_recycler_vf.showNext()
+                                    }
                                     requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
                                 }
                             }

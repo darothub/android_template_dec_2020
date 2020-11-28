@@ -23,7 +23,7 @@ class SubscriptionActivity : BaseActivity() {
     val listener = NavController.OnDestinationChangedListener{controller, destination, bundle->
         when(destination.id){
             R.id.addCardFragment ->{
-                title = getString(R.string.add_card)
+                title = ""
             }
         }
     }

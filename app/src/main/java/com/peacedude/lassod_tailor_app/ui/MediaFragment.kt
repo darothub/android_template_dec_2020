@@ -308,6 +308,7 @@ class MediaFragment : DaggerFragment() {
                     onRequestResponseTask<User>(bool, result) {
                         val response = result as UserResponse<NothingExpected>
 //                        val responseData = response.data
+                        requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
                         i(title, "URL ${response.message}")
                     }
                 }
