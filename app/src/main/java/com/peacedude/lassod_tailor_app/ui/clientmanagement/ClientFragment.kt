@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.fragment_client.*
  * Use the [ClientFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ClientFragment : DaggerFragment(), LifecycleEventObserver {
+class ClientFragment : DaggerFragment() {
     lateinit var adapter: ViewPagerAdapter
     private lateinit var nextBtn: Button
     private lateinit var progressBar: ProgressBar
@@ -141,8 +141,8 @@ class ClientFragment : DaggerFragment(), LifecycleEventObserver {
         clientManagementViewPager?.currentItem = item
     }
 
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        source.lifecycle.addObserver(this)
-    }
+//    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+//        source.lifecycle.addObserver(this)
+//    }
 
 }

@@ -171,6 +171,20 @@ interface AuthServices {
         @Field("newPassword") newPassword:String?
     ): UserResponse<NothingExpected>
 
+    @HTTP(method = "DELETE", path = "measurement", hasBody = true)
+    @FormUrlEncoded
+    suspend fun deleteMeasurement(
+        @Header("Authorization") header: String?,
+        @Field("id") id:String?
+    ): UserResponse<NothingExpected>
+
+    @PATCH("measurement")
+    suspend fun editMeasurement(
+        @Header("Authorization") header:String?,
+        @Body measurementValues: MeasurementValues
+    ): UserResponse<MeasurementValues>
+
+
 
 }
 

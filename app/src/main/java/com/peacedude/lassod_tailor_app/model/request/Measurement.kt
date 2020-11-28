@@ -14,7 +14,7 @@ data class MeasurementValues(
     val values: Any
 
 ):Serializable, ParentData{
-    val id:String?=null
+    var id:String?=null
     var gender:String?=""
 }
 

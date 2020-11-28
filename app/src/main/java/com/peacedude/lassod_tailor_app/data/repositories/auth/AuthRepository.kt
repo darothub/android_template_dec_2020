@@ -159,6 +159,20 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.changePassword(header, oldPassword, newPassword)
     }
 
+    override suspend fun deleteMeasurement(
+        header: String?,
+        id: String?
+    ): UserResponse<NothingExpected> {
+        return authServices.deleteMeasurement(header, id)
+    }
+
+    override suspend fun editMeasurement(
+        header: String?,
+        measurementValues: MeasurementValues
+    ): UserResponse<MeasurementValues> {
+        return authServices.editMeasurement(header, measurementValues)
+    }
+
     override suspend fun getAllMeasurements(
         header: String?,
         clientId: String

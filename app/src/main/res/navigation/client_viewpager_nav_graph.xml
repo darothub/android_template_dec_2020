@@ -26,4 +26,9 @@
         android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientFragment"
         android:label="@string/add_client"
         tools:layout="@layout/fragment_client" />
+    <fragment
+        android:id="@+id/measurementFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.clientmanagement.MeasurementFragment"
+        android:label="fragment_measurement"
+        tools:layout="@layout/fragment_measurement" />
 </navigation>

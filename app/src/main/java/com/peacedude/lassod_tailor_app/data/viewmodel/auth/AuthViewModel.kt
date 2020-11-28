@@ -120,6 +120,34 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<ClientMeasurement>(request, responseLiveData)
     }
 
+    override suspend fun deleteMeasurements(
+        header: String?,
+        id: String
+    ): Flow<ServicesResponseWrapper<ParentData>> = flow {
+
+        try {
+            val request = authRequestInterface.deleteMeasurement(header, id)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
+    override suspend fun editMeasurement(
+        header: String?,
+        measurementValues: MeasurementValues
+    ): Flow<ServicesResponseWrapper<ParentData>> = flow {
+
+        try {
+            val request = authRequestInterface.editMeasurement(header, measurementValues)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
     override fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
 
         val request = authRequestInterface.getAllPhoto(header)

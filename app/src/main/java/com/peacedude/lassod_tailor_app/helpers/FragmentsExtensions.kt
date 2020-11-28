@@ -134,7 +134,7 @@ fun Fragment.setUpCountrySpinner(header:String, spinner: Spinner){
     requireActivity().setUpCountrySpinner(header, spinner)
 }
 
-fun Fragment.setUpSpinnerWithList(header:String, spinner: Spinner, list: ArrayList<String>){
+fun Fragment.setUpSpinnerWithList(header:String?=null, spinner: Spinner, list: ArrayList<String>){
     requireActivity().setUpSpinnerWithList(header, spinner, list)
 }
 

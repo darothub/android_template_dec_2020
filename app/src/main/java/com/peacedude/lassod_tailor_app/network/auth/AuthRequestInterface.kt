@@ -128,4 +128,18 @@ interface AuthRequestInterface {
     ): UserResponse<NothingExpected>{
         return TODO()
     }
+
+    suspend fun deleteMeasurement(
+        header:String?,
+        id:String?
+    ): UserResponse<NothingExpected>{
+        return TODO()
+    }
+
+    suspend fun editMeasurement(
+        header:String?,
+        measurementValues: MeasurementValues
+    ): UserResponse<MeasurementValues>{
+        return TODO()
+    }
 }

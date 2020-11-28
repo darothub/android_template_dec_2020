@@ -257,4 +257,5 @@
     <string name="new_password">New password</string>
     <string name="password_not_matched">Password not matched</string>
     <string name="native_measurement">Native measurement</string>
+    <string name="update_measurement">Update measurement</string>
 </resources>

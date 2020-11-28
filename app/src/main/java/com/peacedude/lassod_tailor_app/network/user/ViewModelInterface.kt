@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.network.user
 import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ListOfMeasurement
 import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.*
@@ -166,6 +167,20 @@ interface ViewModelInterface {
     suspend fun getAllMeasurements(
         header: String?,
         clientId: String
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+
+    suspend fun deleteMeasurements(
+        header: String?,
+        id: String
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
+
+    suspend fun editMeasurement(
+        header: String?,
+        measurementValues: MeasurementValues
     ): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }

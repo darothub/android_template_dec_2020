@@ -27,6 +27,7 @@ import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.ui.MainActivity
@@ -439,9 +440,12 @@ fun Activity.setUpCountrySpinner(header:String, spinner: Spinner){
     spinner.adapter = adapter
 }
 
-fun Activity.setUpSpinnerWithList(header:String, spinner: Spinner, list:ArrayList<String>){
+fun Activity.setUpSpinnerWithList(header:String?=null, spinner: Spinner, list:ArrayList<String>){
 
-    list.add(0, header)
+
+    if (header != null) {
+        list.add(0, header)
+    }
     val adapter = ArrayAdapter(this, R.layout.spinner_colored_text_layout, list)
     adapter.setDropDownViewResource(R.layout.spinner_dropdown_layout)
     spinner.adapter = adapter
@@ -450,6 +454,7 @@ fun Activity.setUpSpinnerWithList(header:String, spinner: Spinner, list:ArrayLis
 object GlobalVariables{
     var globalClient: Client? = null
     var globalListOfString:List<String>?=null
+    var globalMeasuremenValues:MeasurementValues?=null
     var globalUser: User? = null
     var globalPhoto: Photo?=null
     var globalVideo: VideoResource?=null

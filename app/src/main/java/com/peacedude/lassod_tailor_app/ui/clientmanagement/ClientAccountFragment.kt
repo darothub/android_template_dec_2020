@@ -141,6 +141,9 @@ class ClientAccountFragment : DaggerFragment(){
                     }
                 }
             }
+            else{
+                client_account_fragment_vf.showPrevious()
+            }
 
 
         }
