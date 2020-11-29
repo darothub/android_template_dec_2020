@@ -167,9 +167,9 @@ class MeasurementFragment : DaggerFragment() {
     }
     lateinit var addMeasurementBtn: Button
     lateinit var addMeasurementProgressBar: ProgressBar
-    lateinit var dialogAddMeasurementBtn:Button
+    lateinit var dialogAddMeasurementBtn: Button
     lateinit var dialogAddMeasurementProgressBar: ProgressBar
-    lateinit var dialogEditMeasurementBtn:Button
+    lateinit var dialogEditMeasurementBtn: Button
     lateinit var dialogEditMeasurementProgressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -217,70 +217,15 @@ class MeasurementFragment : DaggerFragment() {
                 )
             )
 
-
             if (clientToBeEdited == null) {
                 i(title, "No client found")
-                btnBackground?.colorFilter = PorterDuffColorFilter(
-                    ContextCompat.getColor(requireContext(), R.color.colorGray),
-                    PorterDuff.Mode.SRC_IN
-                )
+                btnBackground?.changeBackgroundColor(requireContext(), R.color.colorGray)
                 addMeasurementBtn.background = btnBackground
                 addMeasurementBtn.isClickable = false
 
             }
         }, {
 
-            addMeasurementBtn.setOnClickListener {
-                dialog.show()
-                dialogAddMeasurementBtn = dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
-                dialogAddMeasurementProgressBar = dialogIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
-
-                val dialogBtnBackgound = dialogAddMeasurementBtn.background
-                dialogBtnBackgound?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-
-                dialogTitleTv.text = getString(R.string.add_measurement)
-                dialogAddMeasurementBtn.background = dialogBtnBackgound
-                dialogAddMeasurementBtn.text = getString(R.string.add_measurement)
-                dialogAddMeasurementBtn.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.colorAccent
-                    )
-                )
-
-
-                CoroutineScope(Main).launch {
-                    val getMeasurementTypes = async { authViewModel.getMeasurementTypes(header) }
-                    getMeasurementTypes.await()
-                        .catch {
-                            i(title, "Error on flow ${it.message}")
-                        }
-                        .collect {
-                            onFlowResponse<MeasurementTypeList>(response = it) {
-                                i(title, "Measure ${it?.measurementTypes}")
-                                it?.measurementTypes?.associateByTo(measurementMap, { k ->
-                                    k.id
-                                }, { v ->
-                                    v.name
-                                })
-                                it?.measurementTypes?.associateByTo(measurementListMap, { k ->
-                                    k.name
-                                }, { v ->
-                                    v.form
-                                })
-                                val measurementTypes = it?.measurementTypes?.map {
-                                    it.name
-                                }
-                                setUpSpinnerWithList(
-                                    getString(R.string.select_str), dialogSpinner,
-                                    measurementTypes as ArrayList<String>
-                                )
-                            }
-                        }
-                    setListOnMeasurementChange()
-
-                }
-            }
 
         })
 
@@ -293,19 +238,19 @@ class MeasurementFragment : DaggerFragment() {
                         clientToBeEdited?.id.toString()
                     )
                 }
-
-                    //Get and set existing measurements
-                    getAllMeasurement(getAllMeasurements, dialogTitleTv)
-
+                //Get and set existing measurements
+                getAllMeasurement(getAllMeasurements, dialogTitleTv)
 
             }
-
         }
 
 
     }
 
-    private fun setListOnMeasurementChange(){
+    private fun setListOnMeasurementChange(
+        parentAdapter: RecyclingAdapter<MeasurementValues>,
+        parentList: MutableList<MeasurementValues?>?
+    ) {
 
         dialogSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -329,14 +274,14 @@ class MeasurementFragment : DaggerFragment() {
                     bind { itemView, position, item ->
                         i(title, "Longer ${list?.size}")
                         itemView.add_measurement_layout_dialog_input.hint = item?.label
-                        itemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable->
+                        itemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable ->
                             item?.value = itemView.add_measurement_layout_dialog_et.text?.toString()
 
                         }
                         dialogAddMeasurementBtn.setOnClickListener {
                             i(title, "Longer ${measurementOptionList?.size}")
                             //Collect filled measurement and add
-                            addMeasurementsRequest(list, subAdapter)
+                            addMeasurementsRequest(parentList, parentAdapter, list, subAdapter)
                         }
                     }
                     setLayoutManager(GridLayoutManager(requireContext(), 2))
@@ -348,6 +293,8 @@ class MeasurementFragment : DaggerFragment() {
     }
 
     private fun addMeasurementsRequest(
+        parentList: MutableList<MeasurementValues?>?,
+        parentAdapter: RecyclingAdapter<MeasurementValues>,
         list: MutableList<MeasurementLabelValue?>?,
         subAdapter: RecyclingAdapter<MeasurementLabelValue>
     ) {
@@ -360,17 +307,20 @@ class MeasurementFragment : DaggerFragment() {
             it?.value.toString()
         })
 
+
+        val name = dialogNameEditText.text.toString()
         val valuess = Valuess(measurementValues)
-
-
         val type = dialogSpinner.selectedItem as String
+
+
         val clientMeasurement = MeasurementValues(
-            clientToBeEdited?.name.toString(),
+            name,
             type,
             clientToBeEdited?.id.toString(),
-            valuess.map
+            valuess.map as Map<String, String>
         )
         clientMeasurement.gender = clientToBeEdited?.gender
+        i(title, "client $clientMeasurement")
         i(
             title,
             "Map ${valuess.map} \nvaluess $valuess list $list"
@@ -396,9 +346,9 @@ class MeasurementFragment : DaggerFragment() {
                     Gravity.BOTTOM
                 )
 
+                parentList?.add(clientMeasurement)
                 dialog.dismiss()
-                parentFragment.adapter.notifyDataSetChanged()
-                subAdapter.notifyDataSetChanged()
+                parentAdapter.notifyDataSetChanged()
 
             }
         }
@@ -435,7 +385,7 @@ class MeasurementFragment : DaggerFragment() {
                     } else {
                         resource_fragment_measurement_rv.setupAdapter<MeasurementValues>(
                             R.layout.measurement_sub_item
-                        ) { adapter, context, list ->
+                        ) { parentAdapter, context, parentList ->
 
                             bind { itemView, position, parentItem ->
                                 itemView.measurement_sub_item_type_tv.text = parentItem?.name
@@ -447,14 +397,14 @@ class MeasurementFragment : DaggerFragment() {
                                     activityTitle
                                 )
 
-                                val v = parentItem?.values as LinkedTreeMap<String, String>
+                                val v = parentItem?.values as? Map<String, String>
 
-                                val valueList = v.entries.map { vl ->
+                                val valueList = v?.entries?.map { vl ->
                                     UserNameClass(
                                         vl.key,
                                         vl.value
                                     )
-                                }.filter { itv ->
+                                }?.filter { itv ->
                                     !itv.value.isNullOrEmpty() && itv.value != "null"
                                 }
 
@@ -476,6 +426,74 @@ class MeasurementFragment : DaggerFragment() {
                                     submitList(valueList)
                                 }
 
+                                addMeasurementBtn.setOnClickListener {
+                                    dialog.show()
+                                    dialogAddMeasurementBtn =
+                                        dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
+                                    dialogAddMeasurementProgressBar =
+                                        dialogIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
+
+                                    val dialogBtnBackgound = dialogAddMeasurementBtn.background
+                                    dialogBtnBackgound?.changeBackgroundColor(
+                                        requireContext(),
+                                        R.color.colorPrimary
+                                    )
+
+                                    dialogTitleTv.text = getString(R.string.add_measurement)
+                                    dialogAddMeasurementBtn.background = dialogBtnBackgound
+                                    dialogAddMeasurementBtn.text =
+                                        getString(R.string.add_measurement)
+                                    dialogAddMeasurementBtn.setTextColor(
+                                        ContextCompat.getColor(
+                                            requireContext(),
+                                            R.color.colorAccent
+                                        )
+                                    )
+
+
+                                    CoroutineScope(Main).launch {
+                                        val getMeasurementTypes =
+                                            async { authViewModel.getMeasurementTypes(header) }
+                                        getMeasurementTypes.await()
+                                            .catch {
+                                                i(title, "Error on flow ${it.message}")
+                                            }
+                                            .collect {
+                                                onFlowResponse<MeasurementTypeList>(response = it) {
+                                                    i(title, "Measure ${it?.measurementTypes}")
+                                                    it?.measurementTypes?.associateByTo(
+                                                        measurementMap,
+                                                        { k ->
+                                                            k.id
+                                                        },
+                                                        { v ->
+                                                            v.name
+                                                        })
+                                                    it?.measurementTypes?.associateByTo(
+                                                        measurementListMap,
+                                                        { k ->
+                                                            k.name
+                                                        },
+                                                        { v ->
+                                                            v.form
+                                                        })
+                                                    val measurementTypes =
+                                                        it?.measurementTypes?.map {
+                                                            it.name
+                                                        }
+                                                    setUpSpinnerWithList(
+                                                        getString(R.string.select_str),
+                                                        dialogSpinner,
+                                                        measurementTypes as ArrayList<String>
+                                                    )
+                                                }
+                                            }
+                                        setListOnMeasurementChange(parentAdapter, parentList)
+
+                                    }
+                                }
+
+
                             }
                             setLayoutManager(
                                 LinearLayoutManager(
@@ -484,8 +502,9 @@ class MeasurementFragment : DaggerFragment() {
                                     false
                                 )
                             )
-                            adapter.delete(list)
+                            parentAdapter.delete(parentList)
                                 .attachToRecyclerView(resource_fragment_measurement_rv)
+
                             submitList(measurementValueList)
                         }
                     }
@@ -501,7 +520,8 @@ class MeasurementFragment : DaggerFragment() {
         itemView.setOnClickListener {
             dialogEditTitleTv.text = getString(R.string.edit_measurement_str)
             dialogEditMeasurementBtn = dialogEditIncludeBtnLayout.findViewById<Button>(R.id.btn)
-            dialogEditMeasurementProgressBar = dialogEditIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
+            dialogEditMeasurementProgressBar =
+                dialogEditIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
             val dialogEditBtnBackgound = dialogEditMeasurementBtn.background
             dialogEditBtnBackgound?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
 
@@ -520,7 +540,7 @@ class MeasurementFragment : DaggerFragment() {
                 i(title, "Item ${GlobalVariables.globalMeasuremenValues}")
 
                 activityTitle.text = getString(R.string.edit_measurement_str)
-                dialogNameEditText.setText(parentItem?.name.toString())
+                dialogEditNameEditText.setText(parentItem?.name.toString())
                 val dialogSpinnerList = ArrayList<String>()
                 dialogSpinnerList.add(parentItem?.type.toString())
                 setUpSpinnerWithList(
@@ -612,9 +632,9 @@ class MeasurementFragment : DaggerFragment() {
     }
 
 
-    private fun <T> RecyclingAdapter<T>.delete(list: MutableList<T?>?):ItemTouchHelper {
+    private fun <T> RecyclingAdapter<T>.delete(list: MutableList<T?>?): ItemTouchHelper {
 
-        return ItemTouchHelper(object :ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT){
+        return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -629,7 +649,8 @@ class MeasurementFragment : DaggerFragment() {
 
                 CoroutineScope(Main).launch {
                     supervisorScope {
-                        val deleteMeasurementCall = async { authViewModel.deleteMeasurements(header, item.id.toString()) }
+                        val deleteMeasurementCall =
+                            async { authViewModel.deleteMeasurements(header, item.id.toString()) }
                         deleteMeasurementCall.await()
                             .catch {
                                 i(title, "RecyclingAdapter delete ${it.message}")
@@ -638,17 +659,19 @@ class MeasurementFragment : DaggerFragment() {
                                 onFlowResponse<UserResponse<NothingExpected>>(response = it) {
                                     list.removeAt(pos)
                                     this@delete.notifyDataSetChanged()
-                                    if(list.isEmpty()){
+                                    if (list.isEmpty()) {
                                         measurement_fragment_recycler_vf.showNext()
                                     }
-                                    requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+                                    requireActivity().gdToast(
+                                        it?.message.toString(),
+                                        Gravity.BOTTOM
+                                    )
                                 }
                             }
                     }
                 }
 
                 i("OnRemoved", " pos $pos itemId ${item.id}")
-
 
 
             }
@@ -658,8 +681,6 @@ class MeasurementFragment : DaggerFragment() {
     }
 
 }
-
-
 
 
 data class MeasurementTypes(
