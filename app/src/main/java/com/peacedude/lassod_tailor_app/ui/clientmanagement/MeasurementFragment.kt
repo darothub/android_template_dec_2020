@@ -27,11 +27,9 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
-import com.peacedude.lassod_tailor_app.model.response.Form
-import com.peacedude.lassod_tailor_app.model.response.MeasurementTypeList
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.ui.UserNameClass
 import com.utsman.recycling.adapter.RecyclingAdapter
 import com.utsman.recycling.setupAdapter
@@ -42,15 +40,14 @@ import kotlinx.android.synthetic.main.fragment_security.*
 import kotlinx.android.synthetic.main.measurement_item.view.*
 import kotlinx.android.synthetic.main.measurement_items.view.*
 import kotlinx.android.synthetic.main.measurement_sub_item.view.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -83,42 +80,69 @@ class MeasurementFragment : DaggerFragment() {
         }
     }
 
+    private val editdialog by lazy {
+        Dialog(requireContext(), R.style.DialogTheme).apply {
+            setContentView(R.layout.add_measurement_layout_dialog)
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(this.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            val window = this.window
+            window?.attributes = lp
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setCanceledOnTouchOutside(false)
+        }
+    }
+
     private val dialogIncludeBtnLayout by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_btn) as View)
 
     }
-
-    private val dialogSpinnerVf by lazy {
-        (dialog.findViewById(R.id.add_measurement_layout_dialog_spinner_vf) as ViewFlipper)
+    private val dialogEditIncludeBtnLayout by lazy {
+        (editdialog.findViewById(R.id.add_measurement_layout_dialog_btn) as View)
 
     }
     private val dialogNameEditText by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_et) as TextInputEditText)
 
     }
-    private val dialogButtonVf by lazy {
-        (dialog.findViewById(R.id.add_measurement_layout_dialog_btn_vf) as ViewFlipper)
+
+    private val dialogEditNameEditText by lazy {
+        (editdialog.findViewById(R.id.add_measurement_layout_dialog_et) as TextInputEditText)
 
     }
-    private val dialogEditIncludeBtnLayout by lazy {
-        (dialog.findViewById(R.id.edit_measurement_layout_dialog_btn) as View)
 
-    }
     private val dialogSpinner by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_spinner) as Spinner)
     }
+
     private val dialogEditSpinner by lazy {
-        (dialog.findViewById(R.id.edit_measurement_layout_dialog_spinner) as Spinner)
+        (editdialog.findViewById(R.id.add_measurement_layout_dialog_spinner) as Spinner)
     }
 
     private val dialogAppBar by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_appbar) as AppBarLayout)
     }
+    private val dialogEditAppBar by lazy {
+        (editdialog.findViewById(R.id.add_measurement_layout_dialog_appbar) as AppBarLayout)
+    }
+    private val dialogTitleTv by lazy {
+        (dialogAppBar.findViewById(R.id.reusable_appbar_title_tv) as TextView)
+    }
+    private val dialogEditTitleTv by lazy {
+        (dialogEditAppBar.findViewById(R.id.reusable_appbar_title_tv) as TextView)
+    }
     private val dialogToolbar by lazy {
-        (dialog.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
+        (dialogAppBar.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
+    }
+    private val dialogEditToolbar by lazy {
+        (dialogEditAppBar.findViewById(R.id.reusable_appbar_toolbar) as Toolbar)
     }
     private val dialogRv by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_rv) as RecyclerView)
+    }
+    private val dialogEditRv by lazy {
+        (editdialog.findViewById(R.id.add_measurement_layout_dialog_rv) as RecyclerView)
     }
     private val clientToBeEdited by lazy {
         GlobalVariables.globalClient
@@ -131,6 +155,15 @@ class MeasurementFragment : DaggerFragment() {
     }
     val measurementValues: MutableMap<String?, String?> by lazy {
         mutableMapOf<String?, String?>()
+    }
+    val measurementMap by lazy {
+        HashMap<Long, String>()
+    }
+    val measurementListMap by lazy {
+        HashMap<String, List<Form>>()
+    }
+    val measurementOptionList by lazy {
+        ArrayList<MeasurementLabelValue>()
     }
     lateinit var addMeasurementBtn: Button
     lateinit var addMeasurementProgressBar: ProgressBar
@@ -155,25 +188,21 @@ class MeasurementFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         changeStatusBarColor(R.color.colorWhite)
-        val activityTitle = dialogAppBar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
-        activityTitle.text = getString(R.string.add_measurement)
+//        val activityTitle = dialog.findViewById<TextView>(R.id.reusable_appbar_title_tv)
+//        activityTitle.text = getString(R.string.add_measurement)
 
         addMeasurementBtn = measurement_fragment_add_measurement_btn.findViewById(R.id.btn)
         addMeasurementProgressBar =
             measurement_fragment_add_measurement_btn.findViewById(R.id.progress_bar)
         val btnBackground = addMeasurementBtn.background
         btnBackground?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-        dialogAddMeasurementBtn = dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
-        dialogAddMeasurementProgressBar = dialogIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
-        dialogEditMeasurementBtn = dialogEditIncludeBtnLayout.findViewById<Button>(R.id.btn)
-        dialogEditMeasurementProgressBar = dialogEditIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
-        val dialogBtnBackgound = dialogAddMeasurementBtn.background
-        dialogBtnBackgound?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-        val dialogEditBtnBackgound = dialogAddMeasurementBtn.background
-        dialogEditBtnBackgound?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+
 
         dialogToolbar.setNavigationOnClickListener {
             dialog.dismiss()
+        }
+        dialogEditToolbar.setNavigationOnClickListener {
+            editdialog.dismiss()
         }
 
 
@@ -187,312 +216,41 @@ class MeasurementFragment : DaggerFragment() {
                     R.color.colorAccent
                 )
             )
-            dialogAddMeasurementBtn.background = dialogBtnBackgound
-            dialogAddMeasurementBtn.text = getString(R.string.add_measurement)
-            dialogAddMeasurementBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
+
+
+            if (clientToBeEdited == null) {
+                i(title, "No client found")
+                btnBackground?.colorFilter = PorterDuffColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.colorGray),
+                    PorterDuff.Mode.SRC_IN
                 )
-            )
-            dialogEditMeasurementBtn.background = dialogEditBtnBackgound
-            dialogEditMeasurementBtn.text = getString(R.string.update_measurement)
-            dialogEditMeasurementBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
-                )
-            )
+                addMeasurementBtn.background = btnBackground
+                addMeasurementBtn.isClickable = false
+
+            }
         }, {
 
             addMeasurementBtn.setOnClickListener {
                 dialog.show()
-            }
+                dialogAddMeasurementBtn = dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
+                dialogAddMeasurementProgressBar = dialogIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
 
-        })
+                val dialogBtnBackgound = dialogAddMeasurementBtn.background
+                dialogBtnBackgound?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
 
-        if (clientToBeEdited == null) {
-            i(title, "No client found")
-            btnBackground?.colorFilter = PorterDuffColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.colorGray),
-                PorterDuff.Mode.SRC_IN
-            )
-            addMeasurementBtn.background = btnBackground
-            addMeasurementBtn.isClickable = false
-
-        }
-
-        CoroutineScope(Main).launch {
-            supervisorScope {
-                val getMeasurementTypes = async { authViewModel.getMeasurementTypes(header) }
-                val getAllMeasurements = async {
-                    authViewModel.getAllMeasurements(
-                        header,
-                        clientToBeEdited?.id.toString()
+                dialogTitleTv.text = getString(R.string.add_measurement)
+                dialogAddMeasurementBtn.background = dialogBtnBackgound
+                dialogAddMeasurementBtn.text = getString(R.string.add_measurement)
+                dialogAddMeasurementBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorAccent
                     )
-                }
-                val measurementMap = HashMap<Long, String>()
-                val measurementListMap = HashMap<String, List<Form>>()
-                try {
-                    getAllMeasurements.await()
-                        .catch {
-                            i(title, "Error All measurement on flow ${it.message}")
-                        }
-                        .collect {
-                            onFlowResponse<ListOfMeasurement>(response = it) {
-                                i(title, "Measure ${it?.measurement}")
-
-                                val measurementValueList = it?.measurement?.map { m ->
-                                    MeasurementValues(
-                                        m.name,
-                                        m.type,
-                                        m.clientID,
-                                        m.values
-                                    ).apply {
-                                        this.id = m.id
-                                    }
-                                }
-                                if (measurementValueList?.isEmpty()!!) {
-                                    measurement_fragment_recycler_vf.showNext()
-                                } else {
-                                    resource_fragment_measurement_rv.setupAdapter<MeasurementValues>(
-                                        R.layout.measurement_sub_item
-                                    ) { adapter, context, list ->
-
-                                        bind { itemView, position, item ->
-                                            itemView.measurement_sub_item_type_tv.text = item?.name
+                )
 
 
-                                            itemView.setOnClickListener {
-
-                                                GlobalVariables.globalMeasuremenValues = item
-                                                dialog.show()
-
-                                                if (GlobalVariables.globalMeasuremenValues !=null){
-                                                    i(title, "Item ${GlobalVariables.globalMeasuremenValues}")
-                                                    dialogSpinnerVf.showNext()
-                                                    dialogButtonVf.showNext()
-                                                    activityTitle.text = getString(R.string.edit_measurement_str)
-                                                    dialogNameEditText.setText(item?.name.toString())
-                                                    val dialogSpinnerList = ArrayList<String>()
-                                                    dialogSpinnerList.add(item?.type.toString())
-                                                    setUpSpinnerWithList(
-                                                        null,
-                                                        dialogEditSpinner,
-                                                        dialogSpinnerList
-                                                    )
-                                                    val valuesToBeEdited = (item?.values as LinkedTreeMap<String, String>).entries.map{ vtbe->
-                                                        UserNameClass(
-                                                            vtbe.key,
-                                                            vtbe.value?:""
-                                                        )
-                                                    }
-                                                    dialogRv.setupAdapter<UserNameClass>(R.layout.measurement_items) { subAdapter, context, list ->
-                                                        bind { editItemView, position, editItem ->
-                                                            editItemView.add_measurement_layout_dialog_input.hint = editItem?.title
-                                                            editItemView.add_measurement_layout_dialog_et.setText(editItem?.value)
-                                                            editItemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable->
-                                                                editItem?.value = editItemView.add_measurement_layout_dialog_et.text?.toString()
-
-                                                            }
-
-                                                            dialogEditMeasurementBtn.setOnClickListener {
-
-
-                                                                val filtered = list?.filter {
-                                                                    !it?.value.isNullOrEmpty() && it?.value != ""
-                                                                }
-                                                                filtered?.associateByTo(measurementValues, {
-                                                                    it?.title.toString()
-                                                                }, {
-                                                                    it?.value.toString()
-                                                                })
-
-                                                                val valuess = Valuess(measurementValues)
-
-
-                                                                val type = dialogEditSpinner.selectedItem as String
-                                                                val clientMeasurement = MeasurementValues(
-                                                                    clientToBeEdited?.name.toString(),
-                                                                    type,
-                                                                    clientToBeEdited?.id.toString(),
-                                                                    valuess.map
-                                                                )
-                                                                clientMeasurement.gender = clientToBeEdited?.gender
-                                                                clientMeasurement.id = item.id
-                                                                i(title, "Edit measurement $clientMeasurement")
-                                                                CoroutineScope(Main).launch {
-                                                                    supervisorScope {
-                                                                        val updateMeasurementCall = async { authViewModel.editMeasurement(header, clientMeasurement) }
-                                                                        updateMeasurementCall.await()
-                                                                            .catch {
-                                                                                i(title, "RecyclingAdapter delete ${it.message}")
-                                                                            }
-                                                                            .collect {
-                                                                                onFlowResponse<MeasurementValues>(response = it) {
-                                                                                    dialog.dismiss()
-                                                                                    requireActivity().gdToast("${clientMeasurement.name} is updated successfully", Gravity.BOTTOM)
-                                                                                }
-                                                                            }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                        setLayoutManager(GridLayoutManager(requireContext(), 2))
-                                                        submitList(valuesToBeEdited)
-                                                    }
-
-
-                                                }
-                                                else{
-                                                    dialogSpinnerVf.showPrevious()
-                                                    dialogButtonVf.showPrevious()
-                                                }
-
-                                            }
-
-
-                                            val v = item?.values as LinkedTreeMap<String, String>
-
-                                            val valueList = arrayListOf<UserNameClass>(
-                                                UserNameClass(
-                                                    "Ankle",
-                                                    v.getOrElse("ankle"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Back width",
-                                                    v.getOrElse("backWidth"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Bottom",
-                                                    v.getOrElse("bottom"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Cap",
-                                                    v.getOrElse("cap"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Full length",
-                                                    v.getOrElse("fullLength"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "High length",
-                                                    v.getOrElse("highLength"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Lap",
-                                                    v.getOrElse("lap"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Neck width",
-                                                    v.getOrElse("neckWidth"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Round sleeve",
-                                                    v.getOrElse("roundSleeve"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Armpit",
-                                                    v.getOrElse("armpit"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Band",
-                                                    v.getOrElse("band"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Chest",
-                                                    v.getOrElse("chest"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Half length",
-                                                    v.getOrElse("halfLength"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Hip",
-                                                    v.getOrElse("hip"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Long sleeve",
-                                                    v.getOrElse("longSleeve"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Short sleeve",
-                                                    v.getOrElse("shortSleeve"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Thigh",
-                                                    v.getOrElse("thigh"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Shoulder to waist",
-                                                    v.getOrElse("shoulderToWaist"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Dart",
-                                                    v.getOrElse("dart"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Hand fit",
-                                                    v.getOrElse("handFit"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Knee",
-                                                    v.getOrElse("knee"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Nape to waist",
-                                                    v.getOrElse("napeToWaist"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Round body",
-                                                    v.getOrElse("roundBody"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Shoulder",
-                                                    v.getOrElse("shoulder"){""} as String
-                                                ),
-                                                UserNameClass(
-                                                    "Waist",
-                                                    v.getOrElse("waist"){""} as String
-                                                )
-
-                                            ).filter {itv->
-                                                !itv.value.isNullOrEmpty() && itv.value != "null"
-                                            }
-
-                                            itemView.measurement_sub_item_rv.setupAdapter<UserNameClass>(
-                                                R.layout.measurement_item
-                                            ) { adapter, context, list ->
-                                                bind { subItemView, position, item ->
-                                                    subItemView.measurement_name.text = item?.title
-                                                    subItemView.measurement_value.text = item?.value
-
-                                                }
-
-                                                setLayoutManager(
-                                                    GridLayoutManager(
-                                                        requireContext(),
-                                                        3
-                                                    )
-                                                )
-                                                submitList(valueList)
-                                            }
-
-                                        }
-                                        setLayoutManager(
-                                            LinearLayoutManager(
-                                                requireContext(),
-                                                LinearLayoutManager.VERTICAL,
-                                                false
-                                            )
-                                        )
-                                        adapter.delete(list).attachToRecyclerView(resource_fragment_measurement_rv)
-                                        submitList(measurementValueList)
-                                    }
-                                }
-                            }
-                        }
-
+                CoroutineScope(Main).launch {
+                    val getMeasurementTypes = async { authViewModel.getMeasurementTypes(header) }
                     getMeasurementTypes.await()
                         .catch {
                             i(title, "Error on flow ${it.message}")
@@ -519,108 +277,338 @@ class MeasurementFragment : DaggerFragment() {
                                 )
                             }
                         }
-
-                } catch (e: Exception) {
-                    i(title, "MeasurementType error on flow ${e.message}")
-                }
-
-                dialogSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {}
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        val itemSelected = dialogSpinner.selectedItem as String
-                        val measurementOptionList = measurementListMap[itemSelected]?.map {
-                            i(title, "Label ${it.label}")
-                            MeasurementLabelValue(
-                                it.key,
-                                it.label,
-                                ""
-                            )
-                        }
-                        i(title, "Position $measurementListMap $measurementOptionList")
-                        dialogRv.setupAdapter<MeasurementLabelValue>(R.layout.measurement_items) { subAdapter, context, list ->
-
-                            bind { itemView, position, item ->
-                                i(title, "Longer ${list?.size}")
-                                itemView.add_measurement_layout_dialog_input.hint = item?.label
-                                itemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable->
-                                    item?.value = itemView.add_measurement_layout_dialog_et.text?.toString()
-
-                                }
-
-
-                                dialogAddMeasurementBtn.setOnClickListener {
-                                    i(title, "Longer ${measurementOptionList?.size}")
-
-                                    val filtered = list?.filter {
-                                        !it?.value.isNullOrEmpty() && it?.value != ""
-                                    }
-                                    filtered?.associateByTo(measurementValues, {
-                                        it?.key.toString()
-                                    }, {
-                                        it?.value.toString()
-                                    })
-
-                                    val valuess = Valuess(measurementValues)
-
-
-                                    val type = dialogSpinner.selectedItem as String
-                                    val clientMeasurement = MeasurementValues(
-                                        clientToBeEdited?.name.toString(),
-                                        type,
-                                        clientToBeEdited?.id.toString(),
-                                        valuess.map
-                                    )
-                                    clientMeasurement.gender = clientToBeEdited?.gender
-                                    i(
-                                        title,
-                                        "Map ${valuess.map} \nvaluess $valuess list $list"
-                                    )
-                                    val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
-                                    val parentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
-
-
-                                    val addMeasurementReq =
-                                        authViewModel.addMeasurement(header, clientMeasurement)
-                                    requestObserver(
-                                        dialogAddMeasurementProgressBar,
-                                        dialogAddMeasurementBtn,
-                                        addMeasurementReq,
-                                        false
-                                    ) { bool, result ->
-                                        onRequestResponseTask<ClientMeasurement>(bool, result) {
-                                            val res = result as UserResponse<ClientMeasurement>
-                                            requireActivity().gdToast(
-                                                res.message.toString(),
-                                                Gravity.BOTTOM
-                                            )
-
-                                            dialog.dismiss()
-                                            parentFragment.adapter.notifyDataSetChanged()
-                                            subAdapter.notifyDataSetChanged()
-
-                                        }
-                                    }
-                                }
-
-
-                            }
-                            setLayoutManager(GridLayoutManager(requireContext(), 2))
-                            submitList(measurementOptionList)
-                        }
-                    }
+                    setListOnMeasurementChange()
 
                 }
+            }
+
+        })
+
+        CoroutineScope(Main).launch {
+            supervisorScope {
+
+                val getAllMeasurements = async {
+                    authViewModel.getAllMeasurements(
+                        header,
+                        clientToBeEdited?.id.toString()
+                    )
+                }
+
+                    //Get and set existing measurements
+                    getAllMeasurement(getAllMeasurements, dialogTitleTv)
+
 
             }
 
         }
 
 
+    }
+
+    private fun setListOnMeasurementChange(){
+
+        dialogSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val itemSelected = dialogSpinner.selectedItem as String
+                measurementListMap[itemSelected]?.mapTo(measurementOptionList) {
+                    i(title, "Label ${it.label}")
+                    MeasurementLabelValue(
+                        it.key,
+                        it.label,
+                        ""
+                    )
+                }
+                dialogRv.setupAdapter<MeasurementLabelValue>(R.layout.measurement_items) { subAdapter, context, list ->
+
+                    bind { itemView, position, item ->
+                        i(title, "Longer ${list?.size}")
+                        itemView.add_measurement_layout_dialog_input.hint = item?.label
+                        itemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable->
+                            item?.value = itemView.add_measurement_layout_dialog_et.text?.toString()
+
+                        }
+                        dialogAddMeasurementBtn.setOnClickListener {
+                            i(title, "Longer ${measurementOptionList?.size}")
+                            //Collect filled measurement and add
+                            addMeasurementsRequest(list, subAdapter)
+                        }
+                    }
+                    setLayoutManager(GridLayoutManager(requireContext(), 2))
+                    submitList(measurementOptionList)
+                }
+                i(title, "Position $measurementListMap $measurementOptionList")
+            }
+        }
+    }
+
+    private fun addMeasurementsRequest(
+        list: MutableList<MeasurementLabelValue?>?,
+        subAdapter: RecyclingAdapter<MeasurementLabelValue>
+    ) {
+        val filtered = list?.filter {
+            !it?.value.isNullOrEmpty() && it?.value != ""
+        }
+        filtered?.associateByTo(measurementValues, {
+            it?.key.toString()
+        }, {
+            it?.value.toString()
+        })
+
+        val valuess = Valuess(measurementValues)
+
+
+        val type = dialogSpinner.selectedItem as String
+        val clientMeasurement = MeasurementValues(
+            clientToBeEdited?.name.toString(),
+            type,
+            clientToBeEdited?.id.toString(),
+            valuess.map
+        )
+        clientMeasurement.gender = clientToBeEdited?.gender
+        i(
+            title,
+            "Map ${valuess.map} \nvaluess $valuess list $list"
+        )
+        val navHostFragment =
+            requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
+        val parentFragment =
+            navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
+
+
+        val addMeasurementReq =
+            authViewModel.addMeasurement(header, clientMeasurement)
+        requestObserver(
+            dialogAddMeasurementProgressBar,
+            dialogAddMeasurementBtn,
+            addMeasurementReq,
+            false
+        ) { bool, result ->
+            onRequestResponseTask<ClientMeasurement>(bool, result) {
+                val res = result as UserResponse<ClientMeasurement>
+                requireActivity().gdToast(
+                    res.message.toString(),
+                    Gravity.BOTTOM
+                )
+
+                dialog.dismiss()
+                parentFragment.adapter.notifyDataSetChanged()
+                subAdapter.notifyDataSetChanged()
+
+            }
+        }
+    }
+
+    private suspend fun CoroutineScope.getMeasurementTypes() {
+
+    }
+
+    private suspend fun getAllMeasurement(
+        getAllMeasurements: Deferred<Flow<ServicesResponseWrapper<ParentData>>>,
+        activityTitle: TextView
+    ) {
+        getAllMeasurements.await()
+            .catch {
+                i(title, "Error All measurement on flow ${it.message}")
+            }
+            .collect {
+                onFlowResponse<ListOfMeasurement>(response = it) {
+                    i(title, "Measure ${it?.measurement}")
+
+                    val measurementValueList = it?.measurement?.map { m ->
+                        MeasurementValues(
+                            m.name,
+                            m.type,
+                            m.clientID,
+                            m.values
+                        ).apply {
+                            this.id = m.id
+                        }
+                    }
+                    if (measurementValueList?.isEmpty()!!) {
+                        measurement_fragment_recycler_vf.showNext()
+                    } else {
+                        resource_fragment_measurement_rv.setupAdapter<MeasurementValues>(
+                            R.layout.measurement_sub_item
+                        ) { adapter, context, list ->
+
+                            bind { itemView, position, parentItem ->
+                                itemView.measurement_sub_item_type_tv.text = parentItem?.name
+
+                                //On click to edit
+                                setOnMeasurementEdit(
+                                    itemView,
+                                    parentItem,
+                                    activityTitle
+                                )
+
+                                val v = parentItem?.values as LinkedTreeMap<String, String>
+
+                                val valueList = v.entries.map { vl ->
+                                    UserNameClass(
+                                        vl.key,
+                                        vl.value
+                                    )
+                                }.filter { itv ->
+                                    !itv.value.isNullOrEmpty() && itv.value != "null"
+                                }
+
+                                itemView.measurement_sub_item_rv.setupAdapter<UserNameClass>(
+                                    R.layout.measurement_item
+                                ) { adapter, context, list ->
+                                    bind { subItemView, position, item ->
+                                        subItemView.measurement_name.text = item?.title
+                                        subItemView.measurement_value.text = item?.value
+
+                                    }
+
+                                    setLayoutManager(
+                                        GridLayoutManager(
+                                            requireContext(),
+                                            3
+                                        )
+                                    )
+                                    submitList(valueList)
+                                }
+
+                            }
+                            setLayoutManager(
+                                LinearLayoutManager(
+                                    requireContext(),
+                                    LinearLayoutManager.VERTICAL,
+                                    false
+                                )
+                            )
+                            adapter.delete(list)
+                                .attachToRecyclerView(resource_fragment_measurement_rv)
+                            submitList(measurementValueList)
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun setOnMeasurementEdit(
+        itemView: View,
+        parentItem: MeasurementValues?,
+        activityTitle: TextView
+    ) {
+        itemView.setOnClickListener {
+            dialogEditTitleTv.text = getString(R.string.edit_measurement_str)
+            dialogEditMeasurementBtn = dialogEditIncludeBtnLayout.findViewById<Button>(R.id.btn)
+            dialogEditMeasurementProgressBar = dialogEditIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
+            val dialogEditBtnBackgound = dialogEditMeasurementBtn.background
+            dialogEditBtnBackgound?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+
+            dialogEditMeasurementBtn.background = dialogEditBtnBackgound
+            dialogEditMeasurementBtn.text = getString(R.string.update_measurement)
+            dialogEditMeasurementBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorAccent
+                )
+            )
+            GlobalVariables.globalMeasuremenValues = parentItem
+            editdialog.show()
+
+            if (GlobalVariables.globalMeasuremenValues != null) {
+                i(title, "Item ${GlobalVariables.globalMeasuremenValues}")
+
+                activityTitle.text = getString(R.string.edit_measurement_str)
+                dialogNameEditText.setText(parentItem?.name.toString())
+                val dialogSpinnerList = ArrayList<String>()
+                dialogSpinnerList.add(parentItem?.type.toString())
+                setUpSpinnerWithList(
+                    null,
+                    dialogEditSpinner,
+                    dialogSpinnerList
+                )
+                val valuesToBeEdited =
+                    (parentItem?.values as LinkedTreeMap<String, String>).entries.map { vtbe ->
+                        UserNameClass(
+                            vtbe.key,
+                            vtbe.value ?: ""
+                        )
+                    }
+                dialogEditRv.setupAdapter<UserNameClass>(R.layout.measurement_items) { subAdapter, context, list ->
+                    bind { editItemView, position, editItem ->
+                        editItemView.add_measurement_layout_dialog_input.hint = editItem?.title
+                        editItemView.add_measurement_layout_dialog_et.setText(editItem?.value)
+                        editItemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable ->
+                            editItem?.value =
+                                editItemView.add_measurement_layout_dialog_et.text?.toString()
+
+                        }
+
+                        dialogEditMeasurementBtn.setOnClickListener {
+
+
+                            val filtered = list?.filter {
+                                !it?.value.isNullOrEmpty() && it?.value != ""
+                            }
+                            filtered?.associateByTo(measurementValues, {
+                                it?.title.toString()
+                            }, {
+                                it?.value.toString()
+                            })
+
+                            val valuess = Valuess(measurementValues)
+
+
+                            val type = dialogEditSpinner.selectedItem as String
+                            val clientMeasurement = MeasurementValues(
+                                clientToBeEdited?.name.toString(),
+                                type,
+                                clientToBeEdited?.id.toString(),
+                                valuess.map
+                            )
+                            clientMeasurement.gender = clientToBeEdited?.gender
+                            clientMeasurement.id = parentItem.id
+                            i(title, "Edit measurement $clientMeasurement")
+                            CoroutineScope(Main).launch {
+                                supervisorScope {
+                                    val updateMeasurementCall = async {
+                                        authViewModel.editMeasurement(
+                                            header,
+                                            clientMeasurement
+                                        )
+                                    }
+                                    updateMeasurementCall.await()
+                                        .catch {
+                                            i(title, "RecyclingAdapter delete ${it.message}")
+                                        }
+                                        .collect {
+                                            onFlowResponse<MeasurementValues>(response = it) {
+                                                GlobalVariables.globalMeasuremenValues = null
+                                                dialog.dismiss()
+                                                requireActivity().gdToast(
+                                                    "${clientMeasurement.name} is updated successfully",
+                                                    Gravity.BOTTOM
+                                                )
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                    }
+                    setLayoutManager(GridLayoutManager(requireContext(), 2))
+                    submitList(valuesToBeEdited)
+                    editdialog.setOnDismissListener {
+                        GlobalVariables.globalMeasuremenValues = null
+                    }
+                }
+
+
+            } else {
+
+            }
+
+        }
     }
 
 

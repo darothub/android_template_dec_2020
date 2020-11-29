@@ -112,9 +112,7 @@ class SubscriptionPaymentFragment : DaggerFragment() {
                                     goto(action)
                                 }
 
-
                             }
-
 
 
                         }
