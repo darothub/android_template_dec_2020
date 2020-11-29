@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import co.paystack.android.Paystack.TransactionCallback
 import co.paystack.android.PaystackSdk
 import co.paystack.android.Transaction
@@ -38,13 +39,10 @@ import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.activity_subscription.*
 import kotlinx.android.synthetic.main.fragment_add_card.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import java.util.*
 import javax.inject.Inject
 
@@ -98,6 +96,11 @@ class AddCardFragment : DaggerFragment() {
         }
     }
     lateinit var button: Button
+    val addCardDataArg by navArgs<AddCardFragmentArgs>()
+
+    val addCardData by lazy {
+        addCardDataArg.addCardData
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -115,33 +118,6 @@ class AddCardFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-//        cardDetailIncludedMonthEt.doOnTextChanged { text, start, before, count ->
-//            val expiryMonthYearPattern = Regex("""^(?!.*1[3-9])[0-1][0-9]/2[0-9]$""")
-//            when{
-//
-//                text?.length == 2 && text?.length < 3->{
-//                    val t = "$text/"
-//                    cardDetailIncludedMonthEt.setText(t)
-//                    cardDetailIncludedMonthEt.setSelection(cardDetailIncludedMonthEt.text.length )
-//
-//                }
-//                !expiryMonthYearPattern.matches(text.toString()) -> {
-//                    cardDetailIncludedMonthEt.error = getString(R.string.invalid_expiry_date_str)
-//                }
-//            }
-//        }
-
-//        val intent = Intent(Intent.ACTION_VIEW)
-//        intent.setData(Uri.parse("https://www.checkout.paystack.com/7zcxkg2ob9kyhvv"))
-//        intent.setPackage("com.android.chrome") // package of SafeBrowser App
-//
-//        startActivity(intent)
-
-//        webviewone.loadUrl("https://www.checkout.paystack.com/7zcxkg2ob9kyhvv")
-//        webviewone.show()
-
 
         cardDetailIncludedCardNumberEt.doOnTextChanged { text, start, before, count ->
             i(title, "herefirst ${text?.length}")
@@ -172,214 +148,60 @@ class AddCardFragment : DaggerFragment() {
                 )
             )
         }, {
-            button.setOnClickListener {
-                val card = Card("4682190123315851", 12, 21, "003")
-                if(card.isValid){
-                    i(title, "Yes valid")
-                }else{
-                    i(title, "Not valid")
-                }
-//                val checkforEmptyEt = IsEmptyCheck(
-//                    cardDetailIncludedCardNumberEt,
-//                    cardDetailIncludedCVVEt,
-//                    cardDetailIncludedMonthEt
-//                )
-//                val expiryMonthYearPattern = Regex("""^(?!.*1[3-9])[0-1][0-9]/2[0-9]$""")
-//                val expiryDate = cardDetailIncludedMonthEt.text.toString()
-//                val matches = expiryMonthYearPattern.matches(expiryDate)
-//                val cvvPattern = Regex("""\d{3}""")
-//                val cvv = cardDetailIncludedCVVEt.text.toString()
-//                val cvvMatches = cvvPattern.matches(cvv)
-//                when {
-//                    checkforEmptyEt != null -> {
-//                        checkforEmptyEt.error = "${checkforEmptyEt.tag} is empty"
-//                        requireActivity().gdToast("${checkforEmptyEt.tag} is empty", Gravity.BOTTOM)
-//                    }
-//                    matches == false -> {
-//                        cardDetailIncludedMonthEt.error =
-//                            getString(R.string.invalid_expiry_date_str)
-//                        requireActivity().gdToast(
-//                            getString(R.string.invalid_expiry_date_str),
-//                            Gravity.BOTTOM
-//                        )
-//                    }
-//                    cvvMatches == false -> {
-//                        cardDetailIncludedCVVEt.error = getString(R.string.invalid_cvv_str)
-//                        requireActivity().gdToast(
-//                            getString(R.string.invalid_cvv_str),
-//                            Gravity.BOTTOM
-//                        )
-//                    }
-//                    else -> {
-//                        val accessCode = GlobalVariables.globalString
-//                        i(title, "access code${GlobalVariables.globalString}")
-//                        val number = cardDetailIncludedCardNumberEt.text.toString()
-//                        val date = cardDetailIncludedMonthEt.text.toString()
-//                        val dateSplit = date.split("/")
-//                        val month = dateSplit[0].toInt()
-//                        val year = dateSplit[1].toInt()
-//                        val card = Card("5078 5078 5078 5078 12", 11, 21, "408")
-//                        if(card.isValid){
-//                            i(title, "Yes valid")
-//                        }else{
-//                            i(title, "Not valid")
-//                        }
-//                        val charge = Charge()
-////                        charge.card = card
-////                        charge.accessCode
-//
-//
-//
-//                        PaystackSdk.chargeCard(
-//                            requireActivity(),
-//                            charge,
-//                            object : TransactionCallback {
-//                                override fun onSuccess(transaction: Transaction?) {
-//                                    // This is called only after transaction is deemed successful.
-//                                    // Retrieve the transaction, and send its reference to your server
-//                                    // for verification.
-//                                    i(title, "OnSuccess $transaction")
-//                                }
-//
-//                                override fun beforeValidate(transaction: Transaction?) {
-//                                    // This is called only before requesting OTP.
-//                                    // Save reference so you may send to server. If
-//                                    // error occurs with OTP, you should still verify on server.
-//
-//                                    i(title, "BeforeValidate ${transaction?.reference}")
-//                                }
-//
-//                                override fun onError(
-//                                    error: Throwable?,
-//                                    transaction: Transaction?
-//                                ) {
-//                                    //handle error here
-//                                    i(title, "OnError $error")
-//                                }
-//                            })
-//                    }
-//                }
-            }
+
         })
         add_card_fragment_add_card_layout.setOnClickListener {
-
+            goto(R.id.subscriptionPaymentFragment)
             customerNameTv.text = currentUser?.firstName
-            CoroutineScope(Main).launch {
-              supervisorScope {
-                  val email = currentUser?.email
-                  i(title, "User $email")
 
-                  authViewModel.addCard(header, email, "1000")
-                      .catch {
-                          i(title, "Error on flow ${it.message}")
-                      }
-                      .collect {
-                          onFlowResponse<AddCardWrapper<AddCardRes>>( response = it) {
-                              GlobalVariables.globalString = it?.data?.reference.toString()
-
-                              val reference = it?.data?.reference
-                              val settings: WebSettings = webviewone.settings
-                              webviewone.show()
-                              settings.setJavaScriptEnabled(true)
-                              settings.setAllowContentAccess(true)
-                              settings.setDomStorageEnabled(true)
-                              webviewone.setWebViewClient(CustomWebViewClient(){
-                                  i(title, "We are here")
-                                  GlobalVariables.globalString =it?.data?.reference.toString()
-                                  CoroutineScope(Main).launch{
-                                      if(webviewone.canGoBack()){
-                                          i(title, "can go back")
-                                          webviewone.goBack()
-                                      }
-                                      else{
-                                          i(title, "hide")
-                                          webviewone.hide()
-                                          authViewModel.verifyPayment(header, reference.toString())
-                                              .catch {
-                                                  val exceptionRegex= Regex("""java.lang.\w+Exception: (\w+\s)+,?\w+,""")
-                                                  val exception = exceptionRegex.find(it.message.toString())?.value
-                                                  val exceptionSplit = exception?.split(":")
-                                                  val errorMessage = exceptionSplit?.get(1).toString()
-                                                  i(title, "Error on flow $errorMessage")
-
-                                                  requireActivity().gdErrorToast(errorMessage, Gravity.BOTTOM)
-                                              }
-                                              .collect {
-
-                                                  onFlowResponse<UserResponse<AddCardResponse>>(response = it, action = {
-                                                      requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-                                                  }, error = {message ->
-                                                      webviewone.hide()
-                                                      i(title, "Error on nested flow  ${message}")
-                                                      if (message.isNotEmpty()){
-
-                                                      }
-
-                                                  })
-                                              }
-                                      }
-                                  }
-
-
-
-                              })
-                              webviewone.loadUrl("${it?.data?.authorizationURL}")
-
-
-
-                          }
-                      }
-                  i(title, "Address data flow ${GlobalVariables.globalString}")
-              }
-
-            }
-
-        }
-//        (requireActivity().subscription_activity_appbar.findViewById<Toolbar>(R.id.reusable_appbar_toolbar)).setNavigationOnClickListener {
-//            if (add_card_fragment_add_card_layout.hide()) {
-//                add_card_fragment_add_card_layout.show()
-//                add_card_fragment_card_detail_layout.hide()
-//            } else {
-//                add_card_fragment_add_card_layout.show()
-////                requireActivity().gdToast("Here", Gravity.BOTTOM)
-//                requireActivity().finish()
-//            }
-//        }
-
-        cardDetailIncludedMonthEt.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                val calendar = Calendar.getInstance()
-                val defaultYear = calendar.get(Calendar.YEAR)
-                val defaultMonth = calendar.get(Calendar.MONTH)
-                val dialogFragment =
-                    MonthYearPickerDialogFragment.getInstance(defaultMonth, defaultYear)
-                dialogFragment.show(requireActivity().supportFragmentManager, null)
-
-                dialogFragment.setOnDateSetListener { year, monthOfYear ->
-                    val y = year.toString().substring(2..3)
-                    val m = monthOfYear+1
-                    cardDetailIncludedMonthEt.setText("$m/$y")
-                    cardDetailIncludedMonthEt.clearFocus()
-                }
-            }
 
         }
 
-        webviewone.setOnKeyListener(object : View.OnKeyListener {
-            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
-                if (event.getAction() === KeyEvent.ACTION_DOWN) {
-                    val webView: WebView = v as WebView
-                    when (keyCode) {
-                        KeyEvent.KEYCODE_BACK -> if (webviewone.canGoBack()) {
-                            webviewone.goBack()
-                            return true
-                        }
-                    }
-                }
-                requireActivity().finish()
-                return false
-            }
-        })
+       if(addCardData != null){
+           CoroutineScope(Dispatchers.Main).launch {
+               i(title, "hide")
+
+               authViewModel.verifyPayment(header, addCardData?.reference.toString())
+                   .catch {
+                       val exceptionRegex =
+                           Regex("""java.lang.\w+Exception: (\w+\s)+,?\w+""")
+                       val exception =
+                           exceptionRegex.find(it.message.toString())?.value
+                       val exceptionSplit = exception?.split(":")
+                       val errorMessage = exceptionSplit?.get(1).toString()
+                       i(title, "Error on flow $errorMessage")
+                       requireActivity().gdErrorToast(
+                           errorMessage,
+                           Gravity.BOTTOM
+                       )
+                   }
+                   .collect {
+
+                       onFlowResponse<UserResponse<AddCardResponse>>(
+                           response = it,
+                           action = {
+
+                               requireActivity().gdToast(
+                                   it?.message.toString(),
+                                   Gravity.BOTTOM
+                               )
+                           },
+                           error = { message ->
+
+                               i(title, "Error on nested flow  ${message}")
+
+
+                           })
+                   }
+           }
+       }
+        else{
+
+       }
+
+
+
+
 
 
     }

@@ -14,5 +14,20 @@
         android:id="@+id/addCardFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.subscription.AddCardFragment"
         android:label=" "
-        tools:layout="@layout/fragment_add_card" />
+        tools:layout="@layout/fragment_add_card" >
+        <argument
+            android:name="addCardData"
+            app:argType="com.peacedude.lassod_tailor_app.model.response.AddCardRes"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/subscriptionPaymentFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionPaymentFragment"
+        android:label="fragment_subscription_payment"
+        tools:layout="@layout/fragment_subscription_payment" >
+        <action
+            android:id="@+id/gotoAddCard"
+            app:destination="@id/addCardFragment" />
+    </fragment>
 </navigation>

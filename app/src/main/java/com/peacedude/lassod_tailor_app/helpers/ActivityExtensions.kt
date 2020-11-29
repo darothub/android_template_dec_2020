@@ -481,6 +481,7 @@ object GlobalVariables {
     var globalVideoListLiveData = MutableLiveData<List<CommonMediaClass>>()
     var globalPosition = 0
     var globalId = ""
+    var globalAddCardRes:AddCardRes?=null
 
 }
 

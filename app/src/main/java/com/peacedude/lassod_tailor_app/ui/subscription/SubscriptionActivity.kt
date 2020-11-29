@@ -23,7 +23,20 @@ class SubscriptionActivity : BaseActivity() {
     val listener = NavController.OnDestinationChangedListener{controller, destination, bundle->
         when(destination.id){
             R.id.addCardFragment ->{
+                toolbar.setNavigationOnClickListener {
+                    navController.popBackStack()
+                }
                 title = ""
+            }
+            R.id.subscriptionPaymentFragment ->{
+                toolbar.setNavigationOnClickListener {
+                    navController.popBackStack()
+                }
+            }
+            R.id.subscriptionHomeFragment ->{
+                toolbar.setNavigationOnClickListener {
+                    finish()
+                }
             }
         }
     }
@@ -37,6 +50,7 @@ class SubscriptionActivity : BaseActivity() {
         activityTitle.text = getString(R.string.subscription)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
     }
 

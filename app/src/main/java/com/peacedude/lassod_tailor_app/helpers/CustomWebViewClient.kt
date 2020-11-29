@@ -13,7 +13,7 @@ class CustomWebViewClient(val action:()->Unit): WebViewClient() {
         request: WebResourceRequest?
     ): WebResourceResponse? {
 
-        val reqUrlPattern = Regex("""^https://api.paystack.co/transaction/update_log/\w+""")
+        val reqUrlPattern = Regex("""^https://standard.paystack.co/charge/""")
         if(reqUrlPattern.matches(request?.url.toString())){
             i(title, "Override yes ${request?.url}")
             action()
