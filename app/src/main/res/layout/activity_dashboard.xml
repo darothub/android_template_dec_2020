@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
         <include layout="@layout/profile_header"
             android:id="@+id/profile_header"
             app:layout_constraintTop_toTopOf="parent"

@@ -16,6 +16,7 @@ import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.helpers.hide
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_media.*
+import kotlinx.android.synthetic.main.fragment_message.*
 import kotlinx.android.synthetic.main.fragment_subscription_home.*
 import kotlinx.android.synthetic.main.profile_header.*
 
@@ -28,15 +29,10 @@ class SubscriptionHomeFragment : Fragment() {
     private val toolbar by lazy {
         (subscription_home_fragment_tb as androidx.appcompat.widget.Toolbar)
     }
-    private val noDataFirstIcon by lazy {
-        subscription_home_fragment_no_data_included_layout.findViewById<ImageView>(R.id.no_data_first_icon_iv)
-    }
-    private val noDataSecondIcon by lazy {
-        subscription_home_fragment_no_data_included_layout.findViewById<ImageView>(R.id.no_data_second_icon_iv)
-    }
-    private val noDataText by lazy{
-        subscription_home_fragment_no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
-    }
+
+    lateinit var noDataFirstIcon:ImageView
+    lateinit var noDataSecondIcon:ImageView
+    lateinit var noDataText:TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -55,6 +51,10 @@ class SubscriptionHomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
+
+        noDataFirstIcon = subscription_home_fragment_no_data_included_layout.findViewById<ImageView>(R.id.no_data_first_icon_iv)
+        noDataSecondIcon = subscription_home_fragment_no_data_included_layout.findViewById<ImageView>(R.id.no_data_second_icon_iv)
+        noDataText = subscription_home_fragment_no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
 
         noDataFirstIcon.hide()
         noDataSecondIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.shopping_cart_24px))

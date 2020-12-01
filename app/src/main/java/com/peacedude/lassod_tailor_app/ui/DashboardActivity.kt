@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +27,7 @@ import com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity
 import com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity
 import com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionActivity
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.android.synthetic.main.activity_resources.*
 import javax.inject.Inject
 
 class DashboardActivity : BaseActivity() {
@@ -53,6 +55,17 @@ class DashboardActivity : BaseActivity() {
     private val greeting: TextView by lazy {
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
+
+    val navListener =
+        NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            when(destination.id){
+                R.id.singleChatFragment ->{
+                    profile_fab.hide()
+                    bottomNav.hide()
+                    profile_header.hide()
+                }
+            }
+        }
 
     private lateinit var editBtn: Button
     private lateinit var logoutText: TextView
@@ -194,6 +207,7 @@ class DashboardActivity : BaseActivity() {
         super.onResume()
         Log.i(title, "OnResume")
         val token = intent.getStringExtra("token")
+        navController.addOnDestinationChangedListener(navListener)
 
 //        val user = authViewModel.currentUser
 
@@ -203,6 +217,7 @@ class DashboardActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
+        navController.removeOnDestinationChangedListener(navListener)
         authViewModel.lastFragmentId = bottomNav.selectedItemId
         Log.i(
             title,

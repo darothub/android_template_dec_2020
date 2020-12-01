@@ -22,9 +22,7 @@ abstract class ProfileActivityModule {
             AuthViewModelModule::class,
             ProfileFragmentModule::class,
             PaymentMethodFragmentModule::class,
-            SecurityFragmentModule::class,
-            SingleChatFragmentModule::class,
-            MessageFragmentModule::class
+            SecurityFragmentModule::class
         ]
     )
     abstract fun provideProfileActivity(): ProfileActivity

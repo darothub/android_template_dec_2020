@@ -1,17 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/single_chat_root_view"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/White"
-    tools:context=".ui.subscription.SingleChatFragment">
+    tools:context=".ui.SingleChatFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/single_chat_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/White"
+        android:fitsSystemWindows="true"
+        >
+        <ImageView
+            android:id="@+id/single_chat_nav_back_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:layout_marginTop="@dimen/_11sdp"
+            />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/reusable_appbar_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:contentInsetStart="0dp"
+            android:contentInsetLeft="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/colorGray"
+                android:padding="@dimen/_5sdp"
+                >
+                <ImageView
+                    android:id="@+id/single_chat_customer_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/profile_image"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintVertical_bias=".5"
+                    />
+                <TextView
+                    android:id="@+id/single_chat_customer_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hello_blank_fragment"
+                    android:textColor="@color/colorGrayDark"
+                    android:textSize="@dimen/_10sdp"
+                    app:layout_constraintStart_toEndOf="@id/single_chat_customer_iv"
+                    app:layout_constraintTop_toTopOf="@id/single_chat_customer_iv"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    />
+                <TextView
+                    android:id="@+id/single_chat_online_status_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/online"
+                    android:textSize="@dimen/_10sdp"
+                    app:layout_constraintTop_toBottomOf="@id/single_chat_customer_name_tv"
+                    app:layout_constraintStart_toEndOf="@id/single_chat_customer_iv"
+                    app:layout_constraintStart_toStartOf="@id/single_chat_customer_name_tv"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/single_chat_fragment_incoming_rv"
             android:layout_width="wrap_content"
@@ -65,7 +139,7 @@
             android:inputType="textCapSentences|textMultiLine"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_weight="1"
-            android:padding="@dimen/_8sdp"
+            android:padding="@dimen/_5sdp"
             android:hint="@string/type_a_message"
             android:textSize="@dimen/_11sdp"
             android:background="@drawable/rounded_blue_outline_white_backgrnd"
@@ -80,10 +154,11 @@
             android:background="@color/colorPrimary"
             app:backgroundTint="@color/colorPrimary"
             android:layout_gravity="end|center_vertical"
-            app:fabCustomSize="@dimen/_25sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            app:fabCustomSize="@dimen/_30sdp"
             android:contentDescription="@string/send_chat_message" />
 
     </LinearLayout>
 
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

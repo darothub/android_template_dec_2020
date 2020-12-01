@@ -1,9 +1,6 @@
 package com.peacedude.lassod_tailor_app.di.activitymodules
 
-import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.MediaFragmentModule
-import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.ProfileFragmentModule
-import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.SpecialtyFragmentModule
-import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.UserAccountFragmentModule
+import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.*
 import com.peacedude.lassod_tailor_app.di.networkmodules.auth.AuthRequestModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
 import com.peacedude.lassod_tailor_app.ui.DashboardActivity
@@ -23,7 +20,9 @@ abstract class DashboardActivityModule {
             SpecialtyFragmentModule::class,
             AuthViewModelModule::class,
             ProfileFragmentModule::class,
-            MediaFragmentModule::class
+            MediaFragmentModule::class,
+            SingleChatFragmentModule::class,
+            MessageFragmentModule::class
         ]
     )
     abstract fun provideDashboardActivity(): DashboardActivity

@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/singleChatFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.subscription.SingleChatFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.SingleChatFragment"
         android:label="fragment_single_chat"
         tools:layout="@layout/fragment_single_chat" />
 </navigation>
