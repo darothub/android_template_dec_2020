@@ -260,4 +260,5 @@
     <string name="update_measurement">Update measurement</string>
     <string name="message_thumbnail">Message thumbnail</string>
     <string name="type_a_message">Type a message</string>
+    <string name="send_chat_message">send chat message</string>
 </resources>
