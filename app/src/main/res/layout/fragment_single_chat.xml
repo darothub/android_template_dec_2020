@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/single_chat_root_view"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,6 +14,9 @@
         android:layout_height="wrap_content"
         android:background="@color/White"
         android:fitsSystemWindows="true"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_bias="0"
         >
         <ImageView
             android:id="@+id/single_chat_nav_back_iv"
@@ -83,45 +86,32 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/single_chat_fragment_incoming_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/single_chat_fragment_incoming_rv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:spanCount="2"
-            tools:listitem="@layout/single_chat_customer_item"
-            app:stackFromEnd="true"
-            android:visibility="gone"
-            />
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/single_chat_message_input_ll"
+        app:layout_constraintTop_toBottomOf="@id/single_chat_appbar"
+        app:layout_constraintVertical_bias="1"
+        tools:listitem="@layout/single_chat_outgoing_item"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:clipToPadding="true"
+        android:layout_marginBottom="@dimen/_10sdp"
+        app:stackFromEnd="true"
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/single_chat_fragment_outgoing_rv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:spanCount="2"
-            tools:listitem="@layout/single_chat_outgoing_item"
-            app:stackFromEnd="true"
-            android:visibility="gone"
-            />
+        />
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
     <LinearLayout
+        android:id="@+id/single_chat_message_input_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:layout_marginBottom="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         >
         <ImageView
             android:id="@+id/single_chat_emoji_iv"
@@ -162,4 +152,4 @@
     </LinearLayout>
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
