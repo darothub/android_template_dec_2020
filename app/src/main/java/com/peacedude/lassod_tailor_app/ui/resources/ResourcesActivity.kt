@@ -34,7 +34,6 @@ class ResourcesActivity : BaseActivity() {
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
            when(destination.id){
                R.id.allVideoFragment -> {
-                   toolbar?.show()
                    resources_activity_appbar.show()
                    toolbar?.setNavigationOnClickListener {
                        controller.popBackStack()

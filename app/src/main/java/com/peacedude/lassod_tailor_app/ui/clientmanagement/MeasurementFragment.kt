@@ -392,6 +392,8 @@ class MeasurementFragment : DaggerFragment() {
 
                                 //On click to edit
                                 setOnMeasurementEdit(
+                                    parentList,
+                                    parentAdapter,
                                     itemView,
                                     parentItem,
                                     activityTitle
@@ -513,6 +515,8 @@ class MeasurementFragment : DaggerFragment() {
     }
 
     private fun setOnMeasurementEdit(
+        parentList: MutableList<MeasurementValues?>?,
+        parentAdapter: RecyclingAdapter<MeasurementValues>,
         itemView: View,
         parentItem: MeasurementValues?,
         activityTitle: TextView
@@ -549,7 +553,7 @@ class MeasurementFragment : DaggerFragment() {
                     dialogSpinnerList
                 )
                 val valuesToBeEdited =
-                    (parentItem?.values as LinkedTreeMap<String, String>).entries.map { vtbe ->
+                    (parentItem?.values as Map<String, String>).entries.map { vtbe ->
                         UserNameClass(
                             vtbe.key,
                             vtbe.value ?: ""
@@ -579,17 +583,17 @@ class MeasurementFragment : DaggerFragment() {
 
                             val valuess = Valuess(measurementValues)
 
-
+                            val name = dialogEditNameEditText.text.toString()
                             val type = dialogEditSpinner.selectedItem as String
                             val clientMeasurement = MeasurementValues(
-                                clientToBeEdited?.name.toString(),
+                                name,
                                 type,
                                 clientToBeEdited?.id.toString(),
                                 valuess.map
                             )
                             clientMeasurement.gender = clientToBeEdited?.gender
                             clientMeasurement.id = parentItem.id
-                            i(title, "Edit measurement $clientMeasurement")
+                            i(title, "Edit measurement ${clientMeasurement.id}")
                             CoroutineScope(Main).launch {
                                 supervisorScope {
                                     val updateMeasurementCall = async {
@@ -605,9 +609,10 @@ class MeasurementFragment : DaggerFragment() {
                                         .collect {
                                             onFlowResponse<MeasurementValues>(response = it) {
                                                 GlobalVariables.globalMeasuremenValues = null
-                                                dialog.dismiss()
+                                                parentAdapter.notifyDataSetChanged()
+                                                editdialog.dismiss()
                                                 requireActivity().gdToast(
-                                                    "${clientMeasurement.name} is updated successfully",
+                                                    "$name is updated successfully",
                                                     Gravity.BOTTOM
                                                 )
                                             }

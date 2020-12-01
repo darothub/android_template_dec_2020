@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White"
+    tools:context=".ui.subscription.SingleChatFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/single_chat_fragment_incoming_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:spanCount="2"
+            tools:listitem="@layout/single_chat_customer_item"
+            app:stackFromEnd="true"
+            android:visibility="gone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/single_chat_fragment_outgoing_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:spanCount="2"
+            tools:listitem="@layout/single_chat_outgoing_item"
+            app:stackFromEnd="true"
+            android:visibility="gone"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_10sdp"
+        >
+        <ImageView
+            android:id="@+id/single_chat_emoji_iv"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_baseline_insert_emoticon_24"
+
+            />
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/single_chat_emoji_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences|textMultiLine"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_weight="1"
+            android:padding="@dimen/_8sdp"
+            android:hint="@string/type_a_message"
+            android:textSize="@dimen/_11sdp"
+            android:background="@drawable/rounded_blue_outline_white_backgrnd"
+            android:drawableRight="@drawable/ic_baseline_attach_file_24"
+            />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/single_chat_send_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_white_send_24"
+            android:scaleType="centerCrop"
+            android:background="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
+            android:layout_gravity="end|center_vertical"
+            app:fabCustomSize="@dimen/_25sdp"
+            />
+
+    </LinearLayout>
+
+
+</FrameLayout>
