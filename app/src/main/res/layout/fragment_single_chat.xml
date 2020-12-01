@@ -143,7 +143,7 @@
             android:hint="@string/type_a_message"
             android:textSize="@dimen/_11sdp"
             android:background="@drawable/rounded_blue_outline_white_backgrnd"
-            android:drawableRight="@drawable/ic_baseline_attach_file_24"
+            android:drawableEnd="@drawable/ic_baseline_attach_file_24"
             />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/single_chat_send_fab"
@@ -154,7 +154,8 @@
             android:background="@color/colorPrimary"
             app:backgroundTint="@color/colorPrimary"
             android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_5sdp"
             app:fabCustomSize="@dimen/_30sdp"
             android:contentDescription="@string/send_chat_message" />
 
