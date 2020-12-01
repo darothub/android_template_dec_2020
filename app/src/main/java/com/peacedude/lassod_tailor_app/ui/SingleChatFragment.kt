@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.goto
+import com.peacedude.lassod_tailor_app.helpers.i
 import com.vanniktech.emoji.EmojiPopup
 import dagger.android.support.DaggerFragment
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
@@ -24,6 +26,9 @@ import kotlinx.android.synthetic.main.fragment_single_chat.*
  */
 class SingleChatFragment : DaggerFragment() {
 
+    val title: String by lazy {
+        getName()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,14 +45,17 @@ class SingleChatFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val  emojiPopup = EmojiPopup.Builder.fromRootView(single_chat_root_view)
+            .setOnEmojiBackspaceClickListener { Log.d(title, "Clicked on Backspace") }
+            .setOnEmojiClickListener { emoji, imageView -> Log.d(title, "Clicked on emoji")  }
+            .setOnSoftKeyboardOpenListener {  Log.d(title, "Opened soft keyboard")}
+            .setOnSoftKeyboardCloseListener {  Log.d(title, "Closed soft keyboard")}
+            .setOnEmojiPopupShownListener { single_chat_emoji_iv.setImageResource(R.drawable.ic_baseline_keyboard_24) }
+            .setOnEmojiPopupDismissListener { single_chat_emoji_iv.setImageResource(R.drawable.ic_baseline_insert_emoticon_24) }
+            .build(single_chat_emoji_et)
 
         single_chat_emoji_iv.setOnClickListener {
-            val  emojiPopup = EmojiPopup.Builder.fromRootView(single_chat_root_view).build(
-                single_chat_emoji_et
-            )
             emojiPopup.toggle()
-//            emojiPopup.dismiss()
-
         }
 
         single_chat_nav_back_iv.setOnClickListener {
