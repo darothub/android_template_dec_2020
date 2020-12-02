@@ -138,6 +138,15 @@
 
     </style>
 
+    <style name="SearchSpinner" parent="Widget.AppCompat.Spinner.Underlined">
+        <item name="android:layout_width">@dimen/_80sdp</item>
+        <item name="android:layout_height">@dimen/_25sdp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:popupBackground">#DFFFFFFF</item>
+    </style>
     <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

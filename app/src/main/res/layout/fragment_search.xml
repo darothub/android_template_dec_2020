@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/White"
+    android:padding="@dimen/_10sdp"
+    tools:context=".ui.customer.SearchFragment">
+
+    <EditText
+        android:id="@+id/search_fragment_search_et"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_35sdp"
+        android:background="@drawable/rounded_blue_outline_white_backgrnd"
+        android:hint="@string/search"
+        android:padding="@dimen/_5sdp"
+        app:layout_constraintEnd_toStartOf="@id/search_fragment_search_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/search_fragment_search_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+
+        android:background="@color/colorPrimary"
+        android:padding="@dimen/_8sdp"
+        android:src="@drawable/ic_search"
+        app:layout_constraintBottom_toBottomOf="@id/search_fragment_search_et"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/search_fragment_search_et"
+        app:layout_constraintTop_toTopOf="@id/search_fragment_search_et" />
+
+    <ImageButton
+        android:id="@+id/search_fragment_filter_ib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/ic_filter"
+        android:src="@drawable/ic_filter"
+        app:layout_constraintStart_toStartOf="@id/search_fragment_search_et"
+        app:layout_constraintTop_toBottomOf="@id/search_fragment_search_et" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_fragment_search_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toEndOf="@id/search_fragment_filter_ib"
+        app:layout_constraintTop_toBottomOf="@id/search_fragment_search_et"
+        tools:listitem="@layout/search_filter_item" />
+
+    <View
+        android:id="@+id/search_fragment_line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@color/colorGray"
+        app:layout_constraintTop_toBottomOf="@id/search_fragment_search_rv" />
+
+    <TextView
+        android:id="@+id/search_fragment_search_result_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:text="@string/tailors"
+        android:textSize="@dimen/_14sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_fragment_line1" />
+
+    <View
+        android:id="@+id/search_fragment_line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@color/colorGray"
+        app:layout_constraintTop_toBottomOf="@id/search_fragment_search_result_title_tv" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_fragment_search_result_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_fragment_line2"
+        app:spanCount="3"
+        tools:listitem="@layout/search_media_result_item"
+
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

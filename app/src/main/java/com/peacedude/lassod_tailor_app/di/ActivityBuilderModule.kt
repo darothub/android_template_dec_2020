@@ -39,7 +39,8 @@ import javax.inject.Singleton
         ProfileActivityModule::class,
         ClientActivityModule::class,
         ResourceActivityModule::class,
-        SubscriptionActivityModule::class
+        SubscriptionActivityModule::class,
+        CustomerActivityModule::class
     ]
 )
 abstract class ActivityBuilderModule {

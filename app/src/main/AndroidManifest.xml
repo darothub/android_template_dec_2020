@@ -1,4 +1,4 @@
-<<<<<<< Original<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 package="com.peacedude.lassod_tailor_app">
 
@@ -43,16 +43,17 @@ package="com.peacedude.lassod_tailor_app">
         android:theme="@style/ProfileActivityTheme"
         tools:ignore="AllowBackup"
         android:windowSoftInputMode="adjustResize|stateHidden">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+
 
     </activity>
     <activity
         android:name=".ui.SplashScreenActivity"
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme.NoActionBar">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
 
     </activity>
     <activity
@@ -93,14 +94,13 @@ package="com.peacedude.lassod_tailor_app">
         android:label=" ">
 
     </activity>
+    <activity
+        android:name="com.peacedude.lassod_tailor_app.ui.customer.CustomerActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/ProfileActivityTheme"
+        tools:ignore="AllowBackup"
+        android:windowSoftInputMode="adjustResize|stateHidden" />
 </application>
 
 </manifest>
 
-    =======
-
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-<application>
-    <activity android:name="com.peacedude.lassod_tailor_app.ui.customer.CustomerActivity"></activity>
-</application>
-</manifest>>>>>>>> Added

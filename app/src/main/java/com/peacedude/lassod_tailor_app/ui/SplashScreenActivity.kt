@@ -21,6 +21,7 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buildVersion
 import com.peacedude.lassod_tailor_app.helpers.networkMonitor
 import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.ui.customer.CustomerActivity
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -65,7 +66,7 @@ class SplashScreenActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         handler.postDelayed ({
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, CustomerActivity::class.java))
             finish()
         }, 5000)
     }

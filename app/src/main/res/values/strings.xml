@@ -262,4 +262,7 @@
     <string name="type_a_message">Type a message</string>
     <string name="send_chat_message">send chat message</string>
     <string name="online">Online</string>
+    <string name="tailors">TAILORS</string>
+    <string name="search">Search...</string>
+    <string name="test_photo">https://thumbs.dreamstime.com/b/woman-leans-man-pose-together-woman-leans-men-pose-together-white-background-110266599.jpg</string>
 </resources>
