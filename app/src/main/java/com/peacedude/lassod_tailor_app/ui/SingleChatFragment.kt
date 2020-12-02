@@ -74,11 +74,7 @@ class SingleChatFragment : DaggerFragment() {
         single_chat_nav_back_iv.setOnClickListener {
             startActivity(Intent(requireContext(), DashboardActivity::class.java))
         }
-
-//        var customer = false
-//        single_chat_emoji_iv.setOnClickListener {
-//            customer = true
-//        }
+        
 
         var listOfChatMessageTwo = arrayListOf<ChatMessage>(
             ChatMessage("Hello", CHATSENDER)

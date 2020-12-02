@@ -47,13 +47,13 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.activity:activity:1.2.0-beta01"
-    implementation "androidx.fragment:fragment:1.3.0-beta01"
+    implementation "androidx.activity:activity-ktx:1.2.0-beta01"
+    implementation "androidx.fragment:fragment-ktx:1.3.0-beta01"
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+  
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso"
@@ -76,7 +76,7 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit_version"
     implementation "com.squareup.retrofit2:converter-scalars:$versions.retrofit_version"
     //Coroutine
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
     //Dagger 2
     implementation "com.google.dagger:dagger-android:$versions.dagger_version"
     implementation "com.google.dagger:dagger-android-support:$versions.dagger_version"
@@ -107,7 +107,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx:18.0.0'
 
     // Add the Firebase Crashlytics SDK.
-    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
 
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
@@ -142,7 +142,7 @@ dependencies {
     implementation "com.facebook.shimmer:shimmer:0.5.0"
 
     //Google play-services-auth
-    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.shobhitpuri.custombuttons:google-signin:1.1.0'
 
     //phone utils
@@ -153,8 +153,7 @@ dependencies {
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.3")
 
     //Connectivity
-    implementation 'com.job:droidnet:2.0.0'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.20"
     //Progress bar layout
     implementation 'com.github.JDevZone:FillProgressLayout:0.0.6'
 
@@ -167,7 +166,7 @@ dependencies {
 
 
     // Support for Java 8 features
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
 
 
     //ProgressView
