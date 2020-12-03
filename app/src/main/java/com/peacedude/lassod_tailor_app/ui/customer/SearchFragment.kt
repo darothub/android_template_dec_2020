@@ -21,6 +21,9 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.EditMeasurement
+import com.peacedude.lassod_tailor_app.model.response.Artisan
+import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
 import com.peacedude.lassod_tailor_app.model.response.Photo
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.MeasurementLabelValue
 import com.squareup.picasso.Picasso
@@ -137,12 +140,14 @@ class SearchFragment : DaggerFragment() {
                             val specialty = selected?.get(1)
                             val category = selected?.get(0)
 
-                            search_fragment_search_result_rv.setupAdapter<SearchResult>(R.layout.search_media_result_item) { adapter, context, list ->
+                            search_fragment_search_result_rv.setupAdapter<Artisan>(R.layout.search_media_result_item) { adapter, context, list ->
 
                                 bind { itemView, position, item ->
-                                    itemView.search_result_picture_title_tv.text = item?.title
-                                    itemView.search_result_picture_location_tv.text = item?.location
-                                    itemView.search_result_picture_iv.load(item?.media) {
+                                    val address = item?.profile?.workshopAddress
+                                    val avatar = item?.profile?.avatar
+                                    itemView.search_result_picture_title_tv.text = item?.firstName
+                                    itemView.search_result_picture_location_tv.text = "${address?.city}"
+                                    itemView.search_result_picture_iv.load(avatar) {
                                         crossfade(true)
                                         placeholder(R.drawable.profile_image)
                                     }
@@ -176,9 +181,7 @@ class SearchFragment : DaggerFragment() {
                                         page + 1.toLong()
                                     )
                                 }
-//
-//            // for grid layout manager, loader by default is ugly, to fix use fixGridSpan
-//            fixGridSpan(3)
+
 
 
                             }
@@ -216,7 +219,7 @@ class SearchFragment : DaggerFragment() {
     }
 
     private fun setupData(
-        recycling: Recycling<SearchResult>,
+        recycling: Recycling<Artisan>,
         keyword: String?,
         location: String?,
         specialty: String?,
@@ -232,7 +235,9 @@ class SearchFragment : DaggerFragment() {
 
                     }
                     .collect {
-
+                        onFlowResponse<ArtisanSearchResponse>(response = it) {
+                            recycling.submitList(it?.artisans)
+                        }
                     }
 
 
