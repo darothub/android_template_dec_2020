@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.data.repositories.user
 
 import android.util.Log
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
 import com.peacedude.lassod_tailor_app.services.user.UserServices
@@ -59,6 +60,17 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
 
     override fun resendCode(phoneNumber: String): Call<UserResponse<User>> {
         return userServices.resendCode(phoneNumber)
+    }
+
+    override suspend fun searchArtisan(
+        keyword: String?,
+        location: String?,
+        specialty: String?,
+        category: String?,
+        page: Long?,
+        size: Long?
+    ): UserResponse<ArtisanSearchResponse> {
+        return userServices.searchArtisan(keyword, location, specialty, category, page, size)
     }
 
 

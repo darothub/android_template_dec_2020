@@ -169,7 +169,7 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
     override suspend fun editMeasurement(
         header: String?,
         measurementValues: MeasurementValues
-    ): UserResponse<MeasurementValues> {
+    ): UserResponse<EditMeasurement> {
         return authServices.editMeasurement(header, measurementValues)
     }
 

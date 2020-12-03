@@ -184,5 +184,15 @@ interface ViewModelInterface {
     ): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()
     }
+    suspend fun searchArtisan(
+        keyword: String?,
+        location: String?,
+        specialty: String?,
+        category: String?,
+        page: Long?,
+        size: Long?
+    ): Flow<ServicesResponseWrapper<ParentData>>{
+        return TODO()
+    }
 
 }

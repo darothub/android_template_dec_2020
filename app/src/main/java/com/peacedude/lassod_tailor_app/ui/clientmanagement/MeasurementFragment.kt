@@ -563,10 +563,8 @@ class MeasurementFragment : DaggerFragment() {
                     bind { editItemView, position, editItem ->
                         editItemView.add_measurement_layout_dialog_input.hint = editItem?.title
                         editItemView.add_measurement_layout_dialog_et.setText(editItem?.value)
-                        editItemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable ->
-                            editItem?.value =
-                                editItemView.add_measurement_layout_dialog_et.text?.toString()
-
+                        editItemView.add_measurement_layout_dialog_et.doOnTextChanged { text, start, before, count ->
+                            editItem?.value = text.toString()
                         }
 
                         dialogEditMeasurementBtn.setOnClickListener {
@@ -607,7 +605,7 @@ class MeasurementFragment : DaggerFragment() {
                                             i(title, "RecyclingAdapter delete ${it.message}")
                                         }
                                         .collect {
-                                            onFlowResponse<MeasurementValues>(response = it) {
+                                            onFlowResponse<EditMeasurement>(response = it) {
                                                 GlobalVariables.globalMeasuremenValues = null
                                                 parentAdapter.notifyDataSetChanged()
                                                 editdialog.dismiss()

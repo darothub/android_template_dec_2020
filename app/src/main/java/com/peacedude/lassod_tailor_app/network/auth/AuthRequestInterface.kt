@@ -139,7 +139,7 @@ interface AuthRequestInterface {
     suspend fun editMeasurement(
         header:String?,
         measurementValues: MeasurementValues
-    ): UserResponse<MeasurementValues>{
+    ): UserResponse<EditMeasurement>{
         return TODO()
     }
 }

@@ -1,6 +1,8 @@
 package com.peacedude.lassod_tailor_app.services.user
 
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
+import com.peacedude.lassod_tailor_app.model.response.DeliveryAddress
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -64,5 +66,15 @@ interface UserServices {
     fun resendCode(
         @Field("phoneNumber") phoneNumber: String?
     ): Call<UserResponse<User>>
+
+    @GET("artisans")
+    suspend fun searchArtisan(
+        @Query("keyword") keyword:String?,
+        @Query("location") location:String?,
+        @Query("specialty") specialty:String?,
+        @Query("category") category:String?,
+        @Query("page") page:Long?,
+        @Query("size") size:Long?
+    ): UserResponse<ArtisanSearchResponse>
 
 }

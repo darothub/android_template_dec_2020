@@ -75,4 +75,5 @@ data class Valuess(val map:Map<String?, String?>){
 }
 
 data class ClientMeasurement(var client:MeasurementValues):Serializable, ParentData
+data class EditMeasurement(var measurement:MeasurementValues):Serializable, ParentData
 data class ListOfMeasurement(var measurement:List<MeasurementValues>):Serializable, ParentData

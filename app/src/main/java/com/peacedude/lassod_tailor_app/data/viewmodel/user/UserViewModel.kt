@@ -15,6 +15,8 @@ import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.*
 import javax.inject.Inject
 
@@ -120,6 +122,24 @@ class UserViewModel @Inject constructor(
         val request = userRequestInterface.loginRequest(emailOrPhone, password)
         return enqueueRequest<User>(request, responseLiveData)
 
+    }
+
+    override suspend fun searchArtisan(
+        keyword: String?,
+        location: String?,
+        specialty: String?,
+        category: String?,
+        page: Long?,
+        size: Long?
+    ): Flow<ServicesResponseWrapper<ParentData>> = flow {
+
+        try {
+            val request = userRequestInterface.searchArtisan(keyword, location, specialty, category, page, size)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
     }
 
 

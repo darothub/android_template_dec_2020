@@ -2,8 +2,11 @@ package com.peacedude.lassod_tailor_app.network.user
 
 import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface UserRequestInterface {
 
@@ -57,6 +60,18 @@ interface UserRequestInterface {
     fun resendCode(
         phoneNumber: String
     ):Call<UserResponse<User>> {
+        return TODO()
+    }
+
+
+    suspend fun searchArtisan(
+        keyword:String?,
+        location:String?,
+        specialty:String?,
+        category:String?,
+        page:Long?,
+        size:Long?
+    ): UserResponse<ArtisanSearchResponse>{
         return TODO()
     }
 }

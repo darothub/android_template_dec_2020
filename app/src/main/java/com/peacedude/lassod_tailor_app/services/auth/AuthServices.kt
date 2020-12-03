@@ -182,7 +182,7 @@ interface AuthServices {
     suspend fun editMeasurement(
         @Header("Authorization") header:String?,
         @Body measurementValues: MeasurementValues
-    ): UserResponse<MeasurementValues>
+    ): UserResponse<EditMeasurement>
 
 
 
