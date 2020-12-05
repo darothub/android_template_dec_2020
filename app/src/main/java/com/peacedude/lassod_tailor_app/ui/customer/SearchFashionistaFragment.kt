@@ -7,37 +7,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.core.app.ShareCompat
-import androidx.core.content.FileProvider
-import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.EditMeasurement
+import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.peacedude.lassod_tailor_app.model.response.Artisan
 import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
-import com.peacedude.lassod_tailor_app.model.response.Photo
-import com.peacedude.lassod_tailor_app.ui.clientmanagement.MeasurementLabelValue
-import com.squareup.picasso.Picasso
+import com.peacedude.lassod_tailor_app.model.response.Profile
 import com.utsman.recycling.extentions.Recycling
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
-import kotlinx.android.synthetic.main.fragment_media.media_fragment_rv
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.measurement_items.view.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.android.synthetic.main.search_filter_item.view.*
-import kotlinx.android.synthetic.main.search_media_result_item.view.*
+import kotlinx.android.synthetic.main.search_media_category_item.view.*
+import kotlinx.android.synthetic.main.search_result_media_item.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -140,48 +133,95 @@ class SearchFragment : DaggerFragment() {
                             val specialty = selected?.get(1)
                             val category = selected?.get(0)
 
-                            search_fragment_search_result_rv.setupAdapter<Artisan>(R.layout.search_media_result_item) { adapter, context, list ->
+                            val listSearchResultTwo = arrayListOf<SearchResultTwo>(
+                                SearchResultTwo(
+                                    "Tailor",
+                                    arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                                        SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                                        SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+                                ),
+                                SearchResultTwo(
+                                    "Weaver",
+                                    arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                                        SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                                        SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+                                ),
+                                SearchResultTwo(
+                                    "Weaver",
+                                    arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                                        SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                                        SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+                                )
+                            )
+
+
+                            search_fragment_search_result_rv.setupAdapter<SearchResultTwo>(R.layout.search_media_category_item) { adapter, context, list ->
 
                                 bind { itemView, position, item ->
-                                    val address = item?.profile?.workshopAddress
-                                    val avatar = item?.profile?.avatar
-                                    itemView.search_result_picture_title_tv.text = item?.firstName
-                                    itemView.search_result_picture_location_tv.text = "${address?.city}"
-                                    itemView.search_result_picture_iv.load(avatar) {
-                                        crossfade(true)
-                                        placeholder(R.drawable.profile_image)
+                                    itemView.search_result_search_result_title_tv.text = item?.category
+//                                    val address = item?.profile?.workshopAddress
+//                                    val avatar = item?.profile?.avatar
+                                    itemView.search_result_rv.setupAdapter<SearchResult>(R.layout.search_result_media_item){adapter, context, mediaList ->
+                                        bind { mediaItemView, position, mediaItem ->
+                                            mediaItemView.search_result_picture_title_tv.text =
+                                                mediaItem?.title
+                                            mediaItemView.search_result_picture_location_tv.text = mediaItem?.location
+                                            mediaItemView.search_result_picture_iv.load(mediaItem?.media) {
+                                                crossfade(true)
+                                                placeholder(R.drawable.profile_image)
+                                            }
+                                            mediaItemView.setOnClickListener {
+                                                goto(R.id.singleFashionistaFragment)
+                                            }
+                                        }
+                                        setLayoutManager(
+                                            LinearLayoutManager(
+                                                requireContext(),
+                                                LinearLayoutManager.HORIZONTAL,
+                                                false
+                                            )
+                                        )
+                                        submitList(item?.list)
                                     }
+
                                 }
 
 
-                                val layoutManager = GridLayoutManager(requireContext(), 2)
-                                setLayoutManager(layoutManager)
+                                setLayoutManager(
+                                    LinearLayoutManager(
+                                        requireContext(),
+                                        LinearLayoutManager.VERTICAL,
+                                        false
+                                    )
+                                )
+                                submitList(listSearchResultTwo)
+//                                val layoutManager = GridLayoutManager(requireContext(), 2)
+//                                setLayoutManager(layoutManager)
 
                                 // for grid layout manager, loader by default is ugly, to fix use fixGridSpan
-                                fixGridSpan(3)
-                                setupData(
-                                    this@setupAdapter,
-                                    keyword,
-                                    location,
-                                    specialty,
-                                    category,
-                                    1
-                                )
+//                                fixGridSpan(3)
+//                                setupData(
+//                                    this@setupAdapter,
+//                                    keyword,
+//                                    location,
+//                                    specialty,
+//                                    category,
+//                                    1
+//                                )
 
                                 // use paging listener for endless recycler view and loaded data
-                                onPagingListener(layoutManager) { page, itemCount ->
-
-                                    // call function setup data with page +1
-                                    setupData(
-                                        this@setupAdapter,
-                                        keyword,
-                                        location,
-                                        specialty,
-                                        category,
-                                        page + 1.toLong()
-                                    )
-                                }
-
+//                                onPagingListener(layoutManager) { page, itemCount ->
+//
+//                                    // call function setup data with page +1
+//                                    setupData(
+//                                        this@setupAdapter,
+//                                        keyword,
+//                                        location,
+//                                        specialty,
+//                                        category,
+//                                        page + 1.toLong()
+//                                    )
+//                                }
 
 
                             }
@@ -209,17 +249,17 @@ class SearchFragment : DaggerFragment() {
 
         }
 
-        var searchResult = arrayListOf<SearchResult>(
-            SearchResult("JJ Fashionista", "Egbeda", getString(R.string.test_photo)),
-            SearchResult("JJ Fashionista", "Egbeda", getString(R.string.test_photo)),
-            SearchResult("JJ Fashionista", "Egbeda", getString(R.string.test_photo))
-        )
+//        var searchResult = arrayListOf<SearchResult>(
+//            SearchResult("JJ Fashionista", "Egbeda", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Egbeda", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Egbeda", getString(R.string.test_photo))
+//        )
 
 
     }
 
     private fun setupData(
-        recycling: Recycling<Artisan>,
+        recycling: Recycling<SearchResultTwo>,
         keyword: String?,
         location: String?,
         specialty: String?,
@@ -236,10 +276,10 @@ class SearchFragment : DaggerFragment() {
                     }
                     .collect {
                         onFlowResponse<ArtisanSearchResponse>(response = it) {
-                            recycling.submitList(it?.artisans)
+                            i(title, "artisans ${it?.artisans}")
+//                            recycling.submitList(it?.artisans)
                         }
                     }
-
 
             }
         }
@@ -255,3 +295,4 @@ data class SearchFilter(
 )
 
 data class SearchResult(var title: String, var location: String, var media: String)
+data class SearchResultTwo(var category: String?, var list: ArrayList<SearchResult>)

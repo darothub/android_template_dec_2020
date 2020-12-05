@@ -10,4 +10,9 @@
         android:name="com.peacedude.lassod_tailor_app.ui.customer.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/singleFashionistaFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.customer.SingleFashionistaFragment"
+        android:label="fragment_single_fashionista"
+        tools:layout="@layout/fragment_single_fashionista" />
 </navigation>

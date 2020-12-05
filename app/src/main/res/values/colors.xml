@@ -11,4 +11,5 @@
     <color name="colorTransparentWhite">#80FFFFFF</color>
     <color name="colorGreen">#4CAF50</color>
     <color name="colorGrayDark">#FF444444</color>
+    <color name="colorRatingGold">#F4C54A</color>
 </resources>
