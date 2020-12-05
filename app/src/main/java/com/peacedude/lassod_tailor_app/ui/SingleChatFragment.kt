@@ -94,15 +94,17 @@ class SingleChatFragment : DaggerFragment() {
             val newChatMessage = ChatMessage(newMessage, CHATRECEIVER)
             listOfChatMessage.add(newChatMessage)
             chatBubbleAdapter.setChatMessageList(listOfChatMessage)
+            single_chat_fragment_incoming_rv.smoothScrollToPosition(listOfChatMessage.size)
         }
-//        single_chat_emoji_iv.setOnClickListener {
-//            val newMessage = single_chat_emoji_et.text.toString()
-//            single_chat_emoji_et.setText("")
-//            single_chat_emoji_et.clearFocus()
-//            val newChatMessage = ChatMessage(newMessage, CHATSENDER)
-//            listOfChatMessage.add(newChatMessage)
-//            chatBubbleAdapter.setChatMessageList(listOfChatMessage)
-//        }
+        single_chat_emoji_iv.setOnClickListener {
+            val newMessage = single_chat_emoji_et.text.toString()
+            single_chat_emoji_et.setText("")
+            single_chat_emoji_et.clearFocus()
+            val newChatMessage = ChatMessage(newMessage, CHATSENDER)
+            listOfChatMessage.add(newChatMessage)
+            chatBubbleAdapter.setChatMessageList(listOfChatMessage)
+            single_chat_fragment_incoming_rv.smoothScrollToPosition(listOfChatMessage.size)
+        }
         single_chat_fragment_incoming_rv.adapter = chatBubbleAdapter
 
         single_chat_emoji_et.setOnTouchListener { v, event ->
