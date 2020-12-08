@@ -288,10 +288,9 @@ class ProfileFragment : DaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun clientTransaction() {
         val request = authViewModel.getAllClient(header)
-        val i = DashboardActivity.getMainActInstance()
         i(title, "header $header")
         //Observer for get all clients request
-        requestObserver(null, null, i.listOfClient, true) { bool, result ->
+        requestObserver(null, null, request, true) { bool, result ->
             //Task to be done on successful
             onRequestResponseTask<ClientsList>(bool, result) {
                 val results = result as UserResponse<ClientsList>
@@ -311,9 +310,9 @@ class ProfileFragment : DaggerFragment() {
 
 
                 }
-                GlobalVariables.globalClientList = listOfClient
 
-                if (GlobalVariables.globalClientList?.isNotEmpty()!!) {
+
+                if (listOfClient?.isNotEmpty()!!) {
 
                     profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
 

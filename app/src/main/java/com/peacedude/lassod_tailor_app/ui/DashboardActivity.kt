@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.peacedude.lassod_tailor_app.R
@@ -85,7 +86,6 @@ class DashboardActivity : BaseActivity() {
                     profile_header.hide()
                 }
                 R.id.profileFragment ->{
-
                 }
             }
         }
@@ -119,7 +119,6 @@ class DashboardActivity : BaseActivity() {
     }
 
     lateinit var navController:NavController
-    lateinit var listOfClient:LiveData<ServicesResponseWrapper<ParentData>>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
@@ -127,13 +126,12 @@ class DashboardActivity : BaseActivity() {
         i(title, "Oncreate")
 
         dashInstance = this
+
         navController = Navigation.findNavController(this, R.id.dashboard_fragment)
 
         bottomNav.setupWithNavController(navController)
 
-        listOfClient = authViewModel.getAllClient(header)
-//        setBottomNavController()
-//
+
 
         Log.i(title, "currentUser $currentUser")
 
@@ -141,7 +139,7 @@ class DashboardActivity : BaseActivity() {
         authViewModel.netWorkLiveData.observe(this, Observer {
             if (it) {
                 Log.i(title, "Network On")
-//                getUserData()
+                getUserData()
                 dashboard_fragment.view?.show()
             } else {
                 dashboard_fragment.view?.invisible()
@@ -215,7 +213,7 @@ class DashboardActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
-
+        navController.navigate(authViewModel.lastFragmentId ?: R.id.homeFragment)
 
 
 
@@ -246,7 +244,7 @@ class DashboardActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-
+        authViewModel.lastFragmentId = bottomNav.selectedItemId
 
         navController.removeOnDestinationChangedListener(navListener)
         Log.i(
@@ -284,61 +282,7 @@ class DashboardActivity : BaseActivity() {
 
     }
 
-    private fun mediaTransaction() {
-        val request = authViewModel.getAllPhoto(header)
 
-        //Observer for get request
-        requestObserver(null, null, request, true) { bool, result ->
-            //Task to be done on successful
-            onRequestResponseTask<PhotoList>(bool, result) {
-                val results = result as UserResponse<PhotoList>
-                val listOfPhoto = result.data?.photo?.map {
-                    Photo(
-                        it.id,
-                        it.tailorID,
-                        it.photo,
-                        it.photoAwsDetails,
-                        it.info,
-                        it.createdAt,
-                        it.updatedAt
-                    )
-                }
-            }
-
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun clientTransaction() {
-        val request = authViewModel.getAllClient(header)
-        i(title, "header $header")
-        //Observer for get all clients request
-        requestObserver(null, null, request, true) { bool, result ->
-            //Task to be done on successful
-            onRequestResponseTask<ClientsList>(bool, result) {
-                val results = result as UserResponse<ClientsList>
-                GlobalVariables.globalClientList = result.data?.clients
-                authViewModel.dataLiveData.value = result.data
-                authViewModel.data = result.data
-                val listOfClient = result.data?.clients?.map {
-                    Client(
-                        it?.name.toString(),
-                        it?.phone.toString(),
-                        it?.email.toString(),
-                        it?.deliveryAddress.toString()
-                    ).apply {
-                        country = it?.country
-                        state = it?.state
-                        tailorId = it?.tailorId
-                        id = it?.id
-                        gender = it?.gender
-                    }
-
-                }
-
-            }
-        }
-    }
 
 
 }

@@ -369,8 +369,9 @@ class MeasurementFragment : DaggerFragment() {
             .collect {
                 onFlowResponse<ListOfMeasurement>(response = it) {
                     i(title, "Measure ${it?.measurement}")
-
+                    i(title, "Measure ${it?.measurement}")
                     val measurementValueList = it?.measurement?.map { m ->
+                        i(title, "MeasureID ${m.id}")
                         MeasurementValues(
                             m.name,
                             m.type,
@@ -522,6 +523,9 @@ class MeasurementFragment : DaggerFragment() {
         activityTitle: TextView
     ) {
         itemView.setOnClickListener {
+
+            val pos = parentList?.indexOf(parentItem)
+            i(title, "item ${parentItem} \n ParentID ${parentItem?.id} pos $pos")
             dialogEditTitleTv.text = getString(R.string.edit_measurement_str)
             dialogEditMeasurementBtn = dialogEditIncludeBtnLayout.findViewById<Button>(R.id.btn)
             dialogEditMeasurementProgressBar =
@@ -554,6 +558,7 @@ class MeasurementFragment : DaggerFragment() {
                 )
                 val valuesToBeEdited =
                     (parentItem?.values as Map<String, String>).entries.map { vtbe ->
+
                         UserNameClass(
                             vtbe.key,
                             vtbe.value ?: ""
@@ -588,9 +593,10 @@ class MeasurementFragment : DaggerFragment() {
                                 type,
                                 clientToBeEdited?.id.toString(),
                                 valuess.map
-                            )
-                            clientMeasurement.gender = clientToBeEdited?.gender
-                            clientMeasurement.id = parentItem.id
+                            ).apply {
+                                gender = clientToBeEdited?.gender
+                                id = parentItem.id
+                            }
                             i(title, "Edit measurement ${clientMeasurement.id}")
                             CoroutineScope(Main).launch {
                                 supervisorScope {
@@ -606,8 +612,14 @@ class MeasurementFragment : DaggerFragment() {
                                         }
                                         .collect {
                                             onFlowResponse<EditMeasurement>(response = it) {
+
+                                                if (pos != null) {
+                                                    parentList[pos] = clientMeasurement
+                                                    parentAdapter.notifyItemChanged(pos)
+                                                    i(title, "List $parentList item $clientMeasurement")
+                                                }
+
                                                 GlobalVariables.globalMeasuremenValues = null
-                                                parentAdapter.notifyDataSetChanged()
                                                 editdialog.dismiss()
                                                 requireActivity().gdToast(
                                                     "$name is updated successfully",

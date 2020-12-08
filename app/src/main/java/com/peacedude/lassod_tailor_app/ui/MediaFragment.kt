@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -148,7 +149,12 @@ class MediaFragment : DaggerFragment() {
 
         authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
             if (it) {
-                mediaTransaction()
+                try {
+                    mediaTransaction()
+                }
+                catch (e:Exception){
+                    Log.e(title, e.message.toString())
+                }
 
             } else {
 
