@@ -12,6 +12,7 @@ import coil.transform.CircleCropTransformation
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.changeBackgroundColor
+import com.peacedude.lassod_tailor_app.helpers.goto
 import kotlinx.android.synthetic.main.fragment_single_fashionista.*
 import kotlinx.android.synthetic.main.search_result_media_item.view.*
 
@@ -81,6 +82,10 @@ class SingleFashionistaFragment : Fragment() {
         }
         single_fashionista_fragment_favourite_fill_iv.setOnClickListener {
             single_fashionista_fragment_favourite_vf.showPrevious()
+        }
+
+        single_fashionista_fragment_see_review_tv.setOnClickListener {
+            goto(R.id.reviewFragment)
         }
     }
 

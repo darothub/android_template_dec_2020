@@ -273,4 +273,5 @@
     <string name="call">Call</string>
     <string name="goto_gallery">Goto gallery</string>
     <string name="describe_experience">Describe your experience(optional)</string>
+    <string name="post">Post</string>
 </resources>

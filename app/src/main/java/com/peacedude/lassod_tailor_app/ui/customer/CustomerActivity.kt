@@ -32,6 +32,9 @@ class CustomerActivity : BaseActivity() {
                 R.id.searchFragment -> {
                     customer_activity_appbar.hide()
                 }
+                R.id.reviewFragment ->{
+                    customer_activity_appbar.show()
+                }
             }
         }
     override fun onCreate(savedInstanceState: Bundle?) {

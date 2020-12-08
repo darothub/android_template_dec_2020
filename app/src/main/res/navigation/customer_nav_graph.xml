@@ -15,4 +15,9 @@
         android:name="com.peacedude.lassod_tailor_app.ui.customer.SingleFashionistaFragment"
         android:label="fragment_single_fashionista"
         tools:layout="@layout/fragment_single_fashionista" />
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.ReviewFragment"
+        android:label="fragment_review"
+        tools:layout="@layout/fragment_review" />
 </navigation>
