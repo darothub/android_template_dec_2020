@@ -155,14 +155,17 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/review_fragment_reviews_rv"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/review_fragment_post_btn"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/rating_bar_item"
-            android:orientation="horizontal"
+            tools:listitem="@layout/review_list_item"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
             tools:itemCount="5"
             />
 

@@ -2,8 +2,95 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/White"
-    >
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/_8sdp"
+    android:layout_gravity="top|center_vertical"
+    android:background="@color/White">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/review_list_name_cv"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_30sdp"
+        app:cardCornerRadius="@dimen/_40sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardBackgroundColor="@color/colorOrange"
+        >
+
+        <TextView
+            android:id="@+id/review_list_name_initials_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="O"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold"
+            android:textColor="@color/White"
+            android:layout_gravity="center_vertical"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/review_list_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="Olaleye David"
+        android:textSize="@dimen/_8sdp"
+        app:layout_constraintTop_toTopOf="@id/review_list_name_cv"
+        app:layout_constraintBottom_toTopOf="@id/review_list_rb"
+        app:layout_constraintStart_toEndOf="@id/review_list_name_cv"
+        app:layout_constraintVertical_bias="1"
+        android:layout_marginStart="@dimen/_5sdp"
+        />
+
+
+
+    <RatingBar
+        android:id="@+id/review_list_rb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rating="0"
+        android:numStars="5"
+
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:progressTint="@color/colorRatingGold"
+        android:progressBackgroundTint="@color/colorRatingGold"
+        app:layout_constraintTop_toBottomOf="@id/review_list_name_tv"
+        app:layout_constraintStart_toEndOf="@id/review_list_name_cv"
+        app:layout_constraintBottom_toBottomOf="@id/review_list_name_cv"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginStart="@dimen/_5sdp"
+        />
+
+    <TextView
+        android:id="@+id/review_list_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="Olaleye David"
+        android:textSize="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/review_list_name_tv"
+        app:layout_constraintTop_toTopOf="@id/review_list_rb"
+        app:layout_constraintBottom_toBottomOf="@id/review_list_name_cv"
+        app:layout_constraintStart_toEndOf="@id/review_list_rb"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginStart="@dimen/_15sdp"
+        />
+
+    <ImageView
+        android:id="@+id/review_list_more_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_8sdp"
+        android:src="@drawable/ic_more_vert"
+        app:layout_constraintTop_toTopOf="@id/review_list_name_tv"
+        app:layout_constraintBottom_toBottomOf="@id/review_list_name_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_list_name_tv"
+        app:layout_constraintHorizontal_bias="1"
+        android:layout_marginStart="@dimen/_15sdp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
