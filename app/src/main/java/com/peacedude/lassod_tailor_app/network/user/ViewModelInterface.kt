@@ -50,6 +50,9 @@ interface ViewModelInterface {
     fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
+    fun getUserData(): LiveData<ServicesResponseWrapper<ParentData>>{
+        TODO()
+    }
     fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
@@ -77,7 +80,7 @@ interface ViewModelInterface {
         TODO()
     }
 
-    fun getAllClient(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
+    fun getAllClient(): LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
     fun deleteClient(header:String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{

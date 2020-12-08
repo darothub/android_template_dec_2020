@@ -23,6 +23,10 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.getUserData(header)
     }
 
+    override fun getUserData(): Call<UserResponse<User>> {
+        return authServices.getUserData()
+    }
+
     override suspend fun getUserDetails(header: String): UserResponse<User> {
         return authServices.getUserDetails(header)
     }
@@ -63,8 +67,8 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.editClient(header, client)
     }
 
-    override fun getAllClient(header:String?): Call<UserResponse<ClientsList>> {
-        return authServices.getAllClient(header)
+    override fun getAllClient(): Call<UserResponse<ClientsList>> {
+        return authServices.getAllClient()
     }
 
     override fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>> {

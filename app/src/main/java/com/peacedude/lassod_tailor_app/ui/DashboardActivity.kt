@@ -265,7 +265,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun getUserData() {
-        val request = authViewModel.getUserData(header.toString())
+        val request = authViewModel.getUserData()
         i(title, "header $header")
         val response = observeRequest(request, null, null)
         response.observe(this, androidx.lifecycle.Observer {

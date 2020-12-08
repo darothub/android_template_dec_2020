@@ -19,7 +19,6 @@ import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_review.*
 import kotlinx.android.synthetic.main.measurement_items.view.*
 import kotlinx.android.synthetic.main.progressbar_review_item.view.*
-import kotlinx.android.synthetic.main.rating_bar_item.view.*
 import kotlinx.android.synthetic.main.review_list_item.view.*
 
 /**
@@ -84,20 +83,8 @@ class ReviewFragment : Fragment() {
             ProgressBarRating(0F)
 
         )
-        review_fragment_rating_bar_rv.setupAdapter<ProgressBarRating>(R.layout.rating_bar_item) { subAdapter, context, list ->
-
-            bind { itemView, position, item ->
-                itemView.rating_bar_item_rb.rating = item?.ratings!!
-
-                itemView.rating_bar_item_rb.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
-                    i("Hello", "Rating bar clicked $rating")
-                }
-
-
-
-            }
-            setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false))
-            submitList(listOfProgressRatingStar)
+        review_fragment_rating_bar_rb.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+            i("Hello", "Rating bar clicked $rating")
         }
 
         var listOfReviews = arrayListOf<Reviews>(

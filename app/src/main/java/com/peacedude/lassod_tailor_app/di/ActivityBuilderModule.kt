@@ -18,13 +18,20 @@ import com.peacedude.lassod_tailor_app.di.networkmodules.user.ViewModelInterface
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.GeneralViewModelModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.factory.ViewModelFactoryModule
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
+import com.peacedude.lassod_tailor_app.network.storage.checkData
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
+import com.peacedude.lassod_tailor_app.utils.bearer
+import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.storage.EncryptedSharedPrefManager
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
+import okhttp3.Interceptor
+import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -78,8 +85,44 @@ open class ActivityStaticModule {
      */
     @Singleton
     @Provides
-    open fun provideokHttpInstance(): okhttp3.OkHttpClient {
+    open fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+    }
+
+    /**
+     * A function to provide okHttp instance
+     *
+     */
+    @Singleton
+    @Provides
+    open fun provideHeaderInterceptor(): Interceptor {
+        return Interceptor { chain ->
+            var req = chain.request()
+            req = req.newBuilder().header("Authorization", "Hello").build()
+            val res = chain.proceed(req)
+            res
+        }
+    }
+
+    /**
+     * A function to provide okHttp instance
+     *
+     */
+    @Singleton
+    @Provides
+    open fun provideokHttpInstance(loggingInterceptor: HttpLoggingInterceptor, storageRequest: StorageRequest): okhttp3.OkHttpClient {
         return okhttp3.OkHttpClient.Builder()
+            .addInterceptor{
+                val user = storageRequest.checkData<User>(loggedInUserKey)
+                val header = "$bearer ${user?.token}"
+                var req = it.request()
+                req = req.newBuilder().header("Authorization", header).build()
+                val res = it.proceed(req)
+                res
+            }
+            .addInterceptor(loggingInterceptor)
             .connectTimeout(5, TimeUnit.MINUTES)
             .readTimeout(5, TimeUnit.MINUTES)
             .build()

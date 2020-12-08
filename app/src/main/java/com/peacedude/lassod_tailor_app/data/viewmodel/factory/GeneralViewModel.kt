@@ -56,7 +56,6 @@ open class GeneralViewModel @Inject constructor(
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
     val netWorkLiveData = MutableLiveData<Boolean>(true)
-    val dataLiveData = MutableLiveData<ParentData>()
     var data:ParentData?=null
     override var lastFragmentId: Int?
         get() = storageRequest.getLastFragmentId()

@@ -287,7 +287,7 @@ class ProfileFragment : DaggerFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun clientTransaction() {
-        val request = authViewModel.getAllClient(header)
+        val request = authViewModel.getAllClient()
         i(title, "header $header")
         //Observer for get all clients request
         requestObserver(null, null, request, true) { bool, result ->

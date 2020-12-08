@@ -2,15 +2,14 @@ package com.peacedude.lassod_tailor_app.ui.customer
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.hide
-import com.peacedude.lassod_tailor_app.helpers.i
-import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
+import kotlinx.android.synthetic.main.activity_client.*
 import kotlinx.android.synthetic.main.activity_customer.*
 import kotlinx.android.synthetic.main.activity_resources.*
 
@@ -34,12 +33,23 @@ class CustomerActivity : BaseActivity() {
                 }
                 R.id.reviewFragment ->{
                     customer_activity_appbar.show()
+                    toolbar.setNavigationOnClickListener {
+                        controller.popBackStack()
+                    }
+                }
+                R.id.singleFashionistaFragment ->{
+                    customer_activity_appbar.show()
+                    toolbar.setNavigationOnClickListener {
+                        controller.popBackStack()
+                    }
                 }
             }
         }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_customer)
+        val activityTitle = customer_activity_appbar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
+        activityTitle.text = getString(R.string.review)
     }
 
     override fun onResume() {

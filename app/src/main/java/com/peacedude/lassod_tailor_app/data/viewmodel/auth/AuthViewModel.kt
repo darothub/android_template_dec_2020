@@ -45,6 +45,13 @@ open class AuthViewModel @Inject constructor(
        return enqueueRequest<User>(request, responseLiveData)
     }
 
+    override fun getUserData(): LiveData<ServicesResponseWrapper<ParentData>> {
+        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+
+        val request = authRequestInterface.getUserData()
+        return enqueueRequest<User>(request, responseLiveData)
+    }
+
    override fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>> {
 
 
@@ -81,9 +88,9 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<SingleClient>(request, responseLiveData)
     }
 
-    override fun getAllClient(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
+    override fun getAllClient(): LiveData<ServicesResponseWrapper<ParentData>> {
 
-        val request = authRequestInterface.getAllClient(header)
+        val request = authRequestInterface.getAllClient()
         return enqueueRequest<ClientsList>(request, responseLiveData)
     }
 

@@ -13,6 +13,10 @@ interface AuthRequestInterface {
     fun getUserData(header:String): Call<UserResponse<User>> {
         return TODO()
     }
+    fun getUserData(): Call<UserResponse<User>> {
+        return TODO()
+    }
+
     suspend fun getUserDetails( header: String): UserResponse<User>{
         return TODO()
     }
@@ -31,7 +35,7 @@ interface AuthRequestInterface {
     fun editClient(header: String, client: Client): Call<UserResponse<SingleClient>>{
         return TODO()
     }
-    fun getAllClient(header: String?): Call<UserResponse<ClientsList>>{
+    fun getAllClient(): Call<UserResponse<ClientsList>>{
         return TODO()
     }
     fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>>{

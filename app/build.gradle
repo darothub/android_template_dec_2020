@@ -184,6 +184,7 @@ dependencies {
     implementation 'com.github.MasayukiSuda:BubbleLayout:v1.2.1'
 
     implementation 'com.github.hani-momanii:SuperNova-Emoji:1.1'
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
 //    implementation platform('com.google.firebase:firebase-bom:26.0.0')
 //    implementation 'com.google.firebase:firebase-analytics'

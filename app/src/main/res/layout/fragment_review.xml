@@ -104,17 +104,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center"
             />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/review_fragment_rating_bar_rv"
+
+        <RatingBar
+            android:id="@+id/review_fragment_rating_bar_rb"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:isIndicator="false"
+            android:numStars="5"
+            android:progressBackgroundTint="@color/colorRatingGold"
+            android:progressTint="@color/colorRatingGold"
+            android:rating="0"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
             app:layout_constraintTop_toBottomOf="@id/review_fragment_rate_tv"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/rating_bar_item"
-            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:itemCount="5"
             />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -126,7 +133,7 @@
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_fragment_rating_bar_rv"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_rating_bar_rb"
             android:layout_marginTop="@dimen/_15sdp"
             android:hint="@string/describe_experience"
             >

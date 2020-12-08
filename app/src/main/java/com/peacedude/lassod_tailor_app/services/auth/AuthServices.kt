@@ -13,6 +13,8 @@ interface AuthServices {
     fun getUserData(@Header("Authorization") header: String): Call<UserResponse<User>>
 
     @GET("auth/profile/me")
+    fun getUserData(): Call<UserResponse<User>>
+    @GET("auth/profile/me")
     suspend fun getUserDetails(@Header("Authorization") header: String): UserResponse<User>
 
     @PATCH("auth/profile/me")
@@ -46,9 +48,7 @@ interface AuthServices {
     ): Call<UserResponse<SingleClient>>
 
     @GET("client")
-    fun getAllClient(
-        @Header("Authorization") header: String?
-    ): Call<UserResponse<ClientsList>>
+    fun getAllClient(): Call<UserResponse<ClientsList>>
 
     @HTTP(method = "DELETE", path = "client", hasBody = true)
     @FormUrlEncoded

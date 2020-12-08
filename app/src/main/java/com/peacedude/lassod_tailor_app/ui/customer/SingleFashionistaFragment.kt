@@ -12,6 +12,7 @@ import coil.transform.CircleCropTransformation
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.changeBackgroundColor
+import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
 import com.peacedude.lassod_tailor_app.helpers.goto
 import kotlinx.android.synthetic.main.fragment_single_fashionista.*
 import kotlinx.android.synthetic.main.search_result_media_item.view.*
@@ -40,7 +41,7 @@ class SingleFashionistaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        changeStatusBarColor(R.color.colorWhite)
 
         single_fashionista_fragment_image_iv.load(getString(R.string.test_photo)) {
             crossfade(true)
@@ -52,27 +53,34 @@ class SingleFashionistaFragment : Fragment() {
             chatButton = single_fashionista_fragment_chat_btn.findViewById(R.id.btn)
             callButton = single_fashionista_fragment_call_btn.findViewById(R.id.btn)
             galleryButton = single_fashionista_fragment_gallery_btn.findViewById(R.id.btn)
-            val chatButtonBackground = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.rounded_blue_outline_white_backgrnd
-            )
+            galleryButton.apply {
+                text = getString(R.string.goto_gallery)
+                background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+            }
+            chatButton.apply {
+                text = getString(R.string.chat_str)
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.rounded_blue_outline_white_backgrnd
+                )
+                val imgResource = R.drawable.ic_chat_bubble
+                setCompoundDrawablesWithIntrinsicBounds(imgResource, 0, 0, 0)
 
-            val callButtonBackground = ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.rounded_blue_outline_white_backgrnd
-            )
 
-            val galleryButtonBackground = galleryButton.background
-            galleryButtonBackground.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-            callButtonBackground?.setTint(ContextCompat.getColor(requireContext(), R.color.colorGreen))
-            chatButton.background = chatButtonBackground
-            callButton.background = callButtonBackground
-            galleryButton.background = galleryButtonBackground
+            }
+            callButton.apply {
+                text = getString(R.string.call)
+                background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.rounded_blue_outline_white_backgrnd
+                )
+                val imgResource = R.drawable.call
+                setCompoundDrawablesWithIntrinsicBounds(imgResource, 0, 0, 0)
 
-            chatButton.text = getString(R.string.chat_str)
-            chatButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            callButton.text = getString(R.string.call)
-            galleryButton.text = getString(R.string.goto_gallery)
+            }
+
+
         },{
 
         })
