@@ -93,4 +93,19 @@
         android:layout_marginStart="@dimen/_15sdp"
         />
 
+    <TextView
+        android:id="@+id/review_list_review_message_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="Olaleye David"
+        android:textSize="@dimen/_8sdp"
+        app:layout_constraintTop_toBottomOf="@id/review_list_name_cv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/review_list_name_cv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_marginTop="@dimen/_5sdp"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
