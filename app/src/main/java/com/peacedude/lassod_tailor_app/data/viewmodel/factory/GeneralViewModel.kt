@@ -55,7 +55,9 @@ open class GeneralViewModel @Inject constructor(
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
-    val netWorkLiveData = MutableLiveData<Boolean>(false)
+    val netWorkLiveData = MutableLiveData<Boolean>(true)
+    val dataLiveData = MutableLiveData<ParentData>()
+    var data:ParentData?=null
     override var lastFragmentId: Int?
         get() = storageRequest.getLastFragmentId()
         set(id) = storageRequest.saveLastFragment(id)
@@ -120,6 +122,7 @@ open class GeneralViewModel @Inject constructor(
                                 "Access Denied",
                                 statusCode
                             )
+                        logout()
 
                     } else {
                         val err = errorConverter(statusCode, errorbody)
@@ -176,6 +179,7 @@ open class GeneralViewModel @Inject constructor(
                             code
                         )
                     )
+                    logout()
                 }
                 else->{
                     emit(

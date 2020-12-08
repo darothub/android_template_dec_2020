@@ -164,11 +164,11 @@ class MediaFragment : DaggerFragment() {
             }
         }
 
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(android.Manifest.permission.CAMERA),
-            REQUEST_CODE
-        )
+//        ActivityCompat.requestPermissions(
+//            requireActivity(),
+//            arrayOf(android.Manifest.permission.CAMERA),
+//            REQUEST_CODE
+//        )
 
         addPhotoDialogFab.setOnClickListener {
             val res = checkCameraPermission()
@@ -331,28 +331,6 @@ class MediaFragment : DaggerFragment() {
     }
 
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requireActivity().gdToast(
-                    getString(R.string.permission_granted_str),
-                    Gravity.BOTTOM
-                )
-            } else {
-                requireActivity().gdToast(
-                    getString(R.string.permission_not_granted_str),
-                    Gravity.BOTTOM
-                )
-            }
-        } else {
-            requireActivity().gdToast("error code", Gravity.BOTTOM)
-        }
-    }
 
 
 }

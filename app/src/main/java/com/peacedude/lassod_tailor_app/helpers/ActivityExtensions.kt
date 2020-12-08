@@ -167,16 +167,14 @@ fun Activity.observeRequests(
                 result.value = Pair(false, errorResponse)
                 gdErrorToast("$errorResponse", Gravity.BOTTOM)
 
-                Log.i(title, "Error ${request?.message}")
+                Log.i(title, "Error ${request.message} ${request.code}")
             }
             is ServicesResponseWrapper.Logout -> {
                 dialog.dismiss()
-//                    val unAuthorizedString = getString(R.string.unauthorized_user)
                 progressBar?.hide()
                 button?.show()
                 gdToast(errorResponse.toString(), Gravity.BOTTOM)
                 startActivity(Intent(this as? Context, MainActivity::class.java))
-//                    result.postValue(Pair(false, errorResponse.toString()))
                 i(title, "Log out ${errorResponse.toString()}")
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
@@ -463,7 +461,9 @@ fun Activity.setUpSpinnerWithList(
 }
 
 object GlobalVariables {
+    var globalWrapper:LiveData<ServicesResponseWrapper<ParentData>>?=null
     var globalClient: Client? = null
+    var globalClientList: List<Client?>? = null
     var globalListOfString: List<String>? = null
     var globalMeasuremenValues: MeasurementValues? = null
     var globalUser: User? = null

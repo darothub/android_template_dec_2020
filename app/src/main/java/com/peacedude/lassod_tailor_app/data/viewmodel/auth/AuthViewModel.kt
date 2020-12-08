@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
+import com.peacedude.lassod_tailor_app.helpers.GlobalVariables
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
@@ -29,7 +30,9 @@ open class AuthViewModel @Inject constructor(
     var mGoogleSignInClient: GoogleSignInClient
 ) : GeneralViewModel(retrofit, storage, context, mGoogleSignInClient), ViewModelInterface {
 
-    private val responseLiveData by lazy{
+
+
+    val responseLiveData by lazy{
         MutableLiveData<ServicesResponseWrapper<ParentData>>()
     }
     val responseLiveDatas by lazy{

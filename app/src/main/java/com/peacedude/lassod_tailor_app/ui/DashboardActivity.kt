@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -10,30 +11,49 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.get
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.Client
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.Photo
+import com.peacedude.lassod_tailor_app.model.response.PhotoList
+import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity
 import com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity
 import com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionActivity
+import com.squareup.picasso.Picasso
+import com.utsman.recycling.setupAdapter
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.activity_resources.*
+import kotlinx.android.synthetic.main.fragment_media.*
+import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import javax.inject.Inject
 
 class DashboardActivity : BaseActivity() {
-    private val navController by lazy {
-        Navigation.findNavController(this, R.id.dashboard_fragment)
+
+    companion object Factory{
+        lateinit var dashInstance:DashboardActivity
+        fun getMainActInstance():DashboardActivity{
+            return dashInstance
+        }
     }
+
     val title: String by lazy {
         getName()
     }
@@ -63,6 +83,9 @@ class DashboardActivity : BaseActivity() {
                     profile_fab.hide()
                     bottomNav.hide()
                     profile_header.hide()
+                }
+                R.id.profileFragment ->{
+
                 }
             }
         }
@@ -95,23 +118,30 @@ class DashboardActivity : BaseActivity() {
         dialog.findViewById<TextView>(R.id.loader_layout_tv)
     }
 
-
+    lateinit var navController:NavController
+    lateinit var listOfClient:LiveData<ServicesResponseWrapper<ParentData>>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         changeStatusBarColor(R.color.colorWhite)
         i(title, "Oncreate")
+
+        dashInstance = this
+        navController = Navigation.findNavController(this, R.id.dashboard_fragment)
+
         bottomNav.setupWithNavController(navController)
 
+        listOfClient = authViewModel.getAllClient(header)
 //        setBottomNavController()
 //
 
         Log.i(title, "currentUser $currentUser")
-        dashboard_fragment.view?.invisible()
+
+
         authViewModel.netWorkLiveData.observe(this, Observer {
             if (it) {
                 Log.i(title, "Network On")
-                getUserData()
+//                getUserData()
                 dashboard_fragment.view?.show()
             } else {
                 dashboard_fragment.view?.invisible()
@@ -119,7 +149,7 @@ class DashboardActivity : BaseActivity() {
             }
         })
 
-        profile_header.show()
+//        profile_header.show()
 
         menuIcon?.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)
@@ -185,10 +215,9 @@ class DashboardActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
-        //Set last bottom navigation page
-        bottomNav.selectedItemId = authViewModel.lastFragmentId ?: 0
 
-//        getUserData()
+
+
 
     }
 
@@ -200,13 +229,13 @@ class DashboardActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
+
         Log.i(title, "onStart")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.i(title, "OnResume")
-        val token = intent.getStringExtra("token")
+
         navController.addOnDestinationChangedListener(navListener)
 
 //        val user = authViewModel.currentUser
@@ -217,8 +246,9 @@ class DashboardActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
+
+
         navController.removeOnDestinationChangedListener(navListener)
-        authViewModel.lastFragmentId = bottomNav.selectedItemId
         Log.i(
             title,
             "On pause idsaved ${authViewModel.lastFragmentId} bottomNavId ${bottomNav.selectedItemId}"
@@ -252,7 +282,62 @@ class DashboardActivity : BaseActivity() {
             }
         })
 
+    }
 
+    private fun mediaTransaction() {
+        val request = authViewModel.getAllPhoto(header)
+
+        //Observer for get request
+        requestObserver(null, null, request, true) { bool, result ->
+            //Task to be done on successful
+            onRequestResponseTask<PhotoList>(bool, result) {
+                val results = result as UserResponse<PhotoList>
+                val listOfPhoto = result.data?.photo?.map {
+                    Photo(
+                        it.id,
+                        it.tailorID,
+                        it.photo,
+                        it.photoAwsDetails,
+                        it.info,
+                        it.createdAt,
+                        it.updatedAt
+                    )
+                }
+            }
+
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun clientTransaction() {
+        val request = authViewModel.getAllClient(header)
+        i(title, "header $header")
+        //Observer for get all clients request
+        requestObserver(null, null, request, true) { bool, result ->
+            //Task to be done on successful
+            onRequestResponseTask<ClientsList>(bool, result) {
+                val results = result as UserResponse<ClientsList>
+                GlobalVariables.globalClientList = result.data?.clients
+                authViewModel.dataLiveData.value = result.data
+                authViewModel.data = result.data
+                val listOfClient = result.data?.clients?.map {
+                    Client(
+                        it?.name.toString(),
+                        it?.phone.toString(),
+                        it?.email.toString(),
+                        it?.deliveryAddress.toString()
+                    ).apply {
+                        country = it?.country
+                        state = it?.state
+                        tailorId = it?.tailorId
+                        id = it?.id
+                        gender = it?.gender
+                    }
+
+                }
+
+            }
+        }
     }
 
 

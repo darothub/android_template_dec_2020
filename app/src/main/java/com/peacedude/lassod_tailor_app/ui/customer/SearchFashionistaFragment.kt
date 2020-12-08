@@ -20,6 +20,8 @@ import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.peacedude.lassod_tailor_app.model.response.Artisan
 import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
 import com.peacedude.lassod_tailor_app.model.response.Profile
+import com.peacedude.lassod_tailor_app.ui.DashboardActivity
+import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.utsman.recycling.extentions.Recycling
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -47,7 +49,9 @@ class SearchFragment : DaggerFragment() {
         getName()
     }
 
-
+    val currentUser by lazy {
+        userViewModel.currentUser
+    }
     val header by lazy {
         userViewModel.header
     }
@@ -76,6 +80,8 @@ class SearchFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        changeStatusBarColor(R.color.colorWhite)
+
         var listOfFilterOptions = arrayListOf<SearchFilter>(
             SearchFilter("Artisan", arrayListOf("All", "Tailor", "Weaver")),
             SearchFilter("Style", arrayListOf("All", "Tailor", "Weaver")),
@@ -90,6 +96,13 @@ class SearchFragment : DaggerFragment() {
             }
         }
 
+        search_fragment_login_ib.setOnClickListener {
+            if (currentUser != null){
+                goto(MainActivity::class.java)
+                return@setOnClickListener
+            }
+            goto(MainActivity::class.java)
+        }
 
         search_fragment_search_rv.setupAdapter<SearchFilter>(R.layout.search_filter_item) { adapter, context, list ->
 

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White"
+    tools:context=".ui.ReviewFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/review_fragment_fashionista_iv"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="@dimen/_10sdp"
+            />
+
+        <TextView
+            android:id="@+id/review_fragment_fashionista_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/review_fragment_fashionista_iv"
+            app:layout_constraintTop_toTopOf="@id/review_fragment_fashionista_iv"
+            app:layout_constraintBottom_toBottomOf="@id/review_fragment_fashionista_iv"
+            android:layout_margin="@dimen/_10sdp"
+            android:text="JJ Fashionista Limited"
+            />
+        <LinearLayout
+            android:id="@+id/review_fragment_rating_ll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            app:layout_constraintWidth_percent=".3"
+            app:layout_constraintEnd_toStartOf="@id/review_fragment_progress_bar_rv"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_fashionista_iv"
+            >
+            <TextView
+                android:id="@+id/review_fragment_rating_value_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rating_value"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintHorizontal_bias=".3"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="@dimen/_16sdp"/>
+            <RatingBar
+                android:id="@+id/review_fragment_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rating="3"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:progressTint="@color/colorRatingGold"
+                android:progressBackgroundTint="@color/colorRatingGold"
+                />
+            <TextView
+                android:id="@+id/review_fragment_total_reviews_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:text="@string/dash"
+                />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/review_fragment_progress_bar_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/review_fragment_rating_ll"
+            app:layout_constraintStart_toEndOf="@id/review_fragment_rating_ll"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent=".3"
+            app:layout_constraintHorizontal_bias=".9"
+            tools:listitem="@layout/progressbar_review_item"
+            tools:itemCount="5"
+            />
+
+        <View
+            android:id="@+id/review_fragment_line1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:background="@color/colorGray"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_progress_bar_rv" />
+
+        <TextView
+            android:id="@+id/review_fragment_rate_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:text="@string/dash"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_line1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/review_fragment_rating_bar_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_rate_tv"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/rating_bar_item"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:itemCount="5"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/review_fragment_describe_rate_input"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:imeOptions="actionNext"
+            android:textColorHint="@color/colorGray"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_rating_bar_rv"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:hint="@string/describe_experience"
+            >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/review_fragment_describe_rate_et"
+                android:textColor="@color/colorGray"
+                style="@style/EditTextCustomStyle"
+                android:singleLine="true"
+                android:inputType="textEmailAddress"
+                android:tag="@string/describe_experience"
+                android:textColorHint="@color/colorGray"
+
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <include
+            android:id="@+id/review_fragment_post_btn"
+            layout="@layout/button_and_progressbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_describe_rate_input"
+            android:layout_marginTop="@dimen/_13sdp"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/review_fragment_reviews_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/review_fragment_post_btn"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/rating_bar_item"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:itemCount="5"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.core.widget.NestedScrollView>

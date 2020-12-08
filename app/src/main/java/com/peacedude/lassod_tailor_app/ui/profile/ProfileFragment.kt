@@ -35,6 +35,7 @@ import com.peacedude.lassod_tailor_app.model.request.SingleClient
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.ui.DashboardActivity
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -49,6 +50,13 @@ import javax.inject.Inject
  * create an instance of this fragment.
  */
 class ProfileFragment : DaggerFragment() {
+
+    companion object Factory{
+        lateinit var profFragmentInstance:ProfileFragment
+        fun getProfileFragmentInstance():ProfileFragment{
+            return profFragmentInstance
+        }
+    }
     private val title by lazy {
         getName()
     }
@@ -155,6 +163,7 @@ class ProfileFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        profFragmentInstance = this
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -273,14 +282,16 @@ class ProfileFragment : DaggerFragment() {
 
 
 
+
     }
 
     @SuppressLint("SetTextI18n")
     private fun clientTransaction() {
         val request = authViewModel.getAllClient(header)
+        val i = DashboardActivity.getMainActInstance()
         i(title, "header $header")
         //Observer for get all clients request
-        requestObserver(null, null, request, true) { bool, result ->
+        requestObserver(null, null, i.listOfClient, true) { bool, result ->
             //Task to be done on successful
             onRequestResponseTask<ClientsList>(bool, result) {
                 val results = result as UserResponse<ClientsList>
@@ -300,8 +311,9 @@ class ProfileFragment : DaggerFragment() {
 
 
                 }
+                GlobalVariables.globalClientList = listOfClient
 
-                if (listOfClient?.isNotEmpty()!!) {
+                if (GlobalVariables.globalClientList?.isNotEmpty()!!) {
 
                     profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
 
@@ -338,16 +350,8 @@ class ProfileFragment : DaggerFragment() {
                                     dialogNameInitialsTv.text = "$firstName"
                                 }
 
-//                                itemView.client_location_tv.text = item.deliveryAddress
                                 dialogNameTv.text = item.name
-//                                dialogNameTv.text = itemView.client_name_tv.text
-//                                dialogPhoneNumberTv.text = item?.phone
-//                                dialogAddressTv.text = item?.deliveryAddress
-//                                dialogGenderTv.text = item?.gender
-//                                dialogState.text = item?.state
-//                                dialogEmailTv.text = item?.email
-//                                dialogCountryTv.text = item?.country
-//                                displayClientDialog.show()
+
                                 dialog.show {
                                     cornerRadius(10F)
                                 }
@@ -359,27 +363,6 @@ class ProfileFragment : DaggerFragment() {
                                         Log.i(title, "Client $item  global ${GlobalVariables.globalClient}")
                                         dialog.dismiss()
                                         startActivity(Intent(requireActivity(), ClientActivity::class.java))
-//                                    val lists = resources.getStringArray(R.array.gender_normal_list)
-//                                        .toList() as ArrayList<String>
-//                                    displayClientDialog.hide()
-//                                    dialogNameEt.setText(dialogNameTv.text)
-//                                    dialogPhoneNumberEt.setText(dialogPhoneNumberTv.text)
-//                                    dialogEmailEt.setText(dialogEmailTv.text)
-//                                    dialogAddressEt.setText(dialogAddressTv.text)
-//                                    dialogStateEt.setText(dialogState.text)
-//                                    setUpSpinnerWithList(
-//                                        dialogGenderTv.text.toString(),
-//                                        dialogGenderSpinner,
-//                                        lists
-//                                    )
-//                                    setUpCountrySpinner(
-//                                        dialogCountryTv.text.toString(),
-//                                        dialogCountrySpinner
-//                                    )
-//                                    editClientDialog.show()
-                                        //                                    if(editClientDialog.show()){
-                                        //                                        loaderDialog.dismiss()
-                                        //                                    }
                                     }
                                 }
                             }
@@ -504,7 +487,17 @@ class ProfileFragment : DaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        val i = DashboardActivity.getMainActInstance()
+
+
+
         i(title, "onresume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val c = GlobalVariables.globalClientList
+        i(title, "CforClient $c")
     }
 
 }

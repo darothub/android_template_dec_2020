@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White">
+    <ViewFlipper
+        android:id="@+id/rating_bar_item_vf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <RatingBar
+            android:id="@+id/review_fragment_rb1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rating="0"
+            android:numStars="1"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:progressTint="@color/colorRatingGold"
+            android:progressBackgroundTint="@color/colorRatingGold"
+            />
+
+        <RatingBar
+            android:id="@+id/review_fragment_rb2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rating="1"
+            android:numStars="1"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:progressTint="@color/colorRatingGold"
+            android:progressBackgroundTint="@color/colorRatingGold"
+            />
+
+    </ViewFlipper>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

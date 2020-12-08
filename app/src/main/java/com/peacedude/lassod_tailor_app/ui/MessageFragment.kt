@@ -72,6 +72,7 @@ class MessageFragment : DaggerFragment() {
         noDataSecondIcon = message_fragment_no_data_included_layout.findViewById<ImageView>(R.id.no_data_second_icon_iv)
         noDataText = message_fragment_no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
 
+        i(title, "message frag")
         noDataFirstIcon.hide()
         noDataSecondIcon.setImageDrawable(
             ContextCompat.getDrawable(
