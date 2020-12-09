@@ -158,7 +158,7 @@
             app:isDarkTheme="false"
             android:textColor="@color/colorPrimary"
             android:textAllCaps="true"
-            android:textSize="@dimen/_10sdp"
+            android:textSize="@dimen/_8sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/login_page_btn"

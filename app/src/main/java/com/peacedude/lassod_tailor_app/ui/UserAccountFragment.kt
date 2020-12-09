@@ -267,7 +267,17 @@ class UserAccountFragment : DaggerFragment() {
                     false
                 )
             )
-            submitList(unionList)
+            if(currentUser?.category == getString(R.string.fashionista)){
+                submitList(unionList.apply{
+                    clear()
+                })
+                union_membership.hide()
+                union_membership_line.hide()
+            }
+            else{
+                submitList(unionList)
+            }
+
         }
         return unionList
     }
@@ -282,8 +292,16 @@ class UserAccountFragment : DaggerFragment() {
         val showroomCity = user?.showroomUserAddress?.city
         val showroomState = user?.showroomUserAddress?.state
         val showroomAddress = UserAddress(showroomStreet, showroomCity, showroomState)
+        val deliveryStreet = user?.deliveryAddress?.street
+        val deliveryCity = user?.deliveryAddress?.city
+        val deliveryState = user?.deliveryAddress?.state
+        val deliveryAddress = UserAddress(deliveryStreet, deliveryCity, deliveryState)
 
         val addressList = arrayListOf<UserAddressClass>(
+            UserAddressClass(
+                getString(R.string.delivery_address_str),
+                deliveryAddress
+            ),
             UserAddressClass(
                 getString(R.string.workshop_address),
                 workshopAddress
@@ -337,7 +355,13 @@ class UserAccountFragment : DaggerFragment() {
                     false
                 )
             )
-            submitList(addressList)
+            if(currentUser?.category == getString(R.string.fashionista)){
+                submitList(addressList.take(1))
+            }
+            else{
+                submitList(addressList.takeLast(2))
+            }
+
         }
         return addressList
     }
@@ -465,7 +489,13 @@ class UserAccountFragment : DaggerFragment() {
                     false
                 )
             )
-            submitList(nameList)
+            if(currentUser?.category == getString(R.string.fashionista)){
+                submitList(nameList.subList(0, 4))
+            }
+            else{
+                submitList(nameList)
+            }
+
         }
         return nameList
     }

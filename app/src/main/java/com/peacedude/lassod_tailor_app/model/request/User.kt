@@ -34,7 +34,11 @@ data class User(
     var isVerified: Boolean? = null
     var gender: String? = null
     var avatar:String? = null
+    @SerializedName("deliveryAddress")
+    var deliveryAddress: UserAddress? = null
+    @SerializedName("workshopAddress")
     var workshopUserAddress: UserAddress? = null
+    @SerializedName("showroomAddress")
     var showroomUserAddress: UserAddress? = null
     var noOfEmployees: Int? = null
     var legalStatus: String? = null

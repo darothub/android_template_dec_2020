@@ -18,10 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
-import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.invisible
-import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
@@ -106,7 +103,7 @@ open class HomeFragment : DaggerFragment() {
             loginBtn.background = loginBackgroundDrawable
         })
 
-        userViewModel.netWorkLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        networkMonitor().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it) {
                 loginBtn.show()
                 signupBtn.show()
@@ -156,6 +153,9 @@ open class HomeFragment : DaggerFragment() {
 //                    requireActivity().finish()
 //                }
 //            })
+        }
+        else{
+            startActivity(Intent(requireContext(), MainActivity::class.java))
         }
     }
 
