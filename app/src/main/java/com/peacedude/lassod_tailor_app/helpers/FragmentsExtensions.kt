@@ -9,6 +9,7 @@ import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDirections
@@ -74,7 +75,13 @@ inline fun <reified T> Fragment.onRequestResponseTask(
     result: Any?,
     action: (UserResponse<T>?) -> Unit
 ) {
-    requireActivity().onRequestResponseTask<T>(bool, result, action)
+    try {
+        requireActivity().onRequestResponseTask<T>(bool, result, action)
+    }
+    catch (e:Exception){
+        i("Fragment.onRequestResponseTask", e.message.toString())
+    }
+
 }
 
 /**
@@ -156,4 +163,8 @@ inline fun <reified T> Fragment.onFlowResponse(
 
 fun Fragment.goto(destination: Class<*>) {
     requireActivity().goto(destination)
+}
+
+fun Fragment.networkMonitor():MutableLiveData<Boolean>{
+    return requireActivity().networkMonitor()
 }

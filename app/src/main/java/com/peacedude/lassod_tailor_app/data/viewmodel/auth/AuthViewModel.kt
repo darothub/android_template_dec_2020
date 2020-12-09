@@ -52,10 +52,10 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<User>(request, responseLiveData)
     }
 
-   override fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>> {
+   override fun updateUserData(user: User): LiveData<ServicesResponseWrapper<ParentData>> {
 
 
-        val request = authRequestInterface.updateUserData(header, user)
+        val request = authRequestInterface.updateUserData(user)
        return enqueueRequest<User>(request, responseLiveData)
     }
 
@@ -319,11 +319,10 @@ open class AuthViewModel @Inject constructor(
     }
 
     override suspend fun getAllMeasurements(
-        header: String?,
         clientId: String
     ): Flow<ServicesResponseWrapper<ParentData>> =flow {
         try {
-            val request = authRequestInterface.getAllMeasurements(header, clientId)
+            val request = authRequestInterface.getAllMeasurements(clientId)
             onSuccessFlowResponse(request)
         } catch (e: HttpException) {
             onErrorFlowResponse(e)

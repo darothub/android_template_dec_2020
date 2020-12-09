@@ -2,6 +2,13 @@
     <string-array name="categories_array">
         <item>tailor</item>
         <item>weaver</item>
+        <item>fashionista</item>
+    </string-array>
+    <string-array name="drawer_menu_titles">
+        <item>Clients</item>
+        <item>Resources</item>
+        <item>Subscriptions</item>
+        <item>Logout</item>
     </string-array>
     <string-array name="specialty_list">
         <item>Yoruba attires</item>
@@ -103,7 +110,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="resources">Resources</string>
     <string name="clients">Clients</string>
-    <string name="subscription">Subscription</string>
+    <string name="subscription">Subscriptions</string>
     <string name="logout">Logout</string>
     <string name="hi">Hi </string>
     <string name="enter_six_digit">Enter 6-digit code sent to your phone</string>

@@ -426,7 +426,7 @@ class SpecialtyFragment : DaggerFragment() {
         user.isVerified = true
         user.specialty = specialtyValueList
         user.genderFocus = genderFocusList
-        val request = authViewModel.updateUserData(header, user)
+        val request = authViewModel.updateUserData(user)
         val response = requireActivity().observeRequest(request, progressBar, saveBtn)
         response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it

@@ -234,7 +234,6 @@ class MeasurementFragment : DaggerFragment() {
 
                 val getAllMeasurements = async {
                     authViewModel.getAllMeasurements(
-                        header,
                         clientToBeEdited?.id.toString()
                     )
                 }

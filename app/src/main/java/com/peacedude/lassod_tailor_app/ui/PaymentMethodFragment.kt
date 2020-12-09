@@ -297,7 +297,7 @@ class PaymentMethodFragment : DaggerFragment() {
 
     private fun updateUserData(user: User?) {
         user?.isVerified = true
-        val request = user?.let { authViewModel.updateUserData(header.toString(), it) }
+        val request = user?.let { authViewModel.updateUserData(it) }
         val response = requireActivity().observeRequest(request, saveChangesProgressbar, saveChangesBtn)
         response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val (bool, result) = it

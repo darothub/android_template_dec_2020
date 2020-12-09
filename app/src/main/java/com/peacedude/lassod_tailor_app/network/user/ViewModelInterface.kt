@@ -53,7 +53,7 @@ interface ViewModelInterface {
     fun getUserData(): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun updateUserData(header: String, user: User): LiveData<ServicesResponseWrapper<ParentData>>{
+    fun updateUserData(user: User): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
     fun forgetPassword(email:String): LiveData<ServicesResponseWrapper<ParentData>>{
@@ -168,7 +168,6 @@ interface ViewModelInterface {
         return TODO()
     }
     suspend fun getAllMeasurements(
-        header: String?,
         clientId: String
     ): Flow<ServicesResponseWrapper<ParentData>>{
         return TODO()

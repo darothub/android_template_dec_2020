@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -41,6 +42,10 @@ import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -72,12 +77,7 @@ class ProfileFragment : DaggerFragment() {
         }
     }
 
-    private val loaderDialog by lazy {
-        Dialog(requireContext(), R.style.DialogTheme).apply {
-            setContentView(R.layout.loader_layout)
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-        }
-    }
+
 
     lateinit var dialogDeleteProgressBar: ProgressBar
 
@@ -144,9 +144,9 @@ class ProfileFragment : DaggerFragment() {
     }
 
 
-    lateinit var  dialogEditBtn:Button
-    lateinit var  dialogDeleteBtn:Button
-    lateinit var  dialogUpdateBtn:Button
+    lateinit var dialogEditBtn:Button
+    lateinit var dialogDeleteBtn:Button
+    lateinit var dialogUpdateBtn:Button
     lateinit var dialogUpdateProgressBar:ProgressBar
     lateinit var dialogSendPhotoBtn:Button
     lateinit var dialogChatBtn:Button
@@ -268,7 +268,7 @@ class ProfileFragment : DaggerFragment() {
 
         }, {
 
-            authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+            networkMonitor().observe(viewLifecycleOwner, Observer {
                 if (it) {
                     clientTransaction()
                     Log.i(title, "Profile Network  ON")
@@ -278,6 +278,7 @@ class ProfileFragment : DaggerFragment() {
             })
 
         })
+
 
 
 
@@ -294,26 +295,28 @@ class ProfileFragment : DaggerFragment() {
             //Task to be done on successful
             onRequestResponseTask<ClientsList>(bool, result) {
                 val results = result as UserResponse<ClientsList>
-                val listOfClient = result.data?.clients?.map {
-                    Client(
-                        it?.name.toString(),
-                        it?.phone.toString(),
-                        it?.email.toString(),
-                        it?.deliveryAddress.toString()
-                    ).apply {
-                        country = it?.country
-                        state = it?.state
-                        tailorId = it?.tailorId
-                        id = it?.id
-                        gender = it?.gender
-                    }
-
-
+                val list = result.data?.clients
+                if(list?.isEmpty() == true){
+                    i(title, "list of clients empty")
+                    profile_fragment_recyclerview_vf.showNext()
+                    return@onRequestResponseTask
                 }
-
-
-                if (listOfClient?.isNotEmpty()!!) {
-
+                else {
+                    i(title, "list of clients not empty")
+                    val listOfClient = list?.map {
+                        Client(
+                            it?.name.toString(),
+                            it?.phone.toString(),
+                            it?.email.toString(),
+                            it?.deliveryAddress.toString()
+                        ).apply {
+                            country = it?.country
+                            state = it?.state
+                            tailorId = it?.tailorId
+                            id = it?.id
+                            gender = it?.gender
+                        }
+                    }
                     profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
 
                         bind { itemView, position, item ->
@@ -381,7 +384,7 @@ class ProfileFragment : DaggerFragment() {
                                     onRequestResponseTask<NothingExpected>(bool, result) {
                                         val res = result as UserResponse<NothingExpected>
                                         requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-    //                                        listOfClient.toMutableList().removeAt(position)
+                                        //                                        listOfClient.toMutableList().removeAt(position)
                                         list?.removeAt(GlobalVariables.globalPosition)
                                         dialog.dismiss()
                                         adapter.notifyDataSetChanged()
@@ -406,7 +409,7 @@ class ProfileFragment : DaggerFragment() {
                                         dialogAddressEt,
                                         dialogStateEt
                                     )
-    //                                val validation = IsEmptyCheck.fieldsValidation(null, null, )
+                                //                                val validation = IsEmptyCheck.fieldsValidation(null, null, )
                                 when {
                                     emptyEditText != null -> {
                                         emptyEditText.error = getString(R.string.field_required)
@@ -477,17 +480,14 @@ class ProfileFragment : DaggerFragment() {
                         submitList(listOfClient)
                     }
 
-                } else {
-                    profile_fragment_recyclerview_vf.showNext()
                 }
+
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        val i = DashboardActivity.getMainActInstance()
-
 
 
         i(title, "onresume")

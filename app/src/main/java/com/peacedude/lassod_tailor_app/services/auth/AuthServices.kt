@@ -19,7 +19,6 @@ interface AuthServices {
 
     @PATCH("auth/profile/me")
     fun updateUserData(
-        @Header("Authorization") header: String,
         @Body user: User
     ): Call<UserResponse<User>>
 
@@ -85,7 +84,6 @@ interface AuthServices {
 
     @GET("measurements")
     suspend fun getAllMeasurements(
-        @Header("Authorization") header: String?,
         @Query("clientId") clientId:String
     ): UserResponse<ListOfMeasurement>
 

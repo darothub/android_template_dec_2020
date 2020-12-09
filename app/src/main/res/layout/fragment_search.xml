@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:textSize="@dimen/_14sdp"
+        android:textSize="@dimen/_10sdp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
 
@@ -67,7 +67,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toEndOf="@id/search_fragment_filter_ib"
         app:layout_constraintTop_toBottomOf="@id/search_fragment_search_et"
-
         tools:listitem="@layout/search_filter_item" />
 
     <View
@@ -102,7 +101,6 @@
         android:id="@+id/search_fragment_search_result_rv"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-
         android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginBottom="@dimen/_5sdp"
         android:orientation="vertical"
@@ -110,7 +108,48 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_fragment_line1"
-
         app:layout_constraintVertical_bias="0.03"
         tools:listitem="@layout/search_media_category_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+<!--<View-->
+<!--android:id="@+id/search_fragment_line1"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="1dp"-->
+<!--android:layout_marginTop="@dimen/_15sdp"-->
+<!--android:background="@color/colorGray"-->
+<!--app:layout_constraintTop_toBottomOf="@id/search_fragment_search_rv" />-->
+
+<!--<TextView-->
+<!--android:id="@+id/search_fragment_search_result_title_tv"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:layout_marginTop="@dimen/_15sdp"-->
+<!--android:text="@string/tailors"-->
+<!--android:textSize="@dimen/_14sdp"-->
+<!--app:layout_constraintStart_toStartOf="parent"-->
+<!--app:layout_constraintTop_toBottomOf="@id/search_fragment_line1" />-->
+
+<!--<View-->
+<!--android:id="@+id/search_fragment_line2"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="1dp"-->
+<!--android:layout_marginTop="@dimen/_15sdp"-->
+<!--android:background="@color/colorGray"-->
+<!--app:layout_constraintTop_toBottomOf="@id/search_fragment_search_result_title_tv" />-->
+
+<!--<androidx.recyclerview.widget.RecyclerView-->
+<!--android:id="@+id/search_fragment_search_result_rv"-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:layout_marginTop="@dimen/_5sdp"-->
+<!--android:layout_marginBottom="@dimen/_5sdp"-->
+<!--android:orientation="horizontal"-->
+<!--app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+<!--app:layout_constraintBottom_toBottomOf="parent"-->
+<!--app:layout_constraintStart_toStartOf="parent"-->
+<!--app:layout_constraintTop_toBottomOf="@id/search_fragment_line2"-->
+<!--app:layout_constraintVertical_bias="0.03"-->
+<!--tools:listitem="@layout/search_result_media_item" />-->

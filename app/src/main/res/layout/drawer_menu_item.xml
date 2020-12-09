@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White">
+    <ImageView
+        android:id="@+id/drawer_menu_iv"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        app:srcCompat="@drawable/ic_contacts_24px"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        />
+
+    <TextView
+        android:id="@+id/drawer_menu_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clients"
+        android:textSize="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_15sdp"
+        app:layout_constraintTop_toTopOf="@id/drawer_menu_iv"
+        app:layout_constraintBottom_toBottomOf="@id/drawer_menu_iv"
+        app:layout_constraintStart_toEndOf="@id/drawer_menu_iv"
+
+        />
+    <ImageView
+        android:id="@+id/drawer_menu_arrow_iv"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        app:srcCompat="@drawable/ic_baseline_navigate_next_24"
+        app:layout_constraintTop_toTopOf="@id/drawer_menu_iv"
+        app:layout_constraintBottom_toBottomOf="@id/drawer_menu_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        />
+
+    <View
+        android:id="@+id/drawer_menu_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f2f2f2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/drawer_menu_iv"
+        android:layout_marginTop="@dimen/_10sdp"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

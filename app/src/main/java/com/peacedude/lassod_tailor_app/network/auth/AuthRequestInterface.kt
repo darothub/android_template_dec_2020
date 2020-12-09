@@ -20,7 +20,7 @@ interface AuthRequestInterface {
     suspend fun getUserDetails( header: String): UserResponse<User>{
         return TODO()
     }
-    fun updateUserData(header:String, user: User): Call<UserResponse<User>> {
+    fun updateUserData(user: User): Call<UserResponse<User>> {
         return TODO()
     }
     fun forgetPassword(field:String): Call<UserResponse<String>> {
@@ -55,7 +55,6 @@ interface AuthRequestInterface {
     }
 
     suspend fun getAllMeasurements(
-        header: String?,
         clientId:String
     ): UserResponse<ListOfMeasurement>{
         return TODO()

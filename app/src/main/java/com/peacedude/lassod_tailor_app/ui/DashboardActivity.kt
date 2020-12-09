@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,6 +24,8 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -35,6 +39,7 @@ import com.peacedude.lassod_tailor_app.model.response.PhotoList
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
+import com.peacedude.lassod_tailor_app.ui.customer.SearchFilter
 import com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity
 import com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity
 import com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionActivity
@@ -42,15 +47,18 @@ import com.squareup.picasso.Picasso
 import com.utsman.recycling.setupAdapter
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.activity_resources.*
+import kotlinx.android.synthetic.main.drawer_menu_item.view.*
 import kotlinx.android.synthetic.main.fragment_media.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
+import kotlinx.android.synthetic.main.search_filter_item.view.*
 import javax.inject.Inject
 
 class DashboardActivity : BaseActivity() {
 
-    companion object Factory{
-        lateinit var dashInstance:DashboardActivity
-        fun getMainActInstance():DashboardActivity{
+    companion object Factory {
+        lateinit var dashInstance: DashboardActivity
+        fun getMainActInstance(): DashboardActivity {
             return dashInstance
         }
     }
@@ -79,13 +87,13 @@ class DashboardActivity : BaseActivity() {
 
     val navListener =
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id){
-                R.id.singleChatFragment ->{
+            when (destination.id) {
+                R.id.singleChatFragment -> {
                     profile_fab.hide()
                     bottomNav.hide()
                     profile_header.hide()
                 }
-                R.id.profileFragment ->{
+                R.id.profileFragment -> {
                 }
             }
         }
@@ -99,6 +107,7 @@ class DashboardActivity : BaseActivity() {
     private lateinit var resourcesIv: ImageView
     private lateinit var subscriptionTv: TextView
     private lateinit var subscriptionIv: ImageView
+    private lateinit var drawerMenuRv:RecyclerView
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -114,11 +123,11 @@ class DashboardActivity : BaseActivity() {
         }
     }
 
-    val checkConnectionTv by lazy{
+    val checkConnectionTv by lazy {
         dialog.findViewById<TextView>(R.id.loader_layout_tv)
     }
 
-    lateinit var navController:NavController
+    lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
@@ -130,7 +139,7 @@ class DashboardActivity : BaseActivity() {
         navController = Navigation.findNavController(this, R.id.dashboard_fragment)
 
         bottomNav.setupWithNavController(navController)
-
+        drawerMenuRv = profile_drawer_view.findViewById(R.id.drawer_menu_rv)
 
 
         Log.i(title, "currentUser $currentUser")
@@ -147,6 +156,7 @@ class DashboardActivity : BaseActivity() {
             }
         })
 
+
 //        profile_header.show()
 
         menuIcon?.setOnClickListener {
@@ -155,55 +165,10 @@ class DashboardActivity : BaseActivity() {
 
         buttonTransactions({
             editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
-            logoutText = profile_drawer_view.findViewById(R.id.logout_tv)
-            logoutImage = profile_drawer_view.findViewById(R.id.logout_image)
-            clientText = profile_drawer_view.findViewById(R.id.clients_tv)
-            clientImage = profile_drawer_view.findViewById(R.id.client_image)
-            resourcesTv = profile_drawer_view.findViewById(R.id.resources_tv)
-            resourcesIv = profile_drawer_view.findViewById(R.id.resources_image)
-            subscriptionTv = profile_drawer_view.findViewById(R.id.subscription_text)
-            subscriptionIv = profile_drawer_view.findViewById(R.id.subscription_image)
-
         }, {
             editBtn.setOnClickListener {
                 drawer_layout.closeDrawer(profile_drawer_view, true)
                 startActivity(Intent(this, ProfileActivity::class.java))
-            }
-            logoutText.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                logoutRequest()
-            }
-            logoutImage.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                logoutRequest()
-            }
-            clientText.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, ClientActivity::class.java))
-            }
-            clientImage.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, ClientActivity::class.java))
-            }
-            resourcesTv.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, ResourcesActivity::class.java))
-            }
-            resourcesIv.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, ResourcesActivity::class.java))
-            }
-            resourcesIv.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, ResourcesActivity::class.java))
-            }
-            subscriptionTv.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, SubscriptionActivity::class.java))
-            }
-            subscriptionIv.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, SubscriptionActivity::class.java))
             }
         })
         Log.i(title, "Oncreate")
@@ -213,10 +178,59 @@ class DashboardActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
-        navController.navigate(authViewModel.lastFragmentId ?: R.id.homeFragment)
+        navController.navigate(authViewModel.lastFragmentId ?: R.id.profileFragment)
+
+        val listOfDrawerMenuItem = arrayListOf<DrawerMenuItem>(
+            DrawerMenuItem(R.drawable.ic_contacts_24px, getString(R.string.clients)),
+            DrawerMenuItem(R.drawable.theaters_24px, getString(R.string.resources)),
+            DrawerMenuItem(R.drawable.ic_shopping_cart_24px, getString(R.string.subscription)),
+            DrawerMenuItem(R.drawable.ic_power_settings_new_24px, getString(R.string.logout))
+
+        )
+        drawerMenuRv.setupAdapter<DrawerMenuItem>(R.layout.drawer_menu_item) { adapter, context, list ->
+
+            bind { itemView, position, item ->
+                item?.drawable?.let { itemView.drawer_menu_iv.setImageResource(it) }
+                itemView.drawer_menu_tv.text = item?.title
+
+                itemView.setOnClickListener {
+                    when(item?.title){
+                        getString(R.string.clients) -> startActivity(Intent(this@DashboardActivity, ClientActivity::class.java))
+                        getString(R.string.resources) -> startActivity(Intent(this@DashboardActivity, ResourcesActivity::class.java))
+                        getString(R.string.subscription) -> startActivity(Intent(this@DashboardActivity, SubscriptionActivity::class.java))
+                        getString(R.string.logout) -> logoutRequest()
+
+                    }
+                }
+            }
+
+
+            setLayoutManager(
+                LinearLayoutManager(
+                    this@DashboardActivity,
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+            )
+
+            if(currentUser?.category == "fashionista"){
+                submitList(listOfDrawerMenuItem.takeLast(1))
+            }
+            else{
+                submitList(listOfDrawerMenuItem)
+            }
 
 
 
+        }
+
+
+    }
+
+    private fun setInvisible(vararg views: View) {
+        for (v in views) {
+            v.invisible()
+        }
     }
 
 
@@ -283,6 +297,6 @@ class DashboardActivity : BaseActivity() {
     }
 
 
-
-
 }
+
+data class DrawerMenuItem(var drawable:Int, var title:String)

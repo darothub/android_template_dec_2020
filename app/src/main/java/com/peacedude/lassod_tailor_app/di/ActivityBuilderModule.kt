@@ -118,7 +118,7 @@ open class ActivityStaticModule {
                 val user = storageRequest.checkData<User>(loggedInUserKey)
                 val header = "$bearer ${user?.token}"
                 var req = it.request()
-                req = req.newBuilder().header("Authorization", header).build()
+                req = req.newBuilder().addHeader("Authorization", header).build()
                 val res = it.proceed(req)
                 res
             }

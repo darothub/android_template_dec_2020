@@ -47,8 +47,8 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.getArticles(header)
     }
 
-    override fun updateUserData(header: String, user: User): Call<UserResponse<User>> {
-        return authServices.updateUserData(header, user)
+    override fun updateUserData(user: User): Call<UserResponse<User>> {
+        return authServices.updateUserData(user)
     }
 
     override fun forgetPassword(field: String): Call<UserResponse<String>> {
@@ -178,10 +178,9 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
     }
 
     override suspend fun getAllMeasurements(
-        header: String?,
         clientId: String
     ): UserResponse<ListOfMeasurement> {
-        return authServices.getAllMeasurements(header, clientId)
+        return authServices.getAllMeasurements(clientId)
     }
 
 //    override suspend fun getM(header:String): Flow<MeasurementTypeList> = flow{

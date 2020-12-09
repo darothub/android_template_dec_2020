@@ -8,15 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
+import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.hide
 import com.peacedude.lassod_tailor_app.helpers.setCustomColor
 import com.peacedude.lassod_tailor_app.ui.*
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client.*
 import kotlinx.android.synthetic.main.fragment_profile_management.*
+import javax.inject.Inject
 
 
 /**
@@ -24,7 +32,24 @@ import kotlinx.android.synthetic.main.fragment_profile_management.*
  * Use the [ProfileManagementFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ProfileManagementFragment : Fragment() {
+class ProfileManagementFragment : DaggerFragment() {
+
+    private val title by lazy {
+        getName()
+    }
+
+    val currentUser by lazy {
+        userViewModel.currentUser
+    }
+    val header by lazy {
+        userViewModel.header
+    }
+
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val userViewModel: UserViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
+    }
 
     lateinit var adapter : ViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +89,7 @@ class ProfileManagementFragment : Fragment() {
         }
         val profileManagementViewPager = (profile_management_included_viewPager as? ViewPager2)
 
+
         profile_management_tabLayout.setBackgroundColor(setCustomColor(R.color.colorWhite))
         (profile_management_included_viewPager as? ViewPager2)?.adapter = adapter
         val tabLayoutMediator =
@@ -84,6 +110,11 @@ class ProfileManagementFragment : Fragment() {
             }
 
         profile_management_tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+
+//        if(currentUser?.category == "fashionista"){
+//            profile_management_tabLayout.getChildAt(1).visibility = View.GONE
+//            profile_management_tabLayout.getChildAt(2).visibility = View.GONE
+//        }
 
     }
 

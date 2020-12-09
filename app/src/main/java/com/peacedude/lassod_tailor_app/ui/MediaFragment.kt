@@ -147,14 +147,9 @@ class MediaFragment : DaggerFragment() {
         noDataText.text = getString(R.string.you_have_no_photo_str)
 
 
-        authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+        networkMonitor().observe(viewLifecycleOwner, Observer {
             if (it) {
-                try {
-                    mediaTransaction()
-                }
-                catch (e:Exception){
-                    Log.e(title, e.message.toString())
-                }
+                mediaTransaction()
 
             } else {
 
