@@ -299,7 +299,6 @@ class ProfileFragment : DaggerFragment() {
                 if(list?.isEmpty() == true){
                     i(title, "list of clients empty")
                     profile_fragment_recyclerview_vf.showNext()
-                    return@onRequestResponseTask
                 }
                 else {
                     i(title, "list of clients not empty")

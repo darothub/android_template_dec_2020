@@ -90,10 +90,6 @@ class VerificationFragment : Fragment() {
 
         buttonTransactions({
             editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
-            logoutText = profile_drawer_view.findViewById(R.id.logout_tv)
-            logoutImage = profile_drawer_view.findViewById(R.id.logout_image)
-            clientText = profile_drawer_view.findViewById(R.id.clients_tv)
-            clientImage = profile_drawer_view.findViewById(R.id.client_image)
 
         },{
             editBtn.setOnClickListener {

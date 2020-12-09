@@ -3,7 +3,9 @@ package com.peacedude.lassod_tailor_app.di.activitymodules
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.*
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.ProfileManagementFragmentModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.auth.AuthRequestModule
+import com.peacedude.lassod_tailor_app.di.networkmodules.user.UserRequestsModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
+import com.peacedude.lassod_tailor_app.di.viewmodelmodules.user.UserViewModelModule
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.peacedude.lassod_tailor_app.ui.profile.ProfileActivity
 import dagger.Module
@@ -21,6 +23,8 @@ abstract class ProfileActivityModule {
             UserAccountFragmentModule::class,
             SpecialtyFragmentModule::class,
             AuthViewModelModule::class,
+            UserViewModelModule::class,
+            UserRequestsModule::class,
             ProfileFragmentModule::class,
             PaymentMethodFragmentModule::class,
             SecurityFragmentModule::class,

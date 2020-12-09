@@ -145,7 +145,7 @@ class DashboardActivity : BaseActivity() {
         Log.i(title, "currentUser $currentUser")
 
 
-        authViewModel.netWorkLiveData.observe(this, Observer {
+       networkMonitor().observe(this, Observer {
             if (it) {
                 Log.i(title, "Network On")
                 getUserData()
@@ -178,7 +178,7 @@ class DashboardActivity : BaseActivity() {
             startActivity(Intent(this, ClientActivity::class.java))
         }
 
-        navController.navigate(authViewModel.lastFragmentId ?: R.id.profileFragment)
+
 
         val listOfDrawerMenuItem = arrayListOf<DrawerMenuItem>(
             DrawerMenuItem(R.drawable.ic_contacts_24px, getString(R.string.clients)),
@@ -247,8 +247,9 @@ class DashboardActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        authViewModel.lastFragmentId = bottomNav.selectedItemId
         navController.addOnDestinationChangedListener(navListener)
+        navController.navigate(authViewModel.lastFragmentId ?: R.id.profileFragment)
 
 //        val user = authViewModel.currentUser
 

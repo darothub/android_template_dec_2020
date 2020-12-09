@@ -17,6 +17,7 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.helpers.invisible
+import com.peacedude.lassod_tailor_app.helpers.networkMonitor
 import com.peacedude.lassod_tailor_app.helpers.show
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_dashboard.*
@@ -47,7 +48,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
         baseDialog.show()
         baseCheckConnectionTv.show()
-        authViewModel.netWorkLiveData.observe(this, androidx.lifecycle.Observer {
+        networkMonitor().observe(this, androidx.lifecycle.Observer {
             if (it) {
                 baseDialog.dismiss()
                 Log.i("Base", "Network On")

@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.ui.customer
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
@@ -50,6 +51,17 @@ class CustomerActivity : BaseActivity() {
         setContentView(R.layout.activity_customer)
         val activityTitle = customer_activity_appbar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
         activityTitle.text = getString(R.string.review)
+
+        networkMonitor().observe(this, androidx.lifecycle.Observer {
+            if (it) {
+                Log.i(title, "Network ON")
+                customer_activity_fragment.view?.show()
+
+            } else {
+                customer_activity_fragment.view?.invisible()
+                Log.i(title, "Network OFF")
+            }
+        })
     }
 
     override fun onResume() {

@@ -138,12 +138,9 @@ class UserAccountFragment : DaggerFragment() {
             saveBtn.background = saveBtnBackground
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
-        authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+        networkMonitor().observe(viewLifecycleOwner, Observer {
             if (it) {
                 getUserData()
-
-            } else {
-
             }
         })
 
@@ -156,7 +153,6 @@ class UserAccountFragment : DaggerFragment() {
 
         tap_to_change_pic_tv.setOnClickListener {
             photoRequest()
-
         }
         user_account_profile_image.setOnClickListener {
             photoRequest()

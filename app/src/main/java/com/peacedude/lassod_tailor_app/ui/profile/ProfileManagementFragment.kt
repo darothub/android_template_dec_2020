@@ -96,12 +96,28 @@ class ProfileManagementFragment : DaggerFragment() {
             profileManagementViewPager?.let {
                 TabLayoutMediator(profile_management_tabLayout, it,
                     TabLayoutMediator.TabConfigurationStrategy { tab, position ->
-                        when(position){
+                        when (position) {
 
                             0 -> tab.text = getString(R.string.account_str)
-                            1 -> tab.text = getString(R.string.specialty)
-                            2 ->  tab.text = getString(R.string.payment_method)
-                            3 -> tab.text = getString(R.string.security_str)
+                            1 -> {
+                                if (currentUser?.category == "fashionista") {
+                                    tab.view.hide()
+                                } else {
+                                    tab.text = getString(R.string.specialty)
+                                }
+
+                            }
+                            2 -> {
+                                if (currentUser?.category == "fashionista") {
+                                    tab.view.hide()
+                                } else {
+                                    tab.text = getString(R.string.payment_method)
+                                }
+
+                            }
+                            3 -> {
+                                tab.text = getString(R.string.security_str)
+                            }
                             else -> ProfileFragment()
                         }
                     }).apply {
