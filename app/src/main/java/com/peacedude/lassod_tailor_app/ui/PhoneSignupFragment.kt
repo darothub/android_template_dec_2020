@@ -1,7 +1,10 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import IsEmptyCheck
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
@@ -13,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
@@ -29,6 +33,8 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.receiver.SMSReceiver
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import validatePasswordAndAdvise
@@ -92,9 +98,17 @@ class PhoneSignupFragment : DaggerFragment() {
         setupToolbarAndNavigationUI(toolbar, navController)
         buttonAndProgressBarActivity()
 
+        requestSMSPermission()
+
         setUpCountrySpinnerWithDialCode(getString(R.string.select_your_country_str), phone_signup_country_spinner)
         setupLoginSpannableString()
         initEnterKeyToSubmitForm(phone_signup_password_et) { signupRequest() }
+    }
+
+    private fun requestSMSPermission() {
+        if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECEIVE_SMS), 100)
+        }
     }
 
     private fun buttonAndProgressBarActivity() {
@@ -147,7 +161,7 @@ class PhoneSignupFragment : DaggerFragment() {
 
         }, {
 
-            userViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+            networkMonitor().observe(viewLifecycleOwner, Observer {
                 if (it) {
                     phonesignupBtn.show()
                 } else {
@@ -156,6 +170,7 @@ class PhoneSignupFragment : DaggerFragment() {
             })
             phonesignupBtn.setOnClickListener {
                 signupRequest()
+                return@setOnClickListener
             }
 
 
@@ -195,17 +210,16 @@ class PhoneSignupFragment : DaggerFragment() {
      */
     @SuppressLint("SetTextI18n")
     private fun signupRequest() {
-        var dialCodePattern = Regex("""(\d{1,3})""")
+        val dialCodePattern = Regex("""(\d{1,3})""")
         val country = phone_signup_country_spinner.selectedItem as String
-        var dialCode = dialCodePattern.find(country)?.value
+        val dialCode = dialCodePattern.find(country)?.value
         var phoneNumber = phone_signup_phone_number_et.text.toString().trim()
         val passwordString = phone_signup_password_et.text.toString().trim()
-        var phonePattern = Regex("""\d{10,13}""")
+        val phonePattern = Regex("""\d{10,13}""")
         val firstZeroPattern = Regex("""[0]\d+""")
-        var checkFirstZero = firstZeroPattern.matches(phoneNumber)
+        val checkFirstZero = firstZeroPattern.matches(phoneNumber)
         val checkPhoneStandard = phonePattern.matches(phoneNumber)
 
-        Log.i(title, "check $checkFirstZero")
         val checkForEmpty =
             IsEmptyCheck(phone_signup_phone_number_et, phone_signup_password_et)
         val validation = IsEmptyCheck.fieldsValidation(null, passwordString)
@@ -221,8 +235,6 @@ class PhoneSignupFragment : DaggerFragment() {
                 phoneNumber = phoneNumber.removePrefix("0")
                 phone_signup_phone_number_et.setText(phoneNumber)
             }
-
-
             else -> {
                 phoneNumber = dialCode + phoneNumber
                 val category = phone_signup_category_spinner.selectedItem as String
@@ -230,25 +242,33 @@ class PhoneSignupFragment : DaggerFragment() {
                 userData.category = category
                 userData.phone = phoneNumber
                 userData.password = passwordString
-                requireActivity().gdToast("$phoneNumber", Gravity.BOTTOM)
+
                 val request = userViewModel.registerUser(userData)
-                val response = requireActivity().observeRequest(request, progressBar, phonesignupBtn)
-                response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask<User>(bool, result){
-                        activateUserRequest(phoneNumber)
-                    }
+                observeRequest<User>(request, confirmProgressBar, confirmBtn, false, {
+                    i(title, "Phonesignup message ${it?.message.toString()}")
+                    requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+                    activateUserRequest(phoneNumber)
+                },{ err ->
+                    requireActivity().gdToast(err, Gravity.BOTTOM)
+                    i(title, "PhoneSignUpError $err")
                 })
             }
         }
 
+
     }
     private fun activateUserRequest(phone:String) {
+        dialog.show{
+            cornerRadius(15F)
+        }
 //        var code:String? = null
         val pinEditText = dialog.findViewById<PinEntryEditText>(R.id.txt_pin_entry)
 
-        requireActivity().gdToast("$phone", Gravity.BOTTOM)
+//        requireActivity().gdToast("$phone", Gravity.BOTTOM)
+        val smsReceiver = SMSReceiver()
+        smsReceiver.setEditText(pinEditText)
         confirmBtn.setOnClickListener {
+
             val code = pinEditText.text.toString()
             if (code.isBlank()) {
                 requireActivity().gdErrorToast("Empty code is not allowed", Gravity.BOTTOM)
@@ -257,38 +277,47 @@ class PhoneSignupFragment : DaggerFragment() {
                 Log.i(title, "$code")
                 val request = userViewModel.activateUser(phone, code)
 //                requireActivity().gdToast("$code $phone", Gravity.BOTTOM)
-                val response =
-                    requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
-                response.observe(viewLifecycleOwner, Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask<User>(
-                        bool,
-                        result
-                    ){
+                    observeRequest<User>(request, confirmProgressBar, confirmBtn, false, {
                         dialog.dismiss()
                         findNavController().navigate(R.id.loginFragment)
-                    }
-                })
+                    },{ err ->
+                        i(title, "PhoneSignUpError $err")
+                    })
+//                response.observe(viewLifecycleOwner, Observer {
+//                    val (bool, result) = it
+//                    onRequestResponseTask<User>(
+//                        bool,
+//                        result
+//                    ){
+//                        dialog.dismiss()
+//                        findNavController().navigate(R.id.loginFragment)
+//                    }
+//                })
 
             }
 
         }
         resendCodeBtn.setOnClickListener {
             val request = userViewModel.resendCode(phone)
-            val response =
-                requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
-            response.observe(viewLifecycleOwner, Observer {
-                val (bool, result) = it
-                onRequestResponseTask<User>(
-                    bool,
-                    result
-                ){}
+            observeRequest<User>(request, confirmProgressBar, confirmBtn, false, {
+                smsReceiver.setEditText(pinEditText)
+            },{err ->
+                i(title, "PhoneSignUpError $err")
             })
+//            response.observe(viewLifecycleOwner, Observer {
+//                val (bool, result) = it
+//                onRequestResponseTask<User>(
+//                    bool,
+//                    result
+//                ){
+//
+//                }
+//            })
 
         }
-        dialog.show{
-            cornerRadius(15F)
-        }
+
+
+
     }
 
 }

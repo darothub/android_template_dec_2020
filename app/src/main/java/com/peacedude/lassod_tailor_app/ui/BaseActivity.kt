@@ -1,32 +1,37 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.helpers.i
-import com.peacedude.lassod_tailor_app.helpers.invisible
-import com.peacedude.lassod_tailor_app.helpers.networkMonitor
-import com.peacedude.lassod_tailor_app.helpers.show
+import com.peacedude.lassod_tailor_app.helpers.*
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import java.lang.Math.abs
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 abstract class BaseActivity : DaggerAppCompatActivity() {
+
     @Inject
     lateinit var viewModelProviderFactori: ViewModelFactory
     val baseDialog by lazy {
@@ -46,24 +51,26 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        baseDialog.show()
-        baseCheckConnectionTv.show()
-        networkMonitor().observe(this, androidx.lifecycle.Observer {
+        networkMonitor().observe(this, Observer {
             if (it) {
                 baseDialog.dismiss()
-                Log.i("Base", "Network On")
-
+                baseCheckConnectionTv.hide()
             } else {
                 baseDialog.show()
                 baseCheckConnectionTv.show()
-                Log.i("Base", "Network OFF")
             }
         })
-
     }
+
 
     override fun onResume() {
         super.onResume()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+
     }
 
 }

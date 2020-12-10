@@ -86,7 +86,8 @@ class EmailSignupFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition =
+            TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_email_signup, container, false)
@@ -126,7 +127,7 @@ class EmailSignupFragment : DaggerFragment() {
             }
         })
 
-        if(user != null){
+        if (user != null) {
             email_field.hide()
         }
 
@@ -178,25 +179,25 @@ class EmailSignupFragment : DaggerFragment() {
                     nUser.category = email_signup_category_spinner.selectedItem as String
                     val req = userViewModel.registerUser(googleAuthHeader, nUser)
                     i(title, "header ${user?.token}")
-                    requestObserver(progressBar, emailSignupBtn, req) { bool, result ->
-                        onRequestResponseTask<User>(bool, result) {
-                            val userDetails = result as? UserResponse<User>
-                            var user = userDetails?.data
-                            currentUser.loggedIn = true
-                            currentUser.token = user?.token
-                            userViewModel.currentUser = currentUser
-                            val res = userViewModel.currentUser
-                            val loginIntent =
-                                Intent(requireContext(), DashboardActivity::class.java)
-                            i(
-                                "$this",
-                                "res ${res}  \ncurUser ${currentUser}\ntoken 2${currentUser.token}"
-                            )
-                            startActivity(loginIntent)
-                            requireActivity().finish()
+                    observeRequest<User>(req, null, null, false, {userDetails->
 
-                        }
-                    }
+                        var user = userDetails?.data
+                        currentUser.loggedIn = true
+                        currentUser.token = user?.token
+                        userViewModel.currentUser = currentUser
+                        val res = userViewModel.currentUser
+                        val loginIntent =
+                            Intent(requireContext(), DashboardActivity::class.java)
+                        i(
+                            "$this",
+                            "res ${res}  \ncurUser ${currentUser}\ntoken 2${currentUser.token}"
+                        )
+                        startActivity(loginIntent)
+                        requireActivity().finish()
+                        i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
+                    },{err->
+                        i(title, "Email SignupError $err")
+                    })
 
                 }
             }
@@ -208,17 +209,27 @@ class EmailSignupFragment : DaggerFragment() {
                 newUser.password = passwordString
                 val req = userViewModel.registerUserWithEmail(category, email, passwordString)
                 val observer =
-                    requireActivity().observeRequest(req, progressBar, emailSignupBtn)
-                observer.observe(viewLifecycleOwner, Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask<User>(bool, result) {
-                        requireActivity().gdToast(
-                            "Check your email for verification",
-                            Gravity.BOTTOM
-                        )
-                        Log.i(title, getString(R.string.check_email))
-                    }
-                })
+                    observeRequest<User>(
+                        req,
+                        progressBar,
+                        emailSignupBtn,
+                        false,
+                        {
+                            requireActivity().gdToast(
+                                "Check your email for verification",
+                                Gravity.BOTTOM
+                            )
+                        },
+                        { err ->
+                            i(title, "DashActError $err")
+                        })
+//                observer.observe(viewLifecycleOwner, Observer {
+//                    val (bool, result) = it
+//                    onRequestResponseTask<User>(bool, result) {
+//
+//                        Log.i(title, getString(R.string.check_email))
+//                    }
+//                })
             }
         }
     }

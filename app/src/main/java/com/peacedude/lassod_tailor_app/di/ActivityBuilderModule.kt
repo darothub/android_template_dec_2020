@@ -29,6 +29,7 @@ import com.peacedude.lassod_tailor_app.utils.storage.EncryptedSharedPrefManager
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
+import okhttp3.CacheControl
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
@@ -97,28 +98,17 @@ open class ActivityStaticModule {
      */
     @Singleton
     @Provides
-    open fun provideHeaderInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            var req = chain.request()
-            req = req.newBuilder().header("Authorization", "Hello").build()
-            val res = chain.proceed(req)
-            res
-        }
-    }
-
-    /**
-     * A function to provide okHttp instance
-     *
-     */
-    @Singleton
-    @Provides
     open fun provideokHttpInstance(loggingInterceptor: HttpLoggingInterceptor, storageRequest: StorageRequest): okhttp3.OkHttpClient {
         return okhttp3.OkHttpClient.Builder()
             .addInterceptor{
                 val user = storageRequest.checkData<User>(loggedInUserKey)
                 val header = "$bearer ${user?.token}"
                 var req = it.request()
-                req = req.newBuilder().addHeader("Authorization", header).build()
+                req = req.newBuilder()
+                    .cacheControl(CacheControl.FORCE_NETWORK)
+                    .addHeader("Authorization", header)
+                    .addHeader("Cache-control", "no-cache")
+                    .build()
                 val res = it.proceed(req)
                 res
             }

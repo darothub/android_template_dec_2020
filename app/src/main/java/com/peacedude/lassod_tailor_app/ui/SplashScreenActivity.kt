@@ -19,7 +19,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buildVersion
-import com.peacedude.lassod_tailor_app.helpers.networkMonitor
 import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.ui.customer.CustomerActivity
 import kotlinx.android.synthetic.main.activity_splash_screen.*
@@ -46,7 +45,6 @@ class SplashScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
 
         app_logo.animation = topAnimation
-        val netWorkLiveData = networkMonitor()
 //        netWorkLiveData.observe(this, androidx.lifecycle.Observer {
 //            if (it) {
 //                splashDialog.dismiss()

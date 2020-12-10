@@ -94,11 +94,13 @@ inline fun <reified T> Fragment.onRequestResponseTask(
  * @param button
  * @return
  */
-fun Fragment.observeRequest(
+inline fun <reified T>Fragment.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>?,
-    progressBar: ProgressBar?, button: Button?, loader: Boolean = false
+    progressBar: ProgressBar?, button: Button?, loader: Boolean = false,
+    crossinline sucess: (UserResponse<T>) -> Unit,
+    crossinline error: (String) -> Unit
 ): LiveData<Pair<Boolean, Any?>> {
-    return requireActivity().observeRequest(request, progressBar, button, loader)
+    return requireActivity().observeRequest<T>(request, progressBar, button, loader, sucess, error)
 }
 
 

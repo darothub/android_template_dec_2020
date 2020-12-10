@@ -50,9 +50,11 @@ import kotlin.collections.ArrayList
  * @param button
  * @return
  */
-fun Activity.observeRequest(
+inline fun <reified T> Activity.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>?,
-    progressBar: ProgressBar?, button: Button?, loader: Boolean = false
+    progressBar: ProgressBar?, button: Button?, loader: Boolean = false,
+    crossinline success: (UserResponse<T>) -> Unit,
+    crossinline error: (String) -> Unit
 ): LiveData<Pair<Boolean, Any?>> {
     val result = MutableLiveData<Pair<Boolean, Any?>>()
     val title: String by lazy {
@@ -84,18 +86,21 @@ fun Activity.observeRequest(
                     dialog.dismiss()
                     progressBar?.hide()
                     button?.show()
-                    result.postValue(Pair(true, responseData))
 
+                    responseData as UserResponse<T>
+                    success(responseData)
                     i(title, "success ${it.data}")
+
+
                 }
                 is ServicesResponseWrapper.Error -> {
                     dialog.dismiss()
                     progressBar?.hide()
                     button?.show()
-                    result.postValue(Pair(false, errorResponse))
-                    gdErrorToast("$errorResponse", Gravity.BOTTOM)
-
+//                    gdErrorToast("$errorResponse", Gravity.BOTTOM)
+                    error(errorResponse.toString())
                     Log.i(title, "Error ${it.message}")
+
                 }
                 is ServicesResponseWrapper.Logout -> {
                     dialog.dismiss()
@@ -106,6 +111,7 @@ fun Activity.observeRequest(
                     startActivity(Intent(this as? Context, MainActivity::class.java))
 //                    result.postValue(Pair(false, errorResponse.toString()))
                     i(title, "Log out ${errorResponse.toString()}")
+
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
                 }
@@ -122,75 +128,6 @@ fun Activity.observeRequest(
     return result
 }
 
-fun Activity.observeRequests(
-    request: ServicesResponseWrapper<ParentData>?,
-    progressBar: ProgressBar?, button: Button?, loader: Boolean = false
-): LiveData<Pair<Boolean, Any?>> {
-    val result = MutableLiveData<Pair<Boolean, Any?>>()
-    val title: String by lazy {
-        this.getName()
-    }
-    val dialog by lazy {
-        Dialog(this, R.style.DialogTheme).apply {
-            setContentView(R.layout.loader_layout)
-            setCanceledOnTouchOutside(false)
-            window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
-        }
-    }
-
-    hideKeyboard()
-
-    try {
-        val responseData = request?.data
-        val errorResponse = request?.message
-        val errorCode = request?.code
-
-        when (request) {
-            is ServicesResponseWrapper.Loading<*> -> {
-                if (loader) dialog.show() else dialog.dismiss()
-                progressBar?.show()
-                button?.hide()
-                i(title, "Loading..")
-            }
-            is ServicesResponseWrapper.Success -> {
-                dialog.dismiss()
-                progressBar?.hide()
-                button?.show()
-                result.value = Pair(true, responseData)
-
-                i(title, "success ${request?.data}")
-            }
-            is ServicesResponseWrapper.Error -> {
-                dialog.dismiss()
-                progressBar?.hide()
-                button?.show()
-                result.value = Pair(false, errorResponse)
-                gdErrorToast("$errorResponse", Gravity.BOTTOM)
-
-                Log.i(title, "Error ${request.message} ${request.code}")
-            }
-            is ServicesResponseWrapper.Logout -> {
-                dialog.dismiss()
-                progressBar?.hide()
-                button?.show()
-                gdToast(errorResponse.toString(), Gravity.BOTTOM)
-                startActivity(Intent(this as? Context, MainActivity::class.java))
-                i(title, "Log out ${errorResponse.toString()}")
-
-//                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
-            }
-        }
-    } catch (e: Exception) {
-        progressBar?.hide()
-        dialog.dismiss()
-        button?.show()
-        i(title, e.localizedMessage)
-    }
-
-
-    return result
-}
-
 fun Activity.requestObserver(
     progressBar: ProgressBar?,
     btn: Button?,
@@ -198,12 +135,12 @@ fun Activity.requestObserver(
     loader: Boolean = false,
     action: (Boolean, Any?) -> Unit
 ) {
-
-    val response = observeRequest(req, progressBar, btn, loader)
-    response.observe(this as LifecycleOwner, Observer {
-        val (bool, result) = it
-        action(bool, result)
-    })
+//
+//    val response = observeRequest(req, progressBar, btn, loader)
+//    response.observe(this as LifecycleOwner, Observer {
+//        val (bool, result) = it
+//        action(bool, result)
+//    })
 }
 
 

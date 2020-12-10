@@ -95,7 +95,7 @@ class SignupChoicesFragment : DaggerFragment() {
         })
 
 
-        userViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+        networkMonitor().observe(viewLifecycleOwner, Observer {
             if (it) {
                 signupEmailBtn.show()
                 signupPhoneBtn.show()

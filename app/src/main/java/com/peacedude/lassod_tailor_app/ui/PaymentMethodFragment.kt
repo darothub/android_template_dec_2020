@@ -298,20 +298,31 @@ class PaymentMethodFragment : DaggerFragment() {
     private fun updateUserData(user: User?) {
         user?.isVerified = true
         val request = user?.let { authViewModel.updateUserData(it) }
-        val response = requireActivity().observeRequest(request, saveChangesProgressbar, saveChangesBtn)
-        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val (bool, result) = it
-            onRequestResponseTask<User>(bool, result) {
-                val response = result as? UserResponse<User>
-                val msg = response?.message
-                val profileData = response?.data
-                authViewModel.profileData = profileData
-                currentUser?.paymentOptions = user?.paymentOptions
-                currentUser?.paymentTerms = user?.paymentTerms
-                authViewModel.currentUser = currentUser
-                i(title, "Update user ${user?.paymentTerms}")
-                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
-            }
+        observeRequest<User>(request, saveChangesProgressbar, saveChangesBtn, false, {response ->
+            val msg = response.message
+            val profileData = response.data
+            authViewModel.profileData = profileData
+            currentUser?.paymentOptions = user?.paymentOptions
+            currentUser?.paymentTerms = user?.paymentTerms
+            authViewModel.currentUser = currentUser
+            i(title, "Update user ${user?.paymentTerms}")
+            requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+        },{err->
+            i(title, "PaymentMethodError $err")
         })
+//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask<User>(bool, result) {
+//                val response = result as? UserResponse<User>
+//                val msg = response?.message
+//                val profileData = response?.data
+//                authViewModel.profileData = profileData
+//                currentUser?.paymentOptions = user?.paymentOptions
+//                currentUser?.paymentTerms = user?.paymentTerms
+//                authViewModel.currentUser = currentUser
+//                i(title, "Update user ${user?.paymentTerms}")
+//                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+//            }
+//        })
     }
 }

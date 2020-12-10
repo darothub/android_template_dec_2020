@@ -93,7 +93,20 @@ class DashboardActivity : BaseActivity() {
                     bottomNav.hide()
                     profile_header.hide()
                 }
-                R.id.profileFragment -> {
+                R.id.messageFragment -> {
+                    profile_header.show()
+                    profile_fab.show()
+                    bottomNav.show()
+                }
+                R.id.mediaFragment->{
+                    profile_header.show()
+                    profile_fab.show()
+                    bottomNav.show()
+                }
+                R.id.profileFragment ->{
+                    profile_header.show()
+                    profile_fab.show()
+                    bottomNav.show()
                 }
             }
         }
@@ -247,11 +260,9 @@ class DashboardActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        authViewModel.lastFragmentId = bottomNav.selectedItemId
+
         navController.addOnDestinationChangedListener(navListener)
         navController.navigate(authViewModel.lastFragmentId ?: R.id.profileFragment)
-
-//        val user = authViewModel.currentUser
 
 
     }
@@ -260,7 +271,6 @@ class DashboardActivity : BaseActivity() {
     override fun onPause() {
         super.onPause()
         authViewModel.lastFragmentId = bottomNav.selectedItemId
-
         navController.removeOnDestinationChangedListener(navListener)
         Log.i(
             title,
@@ -282,18 +292,21 @@ class DashboardActivity : BaseActivity() {
     private fun getUserData() {
         val request = authViewModel.getUserData()
         i(title, "header $header")
-        val response = observeRequest(request, null, null)
-        response.observe(this, androidx.lifecycle.Observer {
-            val (bool, result) = it
-            onRequestResponseTask<User>(bool, result) {
-                val userDetails = result as? UserResponse<User>
-                val user = userDetails?.data
-                greeting.text = "Hi ${user?.firstName}"
-                profileName.text = "${user?.firstName} ${user?.lastName}"
+        observeRequest<User>(request, null, null, false, {userDetails->
+            val user = userDetails?.data
+            greeting.text = "Hi ${user?.firstName}"
+            profileName.text = "${user?.firstName} ${user?.lastName}"
 //                authViewModel?.currentUser = user
-                i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
-            }
+            i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
+        },{err->
+            i(title, "DashActError $err")
         })
+//        response.observe(this, androidx.lifecycle.Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask<User>(bool, result) {
+//
+//            }
+//        })
 
     }
 

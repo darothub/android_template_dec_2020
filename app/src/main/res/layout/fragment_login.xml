@@ -54,57 +54,78 @@
             android:layout_marginStart="@dimen/_20sdp"/>
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_email_input"
+        <ViewFlipper
+            android:id="@+id/login_vf"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:imeOptions="actionNext"
-            android:textColorHint="@color/colorGray"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_35sdp"
             app:layout_constraintEnd_toEndOf="parent"
+            android:animateFirstView="true"
+            android:animateLayoutChanges="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
-            android:visibility="gone"
-            android:hint="@string/email_address_str"
             >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login_email_address_et"
-                android:textColor="@color/colorGray"
-                style="@style/EditTextCustomStyle"
-                android:singleLine="true"
-                android:inputType="textEmailAddress"
-                android:tag="@string/email_address_str"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/login_phone_number_input"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:imeOptions="actionNext"
                 android:textColorHint="@color/colorGray"
-                android:transitionName="@string/email_or_phone_et"
-                />
+                android:layout_marginTop="@dimen/_35sdp"
+                app:layout_constraintEnd_toEndOf="parent"
 
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_phone_number_input"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:imeOptions="actionNext"
-            android:textColorHint="@color/colorGray"
-            android:layout_marginTop="@dimen/_35sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
-            android:hint="@string/phone_number"
-            >
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
+                android:hint="@string/phone_number"
+                >
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login_phone_number_et"
-                android:textColor="@color/colorGray"
-                style="@style/EditTextCustomStyle"
-                android:singleLine="true"
-                android:inputType="phone"
-                android:tag="@string/phone_number"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_phone_number_et"
+                    android:textColor="@color/colorGray"
+                    style="@style/EditTextCustomStyle"
+                    android:drawableEnd="@drawable/ic_email"
+                    android:singleLine="true"
+                    android:inputType="phone"
+                    android:padding="@dimen/_5sdp"
+                    android:tag="@string/phone_number"
+                    android:textColorHint="@color/colorGray"
+                    android:transitionName="@string/email_or_phone_et"
+                    />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/login_email_input"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:imeOptions="actionNext"
                 android:textColorHint="@color/colorGray"
-                android:transitionName="@string/email_or_phone_et"
-                />
+                android:layout_marginTop="@dimen/_35sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
+                android:hint="@string/email_address_str"
 
-        </com.google.android.material.textfield.TextInputLayout>
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/login_email_address_et"
+                    android:textColor="@color/colorGray"
+                    style="@style/EditTextCustomStyle"
+                    android:singleLine="true"
+                    android:inputType="textEmailAddress"
+                    android:drawableEnd="@drawable/ic_phone"
+                    android:tag="@string/email_address_str"
+
+                    android:textColorHint="@color/colorGray"
+                    android:transitionName="@string/email_or_phone_et"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </ViewFlipper>
+
+
 
         <com.google.android.material.textfield.TextInputLayout
 
@@ -117,7 +138,7 @@
             app:passwordToggleTint="@color/colorGray"
             android:textColorHint="@color/colorGray"
             android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@id/login_phone_number_input">
+            app:layout_constraintTop_toBottomOf="@id/login_vf">
 
             <com.google.android.material.textfield.TextInputEditText
 

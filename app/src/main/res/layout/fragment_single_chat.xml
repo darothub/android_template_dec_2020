@@ -24,6 +24,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_arrow_back_24"
             android:layout_marginTop="@dimen/_11sdp"
+            android:layout_marginBottom="@dimen/_11sdp"
+            android:layout_marginStart="@dimen/_5sdp"
             />
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/reusable_appbar_toolbar"
@@ -43,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/colorGray"
+                android:background="@color/emoji_gray20"
                 android:padding="@dimen/_5sdp"
                 >
                 <ImageView

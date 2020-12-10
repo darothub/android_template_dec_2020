@@ -1,14 +1,12 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import IsEmptyCheck
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
-import android.view.Gravity
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
@@ -102,6 +100,7 @@ class LoginFragment : DaggerFragment() {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -160,7 +159,40 @@ class LoginFragment : DaggerFragment() {
 
         }
 
-        userViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
+        login_phone_number_et.setOnTouchListener { v, event ->
+            val DRAWABLE_LEFT = 0
+            val DRAWABLE_TOP = 1
+            val DRAWABLE_RIGHT = 2
+            val DRAWABLE_BOTTOM = 3
+            if (event.action == MotionEvent.ACTION_UP) {
+                if (event.rawX >= login_phone_number_et.right - login_phone_number_et.compoundDrawables[DRAWABLE_RIGHT].bounds.width()
+                ) {
+                    // your action here
+                    login_vf.showNext()
+
+                    return@setOnTouchListener true
+                }
+            }
+            false
+        }
+
+        login_email_address_et.setOnTouchListener { v, event ->
+            val DRAWABLE_LEFT = 0
+            val DRAWABLE_TOP = 1
+            val DRAWABLE_RIGHT = 2
+            val DRAWABLE_BOTTOM = 3
+            if (event.action == MotionEvent.ACTION_UP) {
+                if (event.rawX >= login_email_address_et.right - login_email_address_et.compoundDrawables[DRAWABLE_RIGHT].bounds.width()
+                ) {
+                    // your action here
+                    login_vf.showPrevious()
+                    return@setOnTouchListener true
+                }
+            }
+            false
+        }
+
+        networkMonitor().observe(viewLifecycleOwner, Observer {
             if (it) {
                 loginBtn.show()
                 login_google_sign_in_button.show()

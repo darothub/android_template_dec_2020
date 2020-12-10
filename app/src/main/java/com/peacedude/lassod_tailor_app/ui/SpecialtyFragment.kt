@@ -141,7 +141,7 @@ class SpecialtyFragment : DaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun getUserData() {
         val request = authViewModel.getUserData(header)
-        val response = requireActivity().observeRequest(request, null, null, true)
+//        val response = requireActivity().observeRequest(request, null, null, true)
 
 //        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 //            val (bool, result) = it
@@ -174,7 +174,7 @@ class SpecialtyFragment : DaggerFragment() {
 //            }
 //        })
 
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Main).launch {
             supervisorScope {
                 val getUserCall = async { authViewModel.getUserDetails(header) }
                 try {
@@ -427,17 +427,24 @@ class SpecialtyFragment : DaggerFragment() {
         user.specialty = specialtyValueList
         user.genderFocus = genderFocusList
         val request = authViewModel.updateUserData(user)
-        val response = requireActivity().observeRequest(request, progressBar, saveBtn)
-        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val (bool, result) = it
-            onRequestResponseTask<User>(bool, result) {
-                val response = result as? UserResponse<User>
-                val msg = response?.message
-                val profileData = response?.data
-                authViewModel.profileData = profileData
-                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
-            }
+        observeRequest<User>(request, progressBar, saveBtn, false, {response ->
+            val msg = response?.message
+            val profileData = response?.data
+            authViewModel.profileData = profileData
+            requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+        }, {err->
+            i(title, "SpecialtyError $err")
         })
+//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask<User>(bool, result) {
+//                val response = result as? UserResponse<User>
+//                val msg = response?.message
+//                val profileData = response?.data
+//                authViewModel.profileData = profileData
+//                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+//            }
+//        })
     }
 
 }

@@ -268,14 +268,14 @@ class ProfileFragment : DaggerFragment() {
 
         }, {
 
-            networkMonitor().observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    clientTransaction()
-                    Log.i(title, "Profile Network  ON")
-                } else {
-                    Log.i(title, "Profile Network  OFF")
-                }
-            })
+//            networkMonitor().observe(viewLifecycleOwner, Observer {
+//                if (it) {
+//                    clientTransaction()
+//                    Log.i(title, "Profile Network  ON")
+//                } else {
+//                    Log.i(title, "Profile Network  OFF")
+//                }
+//            })
 
         })
 

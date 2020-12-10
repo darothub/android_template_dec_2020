@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.helpers.GlobalVariables
+import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
@@ -33,20 +34,19 @@ open class AuthViewModel @Inject constructor(
 
 
     val responseLiveData by lazy{
-        MutableLiveData<ServicesResponseWrapper<ParentData>>()
+        SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
     }
     val responseLiveDatas by lazy{
         MutableLiveData<MeasurementTypeList>()
     }
     override fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
 
         val request = authRequestInterface.getUserData(header)
        return enqueueRequest<User>(request, responseLiveData)
     }
 
     override fun getUserData(): LiveData<ServicesResponseWrapper<ParentData>> {
-        val responseLiveData = MutableLiveData<ServicesResponseWrapper<ParentData>>()
+
 
         val request = authRequestInterface.getUserData()
         return enqueueRequest<User>(request, responseLiveData)

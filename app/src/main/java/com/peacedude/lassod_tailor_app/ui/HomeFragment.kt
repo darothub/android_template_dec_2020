@@ -57,14 +57,6 @@ open class HomeFragment : DaggerFragment() {
         ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        savedInstanceState?.let {instateBundle ->
-            (instateBundle[loggedInUserKey] as? User)?.let {
-                userViewModel.currentUser = it
-            }
-        }
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -133,6 +125,7 @@ open class HomeFragment : DaggerFragment() {
         if (currentUser != null) {
             when (currentUser?.loggedIn) {
                 true -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
+                false -> goto(R.id.homeFragment)
             }
         }
         else if(account != null && currentUser?.email == googleEmail){
@@ -156,7 +149,7 @@ open class HomeFragment : DaggerFragment() {
 //            })
         }
         else{
-            startActivity(Intent(requireContext(), MainActivity::class.java))
+//            startActivity(Intent(requireContext(), DashboardActivity::class.java))
         }
     }
 

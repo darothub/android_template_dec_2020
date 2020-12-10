@@ -208,11 +208,7 @@ class ClientAccountFragment : DaggerFragment(){
         client.state = clientState
 
         val req = authViewModel.addClient(header, client)
-        val observer =
-            requireActivity().observeRequest(req, progressBar, addClientBtn)
-        observer.observe(viewLifecycleOwner, Observer {
-            val (bool, result) = it
-            onRequestResponseTask<Client>(bool, result) { res ->
+            observeRequest<Client>(req, progressBar, addClientBtn, false, {res->
                 val newClient = res?.data
                 requireActivity().gdToast(
                     "Client added successfully",
@@ -221,9 +217,16 @@ class ClientAccountFragment : DaggerFragment(){
                 authViewModel.newClient = newClient
                 i(title, "client $newClient Id ${newClient?.id}")
                 goto(DashboardActivity::class.java)
-
-            }
-        })
+            },{err->
+                i(title, "ClientAccountError $err")
+            })
+//        observer.observe(viewLifecycleOwner, Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask<Client>(bool, result) { res ->
+//
+//
+//            }
+//        })
     }
 
     private fun updateClientRequest(

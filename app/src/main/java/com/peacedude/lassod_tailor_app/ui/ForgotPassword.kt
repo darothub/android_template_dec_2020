@@ -102,13 +102,17 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
             else -> {
 
                 val request = authViewModel.forgetPassword(field)
-                val response = requireActivity().observeRequest(request, progressBar, sendBtn)
-                response.observe(viewLifecycleOwner, Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask<String>(bool, result) {
-                        Log.i(title, "Request successful action needed")
-                    }
+                observeRequest<String>(request, progressBar, sendBtn, false, {
+                    Log.i(title, "${it.message}")
+                }, {err ->
+                    Log.i(title, "ForgotPasswordError $err")
                 })
+//                response.observe(viewLifecycleOwner, Observer {
+//                    val (bool, result) = it
+//                    onRequestResponseTask<String>(bool, result) {
+//                        Log.i(title, "Request successful action needed")
+//                    }
+//                })
             }
         }
     }

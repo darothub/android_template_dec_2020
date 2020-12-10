@@ -77,7 +77,7 @@ class ResourcesActivity : BaseActivity() {
 //        toolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
 
 
-        authViewModel.netWorkLiveData.observe(this, Observer {
+        networkMonitor().observe(this, Observer {
             if (it) {
                 resourcesFragment.view?.show()
 

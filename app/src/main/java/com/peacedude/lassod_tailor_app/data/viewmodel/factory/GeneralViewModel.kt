@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.peacedude.gdtoast.gdToast
+import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.model.error.ErrorModel
@@ -46,12 +47,8 @@ open class GeneralViewModel @Inject constructor(
 
 
     protected open val title: String = this.getName()
-    val nLiveData = MediatorLiveData<Boolean>()
 
 
-    init {
-        networkMonitor()
-    }
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
@@ -96,7 +93,7 @@ open class GeneralViewModel @Inject constructor(
 
     protected fun onResponseTask(
         response: Response<ParentData>,
-        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
+        responseLiveData: SingleLiveEvent<ServicesResponseWrapper<ParentData>>
     ) {
         responseLiveData.value = ServicesResponseWrapper.Loading(
             null,
@@ -303,9 +300,9 @@ open class GeneralViewModel @Inject constructor(
 
     protected inline fun <reified T> enqueueRequest(
         request: Call<UserResponse<T>>,
-        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
+        responseLiveData: SingleLiveEvent<ServicesResponseWrapper<ParentData>>
 
-    ): MutableLiveData<ServicesResponseWrapper<ParentData>> {
+    ): SingleLiveEvent<ServicesResponseWrapper<ParentData>> {
         request.enqueue(object : Callback<UserResponse<T>> {
             override fun onFailure(call: Call<UserResponse<T>>, t: Throwable) {
                 onFailureResponse(responseLiveData, t)
@@ -377,79 +374,5 @@ open class GeneralViewModel @Inject constructor(
     }
 
 
-//    protected fun onFailureResponse(
-//        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
-//        t: Throwable
-//    ) {
-//        Log.i(title, "Throwable ${t.localizedMessage}")
-//        responseLiveData.postValue(
-//            ServicesResponseWrapper.Error(
-//                "Bad connection, unable to connect",
-//                0
-//            )
-//        )
-//    }
-//
-//    protected fun onResponseTask(
-//        response: Response<ParentData>,
-//        responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>
-//    ) {
-//        responseLiveData.value = ServicesResponseWrapper.Loading(
-//            null,
-//            "Loading..."
-//        )
-//        i(title, "ViewModel ON")
-//        val res = response.body()
-//        val statusCode = response.code()
-//        Log.i(title, "${response.code()}")
-//        Log.i(title, "errorbody ${response.raw()}")
-//
-//        when (statusCode) {
-//            in 400..499 -> {
-//                try {
-//                    if (statusCode == 401) {
-//                        val err = errorConverter(response)
-//                        responseLiveData.value =
-//                            ServicesResponseWrapper.Logout(
-//                                "Access Denied",
-//                                err.second
-//                            )
-//
-//                    } else {
-//                        val err = errorConverter(response)
-//                        responseLiveData.value =
-//                            ServicesResponseWrapper.Error(
-//                                err.first,
-//                                err.second
-//                            )
-//
-//                    }
-//
-//                } catch (e: Exception) {
-//                    Log.i(title, "Hello" + " " + e.message.toString())
-//                    responseLiveData.value = ServicesResponseWrapper.Error(e.message, statusCode)
-//                }
-//            }
-//            in 500..599 -> {
-//                val err = errorConverter(response)
-//                responseLiveData.postValue(
-//                    ServicesResponseWrapper.Error(
-//                        "Internal server error",
-//                        err.second
-//                    )
-//                )
-//            }
-//            else -> {
-//                try {
-//                    Log.i(title, "success $res")
-//                    responseLiveData.postValue(ServicesResponseWrapper.Success(res))
-//                } catch (e: java.lang.Exception) {
-//                    Log.i(title, e.message.toString())
-//                }
-//            }
-//        }
-//
-//
-//    }
 
 }

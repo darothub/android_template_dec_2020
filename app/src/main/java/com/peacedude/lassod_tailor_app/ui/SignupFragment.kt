@@ -226,13 +226,13 @@ class SignupFragment : DaggerFragment() {
                     phoneNumber,
                     passwordString
                 )
-                val response = requireActivity().observeRequest(request, progressBar, continueBtn)
-                response.observe(viewLifecycleOwner, Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask<User>(bool, result){
-                        activateUserRequest(phoneNumber)
-                    }
-                })
+//                val response = requireActivity().observeRequest(request, progressBar, continueBtn)
+//                response.observe(viewLifecycleOwner, Observer {
+//                    val (bool, result) = it
+//                    onRequestResponseTask<User>(bool, result){
+//                        activateUserRequest(phoneNumber)
+//                    }
+//                })
             }
         }
 
@@ -253,18 +253,18 @@ class SignupFragment : DaggerFragment() {
                 Log.i(title, "$code")
                 val request = userViewModel.activateUser(phone, code)
 //                requireActivity().gdToast("$code $phone", Gravity.BOTTOM)
-                val response =
-                    requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
-                response.observe(viewLifecycleOwner, Observer {
-                    val (bool, result) = it
-                    onRequestResponseTask<User>(
-                        bool,
-                        result
-                    ){
-                        dialog.dismiss()
-                        findNavController().navigate(R.id.loginFragment)
-                    }
-                })
+//                val response =
+//                    requireActivity().observeRequest(request, confirmProgressBar, confirmBtn)
+//                response.observe(viewLifecycleOwner, Observer {
+//                    val (bool, result) = it
+//                    onRequestResponseTask<User>(
+//                        bool,
+//                        result
+//                    ){
+//                        dialog.dismiss()
+//                        findNavController().navigate(R.id.loginFragment)
+//                    }
+//                })
 
             }
 

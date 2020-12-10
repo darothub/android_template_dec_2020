@@ -174,44 +174,76 @@ class UserAccountFragment : DaggerFragment() {
         //Get user data request
         val request = authViewModel.getUserData(header.toString())
         //Get User data response
-        val response = requireActivity().observeRequest(request, null, null, true)
-        //Observe response
-        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val (bool, result) = it
-            //Do on response
-            onRequestResponseTask<User>(bool, result) {
-                val resp = result as? UserResponse<User>
-                val user = resp?.data
+        observeRequest<User>(request, null, null, true, {resp->
+            val user = resp?.data
 
-                //Initialize new user for data update
-                val newUserData = User()
-                val nameList = setUserNamesAndOtherFields(user, newUserData)
-                val addressList = setUserAddress(user)
-                val unionList = setUnionData(user)
+            //Initialize new user for data update
+            val newUserData = User()
+            val nameList = setUserNamesAndOtherFields(user, newUserData)
+            val addressList = setUserAddress(user)
+            val unionList = setUnionData(user)
 
-                saveBtn.setOnClickListener {
-                    newUserData.firstName = nameList[0].value
-                    newUserData.lastName = nameList[1].value
-                    newUserData.otherName = nameList[2].value
-                    if(nameList[4].value != "null"){
-                        newUserData.noOfEmployees = nameList[4].value?.toInt()
-                    }
-                    else{
-                        newUserData.noOfEmployees = 0
-                    }
-
-                    newUserData.workshopUserAddress = addressList[0].value
-                    newUserData.showroomUserAddress = addressList[1].value
-                    newUserData.showroomUserAddress = addressList[1].value
-                    newUserData.unionName = unionList[0].value
-                    newUserData.unionWard = unionList[1].value
-                    newUserData.unionLga = unionList[2].value
-                    newUserData.unionState = unionList[3].value
-                    i(title, "new user ${newUserData.workshopUserAddress}")
-                    updateUserData(newUserData)
+            saveBtn.setOnClickListener {
+                newUserData.firstName = nameList[0].value
+                newUserData.lastName = nameList[1].value
+                newUserData.otherName = nameList[2].value
+                if(nameList[4].value != "null"){
+                    newUserData.noOfEmployees = nameList[4].value?.toInt()
                 }
+                else{
+                    newUserData.noOfEmployees = 0
+                }
+
+                newUserData.workshopUserAddress = addressList[0].value
+                newUserData.showroomUserAddress = addressList[1].value
+                newUserData.showroomUserAddress = addressList[1].value
+                newUserData.unionName = unionList[0].value
+                newUserData.unionWard = unionList[1].value
+                newUserData.unionLga = unionList[2].value
+                newUserData.unionState = unionList[3].value
+                i(title, "new user ${newUserData.workshopUserAddress}")
+                updateUserData(newUserData)
             }
+        },{err->
+            i(title, "UserAccountError $err")
         })
+        //Observe response
+//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            val (bool, result) = it
+//            //Do on response
+//            onRequestResponseTask<User>(bool, result) {
+//                val resp = result as? UserResponse<User>
+//                val user = resp?.data
+//
+//                //Initialize new user for data update
+//                val newUserData = User()
+//                val nameList = setUserNamesAndOtherFields(user, newUserData)
+//                val addressList = setUserAddress(user)
+//                val unionList = setUnionData(user)
+//
+//                saveBtn.setOnClickListener {
+//                    newUserData.firstName = nameList[0].value
+//                    newUserData.lastName = nameList[1].value
+//                    newUserData.otherName = nameList[2].value
+//                    if(nameList[4].value != "null"){
+//                        newUserData.noOfEmployees = nameList[4].value?.toInt()
+//                    }
+//                    else{
+//                        newUserData.noOfEmployees = 0
+//                    }
+//
+//                    newUserData.workshopUserAddress = addressList[0].value
+//                    newUserData.showroomUserAddress = addressList[1].value
+//                    newUserData.showroomUserAddress = addressList[1].value
+//                    newUserData.unionName = unionList[0].value
+//                    newUserData.unionWard = unionList[1].value
+//                    newUserData.unionLga = unionList[2].value
+//                    newUserData.unionState = unionList[3].value
+//                    i(title, "new user ${newUserData.workshopUserAddress}")
+//                    updateUserData(newUserData)
+//                }
+//            }
+//        })
     }
 
     private fun setUnionData(user: User?): ArrayList<UserNameClass> {
@@ -502,18 +534,26 @@ class UserAccountFragment : DaggerFragment() {
 
     private fun updateUserData(user: User){
         val request = authViewModel.updateUserData(user)
-        val response = requireActivity().observeRequest(request, progressBar, saveBtn)
-        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val (bool, result) = it
-            onRequestResponseTask<User>(bool, result){
-                val response = result as? UserResponse<User>
-                val msg = response?.message
-                val profileData = response?.data
-                authViewModel.profileData = profileData
-                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
-                i(title, "msg $msg ${profileData?.firstName}")
-            }
+        observeRequest<User>(request, progressBar, saveBtn, false, {response->
+            val msg = response?.message
+            val profileData = response?.data
+            authViewModel.profileData = profileData
+            requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+            i(title, "msg $msg ${profileData?.firstName}")
+        },{err ->
+            i(title, "UserAccountError $err")
         })
+//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            val (bool, result) = it
+//            onRequestResponseTask<User>(bool, result){
+//                val response = result as? UserResponse<User>
+//                val msg = response?.message
+//                val profileData = response?.data
+//                authViewModel.profileData = profileData
+//                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+//                i(title, "msg $msg ${profileData?.firstName}")
+//            }
+//        })
     }
 
     private fun getPhotoData() {
