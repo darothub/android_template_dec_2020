@@ -63,38 +63,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/password_standard"
-        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:textSize="@dimen/_12sdp"/>
 
     <View
         android:id="@+id/single_fashionista_fragment_line2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:background="@color/colorGray"
         app:layout_constraintTop_toBottomOf="@id/single_fashionista_fragment_info_tv" />
 
-    <include
+    <Button
         android:id="@+id/single_fashionista_fragment_chat_btn"
-        layout="@layout/button_and_progressbar"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         app:layout_constraintTop_toBottomOf="@id/single_fashionista_fragment_line2"
         android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/rounded_blue_outline_white_backgrnd"
+        android:paddingStart="@dimen/_40sdp"
+        android:paddingEnd="@dimen/_40sdp"
+        android:drawableStart="@drawable/ic_chatbubblesvg"
+        android:text="@string/chat_str"
+        android:textAllCaps="false"
         android:layout_marginEnd="@dimen/_2sdp"
+        android:textColor="@color/colorPrimary"
+
         app:layout_constraintEnd_toStartOf="@id/single_fashionista_fragment_call_btn"
         />
 
-    <include
+    <Button
         android:id="@+id/single_fashionista_fragment_call_btn"
-        layout="@layout/button_and_progressbar"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         app:layout_constraintTop_toBottomOf="@id/single_fashionista_fragment_line2"
         android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:textAllCaps="false"
+        android:background="@drawable/rounded_green_outline_white_backgrnd"
+        android:drawableStart="@drawable/ic_calliconsvg"
+        android:paddingStart="@dimen/_40sdp"
+        android:paddingEnd="@dimen/_40sdp"
         android:layout_marginStart="@dimen/_2sdp"
+        android:text="@string/call"
+        android:textColor="@color/colorGreen"
         app:layout_constraintStart_toEndOf="@id/single_fashionista_fragment_chat_btn"
         />
     <View

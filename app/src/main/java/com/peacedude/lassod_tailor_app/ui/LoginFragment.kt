@@ -87,6 +87,7 @@ class LoginFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        changeStatusBarColor(R.color.colorPrimary)
         observer = StartActivityForResults(requireActivity().activityResultRegistry)
         lifecycle.addObserver(observer)
     }
@@ -118,79 +119,13 @@ class LoginFragment : DaggerFragment() {
         })
         var lastLoginForm = userViewModel.lastLoginForm.toString()
 
-        if (lastLoginForm == PHONE) {
-            login_phone_number_input.show()
-            login_with_email_tv.show()
-            login_email_input.invisible()
-            login_with_phone_tv.invisible()
-        } else {
-            login_email_input.show()
-            login_with_phone_tv.show()
-            login_phone_number_input.invisible()
-            login_with_email_tv.invisible()
+        login_use_email_tv.setOnClickListener {
+            login_vf.showNext()
+        }
+        login_use_phone_tv.setOnClickListener {
+            login_vf.showPrevious()
         }
 
-        login_with_email_tv.setOnClickListener {
-            login_email_input.animation = leftAnimation
-            login_phone_number_input.animation =
-                AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
-            login_email_input.show()
-            login_phone_number_input.invisible()
-
-            login_with_phone_tv.show()
-            login_with_phone_tv.animation = leftAnimation
-            login_with_email_tv.animation =
-                AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
-            login_with_email_tv.invisible()
-
-        }
-        login_with_phone_tv.setOnClickListener {
-            login_phone_number_input.animation = leftAnimation
-            login_email_input.animation =
-                AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
-            login_phone_number_input.show()
-            login_email_input.invisible()
-
-            login_with_email_tv.animation = leftAnimation
-            login_with_phone_tv.animation =
-                AnimationUtils.loadAnimation(requireContext(), R.anim.right_move_out)
-            login_with_email_tv.show()
-            login_with_phone_tv.invisible()
-
-        }
-
-        login_phone_number_et.setOnTouchListener { v, event ->
-            val DRAWABLE_LEFT = 0
-            val DRAWABLE_TOP = 1
-            val DRAWABLE_RIGHT = 2
-            val DRAWABLE_BOTTOM = 3
-            if (event.action == MotionEvent.ACTION_UP) {
-                if (event.rawX >= login_phone_number_et.right - login_phone_number_et.compoundDrawables[DRAWABLE_RIGHT].bounds.width()
-                ) {
-                    // your action here
-                    login_vf.showNext()
-
-                    return@setOnTouchListener true
-                }
-            }
-            false
-        }
-
-        login_email_address_et.setOnTouchListener { v, event ->
-            val DRAWABLE_LEFT = 0
-            val DRAWABLE_TOP = 1
-            val DRAWABLE_RIGHT = 2
-            val DRAWABLE_BOTTOM = 3
-            if (event.action == MotionEvent.ACTION_UP) {
-                if (event.rawX >= login_email_address_et.right - login_email_address_et.compoundDrawables[DRAWABLE_RIGHT].bounds.width()
-                ) {
-                    // your action here
-                    login_vf.showPrevious()
-                    return@setOnTouchListener true
-                }
-            }
-            false
-        }
 
         networkMonitor().observe(viewLifecycleOwner, Observer {
             if (it) {

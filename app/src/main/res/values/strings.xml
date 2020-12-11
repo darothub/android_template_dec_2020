@@ -1,8 +1,8 @@
 <resources>
     <string-array name="categories_array">
-        <item>tailor</item>
-        <item>weaver</item>
-        <item>fashionista</item>
+        <item>Tailor</item>
+        <item>Weaver</item>
+        <item>Fashionista</item>
     </string-array>
     <string-array name="drawer_menu_titles">
         <item>Clients</item>
@@ -104,7 +104,7 @@
     <string name="wlecome_back">Welcome back</string>
     <string name="login_tocontinue">Login to continue</string>
     <string name="new_user">New user? Sign up for free</string>
-    <string name="forgot_password">Forgot Password?</string>
+    <string name="forgot_password">Forgot password?</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -283,4 +283,6 @@
     <string name="post">Post</string>
     <string name="review">Review</string>
     <string name="fashionista">fashionista</string>
+    <string name="use_email">Use email</string>
+    <string name="use_phone">Use phone</string>
 </resources>

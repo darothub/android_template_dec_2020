@@ -32,6 +32,7 @@ import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_email_signup.*
 import validatePasswordAndAdvise
+import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -173,10 +174,10 @@ class EmailSignupFragment : DaggerFragment() {
                 } else {
                     val googleAuthHeader = "$bearer ${user?.token.toString()}"
                     user?.password = passwordString
-                    user?.category = email_signup_category_spinner.selectedItem as String
+                    user?.category = (email_signup_category_spinner.selectedItem as String).toLowerCase(Locale.ROOT)
                     val nUser = User()
                     nUser.password = passwordString
-                    nUser.category = email_signup_category_spinner.selectedItem as String
+                    nUser.category = user?.category
                     val req = userViewModel.registerUser(googleAuthHeader, nUser)
                     i(title, "header ${user?.token}")
                     observeRequest<User>(req, null, null, false, {userDetails->
@@ -202,7 +203,7 @@ class EmailSignupFragment : DaggerFragment() {
                 }
             }
             else -> {
-                val category = email_signup_category_spinner.selectedItem as String
+                val category = (email_signup_category_spinner.selectedItem as String).toLowerCase(Locale.ROOT)
                 val newUser = User()
                 newUser.category = category
                 newUser.email = email
@@ -223,13 +224,6 @@ class EmailSignupFragment : DaggerFragment() {
                         { err ->
                             i(title, "DashActError $err")
                         })
-//                observer.observe(viewLifecycleOwner, Observer {
-//                    val (bool, result) = it
-//                    onRequestResponseTask<User>(bool, result) {
-//
-//                        Log.i(title, getString(R.string.check_email))
-//                    }
-//                })
             }
         }
     }

@@ -50,36 +50,12 @@ class SingleFashionistaFragment : Fragment() {
         }
 
         buttonTransactions({
-            chatButton = single_fashionista_fragment_chat_btn.findViewById(R.id.btn)
-            callButton = single_fashionista_fragment_call_btn.findViewById(R.id.btn)
+
             galleryButton = single_fashionista_fragment_gallery_btn.findViewById(R.id.btn)
             galleryButton.apply {
                 text = getString(R.string.goto_gallery)
                 background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
             }
-            chatButton.apply {
-                text = getString(R.string.chat_str)
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-                background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.rounded_blue_outline_white_backgrnd
-                )
-                val imgResource = R.drawable.ic_chat_bubble
-                setCompoundDrawablesWithIntrinsicBounds(imgResource, 0, 0, 0)
-
-
-            }
-            callButton.apply {
-                text = getString(R.string.call)
-                background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.rounded_blue_outline_white_backgrnd
-                )
-                val imgResource = R.drawable.call
-                setCompoundDrawablesWithIntrinsicBounds(imgResource, 0, 0, 0)
-
-            }
-
 
         },{
 

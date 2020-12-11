@@ -38,6 +38,7 @@ import com.peacedude.lassod_tailor_app.receiver.SMSReceiver
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import validatePasswordAndAdvise
+import java.util.*
 
 import javax.inject.Inject
 
@@ -234,7 +235,7 @@ class PhoneSignupFragment : DaggerFragment() {
                 phoneNumber = dialCode + phoneNumber
                 val category = phone_signup_category_spinner.selectedItem as String
                 val userData = User()
-                userData.category = category
+                userData.category = category.toLowerCase(Locale.ROOT)
                 userData.phone = phoneNumber
                 userData.password = passwordString
 

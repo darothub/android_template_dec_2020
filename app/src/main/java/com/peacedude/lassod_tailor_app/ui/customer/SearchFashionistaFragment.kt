@@ -82,7 +82,7 @@ class SearchFragment : DaggerFragment() {
 
         changeStatusBarColor(R.color.colorWhite)
 
-        var listOfFilterOptions = arrayListOf<SearchFilter>(
+        val listOfFilterOptions = arrayListOf<SearchFilter>(
             SearchFilter("Artisan", arrayListOf("All", "Tailor", "Weaver")),
             SearchFilter("Style", arrayListOf("All", "Tailor", "Weaver")),
             SearchFilter("Location", arrayListOf("All", "Tailor", "Weaver"))
@@ -149,6 +149,26 @@ class SearchFragment : DaggerFragment() {
 
         }
 
+        val listSearchResultTwo = arrayListOf<SearchResultTwo>(
+            SearchResultTwo(
+                "Tailor",
+                arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+            ),
+            SearchResultTwo(
+                "Weaver",
+                arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+            ),
+            SearchResultTwo(
+                "Weaver",
+                arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+            )
+        )
 
 
         search_fragment_search_result_rv.setupAdapter<SearchResultTwo>(R.layout.search_media_category_item) { adapter, context, list ->
@@ -188,7 +208,7 @@ class SearchFragment : DaggerFragment() {
                     false
                 )
             )
-//            submitList(listSearchResultTwo)
+            submitList(listSearchResultTwo)
 //                                val layoutManager = GridLayoutManager(requireContext(), 2)
 //                                setLayoutManager(layoutManager)
 

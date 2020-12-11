@@ -38,14 +38,14 @@
             android:textSize="@dimen/_12sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/welcome_back_text"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginStart="@dimen/_20sdp"/>
         <TextView
             android:id="@+id/login_with_email_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login_with_email"
+            android:text="@string/login_tocontinue"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/_12sdp"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,76 +53,167 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginStart="@dimen/_20sdp"/>
 
+        <Button
+            android:id="@+id/login_google_sign_in_button"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginEnd="25dp"
+            android:text="@string/signin_with_google"
+            android:background="@drawable/rounded_corner_background"
+            android:textColor="@color/colorPrimary"
+            android:textAllCaps="false"
+            android:textSize="@dimen/_10sdp"
+            android:drawableStart="@drawable/ic_google_icon"
+            android:paddingStart="@dimen/_70sdp"
+            android:paddingEnd="@dimen/_70sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
+            />
+
 
         <ViewFlipper
             android:id="@+id/login_vf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_35sdp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             android:animateFirstView="true"
             android:animateLayoutChanges="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
-            >
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/login_phone_number_input"
+            app:layout_constraintTop_toBottomOf="@id/login_google_sign_in_button">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:imeOptions="actionNext"
-                android:textColorHint="@color/colorGray"
-                android:layout_marginTop="@dimen/_35sdp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
-                android:hint="@string/phone_number"
-                >
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/login_ccp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    app:ccp_arrowColor="@color/colorGray"
+                    app:ccp_contentColor="@color/colorGray"
+                    app:ccp_textGravity="LEFT"
+                    app:ccp_autoDetectCountry="true"
+                    app:ccp_textSize="@dimen/_12sdp"
+                    android:backgroundTint="@color/colorGray"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@drawable/rounded_underline_white"
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/login_phone_number_et"
-                    android:textColor="@color/colorGray"
-                    style="@style/EditTextCustomStyle"
-                    android:drawableEnd="@drawable/ic_email"
-                    android:singleLine="true"
-                    android:inputType="phone"
-                    android:padding="@dimen/_5sdp"
-                    android:tag="@string/phone_number"
-                    android:textColorHint="@color/colorGray"
-                    android:transitionName="@string/email_or_phone_et"
                     />
 
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/login_email_input"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:imeOptions="actionNext"
-                android:textColorHint="@color/colorGray"
-                android:layout_marginTop="@dimen/_35sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/login_with_email_tv"
-                android:hint="@string/email_address_str"
-
-                >
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/login_email_address_et"
-                    android:textColor="@color/colorGray"
-                    style="@style/EditTextCustomStyle"
-                    android:singleLine="true"
-                    android:inputType="textEmailAddress"
-                    android:drawableEnd="@drawable/ic_phone"
-                    android:tag="@string/email_address_str"
-
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/login_phone_number_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
                     android:textColorHint="@color/colorGray"
-                    android:transitionName="@string/email_or_phone_et"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/login_ccp"
+                    app:layout_constraintEnd_toStartOf="@id/login_use_email_tv"
+                    >
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/login_phone_number_et"
+                        style="@style/EditTextCustomStyle"
+                        android:hint="@string/phone_number"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:inputType="phone"
+                        android:tag="@string/phone_number"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGray"
+                        android:background="@null"
+                        android:textColorHint="@color/colorGray"
+
+
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/login_use_email_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/use_email"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/login_phone_number_input"
+                    app:layout_constraintBottom_toBottomOf="@id/login_phone_number_input"
+                    app:layout_constraintVertical_bias=".6"
+                    android:textColor="@color/colorGray"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    />
+                <View
+                    android:id="@+id/login_line1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGray"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    app:layout_constraintTop_toBottomOf="@id/login_phone_number_input"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/login_email_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:imeOptions="actionNext"
+                    android:textColorHint="@color/colorGray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/login_use_phone_tv"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/login_email_address_et"
+                        style="@style/EditTextCustomStyle"
+                        android:hint="@string/email_address_or_phone_str"
+                        android:inputType="textEmailAddress"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:singleLine="true"
+                        android:textColor="@color/colorGray"
+                        android:textColorHint="@color/colorGray"
+                        android:background="@null"
+
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/login_use_phone_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/use_phone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/login_email_input"
+                    app:layout_constraintBottom_toBottomOf="@id/login_email_input"
+                    app:layout_constraintVertical_bias=".6"
+                    android:textColor="@color/colorGray"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    />
+                <View
+                    android:id="@+id/login_line2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGray"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    app:layout_constraintTop_toBottomOf="@id/login_email_input"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         </ViewFlipper>
 
 
@@ -137,7 +228,7 @@
             android:transitionName="password_et"
             app:passwordToggleTint="@color/colorGray"
             android:textColorHint="@color/colorGray"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@id/login_vf">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -168,28 +259,12 @@
             android:layout_marginTop="@dimen/_8sdp"
             />
 
-        <com.shobhitpuri.custombuttons.GoogleSignInButton
-            android:id="@+id/login_google_sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginEnd="25dp"
-            android:text="@string/signin_with_google"
-            app:isDarkTheme="false"
-            android:textColor="@color/colorPrimary"
-            android:textAllCaps="true"
-            android:textSize="@dimen/_8sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_page_btn"
-            />
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/login_fragment_remember_login_choice_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/login_google_sign_in_button"
+            app:layout_constraintTop_toBottomOf="@id/login_page_btn"
             android:text="@string/remember_login_choice"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_20sdp"
