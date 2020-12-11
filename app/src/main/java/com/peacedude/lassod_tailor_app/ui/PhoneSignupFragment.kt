@@ -100,7 +100,7 @@ class PhoneSignupFragment : DaggerFragment() {
 
         requestSMSPermission()
 
-        setUpCountrySpinnerWithDialCode(getString(R.string.select_your_country_str), phone_signup_country_spinner)
+//        setUpCountrySpinnerWithDialCode(getString(R.string.select_your_country_str), phone_signup_country_spinner)
         setupLoginSpannableString()
         initEnterKeyToSubmitForm(phone_signup_password_et) { signupRequest() }
     }
@@ -176,6 +176,8 @@ class PhoneSignupFragment : DaggerFragment() {
 
         })
 
+
+
         phone_signup_password_et.doOnTextChanged { text, start, count, after ->
             if (text != null) {
                 validatePasswordAndAdvise(text, phone_signup_password_standard_tv)
@@ -210,9 +212,7 @@ class PhoneSignupFragment : DaggerFragment() {
      */
     @SuppressLint("SetTextI18n")
     private fun signupRequest() {
-        val dialCodePattern = Regex("""(\d{1,3})""")
-        val country = phone_signup_country_spinner.selectedItem as String
-        val dialCode = dialCodePattern.find(country)?.value
+        val dialCode = phone_signup_ccp.selectedCountryCode
         var phoneNumber = phone_signup_phone_number_et.text.toString().trim()
         val passwordString = phone_signup_password_et.text.toString().trim()
         val phonePattern = Regex("""\d{10,13}""")
@@ -224,11 +224,6 @@ class PhoneSignupFragment : DaggerFragment() {
             IsEmptyCheck(phone_signup_phone_number_et, phone_signup_password_et)
         val validation = IsEmptyCheck.fieldsValidation(null, passwordString)
         when {
-            country == getString(R.string.select_your_country_str) -> requireActivity().gdToast(getString(R.string.select_your_country_str), Gravity.BOTTOM)
-            checkForEmpty != null -> {
-                val pattern = Regex("""phone_number|password""")
-                requireActivity().getEditTextName(checkForEmpty, pattern)
-            }
             validation != null -> requireActivity().gdErrorToast("$validation is invalid", Gravity.BOTTOM)
             !checkPhoneStandard -> requireActivity().gdErrorToast("Invalid phone number", Gravity.BOTTOM)
             checkFirstZero -> {
@@ -283,16 +278,7 @@ class PhoneSignupFragment : DaggerFragment() {
                     },{ err ->
                         i(title, "PhoneSignUpError $err")
                     })
-//                response.observe(viewLifecycleOwner, Observer {
-//                    val (bool, result) = it
-//                    onRequestResponseTask<User>(
-//                        bool,
-//                        result
-//                    ){
-//                        dialog.dismiss()
-//                        findNavController().navigate(R.id.loginFragment)
-//                    }
-//                })
+
 
             }
 
@@ -304,15 +290,6 @@ class PhoneSignupFragment : DaggerFragment() {
             },{err ->
                 i(title, "PhoneSignUpError $err")
             })
-//            response.observe(viewLifecycleOwner, Observer {
-//                val (bool, result) = it
-//                onRequestResponseTask<User>(
-//                    bool,
-//                    result
-//                ){
-//
-//                }
-//            })
 
         }
 

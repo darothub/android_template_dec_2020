@@ -43,6 +43,27 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:layout_marginStart="@dimen/_20sdp"/>
 
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/phone_signup_ccp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/phone_signup_lets_get_to_know_you_tv"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            app:ccp_arrowColor="@color/colorGray"
+            app:ccp_contentColor="@color/colorGray"
+            app:ccp_textGravity="LEFT"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_textSize="@dimen/_12sdp"
+            android:backgroundTint="@color/colorGray"
+            android:background="@drawable/rounded_underline_white"
+
+            />
+
         <Spinner
 
             android:id="@+id/phone_signup_country_spinner"
@@ -50,7 +71,9 @@
             android:layout_marginTop="@dimen/_35sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/phone_signup_lets_get_to_know_you_tv" />
+            app:layout_constraintTop_toBottomOf="@id/phone_signup_lets_get_to_know_you_tv"
+            android:visibility="gone"
+            />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -63,7 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
 
-            app:layout_constraintTop_toBottomOf="@id/phone_signup_country_spinner"
+            app:layout_constraintTop_toBottomOf="@id/phone_signup_ccp"
            >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -73,8 +96,7 @@
                 android:inputType="phone"
                 android:hint="@string/phone_number"
                 android:textColorHint="@color/colorGray"
-                android:paddingTop="@dimen/_10sdp"
-                android:paddingBottom="@dimen/_10sdp"
+
                 android:transitionName="@string/email_or_phone_et"
                 android:maxLength="11"
                 />
@@ -90,6 +112,7 @@
             android:layout_marginTop="@dimen/_20sdp"
             app:layout_constraintTop_toBottomOf="@id/phone_signup_phone_number_text_input"
             app:passwordToggleEnabled="true"
+
             app:passwordToggleTint="@color/colorGray">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -127,7 +150,9 @@
             app:layout_constraintTop_toBottomOf="@id/phone_signup_password_standard_tv"
             android:layout_marginTop="@dimen/_20sdp"
             android:transitionName="@string/spinner"
+
             />
+
 
         <include
             android:id="@+id/phone_signup_btn"

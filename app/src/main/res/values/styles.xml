@@ -56,7 +56,7 @@
     </style>
     <style name="EditTextCustomStyle" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">@dimen/_40sdp</item>
         <item name="android:textSize">@dimen/_12sdp</item>
         <item name="android:textColorHint">@color/colorGray</item>
         <item name="android:textColor">@color/colorGray</item>
@@ -65,7 +65,7 @@
         <item name="backgroundTint">@color/colorGray</item>
         <item name="android:layout_gravity">center</item>
         <item name="colorAccent">#ffa000</item>
-        <item name="android:padding">@dimen/_5sdp</item>
+
         <!-- Default color for the dropdown arrow and line -->
         <item name="colorControlNormal">#ffc107</item>
     </style>

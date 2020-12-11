@@ -422,8 +422,8 @@ object GlobalVariables {
 
 }
 
-fun Activity.networkMonitor(): MutableLiveData<Boolean> {
-    val netWorkLiveData = MutableLiveData<Boolean>()
+fun Activity.networkMonitor(): SingleLiveEvent<Boolean> {
+    val netWorkLiveData = SingleLiveEvent<Boolean>()
 
     val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
@@ -473,7 +473,7 @@ inline fun <reified T> Activity.onFlowResponse(
     loader: Boolean = false,
     it: ServicesResponseWrapper<ParentData>,
     noinline error:((String)->Unit)?=null,
-    action: (T?) -> Unit
+    success: (T?) -> Unit
 
 ) {
 
@@ -496,7 +496,7 @@ inline fun <reified T> Activity.onFlowResponse(
             dialog.dismiss()
             progressBar?.hide()
             button?.show()
-            action(it.data as T)
+            success(it.data as T)
 
             Log.i("onFlowResponse", "Success ${it?.data} dialog showin ${dialog.isShowing}")
         }

@@ -167,6 +167,6 @@ fun Fragment.goto(destination: Class<*>) {
     requireActivity().goto(destination)
 }
 
-fun Fragment.networkMonitor():MutableLiveData<Boolean>{
+fun Fragment.networkMonitor():SingleLiveEvent<Boolean>{
     return requireActivity().networkMonitor()
 }
