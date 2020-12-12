@@ -32,7 +32,9 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -111,7 +113,10 @@ class LoginFragment : DaggerFragment() {
 
         val navController = Navigation.findNavController(login_appbar)
 
-        NavigationUI.setupWithNavController(toolbar, navController)
+
+        toolbar.setNavigationOnClickListener {
+            requireActivity().finish()
+        }
         buttonTransactions({
             loginBtn = login_page_btn.findViewById(R.id.btn)
             progressBar = login_page_btn.findViewById(R.id.progress_bar)
@@ -128,15 +133,7 @@ class LoginFragment : DaggerFragment() {
         }
 
 
-//        networkMonitor().observe(viewLifecycleOwner, Observer {
-//            if (it) {
-//                loginBtn.show()
-//                login_google_sign_in_button.show()
-//            } else {
-//                loginBtn.invisible()
-//                login_google_sign_in_button.invisible()
-//            }
-//        })
+
 
         loginBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
 
@@ -246,13 +243,24 @@ class LoginFragment : DaggerFragment() {
         filter: String,
         action: (String, String) -> Unit
     ) {
-        val input = editText.text.toString().trim()
+        var input = editText.text.toString().trim()
         val passwordString = login_password_et.text.toString()
         val emptyEditText = IsEmptyCheck(editText, login_password_et)
         var v: String? = ""
-        if (filter == "email") {
+        if (filter == EMAIL) {
             v = IsEmptyCheck.fieldsValidation(email = input, password = passwordString)
-        } else if (filter == "phone") {
+        } else if (filter == PHONE) {
+
+
+            val dialCode = login_ccp.selectedCountryCode
+            var phoneNumber = editText.text.toString().trim()
+            val firstZeroPattern = Regex("""[0]\d+""")
+            val checkFirstZero = firstZeroPattern.matches(phoneNumber)
+            if(checkFirstZero){
+                phoneNumber = phoneNumber.removePrefix("0")
+                editText.setText(phoneNumber)
+            }
+            input = dialCode + phoneNumber
             v = IsEmptyCheck.fieldsValidation(phone_number = input, password = passwordString)
         }
 
@@ -262,11 +270,7 @@ class LoginFragment : DaggerFragment() {
                 requireActivity().gdErrorToast("${emptyEditText.tag} is empty", Gravity.BOTTOM)
             }
             v != null -> {
-                if (filter == "phone") {
-                    requireActivity().gdToast("$v must be 13 character long", Gravity.BOTTOM)
-                } else {
-                    requireActivity().gdToast("$v is invalid", Gravity.BOTTOM)
-                }
+                requireActivity().gdToast("$v is invalid", Gravity.BOTTOM)
             }
             else -> {
                 action(input, passwordString)
@@ -283,11 +287,10 @@ class LoginFragment : DaggerFragment() {
             userViewModel.currentUser = user
             userViewModel.lastLoginForm = PHONE
 //                val res = userViewModel.saveUser
-            val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
-//                Log.i("$this", "res ${res.size}")
-            startActivity(loginIntent)
+            goto(DashboardActivity::class.java)
             requireActivity().finish()
         },{err->
+            requireActivity().gdErrorToast(err, Gravity.BOTTOM)
             i(title, "LoginWithPhoneError $err")
         })
 
@@ -313,6 +316,7 @@ class LoginFragment : DaggerFragment() {
             startActivity(loginIntent)
             requireActivity().finish()
         },{err->
+            requireActivity().gdErrorToast(err, Gravity.BOTTOM)
             i(title, "LoginWithEmailError $err")
         })
 

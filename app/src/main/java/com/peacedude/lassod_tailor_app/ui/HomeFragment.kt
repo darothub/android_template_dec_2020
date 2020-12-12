@@ -113,11 +113,11 @@ open class HomeFragment : DaggerFragment() {
         if (currentUser != null) {
             when (currentUser?.loggedIn) {
                 true -> goto(DashboardActivity::class.java)
-
+                false -> goto(R.id.loginFragment)
             }
         }
         else if(account != null && currentUser?.email == googleEmail){
-            startActivity(Intent(requireContext(), DashboardActivity::class.java))
+            goto(DashboardActivity::class.java)
             Log.i(title, "Emails $googleEmail $sharedPrefEmail")
 
         }

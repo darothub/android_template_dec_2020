@@ -27,7 +27,7 @@ class IsEmptyCheck {
         fun fieldsValidation(email: String?=null, password: String?=null, phone_number:String?=null): String? {
             val emailPattern = Regex("""^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*${'$'}""")
             val passwordPattern = Regex("""^[a-zA-Z0-9@$!.%*#?&]{6,}$""")
-            val phonePattern = Regex("""\d{13}""")
+            val phonePattern = Regex("""\d{10,15}""")
             var message:String? = ""
             when {
                 email != null && password != null && phone_number != null  -> {
@@ -70,18 +70,7 @@ class IsEmptyCheck {
 
     }
 }
-//fun Fragment.revealEmptyEditText(editText: EditText): Boolean {
-//    val emptyEditText = IsEmptyCheck(editText)
-//    return when {
-//        emptyEditText != null ->{
-//            emptyEditText.error = getString(R.string.field_required)
-//            val editTextName = emptyEditText.tag
-//            requireActivity().gdErrorToast("$editTextName is empty", Gravity.BOTTOM)
-//            false
-//        }
-//        else -> true
-//    }
-//}
+
 fun validatePasswordAndAdvise(text:CharSequence, view: View) {
     val passwordPattern = Regex("""^[a-zA-Z0-9@$!%*#?&]{6,}$""")
     val matchedPassword = passwordPattern.matches(text)

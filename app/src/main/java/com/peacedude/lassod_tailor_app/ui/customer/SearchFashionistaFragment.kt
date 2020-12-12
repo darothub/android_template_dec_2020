@@ -97,10 +97,6 @@ class SearchFragment : DaggerFragment() {
         }
 
         search_fragment_login_ib.setOnClickListener {
-            if (currentUser != null) {
-                goto(MainActivity::class.java)
-                return@setOnClickListener
-            }
             goto(MainActivity::class.java)
         }
 
