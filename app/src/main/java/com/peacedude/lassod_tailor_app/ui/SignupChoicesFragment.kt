@@ -94,18 +94,18 @@ class SignupChoicesFragment : DaggerFragment() {
 
         })
 
-
-        networkMonitor().observe(viewLifecycleOwner, Observer {
-            if (it) {
-                signupEmailBtn.show()
-                signupPhoneBtn.show()
-                google_sign_in_button.show()
-            } else {
-                signupEmailBtn.invisible()
-                signupPhoneBtn.invisible()
-                google_sign_in_button.invisible()
-            }
-        })
+//
+//        networkMonitor().observe(viewLifecycleOwner, Observer {
+//            if (it) {
+//                signupEmailBtn.show()
+//                signupPhoneBtn.show()
+//                google_sign_in_button.show()
+//            } else {
+//                signupEmailBtn.invisible()
+//                signupPhoneBtn.invisible()
+//                google_sign_in_button.invisible()
+//            }
+//        })
 
         google_sign_in_button.setOnClickListener {
             observer.launchIntentToSignIn(intent, viewLifecycleOwner){}

@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -127,15 +128,15 @@ class LoginFragment : DaggerFragment() {
         }
 
 
-        networkMonitor().observe(viewLifecycleOwner, Observer {
-            if (it) {
-                loginBtn.show()
-                login_google_sign_in_button.show()
-            } else {
-                loginBtn.invisible()
-                login_google_sign_in_button.invisible()
-            }
-        })
+//        networkMonitor().observe(viewLifecycleOwner, Observer {
+//            if (it) {
+//                loginBtn.show()
+//                login_google_sign_in_button.show()
+//            } else {
+//                loginBtn.invisible()
+//                login_google_sign_in_button.invisible()
+//            }
+//        })
 
         loginBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
 
@@ -182,19 +183,14 @@ class LoginFragment : DaggerFragment() {
     }
 
     private fun emailOrPhoneNumberLoginRequest() {
-        val phoneInputLayout = login_phone_number_input.show()
-        val emailInputLayout = login_email_input.show()
-        //            requireActivity().gdToast("phone $phoneInputLayout email $emailInputLayout", Gravity.BOTTOM)
 
-        if (phoneInputLayout) {
-            login_email_input.invisible()
+        if (login_vf[0].isShown) {
             validateAndLogin(
                 login_phone_number_et, "phone"
             ) { phoneNumber, password ->
                 loginWithPhoneNumber(phoneNumber, password)
             }
         } else {
-            login_phone_number_input.invisible()
             validateAndLogin(login_email_address_et, "email") { email, password ->
                 loginWithEmail(email, password)
             }
@@ -216,30 +212,30 @@ class LoginFragment : DaggerFragment() {
         val googleAuthHeader = "$bearer ${user.token.toString()}"
         val req = userViewModel.loginWithGoogle(googleAuthHeader)
         i(title, "header ${user.token}")
-        requestObserver(null, null, req) { bool, result ->
-            onRequestResponseTask<User>(bool, result) {
 
-                val userDetails = result as? UserResponse<User>
-                val remoteDetails = userDetails?.data
-                user.loggedIn = true
-                user.token = remoteDetails?.token
+        observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
+            val remoteDetails = userDetails?.data
+            user.loggedIn = true
+            user.token = remoteDetails?.token
 
-                val payloadString = user<User>(user.token.toString())
-                user.role = payloadString?.category
-                user.category = payloadString?.category
-                userViewModel.currentUser = user
-                //                            val res = userViewModel.saveUser
-                val loginIntent =
-                    Intent(requireContext(), DashboardActivity::class.java)
-                i(
-                    title,
-                    "res $user \nCategory ${payloadString?.category}\ntoken 2${remoteDetails}"
-                )
-                requireActivity().gdToast(getString(R.string.you_are_signed) + " ${user.email}", Gravity.BOTTOM)
-                startActivity(loginIntent)
-                requireActivity().finish()
-            }
-        }
+            val payloadString = user<User>(user.token.toString())
+            user.role = payloadString?.category
+            user.category = payloadString?.category
+            userViewModel.currentUser = user
+            //                            val res = userViewModel.saveUser
+            val loginIntent =
+                Intent(requireContext(), DashboardActivity::class.java)
+            i(
+                title,
+                "res $user \nCategory ${payloadString?.category}\ntoken 2${remoteDetails}"
+            )
+            requireActivity().gdToast(getString(R.string.you_are_signed) + " ${user.email}", Gravity.BOTTOM)
+            startActivity(loginIntent)
+            requireActivity().finish()
+        },{err->
+            i(title, "LoginWithPhoneError $err")
+        })
+
     }
 
 
@@ -281,45 +277,44 @@ class LoginFragment : DaggerFragment() {
 
     private fun loginWithPhoneNumber(phoneNumberOrEmail: String, passwordString: String) {
         val req = userViewModel.loginUserRequest(phoneNumberOrEmail, passwordString)
-        requestObserver(progressBar, loginBtn, req) { b, any ->
-            onRequestResponseTask<User>(b, any) {
-                val userDetails = any as? UserResponse<User>
-                val user = userDetails?.data
-                user?.loggedIn = true
-                userViewModel.currentUser = user
-                userViewModel.lastLoginForm = PHONE
+        observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
+            val user = userDetails?.data
+            user?.loggedIn = true
+            userViewModel.currentUser = user
+            userViewModel.lastLoginForm = PHONE
 //                val res = userViewModel.saveUser
-                val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
+            val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
 //                Log.i("$this", "res ${res.size}")
-                startActivity(loginIntent)
-                requireActivity().finish()
-            }
-        }
+            startActivity(loginIntent)
+            requireActivity().finish()
+        },{err->
+            i(title, "LoginWithPhoneError $err")
+        })
+
     }
 
     private fun loginWithEmail(email: String, passwordString: String) {
         val req = userViewModel.loginWithEmailOrPhoneNumber(email, passwordString)
-        requestObserver(progressBar, loginBtn, req) { b, result ->
-            onRequestResponseTask<User>(b, result) {
-
-                val userDetails = result as? UserResponse<User>
-                val user = userDetails?.data
-                user?.loggedIn = true
-                userViewModel.currentUser = user
-                if(login_fragment_remember_login_choice_cb.isChecked){
-                    userViewModel.lastLoginForm = EMAIL
-                }
-                else{
-                    userViewModel.lastLoginForm = PHONE
-                }
+        observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
+            val user = userDetails?.data
+            user?.loggedIn = true
+            userViewModel.currentUser = user
+            if(login_fragment_remember_login_choice_cb.isChecked){
+                userViewModel.lastLoginForm = EMAIL
+            }
+            else{
+                userViewModel.lastLoginForm = PHONE
+            }
 
 //                val res = userViewModel.saveUser
-                val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
+            val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
 //                Log.i("$this", "res ${res.size}")
-                requireActivity().gdToast(getString(R.string.you_are_signed) + " $email", Gravity.BOTTOM)
-                startActivity(loginIntent)
-                requireActivity().finish()
-            }
-        }
+            requireActivity().gdToast(getString(R.string.you_are_signed) + " $email", Gravity.BOTTOM)
+            startActivity(loginIntent)
+            requireActivity().finish()
+        },{err->
+            i(title, "LoginWithEmailError $err")
+        })
+
     }
 }

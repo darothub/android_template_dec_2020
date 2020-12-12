@@ -96,19 +96,7 @@ open class HomeFragment : DaggerFragment() {
             loginBtn.background = loginBackgroundDrawable
         })
 
-        networkMonitor().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it) {
-                loginBtn.show()
-                signupBtn.show()
-                Log.i("Base", "Network On")
 
-            } else {
-                loginBtn.invisible()
-                signupBtn.invisible()
-
-                Log.i("Base", "Network OFF")
-            }
-        })
 
         signupBtn.setOnClickListener {
             findNavController().navigate(R.id.signupChoicesFragment)
@@ -124,29 +112,14 @@ open class HomeFragment : DaggerFragment() {
 
         if (currentUser != null) {
             when (currentUser?.loggedIn) {
-                true -> startActivity(Intent(requireContext(), DashboardActivity::class.java))
-                false -> goto(R.id.homeFragment)
+                true -> goto(DashboardActivity::class.java)
+
             }
         }
         else if(account != null && currentUser?.email == googleEmail){
             startActivity(Intent(requireContext(), DashboardActivity::class.java))
             Log.i(title, "Emails $googleEmail $sharedPrefEmail")
 
-//            requireActivity().request(null, null, userViewModel, {
-//                userViewModel.loginUserRequest(account.email.toString(), "Password")
-//            },{b, any ->
-//                onRequestResponseTask(b, any) {
-//                    val userDetails = any as? UserResponse<User>
-//                    val user = userDetails?.data
-//                    user?.loggedIn = true
-//                    userViewModel.currentUser = user
-//                    val res = userViewModel.saveUser
-//                    val loginIntent = Intent(requireContext(), ProfileActivity::class.java)
-//                    Log.i("$this", "res ${res.size}")
-//                    startActivity(loginIntent)
-//                    requireActivity().finish()
-//                }
-//            })
         }
         else{
 //            startActivity(Intent(requireContext(), DashboardActivity::class.java))

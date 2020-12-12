@@ -46,7 +46,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_signup_email_text_input"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:imeOptions="actionNext"
             android:textColorHint="@color/colorGray"
             android:layout_marginTop="@dimen/_35sdp"
@@ -73,7 +73,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_signup_password_text_input"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/colorGray"
             android:textColorHint="@color/colorGray"

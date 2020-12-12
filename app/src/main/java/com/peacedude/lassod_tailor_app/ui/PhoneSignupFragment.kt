@@ -162,13 +162,13 @@ class PhoneSignupFragment : DaggerFragment() {
 
         }, {
 
-            networkMonitor().observe(viewLifecycleOwner, Observer {
-                if (it) {
-                    phonesignupBtn.show()
-                } else {
-                    phonesignupBtn.invisible()
-                }
-            })
+//            networkMonitor().observe(viewLifecycleOwner, Observer {
+//                if (it) {
+//                    phonesignupBtn.show()
+//                } else {
+//                    phonesignupBtn.invisible()
+//                }
+//            })
             phonesignupBtn.setOnClickListener {
                 signupRequest()
                 return@setOnClickListener

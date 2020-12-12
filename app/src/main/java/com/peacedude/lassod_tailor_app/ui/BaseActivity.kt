@@ -51,15 +51,15 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        networkMonitor().observe(this, Observer {
-            if (it) {
-                baseDialog.dismiss()
-                baseCheckConnectionTv.hide()
-            } else {
-                baseDialog.show()
-                baseCheckConnectionTv.show()
-            }
-        })
+//        networkMonitor().observe(this, Observer {
+//            if (it) {
+//                baseDialog.dismiss()
+//                baseCheckConnectionTv.hide()
+//            } else {
+//                baseDialog.show()
+//                baseCheckConnectionTv.show()
+//            }
+//        })
     }
 
 
@@ -72,6 +72,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         super.onPause()
 
     }
+
 
 }
 

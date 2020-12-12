@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.utils.storage
 
 import androidx.security.crypto.EncryptedSharedPreferences
 import com.google.gson.Gson
+import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -31,7 +32,7 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
     }
 
     override fun getLastFragmentId(): Int {
-        return sharedPref.getInt(LASTFRAGMENT, 0)
+        return sharedPref.getInt(LASTFRAGMENT, R.id.profileFragment)
     }
 
     override fun saveLastLoginForm(emailorphone: String) {

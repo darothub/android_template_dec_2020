@@ -12,7 +12,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface ViewModelInterface {
-    var lastFragmentId:Int?
+    var lastFragmentId:Int
     var currentUser: User?
     var saveUser:ArrayList<String>
     var saveClient:ArrayList<String>

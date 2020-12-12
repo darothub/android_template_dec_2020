@@ -54,7 +54,7 @@ open class GeneralViewModel @Inject constructor(
     private val logoutLiveData = MutableLiveData<Boolean>()
     val netWorkLiveData = MutableLiveData<Boolean>(true)
     var data:ParentData?=null
-    override var lastFragmentId: Int?
+    override var lastFragmentId: Int
         get() = storageRequest.getLastFragmentId()
         set(id) = storageRequest.saveLastFragment(id)
 

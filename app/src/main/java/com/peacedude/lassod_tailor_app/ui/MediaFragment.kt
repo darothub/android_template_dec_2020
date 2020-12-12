@@ -150,11 +150,11 @@ class MediaFragment : DaggerFragment() {
         networkMonitor().observe(viewLifecycleOwner, Observer {
             if (it) {
                 mediaTransaction()
-
             } else {
 
             }
         })
+
 
 
 

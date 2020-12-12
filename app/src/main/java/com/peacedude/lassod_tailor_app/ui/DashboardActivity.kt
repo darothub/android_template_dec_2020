@@ -170,6 +170,8 @@ class DashboardActivity : BaseActivity() {
         })
 
 
+
+
 //        profile_header.show()
 
         menuIcon?.setOnClickListener {
@@ -208,10 +210,23 @@ class DashboardActivity : BaseActivity() {
 
                 itemView.setOnClickListener {
                     when(item?.title){
-                        getString(R.string.clients) -> startActivity(Intent(this@DashboardActivity, ClientActivity::class.java))
-                        getString(R.string.resources) -> startActivity(Intent(this@DashboardActivity, ResourcesActivity::class.java))
-                        getString(R.string.subscription) -> startActivity(Intent(this@DashboardActivity, SubscriptionActivity::class.java))
-                        getString(R.string.logout) -> logoutRequest()
+                        getString(R.string.clients) -> {
+                            drawer_layout.closeDrawer(profile_drawer_view, true)
+                            goto(ClientActivity::class.java)
+                        }
+                        getString(R.string.resources) -> {
+                            drawer_layout.closeDrawer(profile_drawer_view, true)
+                            goto(ResourcesActivity::class.java)
+                        }
+                        getString(R.string.subscription) -> {
+                            drawer_layout.closeDrawer(profile_drawer_view, true)
+                            goto(SubscriptionActivity::class.java)
+
+                        }
+                        getString(R.string.logout) -> {
+                            drawer_layout.closeDrawer(profile_drawer_view, true)
+                            logoutRequest()
+                        }
 
                     }
                 }
@@ -262,7 +277,7 @@ class DashboardActivity : BaseActivity() {
         super.onResume()
 
         navController.addOnDestinationChangedListener(navListener)
-        navController.navigate(authViewModel.lastFragmentId ?: R.id.profileFragment)
+//        navController.navigate(authViewModel.lastFragmentId)
 
 
     }

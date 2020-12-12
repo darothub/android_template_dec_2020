@@ -422,8 +422,8 @@ object GlobalVariables {
 
 }
 
-fun Activity.networkMonitor(): SingleLiveEvent<Boolean> {
-    val netWorkLiveData = SingleLiveEvent<Boolean>()
+fun Activity.networkMonitor(): MutableLiveData<Boolean> {
+    val netWorkLiveData = MutableLiveData<Boolean>()
 
     val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
