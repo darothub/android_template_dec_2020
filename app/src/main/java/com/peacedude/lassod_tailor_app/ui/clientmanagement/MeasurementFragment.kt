@@ -332,25 +332,31 @@ class MeasurementFragment : DaggerFragment() {
 
         val addMeasurementReq =
             authViewModel.addMeasurement(header, clientMeasurement)
-        requestObserver(
-            dialogAddMeasurementProgressBar,
-            dialogAddMeasurementBtn,
-            addMeasurementReq,
-            false
-        ) { bool, result ->
-            onRequestResponseTask<ClientMeasurement>(bool, result) {
-                val res = result as UserResponse<ClientMeasurement>
-                requireActivity().gdToast(
-                    res.message.toString(),
-                    Gravity.BOTTOM
-                )
+        observeRequest<ClientsList>(addMeasurementReq, null, null, true, {result->
+            requireActivity().gdToast(
+                result.message.toString(),
+                Gravity.BOTTOM
+            )
 
-                parentList?.add(clientMeasurement)
-                dialog.dismiss()
-                parentAdapter.notifyDataSetChanged()
+            parentList?.add(clientMeasurement)
+            dialog.dismiss()
+            parentAdapter.notifyDataSetChanged()
+        }, { err ->
+            i(title, "ClientListUpdateError $err")
+        })
+        observeRequest<ClientMeasurement>(addMeasurementReq, dialogAddMeasurementProgressBar, dialogAddMeasurementBtn, false, {result->
+            val res = result
+            requireActivity().gdToast(
+                res.message.toString(),
+                Gravity.BOTTOM
+            )
 
-            }
-        }
+            parentList?.add(clientMeasurement)
+            dialog.dismiss()
+            parentAdapter.notifyDataSetChanged()
+        },{ err ->
+            i(title, "AddMeasurementReqError $err")
+        })
     }
 
     private suspend fun CoroutineScope.getMeasurementTypes() {

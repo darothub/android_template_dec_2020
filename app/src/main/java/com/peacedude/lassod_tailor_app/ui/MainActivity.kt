@@ -14,13 +14,13 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        networkMonitor().observe(this, Observer {
-            if (it) {
-                fragment.view?.show()
-            } else {
-                fragment.view?.hide()
-            }
-        })
+//        networkMonitor().observe(this, Observer {
+//            if (it) {
+//                fragment.view?.show()
+//            } else {
+//                fragment.view?.hide()
+//            }
+//        })
 
 
     }

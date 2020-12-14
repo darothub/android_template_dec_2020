@@ -67,6 +67,9 @@ inline fun <reified T> Activity.observeRequest(
             window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
     }
+    val textView by lazy {
+        dialog.findViewById<TextView>(R.id.loader_layout_tv)
+    }
 
     hideKeyboard()
     request?.observe(this as LifecycleOwner, Observer {
@@ -114,6 +117,12 @@ inline fun <reified T> Activity.observeRequest(
 
 
 //                    navigateWithUri("android-app://anapfoundation.navigation/signin".toUri())
+                }
+                is ServicesResponseWrapper.Network -> {
+
+                    i(title, "Network is bad here")
+                    textView.text = getString(R.string.bad_network)
+                    dialog.show()
                 }
             }
         } catch (e: Exception) {
@@ -484,6 +493,9 @@ inline fun <reified T> Activity.onFlowResponse(
             window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
         }
     }
+    val textView by lazy {
+        dialog.findViewById<TextView>(R.id.loader_layout_tv)
+    }
 
     when (it) {
         is ServicesResponseWrapper.Loading<*> -> {
@@ -513,6 +525,12 @@ inline fun <reified T> Activity.onFlowResponse(
             progressBar?.hide()
             button?.show()
             Log.i("onFlowResponse", "Logout ${it?.message}")
+        }
+        is ServicesResponseWrapper.Network -> {
+
+            i("ActivityOnFlow", "Network is bad here")
+            textView.text = getString(R.string.bad_network)
+            dialog.show()
         }
     }
 }

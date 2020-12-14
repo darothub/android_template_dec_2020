@@ -138,6 +138,7 @@ open class ActivityStaticModule {
 
     }
 
+
     @Singleton
     @Provides
     fun getContexts(application: Application): Context {

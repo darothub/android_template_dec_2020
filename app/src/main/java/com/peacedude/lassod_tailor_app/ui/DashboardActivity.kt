@@ -86,7 +86,7 @@ class DashboardActivity : BaseActivity() {
     }
 
     val navListener =
-        NavController.OnDestinationChangedListener { controller, destination, arguments ->
+        NavController.OnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.singleChatFragment -> {
                     profile_fab.hide()
@@ -158,19 +158,8 @@ class DashboardActivity : BaseActivity() {
         Log.i(title, "currentUser $currentUser")
 
 
-       networkMonitor().observe(this, Observer {
-            if (it) {
-                Log.i(title, "Network On")
-                getUserData()
-                dashboard_fragment.view?.show()
-            } else {
-                dashboard_fragment.view?.invisible()
-                Log.i(title, "Network OFF")
-            }
-        })
 
-
-
+        getUserData()
 
 //        profile_header.show()
 
@@ -202,9 +191,9 @@ class DashboardActivity : BaseActivity() {
             DrawerMenuItem(R.drawable.ic_power_settings_new_24px, getString(R.string.logout))
 
         )
-        drawerMenuRv.setupAdapter<DrawerMenuItem>(R.layout.drawer_menu_item) { adapter, context, list ->
+        drawerMenuRv.setupAdapter<DrawerMenuItem>(R.layout.drawer_menu_item) { _, _, list ->
 
-            bind { itemView, position, item ->
+            bind { itemView, _, item ->
                 item?.drawable?.let { itemView.drawer_menu_iv.setImageResource(it) }
                 itemView.drawer_menu_tv.text = item?.title
 
@@ -242,7 +231,7 @@ class DashboardActivity : BaseActivity() {
             )
 
             if(currentUser?.category == "fashionista"){
-                submitList(listOfDrawerMenuItem.takeLast(1))
+                submitList(listOfDrawerMenuItem.takeLast(2))
             }
             else{
                 submitList(listOfDrawerMenuItem)
@@ -253,12 +242,6 @@ class DashboardActivity : BaseActivity() {
         }
 
 
-    }
-
-    private fun setInvisible(vararg views: View) {
-        for (v in views) {
-            v.invisible()
-        }
     }
 
 
@@ -316,12 +299,7 @@ class DashboardActivity : BaseActivity() {
         },{err->
             i(title, "DashActError $err")
         })
-//        response.observe(this, androidx.lifecycle.Observer {
-//            val (bool, result) = it
-//            onRequestResponseTask<User>(bool, result) {
-//
-//            }
-//        })
+
 
     }
 

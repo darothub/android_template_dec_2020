@@ -77,14 +77,14 @@ class ResourcesActivity : BaseActivity() {
 //        toolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
 
 
-        networkMonitor().observe(this, Observer {
-            if (it) {
-                resourcesFragment.view?.show()
-
-            } else {
-                resourcesFragment.view?.invisible()
-            }
-        })
+//        networkMonitor().observe(this, Observer {
+//            if (it) {
+//                resourcesFragment.view?.show()
+//
+//            } else {
+//                resourcesFragment.view?.invisible()
+//            }
+//        })
 
     }
 

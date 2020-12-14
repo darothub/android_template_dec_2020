@@ -239,22 +239,13 @@ class ClientAccountFragment : DaggerFragment(){
         client.state = clientState
 
         val editClientReq = authViewModel.editClient(header, client)
-        requestObserver(
-            updateProgressBar,
-            updateClientBtn,
-            editClientReq
-        ) { bool, result ->
-            //Task to be done on successful
-            onRequestResponseTask<ClientsList>(bool, result) {
-                val results = result as UserResponse<SingleClient>
-                val msg = results.message.toString()
-
-                val newClientData = result.data?.client
-                requireActivity().gdToast(msg, Gravity.BOTTOM)
-
-            }
-
-        }
+        observeRequest<SingleClient>(editClientReq, null, null, true, {result->
+            val msg = result.message.toString()
+            val newClientData = result.data?.client
+            requireActivity().gdToast(msg, Gravity.BOTTOM)
+        }, { err ->
+            i(title, "SingleClientUpdateError $err")
+        })
     }
 
 

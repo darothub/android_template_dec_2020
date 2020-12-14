@@ -17,51 +17,34 @@ interface UserRequestInterface {
         category: String,
         phoneNumber: String,
         password: String
-    ): Call<UserResponse<User>> {
-        return TODO()
-    }
+    ): Call<UserResponse<User>> = TODO()
 
     fun registerUserWithEmail(
         category: String,
         email: String,
         password: String
-    ): Call<UserResponse<User>> {
-        return TODO()
-    }
-    fun activateUser(phoneNumber: String, code: String): Call<UserResponse<User>> {
-        return TODO()
-    }
+    ): Call<UserResponse<User>> = TODO()
+    fun activateUser(phoneNumber: String, code: String): Call<UserResponse<User>> = TODO()
 
-    fun loginRequest(phoneNumber: String, password: String): Call<UserResponse<User>> {
-        return TODO()
-    }
+    fun loginRequest(phoneNumber: String, password: String): Call<UserResponse<User>> = TODO()
 
-    fun loginWithEmailOrPhoneNumber(field: String?, password: String?): Call<UserResponse<User>> {
-        return TODO()
-    }
+    fun loginWithEmailOrPhoneNumber(field: String?, password: String?): Call<UserResponse<User>> =
+        TODO()
    fun registerUser(
         user: User?
-    ):Call<UserResponse<User>> {
-        return TODO()
-    }
+    ):Call<UserResponse<User>> = TODO()
 
     fun registerUser(
         header:String,
         user: User?
-    ):Call<UserResponse<User>> {
-        return TODO()
-    }
+    ):Call<UserResponse<User>> = TODO()
     fun loginWithGoogle(
         header:String?
-    ):Call<UserResponse<User>> {
-        return TODO()
-    }
+    ):Call<UserResponse<User>> = TODO()
 
     fun resendCode(
         phoneNumber: String
-    ):Call<UserResponse<User>> {
-        return TODO()
-    }
+    ):Call<UserResponse<User>> = TODO()
 
 
     suspend fun searchArtisan(
@@ -71,7 +54,5 @@ interface UserRequestInterface {
         category:String?,
         page:Long?,
         size:Long?
-    ): UserResponse<ArtisanSearchResponse>{
-        return TODO()
-    }
+    ): UserResponse<ArtisanSearchResponse> = TODO()
 }

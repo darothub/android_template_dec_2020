@@ -16,15 +16,20 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client.*
+import javax.inject.Inject
 
 
 /**
@@ -43,6 +48,15 @@ class ClientFragment : DaggerFragment() {
         (client_management_included_viewPager as? ViewPager2)
     }
 
+    //    Get logged-in user
+    private val currentUser: User? by lazy {
+        authViewModel.currentUser
+    }
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val authViewModel: AuthViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         changeStatusBarColor(R.color.colorTransparentWhite)
@@ -107,7 +121,13 @@ class ClientFragment : DaggerFragment() {
                     TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                         when (position) {
                             0 -> tab.text = "Client Account"
-                            1 -> tab.text = "Measurement"
+                            1 -> {
+                                if (currentUser?.category == getString(R.string.weaver)) {
+                                    tab.view.hide()
+                                } else {
+                                    tab.text = getString(R.string.measurement)
+                                }
+                            }
                             2 -> tab.text = "Delivery Address"
                             else -> tab.text = "Client"
                         }
@@ -122,15 +142,7 @@ class ClientFragment : DaggerFragment() {
                 R.color.colorPrimary
             )
         )
-//        val globalClient = GlobalVariables.globalClient
-//        if(globalClient != null){
-//            i(title, "globalClient $globalClient")
-//            setItem(1)
-//            GlobalVariables.globalClient = null
-//        }
-//        else{
-//            setItem(0)
-//        }
+
 
     }
 

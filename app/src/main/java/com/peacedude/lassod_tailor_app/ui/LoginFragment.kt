@@ -81,12 +81,6 @@ class LoginFragment : DaggerFragment() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var observer: StartActivityForResults
 
-    private val leftAnimation: Animation? by lazy {
-        AnimationUtils.loadAnimation(requireContext(), R.anim.left_animation)
-    }
-    private val rightAnimation: Animation? by lazy {
-        AnimationUtils.loadAnimation(requireContext(), R.anim.right_animation)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,7 +117,7 @@ class LoginFragment : DaggerFragment() {
         }, {
             loginBtn.text = getString(R.string.login)
         })
-        var lastLoginForm = userViewModel.lastLoginForm.toString()
+        userViewModel.lastLoginForm.toString()
 
         login_use_email_tv.setOnClickListener {
             login_vf.showNext()
@@ -199,7 +193,7 @@ class LoginFragment : DaggerFragment() {
         observer.launchIntentToSignIn(intent, viewLifecycleOwner) { user ->
             i(
                 "$this",
-                "res $user \ntoken ${user.role}\ntoken 2${user?.token}"
+                "res $user \ntoken ${user.role}\ntoken 2${user.token}"
             )
             loginWithGoogle(user)
         }
@@ -211,7 +205,7 @@ class LoginFragment : DaggerFragment() {
         i(title, "header ${user.token}")
 
         observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
-            val remoteDetails = userDetails?.data
+            val remoteDetails = userDetails.data
             user.loggedIn = true
             user.token = remoteDetails?.token
 
@@ -282,7 +276,7 @@ class LoginFragment : DaggerFragment() {
     private fun loginWithPhoneNumber(phoneNumberOrEmail: String, passwordString: String) {
         val req = userViewModel.loginUserRequest(phoneNumberOrEmail, passwordString)
         observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
-            val user = userDetails?.data
+            val user = userDetails.data
             user?.loggedIn = true
             userViewModel.currentUser = user
             userViewModel.lastLoginForm = PHONE
@@ -299,7 +293,7 @@ class LoginFragment : DaggerFragment() {
     private fun loginWithEmail(email: String, passwordString: String) {
         val req = userViewModel.loginWithEmailOrPhoneNumber(email, passwordString)
         observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
-            val user = userDetails?.data
+            val user = userDetails.data
             user?.loggedIn = true
             userViewModel.currentUser = user
             if(login_fragment_remember_login_choice_cb.isChecked){

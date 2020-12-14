@@ -103,81 +103,81 @@ class AllVideoFragment : DaggerFragment() {
         noDataText.text = getString(R.string.no_video_available)
         val request = authViewModel.getAllVideos(header)
 
-
         //Observer for get request
-        requestObserver(null, null, request, true) { bool, result ->
-            //Task to be done on successful
-            onRequestResponseTask<VideoList>(bool, result) {
-                val results = it
+        observeRequest<VideoList>(request, null, null, true, {
+            val results = it
 
-                val listOfVideo = results?.data?.video?.map { video->
-                    VideoResource(
-                        video.id,
-                        video.tailorID,
-                        video.title,
-                        video.videoURL,
-                        video.description,
-                        video.createdAt,
-                        video.updatedAt
-                    )
+            val listOfVideo = results.data?.video?.map { video->
+                VideoResource(
+                    video.id,
+                    video.tailorID,
+                    video.title,
+                    video.videoURL,
+                    video.description,
+                    video.createdAt,
+                    video.updatedAt
+                )
 
-                }
-                if (listOfVideo?.isNotEmpty()!!) {
-                    all_video_fragment_no_data_included_layout.hide()
-                    all_video_fragment_rv.show()
-
-                    all_video_fragment_rv.setupAdapter<VideoResource>(R.layout.resource_video_item) { adapter, context, list ->
-                        bind { itemView, position, item ->
-                            val mediaController = MediaController(requireContext())
-                            mediaController.setAnchorView(itemView.resource_video_item_vv)
-
-                            itemView.resource_video_item_title_tv.text = item?.title
-                            itemView.resource_video_item_time_tv.text = item?.title
-
-                            if (item?.videoURL != null) {
-                                val uri = Uri.parse(item.videoURL)
-                                itemView.resource_video_item_vv.setMediaController(
-                                    mediaController
-                                )
-                                itemView.resource_video_item_vv.setVideoURI(uri)
-                                itemView.resource_video_item_fl.clipToOutline = true
-                                itemView.resource_video_item_vv.seekTo(1)
-                            } else {
-                                val uri =
-                                    Uri.parse(getString(R.string.sample_video_str))
-                                itemView.resource_video_item_vv.setMediaController(
-                                    mediaController
-                                )
-                                itemView.resource_video_item_vv.setVideoURI(uri)
-                                itemView.resource_video_item_fl.clipToOutline = true
-                                itemView.resource_video_item_vv.seekTo(1)
-                            }
-
-
-                            itemView.resource_video_item_vv.setOnClickListener {
-                                actionToDisplaySingleVideo(item)
-                            }
-                            itemView.resource_video_item_fl.setOnClickListener {
-                                actionToDisplaySingleVideo(item)
-                            }
-                            all_video_fragment_rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
-
-                                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                                    super.onScrollStateChanged(recyclerView, newState)
-                                    mediaController.hide()
-                                }
-
-                            })
-                        }
-                        setLayoutManager(GridLayoutManager(requireContext(), 2))
-                        submitList(listOfVideo)
-                    }
-
-                } else {
-                    no_data_included_layout.show()
-                }
             }
-        }
+            if (listOfVideo?.isNotEmpty()!!) {
+                all_video_fragment_no_data_included_layout.hide()
+                all_video_fragment_rv.show()
+
+                all_video_fragment_rv.setupAdapter<VideoResource>(R.layout.resource_video_item) { adapter, context, list ->
+                    bind { itemView, position, item ->
+                        val mediaController = MediaController(requireContext())
+                        mediaController.setAnchorView(itemView.resource_video_item_vv)
+
+                        itemView.resource_video_item_title_tv.text = item?.title
+                        itemView.resource_video_item_time_tv.text = item?.title
+
+                        if (item?.videoURL != null) {
+                            val uri = Uri.parse(item.videoURL)
+                            itemView.resource_video_item_vv.setMediaController(
+                                mediaController
+                            )
+                            itemView.resource_video_item_vv.setVideoURI(uri)
+                            itemView.resource_video_item_fl.clipToOutline = true
+                            itemView.resource_video_item_vv.seekTo(1)
+                        } else {
+                            val uri =
+                                Uri.parse(getString(R.string.sample_video_str))
+                            itemView.resource_video_item_vv.setMediaController(
+                                mediaController
+                            )
+                            itemView.resource_video_item_vv.setVideoURI(uri)
+                            itemView.resource_video_item_fl.clipToOutline = true
+                            itemView.resource_video_item_vv.seekTo(1)
+                        }
+
+
+                        itemView.resource_video_item_vv.setOnClickListener {
+                            actionToDisplaySingleVideo(item)
+                        }
+                        itemView.resource_video_item_fl.setOnClickListener {
+                            actionToDisplaySingleVideo(item)
+                        }
+                        all_video_fragment_rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+
+                            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                                super.onScrollStateChanged(recyclerView, newState)
+                                mediaController.hide()
+                            }
+
+                        })
+                    }
+                    setLayoutManager(GridLayoutManager(requireContext(), 2))
+                    submitList(listOfVideo)
+                }
+
+            } else {
+                no_data_included_layout.show()
+            }
+        },{err ->
+            //On error
+            i(title, "VideoListError $err")
+        })
+
 
 
     }

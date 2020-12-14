@@ -32,6 +32,7 @@ import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.launch
 import retrofit2.*
 import java.io.Reader
 import javax.inject.Inject
@@ -49,6 +50,9 @@ open class GeneralViewModel @Inject constructor(
     protected open val title: String = this.getName()
 
 
+    init{
+        networkMonitor()
+    }
 
     //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
@@ -77,6 +81,11 @@ open class GeneralViewModel @Inject constructor(
     override var lastLoginForm: String? = storageRequest.getLastLoginForm()
         set(lastLoginForm) = storageRequest.saveLastLoginForm(lastLoginForm.toString())
     override var saveClient = storageRequest.saveData(newClient, newClientKey)
+
+
+//    val responseLiveData by lazy{
+//        SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
+//    }
 
     protected fun onFailureResponse(
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
@@ -210,38 +219,56 @@ open class GeneralViewModel @Inject constructor(
                 "Loading..."
             )
         )
-        if (data != null){
-            emit(
-                ServicesResponseWrapper.Success(data as? ParentData)
-            )
-        }
-        else{
-            emit(
-                ServicesResponseWrapper.Success(request as? ParentData)
-            )
+        netWorkLiveData.observeForever {
+            viewModelScope.launch {
+                if(it){
+
+                    if (data != null){
+
+                        emit(
+                            ServicesResponseWrapper.Success(data as? ParentData)
+                        )
+                    }
+                    else{
+                        emit(
+                            ServicesResponseWrapper.Success(request as? ParentData)
+                        )
+                    }
+
+                    i(title, "Network is ON here flow")
+                }
+                else{
+                    i(title, "Network is OFF here flow")
+                    emit(
+                        ServicesResponseWrapper.Network(502, "Bad connection")
+                    )
+                }
+            }
+
         }
 
-    }
-    protected fun errorConverter(
-        response: Response<ParentData>
-    ): Pair<String, Int> {
-        val a = object : Annotation {}
-        val converter =
-            retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
-        val error = converter.convert(response.errorBody())
-        val errors = error?.errors
-        val msg = error?.message
-        Log.i(title, "messages $msg")
-        var errorString1 = ""
-        if (error?.errors?.size!! > 1) {
-            errorString1 = "${errors?.get(0)}, ${errors?.get(1)}"
-        } else {
-            errorString1 = errors?.get(0).toString()
-        }
-        Log.i(title, "message $errorString1")
-        return Pair(errorString1, response.code())
 
     }
+//    protected fun errorConverter(
+//        response: Response<ParentData>
+//    ): Pair<String, Int> {
+//        val a = object : Annotation {}
+//        val converter =
+//            retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
+//        val error = converter.convert(response.errorBody())
+//        val errors = error?.errors
+//        val msg = error?.message
+//        Log.i(title, "messages $msg")
+//        var errorString1 = ""
+//        if (error?.errors?.size!! > 1) {
+//            errorString1 = "${errors?.get(0)}, ${errors?.get(1)}"
+//        } else {
+//            errorString1 = errors?.get(0).toString()
+//        }
+//        Log.i(title, "message $errorString1")
+//        return Pair(errorString1, response.code())
+//
+//    }
     protected fun errorConverter(
         statusCode:Int,
         errorbody: Reader?
@@ -312,29 +339,16 @@ open class GeneralViewModel @Inject constructor(
                 call: Call<UserResponse<T>>,
                 response: Response<UserResponse<T>>
             ) {
-
-                onResponseTask(response as Response<ParentData>, responseLiveData)
-            }
-
-        })
-        return responseLiveData
-    }
-
-    protected inline fun <reified T> enqueueRequest(
-        request: Call<UserResponse<T>>,
-        responseLiveData: ServicesResponseWrapper<ParentData>
-
-    ): ServicesResponseWrapper<ParentData> {
-        request.enqueue(object : Callback<UserResponse<T>> {
-            override fun onFailure(call: Call<UserResponse<T>>, t: Throwable) {
-
-            }
-
-            override fun onResponse(
-                call: Call<UserResponse<T>>,
-                response: Response<UserResponse<T>>
-            ) {
-
+                netWorkLiveData.observeForever {
+                    if(it){
+                        onResponseTask(response as Response<ParentData>, responseLiveData)
+                        i(title, "Network is ON here")
+                    }
+                    else{
+                        responseLiveData.postValue(ServicesResponseWrapper.Network(502, "Bad connection"))
+                        i(title, "Network is OFF here")
+                    }
+                }
 
             }
 
@@ -373,6 +387,10 @@ open class GeneralViewModel @Inject constructor(
         return netWorkLiveData
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        netWorkLiveData.removeObserver {  }
+    }
 
 
 }

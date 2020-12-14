@@ -18,15 +18,9 @@ interface StorageRequest {
     var editor:SharedPreferences.Editor
     var gson:Gson
     fun clearData()
-    fun <T>saveData(data: T?, key:String):ArrayList<String>{
-        return TODO()
-    }
-    fun <T>keepData(data: T?, key:String){
-        return TODO()
-    }
-    fun clearByKey(key: String):Boolean {
-        return TODO()
-    }
+    fun <T>saveData(data: T?, key:String):ArrayList<String> = TODO()
+    fun <T>keepData(data: T?, key:String): Unit = TODO()
+    fun clearByKey(key: String):Boolean = TODO()
 
 }
 

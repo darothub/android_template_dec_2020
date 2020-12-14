@@ -122,7 +122,7 @@ class MediaFragment : DaggerFragment() {
 
         }
         observer = StartActivityForResults(requireActivity().activityResultRegistry)
-        lifecycle.addObserver(observer as StartActivityForResults)
+        lifecycle.addObserver(observer)
     }
 
 
@@ -147,15 +147,8 @@ class MediaFragment : DaggerFragment() {
         noDataText.text = getString(R.string.you_have_no_photo_str)
 
 
-        networkMonitor().observe(viewLifecycleOwner, Observer {
-            if (it) {
-                mediaTransaction()
-            } else {
 
-            }
-        })
-
-
+        mediaTransaction()
 
 
 
@@ -186,75 +179,73 @@ class MediaFragment : DaggerFragment() {
         val request = authViewModel.getAllPhoto(header)
 
         //Observer for get request
-        requestObserver(null, null, request, true) { bool, result ->
-            //Task to be done on successful
-            onRequestResponseTask<PhotoList>(bool, result) {
-                val results = result as UserResponse<PhotoList>
-                val listOfPhoto = result.data?.photo?.map {
-                    Photo(
-                        it.id,
-                        it.tailorID,
-                        it.photo,
-                        it.photoAwsDetails,
-                        it.info,
-                        it.createdAt,
-                        it.updatedAt
-                    )
-                }
-                if (listOfPhoto?.isNotEmpty()!!) {
-                    no_data_included_layout.hide()
-                    media_fragment_rv.show()
-                    media_fragment_rv.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
+        observeRequest<PhotoList>(request, null, null, true, {result ->
+            val listOfPhoto = result.data?.photo?.map {
+                Photo(
+                    it.id,
+                    it.tailorID,
+                    it.photo,
+                    it.photoAwsDetails,
+                    it.info,
+                    it.createdAt,
+                    it.updatedAt
+                )
+            }
+            if (listOfPhoto?.isNotEmpty()!!) {
+                no_data_included_layout.hide()
+                media_fragment_rv.show()
+                media_fragment_rv.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
 
-                        bind { itemView, position, item ->
-                            itemView.media_item_picture_title_tv.text =
-                                getString(R.string.elegant_str)
-                            Picasso.get().load(item?.photo).into(itemView.media_item_picture_iv)
+                    bind { itemView, position, item ->
+                        itemView.media_item_picture_title_tv.text =
+                            getString(R.string.elegant_str)
+                        Picasso.get().load(item?.photo).into(itemView.media_item_picture_iv)
 
-                            itemView.setOnClickListener {
-                                GlobalVariables.globalId = item?.id.toString()
-                                GlobalVariables.globalPhoto = item
-                                GlobalVariables.globalPosition = position
-                                Picasso.get().load(item?.photo).into(singleImageIv)
-                                singleImageDialog.show {
-                                    cornerRadius(10F)
-                                }
-                                singleSendTv.setOnClickListener {
-                                    val b = getBitmapFromImageView(itemView.media_item_picture_iv)
-                                    val file = saveBitmap(b)
+                        itemView.setOnClickListener {
+                            GlobalVariables.globalId = item?.id.toString()
+                            GlobalVariables.globalPhoto = item
+                            GlobalVariables.globalPosition = position
+                            Picasso.get().load(item?.photo).into(singleImageIv)
+                            singleImageDialog.show {
+                                cornerRadius(10F)
+                            }
+                            singleSendTv.setOnClickListener {
+                                val b = getBitmapFromImageView(itemView.media_item_picture_iv)
+                                val file = saveBitmap(b)
 
-                                    val mimeType = "image/png"
-                                    if (file != null) {
-                                        val uri =
-                                            FileProvider.getUriForFile(
+                                val mimeType = "image/png"
+                                if (file != null) {
+                                    val uri =
+                                        FileProvider.getUriForFile(
                                             requireActivity(),
                                             "com.peacedude.lassod_tailor_app.fileprovider", //(use your app signature + ".provider" )
                                             file)
-                                        val share = ShareCompat.IntentBuilder
-                                            .from(requireActivity())
-                                            .setType(mimeType)
-                                            .setChooserTitle("Share with ")
-                                            .setStream(uri)
-                                            .startChooser()
-                                    }
-
+                                    val share = ShareCompat.IntentBuilder
+                                        .from(requireActivity())
+                                        .setType(mimeType)
+                                        .setChooserTitle("Share with ")
+                                        .setStream(uri)
+                                        .startChooser()
                                 }
+
                             }
-
-                            deleteMediaRequest(list, adapter)
-
                         }
-                        setLayoutManager(GridLayoutManager(requireContext(), 2))
-                        submitList(listOfPhoto)
-                    }
 
-                } else {
-                    no_data_included_layout.show()
+                        deleteMediaRequest(list, adapter)
+
+                    }
+                    setLayoutManager(GridLayoutManager(requireContext(), 2))
+                    submitList(listOfPhoto)
                 }
 
+            } else {
+                no_data_included_layout.show()
             }
 
-        }
+        },{err ->
+            i(title, "PhotoListError $err")
+        })
+
     }
 
     private fun deleteMediaRequest(
@@ -265,15 +256,15 @@ class MediaFragment : DaggerFragment() {
             val deleteReq =
                 authViewModel.deleteMedia(header, GlobalVariables.globalId)
             //Observer for get request
-            requestObserver(null, null, deleteReq, true) { bool, result ->
-                onRequestResponseTask<NothingExpected>(bool, result) {
-                    val res = result as UserResponse<NothingExpected>
-                    list?.removeAt(GlobalVariables.globalPosition)
-                    requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-                    singleImageDialog.dismiss()
-                    adapter.notifyDataSetChanged()
-                }
-            }
+            observeRequest<NothingExpected>(deleteReq, null, null, true, {
+                val res = it
+                list?.removeAt(GlobalVariables.globalPosition)
+                requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+                singleImageDialog.dismiss()
+                adapter.notifyDataSetChanged()
+            },{err ->
+                i(title, "DeletePhotoReqError $err")
+            })
         }
     }
 
@@ -305,15 +296,14 @@ class MediaFragment : DaggerFragment() {
                     .build()
 
                 val req = authViewModel.addPhoto(header, requestBody)
-                requestObserver(null, null, req) { bool, result ->
-                    onRequestResponseTask<User>(bool, result) {
-                        val response = result as UserResponse<NothingExpected>
-//                        val responseData = response.data
-                        requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
-                        i(title, "URL ${response.message}")
-                    }
-                }
-                i(title, "File $imageFile")
+                observeRequest<User>(req, null, null, true, {result->
+                    val response = result as UserResponse<NothingExpected>
+                    requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
+                    i(title, "URL ${response.message}")
+                },{err ->
+                    i(title, "AddPhotoReqError $err")
+                })
+
                 dialog.dismiss()
                 requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
             } else {

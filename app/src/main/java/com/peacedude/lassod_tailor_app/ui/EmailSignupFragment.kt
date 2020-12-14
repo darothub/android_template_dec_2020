@@ -132,7 +132,7 @@ class EmailSignupFragment : DaggerFragment() {
             email_field.hide()
         }
 
-        password_field.doOnTextChanged { text, start, count, after ->
+        password_field.doOnTextChanged { text, _, _, _ ->
             if (text != null) {
                 validatePasswordAndAdvise(text, email_signup_password_standard_tv)
             }
@@ -182,7 +182,7 @@ class EmailSignupFragment : DaggerFragment() {
                     i(title, "header ${user?.token}")
                     observeRequest<User>(req, null, null, false, {userDetails->
 
-                        var user = userDetails?.data
+                        val user = userDetails.data
                         currentUser.loggedIn = true
                         currentUser.token = user?.token
                         userViewModel.currentUser = currentUser
@@ -195,7 +195,7 @@ class EmailSignupFragment : DaggerFragment() {
                         )
                         startActivity(loginIntent)
                         requireActivity().finish()
-                        i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
+                        i(title, "UserToken ${currentUser.token} ID\n${user?.id}")
                     },{err->
                         i(title, "Email SignupError $err")
                     })
@@ -209,21 +209,20 @@ class EmailSignupFragment : DaggerFragment() {
                 newUser.email = email
                 newUser.password = passwordString
                 val req = userViewModel.registerUserWithEmail(category, email, passwordString)
-                val observer =
-                    observeRequest<User>(
-                        req,
-                        progressBar,
-                        emailSignupBtn,
-                        false,
-                        {
-                            requireActivity().gdToast(
-                                "Check your email for verification",
-                                Gravity.BOTTOM
-                            )
-                        },
-                        { err ->
-                            i(title, "DashActError $err")
-                        })
+                observeRequest<User>(
+                    req,
+                    progressBar,
+                    emailSignupBtn,
+                    false,
+                    {
+                        requireActivity().gdToast(
+                            "Check your email for verification",
+                            Gravity.BOTTOM
+                        )
+                    },
+                    { err ->
+                        i(title, "DashActError $err")
+                    })
             }
         }
     }

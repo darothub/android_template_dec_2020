@@ -86,106 +86,85 @@ interface ViewModelInterface {
     fun deleteClient(header:String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun addPhoto(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> {
-        return TODO()
-    }
-    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>> {
-        return TODO()
-    }
-    fun uploadProfilePicture(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> {
-        return TODO()
-    }
-    fun addMeasurement(header: String?, body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>> {
-        return TODO()
-    }
+    fun addPhoto(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> =
+        TODO()
+    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
+
+    fun uploadProfilePicture(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
+
+    fun addMeasurement(header: String?, body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
 
-    fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
-    fun deleteMedia(header: String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
-    fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
-    fun getAllArticles(header: String?): LiveData<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
-    suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> {
-        return TODO()
-    }
-    suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
-    suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+
+    fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+
+    fun deleteMedia(header: String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+
+    fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+
+    fun getAllArticles(header: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+
+    suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>>  = TODO()
+
+    suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
+    suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
     suspend fun addDeliveryAddress(
         header: String?,
         clientId:String?,
         deliveryAddress:String?
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
     suspend fun addCard(
         header: String?,
         email:String?,
         amount:String?
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
     suspend fun verifyPayment(
         header: String?,
         reference:String
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
 
     suspend fun chargeCard(
         email:String?,
         amount:String?,
         authorizationCode: String?
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
 
     suspend fun getAllAddress(
         header:String?,
         clientId:String
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
-    suspend fun getUserDetails( header: String): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+
+    suspend fun getUserDetails( header: String): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
     suspend fun changePassword(
         header:String?,
         oldPassword:String?,
         newPassword:String?
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
     suspend fun getAllMeasurements(
         clientId: String
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
 
     suspend fun deleteMeasurements(
         header: String?,
         id: String
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
 
     suspend fun editMeasurement(
         header: String?,
         measurementValues: MeasurementValues
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
     suspend fun searchArtisan(
         keyword: String?,
         location: String?,
@@ -193,8 +172,7 @@ interface ViewModelInterface {
         category: String?,
         page: Long?,
         size: Long?
-    ): Flow<ServicesResponseWrapper<ParentData>>{
-        return TODO()
-    }
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
 
 }

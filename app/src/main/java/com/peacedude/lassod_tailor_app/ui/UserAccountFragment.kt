@@ -572,14 +572,16 @@ class UserAccountFragment : DaggerFragment() {
                 val file = saveBitmap(imageBitmap)
                 if (file != null) {
 //                    Picasso.get().load(file).into(user_account_profile_image)
-                    user_account_profile_image.load(file){
+                    user_account_profile_image.load(file) {
                         crossfade(true)
                         placeholder(R.drawable.profile_image)
                         transformations(CircleCropTransformation())
                     }
                     val reqBody = file.asRequestBody("image".toMediaTypeOrNull())
-                    val profileImagePart = MultipartBody.Part.createFormData("avatar",
-                        file.name, reqBody)
+                    val profileImagePart = MultipartBody.Part.createFormData(
+                        "avatar",
+                        file.name, reqBody
+                    )
                     i(title, "Imagefile $file name ${file.name} path ${file.absolutePath}")
                     val requestBody: RequestBody = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
@@ -587,13 +589,13 @@ class UserAccountFragment : DaggerFragment() {
                         .build()
 
                     val req = authViewModel.uploadProfilePicture(header, requestBody)
-                    requestObserver(null, null, req) { bool, result ->
-                        onRequestResponseTask<User>(bool, result) {
-                            val response = result as UserResponse<User>
-                            val responseData = response.data
-                            i(title, "URL ${responseData?.avatar}")
-                        }
-                    }
+                    observeRequest<User>(req, null, null, true, {result->
+                        val responseData = result.data
+                        i(title, "URL ${responseData?.avatar}")
+                    }, { err ->
+                        i(title, "UploadPictureError $err")
+                    })
+
                     i(title, "File $file")
 //                    requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
                 }
@@ -611,3 +613,5 @@ class UserAccountFragment : DaggerFragment() {
 
 data class UserNameClass(var title:String, var value:String?)
 data class UserAddressClass(var title:String, var value:UserAddress)
+
+

@@ -52,16 +52,16 @@ class CustomerActivity : BaseActivity() {
         val activityTitle = customer_activity_appbar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
         activityTitle.text = getString(R.string.review)
 
-        networkMonitor().observe(this, androidx.lifecycle.Observer {
-            if (it) {
-                Log.i(title, "Network ON")
-                customer_activity_fragment.view?.show()
-
-            } else {
-                customer_activity_fragment.view?.invisible()
-                Log.i(title, "Network OFF")
-            }
-        })
+//        networkMonitor().observe(this, androidx.lifecycle.Observer {
+//            if (it) {
+//                Log.i(title, "Network ON")
+//                customer_activity_fragment.view?.show()
+//
+//            } else {
+//                customer_activity_fragment.view?.invisible()
+//                Log.i(title, "Network OFF")
+//            }
+//        })
     }
 
     override fun onResume() {

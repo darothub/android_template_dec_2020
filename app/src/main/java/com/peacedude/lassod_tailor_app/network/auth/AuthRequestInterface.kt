@@ -10,139 +10,80 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface AuthRequestInterface {
-    fun getUserData(header:String): Call<UserResponse<User>> {
-        return TODO()
-    }
-    fun getUserData(): Call<UserResponse<User>> {
-        return TODO()
-    }
+    fun getUserData(header:String): Call<UserResponse<User>> = TODO()
+    fun getUserData(): Call<UserResponse<User>> = TODO()
 
-    suspend fun getUserDetails( header: String): UserResponse<User>{
-        return TODO()
-    }
-    fun updateUserData(user: User): Call<UserResponse<User>> {
-        return TODO()
-    }
-    fun forgetPassword(field:String): Call<UserResponse<String>> {
-        return TODO()
-    }
-    fun resetPassword(token: String, password:String, cPassword:String): Call<UserResponse<String>> {
-        return TODO()
-    }
-    fun addClient(header: String, client: Client): Call<UserResponse<Client>>{
-        return TODO()
-    }
-    fun editClient(header: String, client: Client): Call<UserResponse<SingleClient>>{
-        return TODO()
-    }
-    fun getAllClient(): Call<UserResponse<ClientsList>>{
-        return TODO()
-    }
-    fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>>{
-        return TODO()
-    }
-    fun addPhoto(header: String?, body: RequestBody): Call<UserResponse<NothingExpected>>{
-        return TODO()
-    }
-    fun uploadProfilePicture(header: String?, body: RequestBody): Call<UserResponse<User>>{
-        return TODO()
-    }
-    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<UploadImageClass>>{
-        return TODO()
-    }
-    fun addMeasurement(header: String?, body: MeasurementValues): Call<UserResponse<ClientMeasurement>>{
-        return TODO()
-    }
+    suspend fun getUserDetails( header: String): UserResponse<User> = TODO()
+    fun updateUserData(user: User): Call<UserResponse<User>> = TODO()
+    fun forgetPassword(field:String): Call<UserResponse<String>> = TODO()
+    fun resetPassword(token: String, password:String, cPassword:String): Call<UserResponse<String>> =
+        TODO()
+    fun addClient(header: String, client: Client): Call<UserResponse<Client>> = TODO()
+    fun editClient(header: String, client: Client): Call<UserResponse<SingleClient>> = TODO()
+    fun getAllClient(): Call<UserResponse<ClientsList>> = TODO()
+    fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>> = TODO()
+    fun addPhoto(header: String?, body: RequestBody): Call<UserResponse<NothingExpected>> = TODO()
+    fun uploadProfilePicture(header: String?, body: RequestBody): Call<UserResponse<User>> = TODO()
+    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<UploadImageClass>> =
+        TODO()
+    fun addMeasurement(header: String?, body: MeasurementValues): Call<UserResponse<ClientMeasurement>> =
+        TODO()
 
     suspend fun getAllMeasurements(
         clientId:String
-    ): UserResponse<ListOfMeasurement>{
-        return TODO()
-    }
+    ): UserResponse<ListOfMeasurement> = TODO()
 
-    fun getAllPhoto(header: String?) : Call<UserResponse<PhotoList>>{
-        return TODO()
-    }
-    fun deleteMedia(header: String?, id: String?) : Call<UserResponse<NothingExpected>>{
-        return TODO()
-    }
-    fun getAllVideos(header: String?) : Call<UserResponse<VideoList>>{
-        return TODO()
-    }
-    fun getAllArticles(header: String?) : Call<UserResponse<ArticleList>>{
-        return TODO()
-    }
+    fun getAllPhoto(header: String?) : Call<UserResponse<PhotoList>> = TODO()
+    fun deleteMedia(header: String?, id: String?) : Call<UserResponse<NothingExpected>> = TODO()
+    fun getAllVideos(header: String?) : Call<UserResponse<VideoList>> = TODO()
+    fun getAllArticles(header: String?) : Call<UserResponse<ArticleList>> = TODO()
 
-    suspend fun getVideos(header: String?): UserResponse<VideoList>{
-        return TODO()
-    }
+    suspend fun getVideos(header: String?): UserResponse<VideoList> = TODO()
 
-    suspend fun getArticles(header: String?): UserResponse<ArticleList>{
-        return TODO()
-    }
+    suspend fun getArticles(header: String?): UserResponse<ArticleList> = TODO()
 
-    suspend fun getMeasurementTypes(header: String?): UserResponse<MeasurementTypeList>{
-        return TODO()
-    }
-    suspend fun getM(header:String): Flow<MeasurementTypeList>{
-        return TODO()
-    }
+    suspend fun getMeasurementTypes(header: String?): UserResponse<MeasurementTypeList> = TODO()
+    suspend fun getM(header:String): Flow<MeasurementTypeList> = TODO()
     suspend fun addDeliveryAddress(
         header: String?,
         clientId:String?,
         deliveryAddress:String?
-    ): UserResponse<AddressData>{
-        return TODO()
-    }
+    ): UserResponse<AddressData> = TODO()
     suspend fun addCard(
         header: String?,
         email:String?,
         amount:String?
-    ): UserResponse<AddCardWrapper<AddCardRes>>{
-        return TODO()
-    }
+    ): UserResponse<AddCardWrapper<AddCardRes>> = TODO()
 
     suspend fun verifyPayment(
         header: String?,
         reference:String
-    ): UserResponse<UserResponse<AddCardResponse>>{
-        return TODO()
-    }
+    ): UserResponse<UserResponse<AddCardResponse>> = TODO()
 
     suspend fun chargeCard(
         email:String?,
         amount:String?,
         authorizationCode: String?
-    ): UserResponse<ChargeCardResponse>{
-        return TODO()
-    }
+    ): UserResponse<ChargeCardResponse> = TODO()
 
     suspend fun getAllAddress(
         header:String?,
         clientId:String
-    ): UserResponse<DeliveryAddress>{
-        return TODO()
-    }
+    ): UserResponse<DeliveryAddress> = TODO()
 
     suspend fun changePassword(
         header:String?,
         oldPassword:String?,
         newPassword:String?
-    ): UserResponse<NothingExpected>{
-        return TODO()
-    }
+    ): UserResponse<NothingExpected> = TODO()
 
     suspend fun deleteMeasurement(
         header:String?,
         id:String?
-    ): UserResponse<NothingExpected>{
-        return TODO()
-    }
+    ): UserResponse<NothingExpected> = TODO()
 
     suspend fun editMeasurement(
         header:String?,
         measurementValues: MeasurementValues
-    ): UserResponse<EditMeasurement>{
-        return TODO()
-    }
+    ): UserResponse<EditMeasurement> = TODO()
 }

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Spinner
+import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -64,25 +65,25 @@ private fun Fragment.hideKeyboard() {
     requireActivity().hideKeyboard()
 }
 
-/**
- * Handles sign-up request live response
- *
- * @param bool
- * @param result
- */
-inline fun <reified T> Fragment.onRequestResponseTask(
-    bool: Boolean,
-    result: Any?,
-    action: (UserResponse<T>?) -> Unit
-) {
-    try {
-        requireActivity().onRequestResponseTask<T>(bool, result, action)
-    }
-    catch (e:Exception){
-        i("Fragment.onRequestResponseTask", e.message.toString())
-    }
-
-}
+///**
+// * Handles sign-up request live response
+// *
+// * @param bool
+// * @param result
+// */
+//inline fun <reified T> Fragment.onRequestResponseTask(
+//    bool: Boolean,
+//    result: Any?,
+//    action: (UserResponse<T>?) -> Unit
+//) {
+//    try {
+//        requireActivity().onRequestResponseTask<T>(bool, result, action)
+//    }
+//    catch (e:Exception){
+//        i("Fragment.onRequestResponseTask", e.message.toString())
+//    }
+//
+//}
 
 /**
  * Observe request response
@@ -169,4 +170,14 @@ fun Fragment.goto(destination: Class<*>) {
 
 fun Fragment.networkMonitor():MutableLiveData<Boolean>{
     return requireActivity().networkMonitor()
+}
+
+fun Fragment.onBackDispatcher(action: () -> Unit){
+    requireActivity().onBackPressedDispatcher.addCallback {
+        action()
+    }
+}
+
+fun Fragment.finish(){
+    requireActivity().finish()
 }

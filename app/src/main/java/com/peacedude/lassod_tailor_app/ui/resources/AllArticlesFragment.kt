@@ -153,18 +153,6 @@ class AllArticlesFragment : DaggerFragment() {
 
         }
 
-//        all_articles_fragment_rv.setupAdapter<ResourcesArticlePublication>(R.layout.article_publication_item_layout) { adapter, context, list ->
-//            bind { itemView, position, item ->
-//                itemView.resource_article_publication_item_title_tv.text = item?.articleTitle
-//                itemView.resource_article_publication_item_author_tv.text = item?.articleAuthor
-//                Picasso.get().load(item?.articleImageUri).into(itemView.resource_article_publications_iv)
-//
-//                itemView.resource_article_publications_iv.clipToOutline = true
-//
-//            }
-//            setLayoutManager(GridLayoutManager(requireContext(), 2))
-//            submitList(articleResourcesList)
-//        }
     }
 
 
