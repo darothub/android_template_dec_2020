@@ -31,6 +31,8 @@ import com.peacedude.lassod_tailor_app.utils.bearer
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import retrofit2.*
@@ -54,7 +56,6 @@ open class GeneralViewModel @Inject constructor(
         networkMonitor()
     }
 
-    //    val mGoogleSignInClient by lazy{ GoogleSignIn.getClient(, gso)}
     private val logoutLiveData = MutableLiveData<Boolean>()
     val netWorkLiveData = MutableLiveData<Boolean>(true)
     var data:ParentData?=null
@@ -83,9 +84,6 @@ open class GeneralViewModel @Inject constructor(
     override var saveClient = storageRequest.saveData(newClient, newClientKey)
 
 
-//    val responseLiveData by lazy{
-//        SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
-//    }
 
     protected fun onFailureResponse(
         responseLiveData: MutableLiveData<ServicesResponseWrapper<ParentData>>,
@@ -208,7 +206,87 @@ open class GeneralViewModel @Inject constructor(
 
 
     }
+    @ExperimentalCoroutinesApi
+    suspend inline fun <reified T:ParentData> ProducerScope<ServicesResponseWrapper<T>>.onErrorFlowResponse(
+        e: HttpException
+    ) {
+        val msg = e.response()?.message()
+        val errorbody = e.response()?.errorBody()?.charStream()
+        val code = e.code()
+        Log.e("Viewmodel error", "${e.response()}")
+        try{
+            val error = errorConverter(code, errorbody)
+            when(error.second){
+                401 ->{
+                    send(
+                        ServicesResponseWrapper.Logout(
+                            msg.toString(),
+                            code
+                        )
+                    )
+                    logout()
+                }
+                else->{
+                    send(
+                        ServicesResponseWrapper.Error(
+                            error.first,
+                            code
+                        )
+                    )
+                }
+            }
+        }
+        catch (e:Exception){
+            send(
+                ServicesResponseWrapper.Error(
+                    msg,
+                    code
+                )
+            )
+            Log.i(title, "CaughtError $msg")
+        }
 
+
+    }
+    @ExperimentalCoroutinesApi
+    protected suspend inline fun <reified T> ProducerScope<ServicesResponseWrapper<ParentData>>.onSuccessFlowResponse(
+        request: UserResponse<T>
+    ){
+        val data = request.data
+        send(
+            ServicesResponseWrapper.Loading(
+                null,
+                "Loading..."
+            )
+        )
+        netWorkLiveData.observeForever {
+            viewModelScope.launch {
+                if(it){
+
+                    if (data != null){
+
+                        send(
+                            ServicesResponseWrapper.Success(data as? ParentData)
+                        )
+                    }
+                    else{
+                        send(
+                            ServicesResponseWrapper.Success(request as? ParentData)
+                        )
+                    }
+
+                    i(title, "Network is ON here flow")
+                }
+                else{
+                    i(title, "Network is OFF here flow")
+                    send(
+                        ServicesResponseWrapper.Network(502, "Bad connection")
+                    )
+                }
+            }
+
+        }
+    }
     protected suspend inline fun <reified T> FlowCollector<ServicesResponseWrapper<ParentData>>.onSuccessFlowResponse(
         request: UserResponse<T>
     ) {
@@ -249,26 +327,7 @@ open class GeneralViewModel @Inject constructor(
 
 
     }
-//    protected fun errorConverter(
-//        response: Response<ParentData>
-//    ): Pair<String, Int> {
-//        val a = object : Annotation {}
-//        val converter =
-//            retrofit.responseBodyConverter<ErrorModel>(ErrorModel::class.java, arrayOf(a))
-//        val error = converter.convert(response.errorBody())
-//        val errors = error?.errors
-//        val msg = error?.message
-//        Log.i(title, "messages $msg")
-//        var errorString1 = ""
-//        if (error?.errors?.size!! > 1) {
-//            errorString1 = "${errors?.get(0)}, ${errors?.get(1)}"
-//        } else {
-//            errorString1 = errors?.get(0).toString()
-//        }
-//        Log.i(title, "message $errorString1")
-//        return Pair(errorString1, response.code())
-//
-//    }
+
     protected fun errorConverter(
         statusCode:Int,
         errorbody: Reader?

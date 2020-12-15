@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
-import com.peacedude.lassod_tailor_app.helpers.GlobalVariables
 import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
@@ -15,6 +14,7 @@ import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
@@ -64,9 +64,8 @@ open class AuthViewModel @Inject constructor(
         val request = authRequestInterface.forgetPassword(field)
         return enqueueRequest<String>(request, responseLiveData)
     }
-    override fun resetPassword(token:String?, password:String?, cPassword:String?): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val request = authRequestInterface.resetPassword(token.toString(), password.toString(), cPassword.toString())
+    override fun resetPassword(header:String?, password:String?, cPassword:String?): LiveData<ServicesResponseWrapper<ParentData>> {
+        val request = authRequestInterface.resetPassword(header.toString(), password.toString(), cPassword.toString())
         return enqueueRequest<String>(request, responseLiveData)
     }
 
@@ -130,10 +129,11 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<ClientMeasurement>(request, responseLiveData)
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun deleteMeasurements(
         header: String?,
         id: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = flow {
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
         try {
             val request = authRequestInterface.deleteMeasurement(header, id)
@@ -144,10 +144,11 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun editMeasurement(
         header: String?,
         measurementValues: MeasurementValues
-    ): Flow<ServicesResponseWrapper<ParentData>> = flow {
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
         try {
             val request = authRequestInterface.editMeasurement(header, measurementValues)
@@ -158,10 +159,11 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun verifyPayment(
         header: String?,
         reference: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = flow {
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
         try {
             val request = authRequestInterface.verifyPayment(header, reference)
@@ -192,7 +194,8 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<ArticleList>(request, responseLiveData)
     }
 
-    override suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
+    @ExperimentalCoroutinesApi
+    override suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
         try {
             val request = authRequestInterface.getVideos(header)
@@ -203,7 +206,8 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-    override suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
+    @ExperimentalCoroutinesApi
+    override suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
         try {
             val request = authRequestInterface.getArticles(header)
@@ -215,7 +219,8 @@ open class AuthViewModel @Inject constructor(
 
     }
 
-    override suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>> = flow {
+    @ExperimentalCoroutinesApi
+    override suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
         try {
             val request = authRequestInterface.getMeasurementTypes(header)
@@ -226,11 +231,12 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun addDeliveryAddress(
         header: String?,
         clientId: String?,
         deliveryAddress: String?
-    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+    ): Flow<ServicesResponseWrapper<ParentData>> =channelFlow {
         try {
             val request = authRequestInterface.addDeliveryAddress(header, clientId, deliveryAddress)
             onSuccessFlowResponse(request)
@@ -255,22 +261,12 @@ open class AuthViewModel @Inject constructor(
     }
 
 
-    suspend fun getMea(header: String){
-        viewModelScope.launch {
-            authRequestInterface.getM(header)
-                .catch {e ->
-                    Log.d(title, "Error ${e.message}")
-                }
-                .collect {
-                    responseLiveDatas.value = it
-                }
-        }
-    }
 
-    override suspend fun getAllAddress(
+    @ExperimentalCoroutinesApi
+    override fun getAllAddress(
         header: String?,
         clientId: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = flow{
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow{
         try {
             val request = authRequestInterface.getAllAddress(header, clientId)
             onSuccessFlowResponse(request)
@@ -280,7 +276,8 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-    override suspend fun getUserDetails(header: String): Flow<ServicesResponseWrapper<ParentData>> =flow{
+    @ExperimentalCoroutinesApi
+    override suspend fun getUserDetails(header: String): Flow<ServicesResponseWrapper<ParentData>> =channelFlow{
         try {
             val request = authRequestInterface.getUserDetails(header)
             onSuccessFlowResponse(request)
@@ -305,11 +302,12 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<UploadImageClass>(request, responseLiveData)
     }
 
+    @ExperimentalCoroutinesApi
     override suspend fun changePassword(
         header: String?,
         oldPassword: String?,
         newPassword: String?
-    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+    ): Flow<ServicesResponseWrapper<ParentData>> =channelFlow {
         try {
             val request = authRequestInterface.changePassword(header, oldPassword, newPassword)
             onSuccessFlowResponse(request)
@@ -318,9 +316,10 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-    override suspend fun getAllMeasurements(
+    @ExperimentalCoroutinesApi
+    override  fun getAllMeasurements(
         clientId: String
-    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
         try {
             val request = authRequestInterface.getAllMeasurements(clientId)
             onSuccessFlowResponse(request)

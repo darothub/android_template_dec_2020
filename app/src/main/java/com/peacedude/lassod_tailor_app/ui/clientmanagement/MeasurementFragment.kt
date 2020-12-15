@@ -13,7 +13,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -150,6 +152,9 @@ class MeasurementFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
+//    private val authViewModel by viewModels<AuthViewModel> {
+//        viewModelProviderFactory
+//    }
     private val authViewModel: AuthViewModel by lazy {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
@@ -359,9 +364,6 @@ class MeasurementFragment : DaggerFragment() {
         })
     }
 
-    private suspend fun CoroutineScope.getMeasurementTypes() {
-
-    }
 
     private suspend fun getAllMeasurement(
         getAllMeasurements: Deferred<Flow<ServicesResponseWrapper<ParentData>>>,
@@ -513,7 +515,7 @@ class MeasurementFragment : DaggerFragment() {
                             parentAdapter.delete(parentList)
                                 .attachToRecyclerView(resource_fragment_measurement_rv)
 
-                            submitList(measurementValueList)
+                            submitList(measurementValueList.reversed())
                         }
                     }
                 }

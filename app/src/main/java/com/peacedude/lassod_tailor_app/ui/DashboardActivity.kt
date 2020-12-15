@@ -12,10 +12,12 @@ import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.get
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -55,13 +57,6 @@ import kotlinx.android.synthetic.main.search_filter_item.view.*
 import javax.inject.Inject
 
 class DashboardActivity : BaseActivity() {
-
-    companion object Factory {
-        lateinit var dashInstance: DashboardActivity
-        fun getMainActInstance(): DashboardActivity {
-            return dashInstance
-        }
-    }
 
     val title: String by lazy {
         getName()
@@ -112,20 +107,12 @@ class DashboardActivity : BaseActivity() {
         }
 
     private lateinit var editBtn: Button
-    private lateinit var logoutText: TextView
-    private lateinit var logoutImage: ImageView
-    private lateinit var clientImage: ImageView
-    private lateinit var clientText: TextView
-    private lateinit var resourcesTv: TextView
-    private lateinit var resourcesIv: ImageView
-    private lateinit var subscriptionTv: TextView
-    private lateinit var subscriptionIv: ImageView
     private lateinit var drawerMenuRv:RecyclerView
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val authViewModel by viewModels<AuthViewModel> {
+        viewModelProviderFactory
     }
 
     val dialog by lazy {
@@ -136,9 +123,6 @@ class DashboardActivity : BaseActivity() {
         }
     }
 
-    val checkConnectionTv by lazy {
-        dialog.findViewById<TextView>(R.id.loader_layout_tv)
-    }
 
     lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,7 +131,6 @@ class DashboardActivity : BaseActivity() {
         changeStatusBarColor(R.color.colorWhite)
         i(title, "Oncreate")
 
-        dashInstance = this
 
         navController = Navigation.findNavController(this, R.id.dashboard_fragment)
 
@@ -161,7 +144,6 @@ class DashboardActivity : BaseActivity() {
 
         getUserData()
 
-//        profile_header.show()
 
         menuIcon?.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)

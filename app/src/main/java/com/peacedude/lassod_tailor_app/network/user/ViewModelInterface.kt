@@ -135,7 +135,7 @@ interface ViewModelInterface {
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
 
-    suspend fun getAllAddress(
+    fun getAllAddress(
         header:String?,
         clientId:String
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
@@ -149,7 +149,7 @@ interface ViewModelInterface {
         newPassword:String?
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
-    suspend fun getAllMeasurements(
+    fun getAllMeasurements(
         clientId: String
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 

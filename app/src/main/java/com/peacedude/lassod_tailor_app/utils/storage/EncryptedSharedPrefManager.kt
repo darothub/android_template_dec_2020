@@ -81,10 +81,3 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
     }
 }
 
-//abstract class Hello(val sharedPref: EncryptedSharedPreferences){
-//
-//}
-//
-//class share(val sharedPrefs: EncryptedSharedPreferences):Hello(sharedPrefs){
-//
-//}
