@@ -152,12 +152,13 @@ class MeasurementFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-//    private val authViewModel by viewModels<AuthViewModel> {
-//        viewModelProviderFactory
-//    }
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+
+    private val authViewModel by viewModels<AuthViewModel> {
+        viewModelProviderFactory
     }
+//    private val authViewModel: AuthViewModel by lazy {
+//        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+//    }
     val measurementValues: MutableMap<String?, String?> by lazy {
         mutableMapOf<String?, String?>()
     }
@@ -190,6 +191,7 @@ class MeasurementFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_measurement, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         changeStatusBarColor(R.color.colorWhite)
@@ -222,29 +224,30 @@ class MeasurementFragment : DaggerFragment() {
                 )
             )
 
-            if (clientToBeEdited == null) {
-                i(title, "No client found")
-                btnBackground?.changeBackgroundColor(requireContext(), R.color.colorGray)
-                addMeasurementBtn.background = btnBackground
-                addMeasurementBtn.isClickable = false
 
-            }
         }, {
 
 
         })
 
-        CoroutineScope(Main).launch {
-            supervisorScope {
+        if (clientToBeEdited == null) {
+            i(title, "No client found")
+            btnBackground?.changeBackgroundColor(requireContext(), R.color.colorGray)
+            addMeasurementBtn.background = btnBackground
+            addMeasurementBtn.isClickable = false
+        } else {
+            CoroutineScope(Main).launch {
+                supervisorScope {
 
-                val getAllMeasurements = async {
-                    authViewModel.getAllMeasurements(
-                        clientToBeEdited?.id.toString()
-                    )
+                    val getAllMeasurements = async {
+                        authViewModel.getAllMeasurements(
+                            clientToBeEdited?.id.toString()
+                        )
+                    }
+                    //Get and set existing measurements
+                    getAllMeasurement(getAllMeasurements, dialogTitleTv)
+
                 }
-                //Get and set existing measurements
-                getAllMeasurement(getAllMeasurements, dialogTitleTv)
-
             }
         }
 
@@ -337,7 +340,7 @@ class MeasurementFragment : DaggerFragment() {
 
         val addMeasurementReq =
             authViewModel.addMeasurement(header, clientMeasurement)
-        observeRequest<ClientsList>(addMeasurementReq, null, null, true, {result->
+        observeRequest<ClientsList>(addMeasurementReq, null, null, true, { result ->
             requireActivity().gdToast(
                 result.message.toString(),
                 Gravity.BOTTOM
@@ -349,19 +352,25 @@ class MeasurementFragment : DaggerFragment() {
         }, { err ->
             i(title, "ClientListUpdateError $err")
         })
-        observeRequest<ClientMeasurement>(addMeasurementReq, dialogAddMeasurementProgressBar, dialogAddMeasurementBtn, false, {result->
-            val res = result
-            requireActivity().gdToast(
-                res.message.toString(),
-                Gravity.BOTTOM
-            )
+        observeRequest<ClientMeasurement>(
+            addMeasurementReq,
+            dialogAddMeasurementProgressBar,
+            dialogAddMeasurementBtn,
+            false,
+            { result ->
+                val res = result
+                requireActivity().gdToast(
+                    res.message.toString(),
+                    Gravity.BOTTOM
+                )
 
-            parentList?.add(clientMeasurement)
-            dialog.dismiss()
-            parentAdapter.notifyDataSetChanged()
-        },{ err ->
-            i(title, "AddMeasurementReqError $err")
-        })
+                parentList?.add(clientMeasurement)
+                dialog.dismiss()
+                parentAdapter.notifyDataSetChanged()
+            },
+            { err ->
+                i(title, "AddMeasurementReqError $err")
+            })
     }
 
 
@@ -623,7 +632,10 @@ class MeasurementFragment : DaggerFragment() {
                                                 if (pos != null) {
                                                     parentList[pos] = clientMeasurement
                                                     parentAdapter.notifyItemChanged(pos)
-                                                    i(title, "List $parentList item $clientMeasurement")
+                                                    i(
+                                                        title,
+                                                        "List $parentList item $clientMeasurement"
+                                                    )
                                                 }
 
                                                 GlobalVariables.globalMeasuremenValues = null

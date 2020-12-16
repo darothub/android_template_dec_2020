@@ -103,20 +103,26 @@ open class AuthViewModel @Inject constructor(
     }
 
     override fun addPhoto(
-        header: String?,
         body: RequestBody
     ): LiveData<ServicesResponseWrapper<ParentData>> {
 
-        val request = authRequestInterface.addPhoto(header, body)
-        return enqueueRequest<NothingExpected>(request, responseLiveData)
+        val request = authRequestInterface.addPhoto(body)
+        return enqueueRequest(request, responseLiveData)
+    }
+
+    override fun addPhoto(
+        image: MultipartBody.Part,
+        name: RequestBody
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        val request = authRequestInterface.addPhoto(image, name)
+        return enqueueRequest(request, responseLiveData)
     }
 
     override fun uploadProfilePicture(
-        header: String?,
         body: RequestBody
     ): LiveData<ServicesResponseWrapper<ParentData>> {
 
-        val request = authRequestInterface.uploadProfilePicture(header, body)
+        val request = authRequestInterface.uploadProfilePicture(body)
         return enqueueRequest<User>(request, responseLiveData)
     }
 

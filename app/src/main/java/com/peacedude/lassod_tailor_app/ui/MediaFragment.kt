@@ -19,6 +19,7 @@ import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -42,8 +43,12 @@ import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 const val REQUEST_CODE = 1
@@ -111,8 +116,8 @@ class MediaFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val authViewModel by viewModels<AuthViewModel> {
+        viewModelProviderFactory
     }
 
     lateinit var observer: StartActivityForResults
@@ -290,14 +295,21 @@ class MediaFragment : DaggerFragment() {
                 if (imageFile != null) {
                     Picasso.get().load(imageFile).into(noDataSecondIcon)
                 }
+//                val reqBody = imageFile!!.asRequestBody("image/*".toMediaTypeOrNull())
+//                val body: MultipartBody.Part = MultipartBody.Part.createFormData(
+//                    "photo",
+//                    imageFile.name,
+//                    reqBody
+//                )
+//                val name = "photo".toRequestBody("text/plain".toMediaTypeOrNull())
                 val requestBody: RequestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("photo", imageFile.toString())
                     .build()
 
-                val req = authViewModel.addPhoto(header, requestBody)
-                observeRequest<User>(req, null, null, true, {result->
-                    val response = result as UserResponse<NothingExpected>
+                val req = authViewModel.addPhoto(requestBody)
+                observeRequest<NothingExpected>(req, null, null, true, {result->
+                    val response = result
                     requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
                     i(title, "URL ${response.message}")
                 },{err ->

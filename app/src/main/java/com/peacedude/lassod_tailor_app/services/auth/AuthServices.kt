@@ -1,12 +1,12 @@
 package com.peacedude.lassod_tailor_app.services.auth
 
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
+
 
 interface AuthServices {
     @GET("auth/profile/me")
@@ -53,19 +53,26 @@ interface AuthServices {
     @FormUrlEncoded
     fun deleteClient(
         @Header("Authorization") header: String?,
-        @Field("id") id:String?
+        @Field("id") id: String?
     ): Call<UserResponse<NothingExpected>>
 
     @POST("media")
     fun addPhoto(
-        @Header("Authorization") header: String?,
-        @Body photo:RequestBody
+        @Body photo: RequestBody
     ): Call<UserResponse<NothingExpected>>
+
+    @Multipart
+    @Headers("Content-Type:multipart/formdata")
+    @POST("media")
+    fun addPhoto(
+        @Part image: MultipartBody.Part,
+        @Part("photo") name: RequestBody
+    ): Call<UserResponse<NothingExpected>>
+
 
     @POST("avatar")
     fun uploadProfilePicture(
-        @Header("Authorization") header: String?,
-        @Body avatar:RequestBody
+        @Body avatar: RequestBody
     ): Call<UserResponse<User>>
 
 
@@ -73,7 +80,7 @@ interface AuthServices {
     @Multipart
     fun uploadProfilePicture(
         @Header("Authorization") header: String?,
-        @Part avatar:MultipartBody.Part
+        @Part avatar: MultipartBody.Part
     ): Call<UserResponse<UploadImageClass>>
 
     @POST("measurement")
@@ -84,7 +91,7 @@ interface AuthServices {
 
     @GET("measurements")
     suspend fun getAllMeasurements(
-        @Query("clientId") clientId:String
+        @Query("clientId") clientId: String
     ): UserResponse<ListOfMeasurement>
 
     @GET("media")
@@ -96,7 +103,7 @@ interface AuthServices {
     @FormUrlEncoded
     fun deleteMedia(
         @Header("Authorization") header: String?,
-        @Field("id") id:String?
+        @Field("id") id: String?
     ): Call<UserResponse<NothingExpected>>
 
     @GET("video")
@@ -128,57 +135,57 @@ interface AuthServices {
     @FormUrlEncoded
     suspend fun addDeliveryAddress(
         @Header("Authorization") header: String?,
-        @Field("clientId") clientId:String?,
-        @Field("deliveryAddress") deliveryAddress:String?
+        @Field("clientId") clientId: String?,
+        @Field("deliveryAddress") deliveryAddress: String?
     ): UserResponse<AddressData>
 
     @POST("addcard")
     @FormUrlEncoded
     suspend fun addCard(
         @Header("Authorization") header: String?,
-        @Field("email") email:String?,
-        @Field("amount") amount:String?
+        @Field("email") email: String?,
+        @Field("amount") amount: String?
     ): UserResponse<AddCardWrapper<AddCardRes>>
 
 
     @GET("verifypayment")
     suspend fun verifyPayment(
         @Header("Authorization") header: String?,
-        @Query("reference") reference:String
+        @Query("reference") reference: String
     ): UserResponse<UserResponse<AddCardResponse>>
 
     @POST("chargecard")
     suspend fun chargeCard(
-        @Field("email") email:String?,
-        @Field("amount") amount:String?,
+        @Field("email") email: String?,
+        @Field("amount") amount: String?,
         @Field("authorization_code") authorizationCode: String?
     ): UserResponse<ChargeCardResponse>
 
     @GET("addresses")
     suspend fun getAllAddress(
-        @Header("Authorization") header:String?,
-        @Query("clientId") clientId:String
+        @Header("Authorization") header: String?,
+        @Query("clientId") clientId: String
     ): UserResponse<DeliveryAddress>
 
 
     @PATCH("  auth/chpassword")
     @FormUrlEncoded
     suspend fun changePassword(
-        @Header("Authorization") header:String?,
-        @Field("oldPassword") oldPassword:String?,
-        @Field("newPassword") newPassword:String?
+        @Header("Authorization") header: String?,
+        @Field("oldPassword") oldPassword: String?,
+        @Field("newPassword") newPassword: String?
     ): UserResponse<NothingExpected>
 
     @HTTP(method = "DELETE", path = "measurement", hasBody = true)
     @FormUrlEncoded
     suspend fun deleteMeasurement(
         @Header("Authorization") header: String?,
-        @Field("id") id:String?
+        @Field("id") id: String?
     ): UserResponse<NothingExpected>
 
     @PATCH("measurement")
     suspend fun editMeasurement(
-        @Header("Authorization") header:String?,
+        @Header("Authorization") header: String?,
         @Body measurementValues: MeasurementValues
     ): UserResponse<EditMeasurement>
 

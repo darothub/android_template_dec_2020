@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -42,8 +43,8 @@ class SingleArticleFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val authViewModel by viewModels<AuthViewModel> {
+        viewModelProviderFactory
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

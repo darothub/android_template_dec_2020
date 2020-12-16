@@ -138,11 +138,17 @@ class DashboardActivity : BaseActivity() {
         drawerMenuRv = profile_drawer_view.findViewById(R.id.drawer_menu_rv)
 
 
-        Log.i(title, "currentUser $currentUser")
+        Log.i(title, "currentUser ${currentUser?.category}")
 
 
 
         getUserData()
+
+        when(currentUser?.category){
+            getString(R.string.tailor) -> bottomNav.menu.findItem(R.id.favouritesFragment).isVisible = false
+            getString(R.string.weaver) ->  bottomNav.menu.findItem(R.id.favouritesFragment).isVisible = false
+
+        }
 
 
         menuIcon?.setOnClickListener {

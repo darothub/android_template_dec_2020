@@ -10,12 +10,15 @@ data class VideoList (
 
 data class VideoResource (
     val id: String,
-    @SerializedName("tailorId")
-    val tailorID: String,
+    @SerializedName("artisanId")
+    val tailorID: String?,
     val title: String,
+    @SerializedName("videoUrl")
     val videoURL: String?=null,
     val description: String,
     val createdAt: String,
     val updatedAt: String
 ):Serializable, ParentData{
+    @SerializedName("duration")
+    val duration:String?=""
 }

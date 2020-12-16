@@ -76,17 +76,22 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
     }
 
     override fun addPhoto(
-        header: String?,
+        image: MultipartBody.Part,
+        name: RequestBody
+    ): Call<UserResponse<NothingExpected>> {
+        return authServices.addPhoto(image, name)
+    }
+
+    override fun addPhoto(
         body: RequestBody
     ): Call<UserResponse<NothingExpected>> {
-        return authServices.addPhoto(header, body)
+        return authServices.addPhoto(body)
     }
 
     override fun uploadProfilePicture(
-        header: String?,
         body: RequestBody
     ): Call<UserResponse<User>> {
-        return authServices.uploadProfilePicture(header, body)
+        return authServices.uploadProfilePicture(body)
     }
 
     override fun uploadProfilePicture(

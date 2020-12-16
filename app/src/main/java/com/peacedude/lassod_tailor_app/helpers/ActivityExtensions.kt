@@ -129,7 +129,7 @@ inline fun <reified T> Activity.observeRequest(
             progressBar?.hide()
             dialog.dismiss()
             button?.show()
-            i(title, e.localizedMessage)
+            i(title, e.localizedMessage?:"")
         }
 
     })

@@ -10,7 +10,7 @@ data class ArticleList (
 
 data class Article (
     val id: String,
-    @SerializedName("tailorId")
+    @SerializedName("artisanId")
     val tailorID: String,
     val title: String,
     val description: String,

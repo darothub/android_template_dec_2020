@@ -588,12 +588,12 @@ class UserAccountFragment : DaggerFragment() {
                         .addFormDataPart("avatar", file.toString())
                         .build()
 
-                    val req = authViewModel.uploadProfilePicture(header, requestBody)
+                    val req = authViewModel.uploadProfilePicture(requestBody)
                     observeRequest<User>(req, null, null, true, {result->
                         val responseData = result.data
                         i(title, "URL ${responseData?.avatar}")
                     }, { err ->
-                        i(title, "UploadPictureError $err")
+                        i(title, "ResetPasswordError $err")
                     })
 
                     i(title, "File $file")

@@ -22,8 +22,9 @@ interface AuthRequestInterface {
     fun editClient(header: String, client: Client): Call<UserResponse<SingleClient>> = TODO()
     fun getAllClient(): Call<UserResponse<ClientsList>> = TODO()
     fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>> = TODO()
-    fun addPhoto(header: String?, body: RequestBody): Call<UserResponse<NothingExpected>> = TODO()
-    fun uploadProfilePicture(header: String?, body: RequestBody): Call<UserResponse<User>> = TODO()
+    fun addPhoto(body: RequestBody): Call<UserResponse<NothingExpected>> = TODO()
+    fun addPhoto(image:MultipartBody.Part, name:RequestBody): Call<UserResponse<NothingExpected>> = TODO()
+    fun uploadProfilePicture(body: RequestBody): Call<UserResponse<User>> = TODO()
     fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<UploadImageClass>> =
         TODO()
     fun addMeasurement(header: String?, body: MeasurementValues): Call<UserResponse<ClientMeasurement>> =

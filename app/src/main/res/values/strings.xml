@@ -288,4 +288,6 @@
     <string name="loading">Loading...</string>
     <string name="measurement">Measurement</string>
     <string name="weaver">weaver</string>
+    <string name="favourites">Favourites</string>
+    <string name="tailor">tailor</string>
 </resources>

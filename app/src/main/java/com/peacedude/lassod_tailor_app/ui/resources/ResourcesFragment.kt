@@ -16,6 +16,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
@@ -48,14 +49,11 @@ import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_resources.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.android.synthetic.main.resources_item_sublayout_layout.view.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -97,8 +95,8 @@ class ResourcesFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val authViewModel by viewModels<AuthViewModel> {
+        viewModelProviderFactory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,6 +113,7 @@ class ResourcesFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_resources, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -140,21 +139,11 @@ class ResourcesFragment : DaggerFragment() {
                 val articleListCall = async { authViewModel.getArticles(header) }
                 val videoListCall = async { authViewModel.getVideos(header) }
 
-                try {
                     videoListCall.await()
                         .collect {
                             onFlowResponse<VideoList>(response = it) {videos->
-                                i(title, "article data flow $it")
-                                val listOfVideos = videos?.video?.map {v->
-                                    VideoResource(
-                                        v.id,
-                                        v.tailorID,
-                                        v.title,
-                                        v.videoURL,
-                                        v.description,
-                                        v.createdAt,
-                                        v.updatedAt
-                                    )
+                                i(title, "video data flow $it")
+                                val listOfVideos = videos?.video?.map {v-> v
                                 }?.takeIf {
                                     it.size > 5
                                 }.let {
@@ -167,8 +156,8 @@ class ResourcesFragment : DaggerFragment() {
                                             mediaController.hide()
                                             mediaController.setAnchorView(itemView.resource_video_item_vv)
                                             itemView.resource_video_item_title_tv.text = item?.title
-                                            itemView.resource_video_item_time_tv.text = item?.title
-                                            if (item?.videoURL != null) {
+                                            itemView.resource_video_item_time_tv.text = item?.duration
+                                            if (item?.videoURL != null && item.videoURL.endsWith(".mp4")) {
                                                 val uri = Uri.parse(item.videoURL)
                                                 itemView.resource_video_item_vv.setMediaController(
                                                     mediaController
@@ -226,26 +215,19 @@ class ResourcesFragment : DaggerFragment() {
                         }
 
                     articleListCall.await()
+                        .catch { err ->
+                            i(title, "article data flow error $err")
+                        }
                         .collect {
                             onFlowResponse<ArticleList>(response = it) {
                                 val listOfArticles = it?.article?.map {a->
-                                    Article(
-                                        a.id,
-                                        a.tailorID,
-                                        a.title,
-                                        a.description,
-                                        a.isBlacklisted,
-                                        a.body,
-                                        a.articleImage,
-                                        a.createdAt,
-                                        a.updatedAt
-                                    )
+                                    a
                                 }?.takeIf {
                                     it.size > 5
                                 }.let {
                                     it?.take(5)
                                 }
-                                i(title, "video data flow $it")
+                                i(title, "article data flow $it")
                                 if (listOfArticles?.isNotEmpty()!!) {
                                     resource_fragment_article_publications_rv.setupAdapter<Article>(
                                         R.layout.article_publication_item_layout
@@ -289,10 +271,7 @@ class ResourcesFragment : DaggerFragment() {
                                 }
                             }
                         }
-                }
-                catch (e:Exception){
-                    i(title, "resource error data flow ${e.message}")
-                }
+
             }
 
         }

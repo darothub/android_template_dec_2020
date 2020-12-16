@@ -10,6 +10,7 @@ import com.peacedude.lassod_tailor_app.model.response.*
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Call
 
 interface ViewModelInterface {
     var lastFragmentId:Int
@@ -86,11 +87,12 @@ interface ViewModelInterface {
     fun deleteClient(header:String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun addPhoto(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> =
-        TODO()
+    fun addPhoto(body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+    fun addPhoto(image:MultipartBody.Part, name:RequestBody): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+
     fun uploadProfilePicture(header: String?, body: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
-    fun uploadProfilePicture(header: String?, body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
+    fun uploadProfilePicture(body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
     fun addMeasurement(header: String?, body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
@@ -149,7 +151,7 @@ interface ViewModelInterface {
         newPassword:String?
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
-    fun getAllMeasurements(
+     fun getAllMeasurements(
         clientId: String
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
