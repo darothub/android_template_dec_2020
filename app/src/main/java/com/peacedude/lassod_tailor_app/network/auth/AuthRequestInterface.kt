@@ -87,4 +87,10 @@ interface AuthRequestInterface {
         header:String?,
         measurementValues: MeasurementValues
     ): UserResponse<EditMeasurement> = TODO()
+
+    suspend fun getAllPhoto(): UserResponse<PhotoList> = TODO()
+
+    fun addPhoto(
+        @PartMap map: HashMap<String, RequestBody>
+    ): Call<UserResponse<NothingExpected>> = TODO()
 }

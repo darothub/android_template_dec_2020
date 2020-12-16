@@ -58,14 +58,20 @@ interface AuthServices {
 
     @POST("media")
     fun addPhoto(
-        @Body photo: RequestBody
+        @Body file: RequestBody
+    ): Call<UserResponse<NothingExpected>>
+
+    @Multipart
+    @POST("media")
+    fun addPhoto(
+        @PartMap map: HashMap<String, RequestBody>
     ): Call<UserResponse<NothingExpected>>
 
     @Multipart
     @Headers("Content-Type:multipart/formdata")
     @POST("media")
     fun addPhoto(
-        @Part image: MultipartBody.Part,
+        @Part file: MultipartBody.Part,
         @Part("photo") name: RequestBody
     ): Call<UserResponse<NothingExpected>>
 
@@ -189,7 +195,8 @@ interface AuthServices {
         @Body measurementValues: MeasurementValues
     ): UserResponse<EditMeasurement>
 
-
+    @GET("media")
+    suspend fun getAllPhoto(): UserResponse<PhotoList>
 
 }
 

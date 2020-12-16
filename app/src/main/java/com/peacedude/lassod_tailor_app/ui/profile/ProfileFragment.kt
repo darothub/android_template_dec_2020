@@ -54,6 +54,8 @@ import javax.inject.Inject
  */
 class ProfileFragment : DaggerFragment() {
 
+
+
     private val title by lazy {
         getName()
     }

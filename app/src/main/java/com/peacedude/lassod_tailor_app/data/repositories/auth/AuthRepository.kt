@@ -116,6 +116,10 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.getAllPhoto(header)
     }
 
+    override suspend fun getAllPhoto(): UserResponse<PhotoList> {
+        return authServices.getAllPhoto()
+    }
+
     override suspend fun getMeasurementTypes(header: String?): UserResponse<MeasurementTypeList> {
         val h = authServices.getMeasurementTypes(header)
         Log.i("Repository", "Data ${h.data}")
@@ -158,6 +162,10 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         clientId: String
     ): UserResponse<DeliveryAddress> {
         return authServices.getAllAddress(header, clientId)
+    }
+
+    override fun addPhoto(map: HashMap<String, RequestBody>): Call<UserResponse<NothingExpected>> {
+        return authServices.addPhoto(map)
     }
 
     override suspend fun changePassword(

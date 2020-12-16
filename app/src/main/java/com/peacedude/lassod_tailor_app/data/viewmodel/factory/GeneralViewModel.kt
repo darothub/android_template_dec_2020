@@ -33,6 +33,7 @@ import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import retrofit2.*
@@ -265,12 +266,12 @@ open class GeneralViewModel @Inject constructor(
 
                     if (data != null){
 
-                        send(
+                        offer(
                             ServicesResponseWrapper.Success(data as? ParentData)
                         )
                     }
                     else{
-                        send(
+                        offer(
                             ServicesResponseWrapper.Success(request as? ParentData)
                         )
                     }
@@ -279,13 +280,18 @@ open class GeneralViewModel @Inject constructor(
                 }
                 else{
                     i(title, "Network is OFF here flow")
-                    send(
-                        ServicesResponseWrapper.Network(502, "Bad connection")
-                    )
+                    if(isClosedForSend){
+                        close(Throwable())
+                    }else{
+                        offer(
+                            ServicesResponseWrapper.Network(502, "Bad connection")
+                        )
+                    }
                 }
             }
 
         }
+        awaitClose { netWorkLiveData.removeObserver {  } }
     }
     protected suspend inline fun <reified T> FlowCollector<ServicesResponseWrapper<ParentData>>.onSuccessFlowResponse(
         request: UserResponse<T>

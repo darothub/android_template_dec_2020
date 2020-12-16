@@ -213,67 +213,71 @@ class ResourcesFragment : DaggerFragment() {
 
                             }
                         }
-
-                    articleListCall.await()
-                        .catch { err ->
-                            i(title, "article data flow error $err")
-                        }
-                        .collect {
-                            onFlowResponse<ArticleList>(response = it) {
-                                val listOfArticles = it?.article?.map {a->
-                                    a
-                                }?.takeIf {
-                                    it.size > 5
-                                }.let {
-                                    it?.take(5)
-                                }
-                                i(title, "article data flow $it")
-                                if (listOfArticles?.isNotEmpty()!!) {
-                                    resource_fragment_article_publications_rv.setupAdapter<Article>(
-                                        R.layout.article_publication_item_layout
-                                    ) { adapter, context, list ->
-                                        bind { itemView, position, item ->
-
-                                            if (item?.articleImage != null) {
-                                                Picasso.get().load(item.articleImage).fit()
-                                                    .into(itemView.resource_article_publications_iv)
-                                            } else {
-                                                itemView.resource_article_publications_iv.setImageDrawable(
-                                                    ContextCompat.getDrawable(
-                                                        requireContext(),
-                                                        R.drawable.obioma_logo_blue
-                                                    )
-                                                )
-                                            }
-                                            itemView.resource_article_publication_item_title_tv.text =
-                                                item?.title
-                                            itemView.resource_article_publication_item_author_tv.text =
-                                                item?.description
-                                            itemView.article_pub_item_image_ll.clipToOutline = true
-
-                                            itemView.resource_article_publications_iv.clipToOutline =
-                                                true
-
-
-                                        }
-                                        setLayoutManager(
-                                            LinearLayoutManager(
-                                                requireContext(),
-                                                LinearLayoutManager.HORIZONTAL,
-                                                false
-                                            )
-                                        )
-                                        submitList(listOfArticles)
-                                    }
-                                } else {
-                                    resources_fragment_article_recycler_vf.showNext()
-
-                                }
-                            }
-                        }
-
             }
 
+        }
+        CoroutineScope(Main).launch {
+
+            supervisorScope {
+                val articleListCall = async { authViewModel.getArticles(header) }
+                articleListCall.await()
+                    .catch { err ->
+                        i(title, "article data flow error $err")
+                    }
+                    .collect {
+                        onFlowResponse<ArticleList>(response = it) {
+                            val listOfArticles = it?.article?.map {a->
+                                a
+                            }?.takeIf {
+                                it.size > 5
+                            }.let {
+                                it?.take(5)
+                            }
+                            i(title, "article data flow $it")
+                            if (listOfArticles?.isNotEmpty()!!) {
+                                resource_fragment_article_publications_rv.setupAdapter<Article>(
+                                    R.layout.article_publication_item_layout
+                                ) { adapter, context, list ->
+                                    bind { itemView, position, item ->
+
+                                        if (item?.articleImage != null) {
+                                            Picasso.get().load(item.articleImage).fit()
+                                                .into(itemView.resource_article_publications_iv)
+                                        } else {
+                                            itemView.resource_article_publications_iv.setImageDrawable(
+                                                ContextCompat.getDrawable(
+                                                    requireContext(),
+                                                    R.drawable.obioma_logo_blue
+                                                )
+                                            )
+                                        }
+                                        itemView.resource_article_publication_item_title_tv.text =
+                                            item?.title
+                                        itemView.resource_article_publication_item_author_tv.text =
+                                            item?.description
+                                        itemView.article_pub_item_image_ll.clipToOutline = true
+
+                                        itemView.resource_article_publications_iv.clipToOutline =
+                                            true
+
+
+                                    }
+                                    setLayoutManager(
+                                        LinearLayoutManager(
+                                            requireContext(),
+                                            LinearLayoutManager.HORIZONTAL,
+                                            false
+                                        )
+                                    )
+                                    submitList(listOfArticles)
+                                }
+                            } else {
+                                resources_fragment_article_recycler_vf.showNext()
+
+                            }
+                        }
+                    }
+            }
         }
 
         resource_fragment_view_all_video_tv.setOnClickListener {

@@ -111,7 +111,8 @@ inline fun <reified T> Activity.observeRequest(
                     progressBar?.hide()
                     button?.show()
                     gdToast(errorResponse.toString(), Gravity.BOTTOM)
-                    startActivity(Intent(this as? Context, MainActivity::class.java))
+                    goto(MainActivity::class.java)
+                    finish()
 //                    result.postValue(Pair(false, errorResponse.toString()))
                     i(title, "Log out ${errorResponse.toString()}")
 
@@ -524,6 +525,8 @@ inline fun <reified T> Activity.onFlowResponse(
             dialog.dismiss()
             progressBar?.hide()
             button?.show()
+            goto(MainActivity::class.java)
+            this.finish()
             Log.i("onFlowResponse", "Logout ${it?.message}")
         }
         is ServicesResponseWrapper.Network -> {

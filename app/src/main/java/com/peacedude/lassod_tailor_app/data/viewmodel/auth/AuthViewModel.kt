@@ -17,11 +17,14 @@ import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendAtomicCancellableCoroutine
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.*
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 open class AuthViewModel @Inject constructor(
     private val authRequestInterface: AuthRequestInterface,
@@ -136,6 +139,18 @@ open class AuthViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
+    override suspend fun getAllPhoto(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+
+        try {
+            val request = authRequestInterface.getAllPhoto()
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
     override suspend fun deleteMeasurements(
         header: String?,
         id: String
@@ -165,6 +180,7 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+
     @ExperimentalCoroutinesApi
     override suspend fun verifyPayment(
         header: String?,
@@ -178,6 +194,11 @@ open class AuthViewModel @Inject constructor(
         catch (e:HttpException){
             onErrorFlowResponse(e)
         }
+    }
+
+    override fun addPhoto(map: HashMap<String, RequestBody>): LiveData<ServicesResponseWrapper<ParentData>> {
+        val request = authRequestInterface.addPhoto(map)
+        return enqueueRequest(request, responseLiveData)
     }
 
     override fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {

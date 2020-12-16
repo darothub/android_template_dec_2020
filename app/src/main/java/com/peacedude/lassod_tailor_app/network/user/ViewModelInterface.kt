@@ -96,8 +96,6 @@ interface ViewModelInterface {
 
     fun addMeasurement(header: String?, body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
-
-
     fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
     fun deleteMedia(header: String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
@@ -175,6 +173,10 @@ interface ViewModelInterface {
         page: Long?,
         size: Long?
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
+    suspend fun getAllPhoto(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
+    fun addPhoto(map: HashMap<String, RequestBody>):LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
 
 }

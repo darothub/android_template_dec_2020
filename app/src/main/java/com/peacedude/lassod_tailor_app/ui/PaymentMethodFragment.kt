@@ -101,7 +101,7 @@ class PaymentMethodFragment : DaggerFragment() {
             saveChangesBtn.text = getString(R.string.save_changes)
         },{
 
-
+            var y:ArrayList<Any> = arrayListOf(1, "2", 3)
 
         })
 

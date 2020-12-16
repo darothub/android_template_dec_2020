@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 
 data class Photo (
-    val id: String,
+    val id: String?,
     @SerializedName("tailorId")
     val tailorID: String,
     val photo: String,
