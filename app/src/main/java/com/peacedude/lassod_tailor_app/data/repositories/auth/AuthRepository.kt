@@ -164,6 +164,14 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.getAllAddress(header, clientId)
     }
 
+    override suspend fun addReviewAndRating(
+        rate: Float,
+        artisanId: String,
+        comment: String
+    ): UserResponse<ReviewData> {
+        return authServices.addReviewAndRating(rate, artisanId, comment)
+    }
+
     override fun addPhoto(map: HashMap<String, RequestBody>): Call<UserResponse<NothingExpected>> {
         return authServices.addPhoto(map)
     }

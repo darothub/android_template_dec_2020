@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.changeBackgroundColor
+import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.utsman.recycling.setupAdapter
 import kotlinx.android.synthetic.main.client_list_item.view.*
@@ -27,7 +29,9 @@ import kotlinx.android.synthetic.main.review_list_item.view.*
  * create an instance of this fragment.
  */
 class ReviewFragment : Fragment() {
-
+    private val title by lazy {
+        getName()
+    }
     lateinit var reviewPostBtn:Button
     lateinit var reviewProgressBar:ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +111,27 @@ class ReviewFragment : Fragment() {
                 else{
                     val firstName = item.name[0]
                     itemView.review_list_name_initials_tv.text = "$firstName"
+                }
+                itemView.review_list_more_iv.setOnClickListener {v->
+                    val popup = PopupMenu(requireContext(), itemView.review_list_more_iv)
+                    popup.setOnMenuItemClickListener {
+                        when(it.itemId){
+                            R.id.edit -> {
+                                i(title, "Edit")
+                                true
+                            }
+                            R.id.delete ->{
+                                i(title, "delete")
+                                true
+                            }
+                            else -> {
+                                i(title, "Else")
+                                false
+                            }
+                        }
+                    }
+                    popup.inflate(R.menu.review_popup_menu)
+                    popup.show()
                 }
             }
             setLayoutManager(LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false))

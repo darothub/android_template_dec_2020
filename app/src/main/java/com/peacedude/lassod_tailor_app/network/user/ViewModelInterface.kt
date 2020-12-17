@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.network.user
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
@@ -12,7 +13,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 
-interface ViewModelInterface {
+interface ViewModelInterface  {
     var lastFragmentId:Int
     var currentUser: User?
     var saveUser:ArrayList<String>
@@ -177,6 +178,10 @@ interface ViewModelInterface {
     suspend fun getAllPhoto(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
     fun addPhoto(map: HashMap<String, RequestBody>):LiveData<ServicesResponseWrapper<ParentData>> = TODO()
-
+     suspend fun addReviewAndRating(
+        rate: Float,
+        artisanId: String,
+        comment: String
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
 }

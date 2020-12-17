@@ -57,7 +57,7 @@ data class User(
     var unionState: String? = null
     var country: String? = null
     var email: String? = null
-    var loggedIn: Boolean? = null
+    var loggedIn: Boolean = false
     var imageUrl: String? = null
 
 }

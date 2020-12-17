@@ -2,8 +2,6 @@ package com.peacedude.lassod_tailor_app.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -36,6 +34,9 @@ import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.Photo
 import com.peacedude.lassod_tailor_app.model.response.PhotoList
+import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
+import com.peacedude.lassod_tailor_app.utils.bearer
+import com.peacedude.lassod_tailor_app.utils.http.MultipartUtility
 import com.skydoves.progressview.ProgressView
 import com.squareup.picasso.Picasso
 import com.utsman.recycling.adapter.RecyclingAdapter
@@ -44,14 +45,13 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
 import javax.inject.Inject
 
 
@@ -333,26 +333,47 @@ class MediaFragment : DaggerFragment() {
                     Picasso.get().load(imageFile).into(noDataSecondIcon)
                 }
 
-                val map = HashMap<String, RequestBody>()
+                CoroutineScope(IO).launch {
+                    try{
+                        val media = "media"
+                        val url = "$BASE_URL_STAGING$media"
+                        val multipart = MultipartUtility(url, "UTF-8")
+                        multipart.apply {
+                            addFilePart("photo", imageFile)
+                            addHeaderField("Authorization", "$header")
+                            addHeaderField("Content-Type", "multipart/formdata")
+                        }
+                        val response = multipart.finish()
+                        response.forEach {
+                            i(title, "Line $it")
+                        }
+                    }
+                    catch (e:Exception){
+                        i(title, "ErrorHttp ${e.message}")
+                    }
+                }
 
-                val reqBody = imageFile!!.asRequestBody("image/*".toMediaTypeOrNull())
 
-
-                val requestBody: RequestBody = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("photo", imageFile.toString())
-                    .build()
-
-                map["photo"] = reqBody
-
-                val req = authViewModel.addPhoto(requestBody)
-                observeRequest<NothingExpected>(req, null, null, true, { result ->
-                    val response = result
-                    requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
-                    i(title, "URL ${response.message}")
-                }, { err ->
-                    i(title, "AddPhotoReqError $err")
-                })
+//                val map = HashMap<String, RequestBody>()
+//
+//                val reqBody = imageFile!!.asRequestBody("image/*".toMediaTypeOrNull())
+//
+//
+//                val requestBody: RequestBody = MultipartBody.Builder()
+//                    .setType(MultipartBody.FORM)
+//                    .addFormDataPart("photo", imageFile.toString())
+//                    .build()
+//
+//                map["photo"] = reqBody
+//
+//                val req = authViewModel.addPhoto(requestBody)
+//                observeRequest<NothingExpected>(req, null, null, true, { result ->
+//                    val response = result
+//                    requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
+//                    i(title, "URL ${response.message}")
+//                }, { err ->
+//                    i(title, "AddPhotoReqError $err")
+//                })
 
 
                 dialog.dismiss()

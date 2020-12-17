@@ -55,7 +55,7 @@ class StartActivityForResults @Inject constructor(private val registry: Activity
                     val otherName = account?.displayName
                     val imageUrl = account?.photoUrl
                     val idToken = account?.idToken
-                    val newUser = User()
+                    var newUser = User()
                     newUser.firstName = firstName
                     newUser.lastName = lastName
                     newUser.otherName = otherName

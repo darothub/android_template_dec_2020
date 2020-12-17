@@ -304,7 +304,7 @@ class PaymentMethodFragment : DaggerFragment() {
             authViewModel.profileData = profileData
             currentUser?.paymentOptions = user?.paymentOptions
             currentUser?.paymentTerms = user?.paymentTerms
-            authViewModel.currentUser = currentUser
+            authViewModel.currentUser = currentUser!!
             i(title, "Update user ${user?.paymentTerms}")
             requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
         },{err->

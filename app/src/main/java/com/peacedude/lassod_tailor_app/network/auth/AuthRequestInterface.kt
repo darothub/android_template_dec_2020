@@ -93,4 +93,10 @@ interface AuthRequestInterface {
     fun addPhoto(
         @PartMap map: HashMap<String, RequestBody>
     ): Call<UserResponse<NothingExpected>> = TODO()
+
+    suspend fun addReviewAndRating(
+        rate:Float,
+        artisanId:String,
+        comment: String
+    ): UserResponse<ReviewData> = TODO()
 }

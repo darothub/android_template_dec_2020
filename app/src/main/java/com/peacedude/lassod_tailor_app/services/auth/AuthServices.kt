@@ -4,6 +4,7 @@ import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.w3c.dom.Comment
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -197,6 +198,14 @@ interface AuthServices {
 
     @GET("media")
     suspend fun getAllPhoto(): UserResponse<PhotoList>
+
+    @POST("review")
+    @FormUrlEncoded
+    suspend fun addReviewAndRating(
+        @Field("rate")rate:Float,
+        @Field("artisanId")artisanId:String,
+        @Field("comment")comment: String
+    ): UserResponse<ReviewData>
 
 }
 

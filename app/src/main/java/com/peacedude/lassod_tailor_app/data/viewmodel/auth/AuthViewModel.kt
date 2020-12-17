@@ -354,4 +354,18 @@ open class AuthViewModel @Inject constructor(
             onErrorFlowResponse(e)
         }
     }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun addReviewAndRating(
+        rate: Float,
+        artisanId: String,
+        comment: String
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+        try {
+            val request = authRequestInterface.addReviewAndRating(rate, artisanId, comment)
+            onSuccessFlowResponse(request)
+        } catch (e: HttpException) {
+            onErrorFlowResponse(e)
+        }
+    }
 }

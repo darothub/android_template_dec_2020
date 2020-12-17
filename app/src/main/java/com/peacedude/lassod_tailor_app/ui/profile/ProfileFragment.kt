@@ -176,6 +176,7 @@ class ProfileFragment : DaggerFragment() {
             R.drawable.rounded_blue_outline_white_backgrnd
         )
 
+        i(title, "Current user loggedIn ${authViewModel.currentUser?.loggedIn}")
 
         buttonTransactions({
             //Get included view for delete button

@@ -7,15 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.peacedude.lassod_tailor_app.model.response.Artisan
 import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
@@ -58,8 +62,8 @@ class SearchFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val userViewModel: UserViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
+    private val userViewModel by viewModels<UserViewModel> {
+        viewModelProviderFactory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +83,7 @@ class SearchFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        i(title, "onViewCreated")
         changeStatusBarColor(R.color.colorWhite)
 
         val listOfFilterOptions = arrayListOf<SearchFilter>(
@@ -264,6 +268,18 @@ class SearchFragment : DaggerFragment() {
             }
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val user = GlobalVariables.globalUser
+        if(user != null && user.loggedIn){
+            search_fragment_login_ib.text = getString(R.string.goto_dashboard)
+        }
+        else{
+            search_fragment_login_ib.text = getString(R.string.login)
+        }
     }
 
 }

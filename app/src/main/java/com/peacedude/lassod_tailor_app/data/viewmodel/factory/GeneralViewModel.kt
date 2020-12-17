@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.peacedude.gdtoast.gdToast
+import com.peacedude.lassod_tailor_app.helpers.GlobalVariables
 import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
@@ -57,18 +58,18 @@ open class GeneralViewModel @Inject constructor(
         networkMonitor()
     }
 
-    private val logoutLiveData = MutableLiveData<Boolean>()
+
+    val logoutLiveData = MutableLiveData<Boolean>()
     val netWorkLiveData = MutableLiveData<Boolean>(true)
-    var data:ParentData?=null
     override var lastFragmentId: Int
         get() = storageRequest.getLastFragmentId()
         set(id) = storageRequest.saveLastFragment(id)
 
-    var curUser: User by Delegates.vetoable(User()) { property, oldValue, newValue ->
-        newValue != oldValue
+    var currentUsers: User by Delegates.vetoable(User()) { property, oldValue, newValue ->
+        newValue.loggedIn != oldValue.loggedIn
     }
 
-    final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey)
+    final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey) ?: User()
         set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
 
     override var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
@@ -357,11 +358,13 @@ open class GeneralViewModel @Inject constructor(
 
         currentUser?.token = ""
         currentUser?.loggedIn = false
-        val res = storageRequest.saveData(currentUser, loggedInUserKey)
-        Log.i(title, "resArray ${res.size}")
+        GlobalVariables.globalUser = currentUser
+//        val res = storageRequest.saveData(currentUser, loggedInUserKey)
+        Log.i(title, "current user on logout ${this.currentUser?.loggedIn}")
         mGoogleSignInClient.signOut().addOnCompleteListener { logoutTask ->
             when (logoutTask.isSuccessful) {
                 true -> {
+
                     activity.startActivity(Intent(activity, MainActivity::class.java))
                     activity.gdToast("Sign-out request successful", Gravity.BOTTOM)
                     activity.finish()

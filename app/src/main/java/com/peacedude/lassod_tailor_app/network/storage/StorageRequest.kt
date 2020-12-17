@@ -27,12 +27,13 @@ interface StorageRequest {
 inline fun<reified T> StorageRequest.getData(data:String):T? = this.gson.fromJson(data, object :TypeToken<T>(){}.type)
 
 inline fun<reified T> StorageRequest.checkData(key:String):T?{
-    when {
+    return when {
         this.sharedPrefer.contains(key) ->{
             val result = sharedPrefer.getString(key, "")
-            return result?.let { this.getData(it) }
+            result?.let { this.getData<T>(it) }
         }
-        else-> return null
+
+        else-> null
     }
 
 }

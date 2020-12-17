@@ -23,6 +23,7 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import javax.inject.Inject
 
 
@@ -46,7 +47,7 @@ open class HomeFragment : DaggerFragment() {
 
 
     private val currentUser: User? by lazy {
-        userViewModel.currentUser
+        userViewModel.currentUsers
     }
 
     @Inject
@@ -110,20 +111,23 @@ open class HomeFragment : DaggerFragment() {
         val  googleEmail = account?.email
         val sharedPrefEmail = currentUser?.email
 
-        if (currentUser != null) {
-            when (currentUser?.loggedIn) {
-                true -> goto(DashboardActivity::class.java)
-                false -> goto(R.id.loginFragment)
-            }
+        val user = GlobalVariables.globalUser
+        i(title, "onResume1 $user loggedIn ${user?.loggedIn}")
+        if(user != null && user.loggedIn){
+            goto(DashboardActivity::class.java)
+            finish()
         }
         else if(account != null && currentUser?.email == googleEmail){
             goto(DashboardActivity::class.java)
+            finish()
             Log.i(title, "Emails $googleEmail $sharedPrefEmail")
 
         }
         else{
-//            startActivity(Intent(requireContext(), DashboardActivity::class.java))
+            goto(R.id.loginFragment)
         }
+
+
     }
 
     override fun onResume() {

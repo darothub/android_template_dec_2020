@@ -191,11 +191,12 @@ class LoginFragment : DaggerFragment() {
     private fun authWithGoogle() {
         val intent = mGoogleSignInClient.signInIntent
         observer.launchIntentToSignIn(intent, viewLifecycleOwner) { user ->
+            var newUser = user
             i(
                 "$this",
                 "res $user \ntoken ${user.role}\ntoken 2${user.token}"
             )
-            loginWithGoogle(user)
+            loginWithGoogle(newUser)
         }
     }
 
@@ -204,23 +205,24 @@ class LoginFragment : DaggerFragment() {
         val req = userViewModel.loginWithGoogle(googleAuthHeader)
         i(title, "header ${user.token}")
 
+        var newUser = user
         observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
             val remoteDetails = userDetails.data
-            user.loggedIn = true
-            user.token = remoteDetails?.token
-
+            newUser.loggedIn = true
+            newUser.token = remoteDetails?.token
+            i(title, "User1 $newUser")
             val payloadString = user<User>(user.token.toString())
-            user.role = payloadString?.category
-            user.category = payloadString?.category
-            userViewModel.currentUser = user
+            newUser.role = payloadString?.category
+            newUser.category = payloadString?.category
+            userViewModel.currentUser = newUser
             //                            val res = userViewModel.saveUser
             val loginIntent =
                 Intent(requireContext(), DashboardActivity::class.java)
             i(
                 title,
-                "res $user \nCategory ${payloadString?.category}\ntoken 2${remoteDetails}"
+                "res $newUser \nCategory ${payloadString?.category}\nuvm loggedIn${newUser.loggedIn}\nuser loggedIn${userViewModel.currentUser?.loggedIn}"
             )
-            requireActivity().gdToast(getString(R.string.you_are_signed) + " ${user.email}", Gravity.BOTTOM)
+            requireActivity().gdToast(getString(R.string.you_are_signed) + " ${newUser.email}", Gravity.BOTTOM)
             startActivity(loginIntent)
             requireActivity().finish()
         },{err->

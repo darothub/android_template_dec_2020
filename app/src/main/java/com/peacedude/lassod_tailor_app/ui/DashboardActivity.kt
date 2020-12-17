@@ -142,6 +142,7 @@ class DashboardActivity : BaseActivity() {
 
 
 
+        GlobalVariables.globalUser = currentUser
         getUserData()
 
         when(currentUser?.category){
@@ -189,7 +190,7 @@ class DashboardActivity : BaseActivity() {
                     when(item?.title){
                         getString(R.string.clients) -> {
                             drawer_layout.closeDrawer(profile_drawer_view, true)
-                            goto(ClientActivity::class.java)
+                            navController.navigate(R.id.profileFragment)
                         }
                         getString(R.string.resources) -> {
                             drawer_layout.closeDrawer(profile_drawer_view, true)
@@ -228,6 +229,8 @@ class DashboardActivity : BaseActivity() {
 
 
         }
+
+        navController.navigate(authViewModel.lastFragmentId)
 
 
     }
