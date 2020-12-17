@@ -28,6 +28,8 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -52,6 +54,7 @@ import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.drawer_menu_item.view.*
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.android.synthetic.main.search_filter_item.view.*
 import javax.inject.Inject
@@ -65,6 +68,13 @@ class DashboardActivity : BaseActivity() {
         profile_drawer_view.findViewById<TextView>(R.id.profile_name)
     }
 
+    val profileImage by lazy {
+        profile_drawer_view.findViewById<ImageView>(R.id.profile_image)
+    }
+
+    val profileHeaderImage by lazy {
+        profile_header.findViewById<ImageView>(R.id.profile_pix_image)
+    }
     //    Get logged-in user
     private val currentUser: User? by lazy {
         authViewModel.currentUser
@@ -285,7 +295,17 @@ class DashboardActivity : BaseActivity() {
             val user = userDetails?.data
             greeting.text = "Hi ${user?.firstName}"
             profileName.text = "${user?.firstName} ${user?.lastName}"
-//                authViewModel?.currentUser = user
+            profileImage.load(user?.avatar) {
+                crossfade(true)
+                placeholder(R.drawable.profile_image)
+                transformations(CircleCropTransformation())
+            }
+            profileHeaderImage.load(user?.avatar) {
+                crossfade(true)
+                placeholder(R.drawable.profile_image)
+                transformations(CircleCropTransformation())
+            }
+
             i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
         },{err->
             i(title, "DashActError $err")

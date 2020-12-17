@@ -358,13 +358,13 @@ open class GeneralViewModel @Inject constructor(
 
         currentUser?.token = ""
         currentUser?.loggedIn = false
+        this.currentUser = currentUser
         GlobalVariables.globalUser = currentUser
 //        val res = storageRequest.saveData(currentUser, loggedInUserKey)
         Log.i(title, "current user on logout ${this.currentUser?.loggedIn}")
         mGoogleSignInClient.signOut().addOnCompleteListener { logoutTask ->
             when (logoutTask.isSuccessful) {
                 true -> {
-
                     activity.startActivity(Intent(activity, MainActivity::class.java))
                     activity.gdToast("Sign-out request successful", Gravity.BOTTOM)
                     activity.finish()

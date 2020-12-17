@@ -274,6 +274,7 @@ class SearchFragment : DaggerFragment() {
         super.onResume()
 
         val user = GlobalVariables.globalUser
+        i(title, "LoggedIn ${GlobalVariables.globalUser?.loggedIn}")
         if(user != null && user.loggedIn){
             search_fragment_login_ib.text = getString(R.string.goto_dashboard)
         }

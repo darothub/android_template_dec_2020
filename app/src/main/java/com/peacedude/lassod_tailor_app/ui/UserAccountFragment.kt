@@ -177,6 +177,12 @@ class UserAccountFragment : DaggerFragment() {
         observeRequest<User>(request, null, null, true, {resp->
             val user = resp?.data
 
+            user_account_profile_image.load(user?.avatar) {
+                crossfade(true)
+                placeholder(R.drawable.profile_image)
+                transformations(CircleCropTransformation())
+            }
+
             //Initialize new user for data update
             val newUserData = User()
             val nameList = setUserNamesAndOtherFields(user, newUserData)
@@ -543,17 +549,7 @@ class UserAccountFragment : DaggerFragment() {
         },{err ->
             i(title, "UserAccountError $err")
         })
-//        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-//            val (bool, result) = it
-//            onRequestResponseTask<User>(bool, result){
-//                val response = result as? UserResponse<User>
-//                val msg = response?.message
-//                val profileData = response?.data
-//                authViewModel.profileData = profileData
-//                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
-//                i(title, "msg $msg ${profileData?.firstName}")
-//            }
-//        })
+
     }
 
     private fun getPhotoData() {
@@ -572,20 +568,12 @@ class UserAccountFragment : DaggerFragment() {
                 val file = saveBitmap(imageBitmap)
                 if (file != null) {
 //                    Picasso.get().load(file).into(user_account_profile_image)
-                    user_account_profile_image.load(file) {
-                        crossfade(true)
-                        placeholder(R.drawable.profile_image)
-                        transformations(CircleCropTransformation())
-                    }
-                    val reqBody = file.asRequestBody("image".toMediaTypeOrNull())
-                    val profileImagePart = MultipartBody.Part.createFormData(
-                        "avatar",
-                        file.name, reqBody
-                    )
-                    i(title, "Imagefile $file name ${file.name} path ${file.absolutePath}")
+
+                    val reqBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+
                     val requestBody: RequestBody = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("avatar", file.toString())
+                        .addFormDataPart("avatar", file.name, reqBody)
                         .build()
 
                     val req = authViewModel.uploadProfilePicture(requestBody)

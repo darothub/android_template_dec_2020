@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.ui
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Gravity
@@ -15,11 +16,13 @@ import android.widget.TextView
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -52,6 +55,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 
@@ -117,9 +121,10 @@ class MediaFragment : DaggerFragment() {
     val header by lazy {
         authViewModel.header
     }
-    val photoListLiveData:LiveData<PhotoList> by lazy {
+    val photoListLiveData: LiveData<PhotoList> by lazy {
         MutableLiveData<PhotoList>()
     }
+
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -199,7 +204,7 @@ class MediaFragment : DaggerFragment() {
                     .collect {
                         onFlowResponse<PhotoList>(response = it) { it ->
                             val listOfPhoto = it?.photo?.map { photo ->
-                              photo
+                                photo
                             }
                             i(title, "${listOfPhoto?.isEmpty()}")
                             if (listOfPhoto?.isEmpty()!!) {
@@ -255,7 +260,7 @@ class MediaFragment : DaggerFragment() {
         val b =
             getBitmapFromImageView(itemView.media_item_picture_iv)
         val file = saveBitmap(b)
-        val mimeType = "image/png"
+        val mimeType = "image/*"
         if (file != null) {
             val uri =
                 FileProvider.getUriForFile(
@@ -282,7 +287,7 @@ class MediaFragment : DaggerFragment() {
         singleImageDialog.dismiss()
         list?.remove(item)
         adapter.notifyDataSetChanged()
-        if(list?.isEmpty()!!){
+        if (list?.isEmpty()!!) {
             media_fragment_vf.showPrevious()
         }
         val deleteReq =
@@ -300,7 +305,7 @@ class MediaFragment : DaggerFragment() {
                     "${res.message}",
                     Gravity.BOTTOM
                 )
-
+                findNavController().navigate(R.id.mediaFragment)
 
             },
             { err ->
@@ -311,6 +316,7 @@ class MediaFragment : DaggerFragment() {
     }
 
 
+    @ExperimentalCoroutinesApi
     private fun getPhotoData() {
         addPhotoLoaderLayout.hide()
         progressFill.progress = 0.0F
@@ -329,51 +335,25 @@ class MediaFragment : DaggerFragment() {
                     data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
                 val imageFile = saveBitmap(imageBitmap)
                 i(title, "imageFile $imageFile")
-                if (imageFile != null) {
-                    Picasso.get().load(imageFile).into(noDataSecondIcon)
-                }
 
-                CoroutineScope(IO).launch {
-                    try{
-                        val media = "media"
-                        val url = "$BASE_URL_STAGING$media"
-                        val multipart = MultipartUtility(url, "UTF-8")
-                        multipart.apply {
-                            addFilePart("photo", imageFile)
-                            addHeaderField("Authorization", "$header")
-                            addHeaderField("Content-Type", "multipart/formdata")
-                        }
-                        val response = multipart.finish()
-                        response.forEach {
-                            i(title, "Line $it")
-                        }
-                    }
-                    catch (e:Exception){
-                        i(title, "ErrorHttp ${e.message}")
-                    }
-                }
+                val reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
 
 
-//                val map = HashMap<String, RequestBody>()
-//
-//                val reqBody = imageFile!!.asRequestBody("image/*".toMediaTypeOrNull())
-//
-//
-//                val requestBody: RequestBody = MultipartBody.Builder()
-//                    .setType(MultipartBody.FORM)
-//                    .addFormDataPart("photo", imageFile.toString())
-//                    .build()
-//
-//                map["photo"] = reqBody
-//
-//                val req = authViewModel.addPhoto(requestBody)
-//                observeRequest<NothingExpected>(req, null, null, true, { result ->
-//                    val response = result
-//                    requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
-//                    i(title, "URL ${response.message}")
-//                }, { err ->
-//                    i(title, "AddPhotoReqError $err")
-//                })
+                val requestBody: RequestBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("photo", imageFile?.name, reqBody)
+                    .build()
+
+
+                val req = authViewModel.addPhoto(requestBody)
+                observeRequest<NothingExpected>(req, null, null, true, { result ->
+                    val response = result
+                    requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
+                    findNavController().navigate(R.id.mediaFragment)
+                    i(title, "URL ${response.message}")
+                }, { err ->
+                    i(title, "AddPhotoReqError $err")
+                })
 
 
                 dialog.dismiss()
