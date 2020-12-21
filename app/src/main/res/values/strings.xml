@@ -84,7 +84,7 @@
     </string-array>
 
 
-    <string name="app_name">Oyoyo</string>
+    <string name="app_name">Uyoyo</string>
 
     <string name="client_id_two">206708835261-e33o8a24rv51sufb2l1lsu6rsmk12hg8.apps.googleusercontent.com</string>
     <string name="client_id">962135252978-8mcotdb8jec29alk20v8lcne67fm5gib.apps.googleusercontent.com</string>
@@ -292,4 +292,5 @@
     <string name="tailor">tailor</string>
     <string name="edit">Edit</string>
     <string name="goto_dashboard">Return to dashboard</string>
+    <string name="share">Share</string>
 </resources>

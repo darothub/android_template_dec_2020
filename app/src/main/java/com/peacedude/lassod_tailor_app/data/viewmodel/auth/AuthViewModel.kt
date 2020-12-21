@@ -1,10 +1,8 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.auth
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
@@ -16,15 +14,10 @@ import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendAtomicCancellableCoroutine
-import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.*
-import java.io.IOException
 import javax.inject.Inject
-import kotlin.coroutines.resume
 
 open class AuthViewModel @Inject constructor(
     private val authRequestInterface: AuthRequestInterface,
@@ -114,10 +107,9 @@ open class AuthViewModel @Inject constructor(
     }
 
     override fun addPhoto(
-        image: MultipartBody.Part,
-        name: RequestBody
+        photo: List<MultipartBody.Part>?
     ): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = authRequestInterface.addPhoto(image, name)
+        val request = authRequestInterface.addPhoto(photo)
         return enqueueRequest(request, responseLiveData)
     }
 

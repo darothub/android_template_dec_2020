@@ -33,6 +33,10 @@ import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.ui.REQUEST_CODE
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -80,7 +84,7 @@ inline fun <reified T> Activity.observeRequest(
 
             when (it) {
                 is ServicesResponseWrapper.Loading<*> -> {
-                    if (loader) dialog.show() else dialog.dismiss()
+                    if (loader) dialog.show()
                     progressBar?.show()
                     button?.hide()
                     i(title, "Loading..")
@@ -317,12 +321,13 @@ fun Activity.checkCameraPermission(): Boolean {
     return false
 }
 
-fun Activity.saveBitmap(bmp: Bitmap): File? {
+fun Activity.saveBitmap(bmp: Bitmap?): File? {
     val extStorageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     var outStream: OutputStream? = null
     var file: File? = null
+    val time = System.currentTimeMillis()
     val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
-    val child = "JPEG_${timeStamp}_.jpg"
+    val child = "JPEG_${time}_.jpg"
     // String temp = null;
     if (extStorageDirectory != null) {
         file = File(extStorageDirectory, child)
@@ -332,7 +337,7 @@ fun Activity.saveBitmap(bmp: Bitmap): File? {
         }
         try {
             outStream = FileOutputStream(file)
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+            bmp?.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
             outStream.flush()
             outStream.close()
         } catch (e: Exception) {
@@ -343,6 +348,38 @@ fun Activity.saveBitmap(bmp: Bitmap): File? {
 
     return file
 }
+
+//suspend fun Activity.saveBitmaps(bmp: Bitmap?): File? {
+//    return GlobalScope.async {
+//        val extStorageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//        var outStream: OutputStream? = null
+//        var file: File? = null
+//        val time = System.currentTimeMillis()
+//        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+//        val child = "JPEG_${time}_.jpg"
+//        // String temp = null;
+//        if (extStorageDirectory != null) {
+//            file = File(extStorageDirectory, child)
+//            if (file.exists()) {
+//                file.delete()
+//                file = File(extStorageDirectory, child)
+//            }
+//            try {
+//                outStream = FileOutputStream(file)
+//                bmp?.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+//                outStream.flush()
+//                outStream.close()
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                return@async null
+//            }
+//        }
+//        return@async file
+//    }.await()
+//
+//
+//
+//}
 
 
 fun Activity.uriToBitmap(uriImage: Uri): Bitmap? {
@@ -361,7 +398,7 @@ fun Activity.uriToBitmap(uriImage: Uri): Bitmap? {
 
 fun Activity.setUpCountrySpinnerWithDialCode(header: String, spinner: Spinner) {
     val locale = Locale.getAvailableLocales()
-    var countriesIsoAndName: HashMap<String, String> = HashMap()
+    val countriesIsoAndName: HashMap<String, String> = HashMap()
     locale.associateByTo(countriesIsoAndName, {
         it.displayCountry
     }, {

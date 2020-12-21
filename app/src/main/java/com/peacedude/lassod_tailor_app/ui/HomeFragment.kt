@@ -112,8 +112,8 @@ open class HomeFragment : DaggerFragment() {
         val sharedPrefEmail = currentUser?.email
 
         val user = GlobalVariables.globalUser
-        i(title, "onResume1 $user loggedIn ${user?.loggedIn}")
-        if(user != null && user.loggedIn){
+        i(title, "onResume1 $user loggedIn ${user?.loggedIn} currentloggedIn${currentUser?.loggedIn}\"")
+        if((user != null && user.loggedIn) || (currentUser != null && currentUser!!.loggedIn)){
             goto(DashboardActivity::class.java)
             finish()
         }

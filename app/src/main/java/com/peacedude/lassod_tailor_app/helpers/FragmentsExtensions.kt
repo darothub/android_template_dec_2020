@@ -19,6 +19,7 @@ import androidx.navigation.ui.NavigationUI
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import kotlinx.coroutines.Deferred
 import java.io.File
 import java.util.ArrayList
 
@@ -127,7 +128,7 @@ fun Fragment.checkCameraPermission(): Boolean {
     return requireActivity().checkCameraPermission()
 }
 
-fun Fragment.saveBitmap(bmp: Bitmap): File? {
+fun Fragment.saveBitmap(bmp: Bitmap?): File? {
     return requireActivity().saveBitmap(bmp)
 }
 

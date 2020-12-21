@@ -3,6 +3,8 @@ package com.peacedude.lassod_tailor_app.ui
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,13 +12,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -37,9 +39,6 @@ import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
 import com.peacedude.lassod_tailor_app.model.response.Photo
 import com.peacedude.lassod_tailor_app.model.response.PhotoList
-import com.peacedude.lassod_tailor_app.utils.BASE_URL_STAGING
-import com.peacedude.lassod_tailor_app.utils.bearer
-import com.peacedude.lassod_tailor_app.utils.http.MultipartUtility
 import com.skydoves.progressview.ProgressView
 import com.squareup.picasso.Picasso
 import com.utsman.recycling.adapter.RecyclingAdapter
@@ -48,7 +47,6 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -112,11 +110,14 @@ class MediaFragment : DaggerFragment() {
         (singleImageDialog.findViewById(R.id.single_media_photo_iv) as ImageView)
     }
 
-    private val singleSendTv by lazy {
-        (singleImageDialog.findViewById(R.id.single_media_send_tv) as TextView)
+    private val singleSendView by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_send_btn) as View)
     }
-    private val singleDeleteTv by lazy {
-        (singleImageDialog.findViewById(R.id.single_media_delete_tv) as TextView)
+    private val singleEditView by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_edit_btn) as View)
+    }
+    private val singleDeleteView by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_delete_btn) as View)
     }
     val header by lazy {
         authViewModel.header
@@ -125,6 +126,9 @@ class MediaFragment : DaggerFragment() {
         MutableLiveData<PhotoList>()
     }
 
+    lateinit var singleDeleteBtn: Button
+    lateinit var singleSendBtn: Button
+    lateinit var singleEditBtn: Button
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -154,6 +158,40 @@ class MediaFragment : DaggerFragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        buttonTransactions(
+            {
+                singleDeleteBtn = singleDeleteView.findViewById(R.id.btn)
+                singleSendBtn = singleSendView.findViewById(R.id.btn)
+                singleEditBtn = singleEditView.findViewById(R.id.btn)
+                singleDeleteBtn.apply {
+                    background?.colorFilter = PorterDuffColorFilter(
+                        ContextCompat.getColor(requireContext(), R.color.colorRed),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                    text = getString(R.string.delete)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
+                }
+                singleEditBtn.apply {
+                    background?.colorFilter = PorterDuffColorFilter(
+                        ContextCompat.getColor(requireContext(), R.color.colorGrayDark),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                    text = getString(R.string.edit)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
+                }
+                singleSendBtn.apply {
+                    background?.colorFilter = PorterDuffColorFilter(
+                        ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                    text = getString(R.string.share)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
+                }
+            }, {
+
+            }
+        )
 
         noDataFirstIcon.hide()
         noDataSecondIcon.setImageDrawable(
@@ -205,14 +243,14 @@ class MediaFragment : DaggerFragment() {
                         onFlowResponse<PhotoList>(response = it) { it ->
                             val listOfPhoto = it?.photo?.map { photo ->
                                 photo
-                            }
+                            }?.reversed()
                             i(title, "${listOfPhoto?.isEmpty()}")
-                            if (listOfPhoto?.isEmpty()!!) {
+                            if (listOfPhoto?.isEmpty()!! || media_fragment_rv == null) {
 
 
                             } else {
 
-                                media_fragment_rv.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
+                                media_fragment_rv?.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
 
                                     bind { itemView, position, item ->
                                         itemView.media_item_picture_title_tv.text =
@@ -227,11 +265,10 @@ class MediaFragment : DaggerFragment() {
                                             i(title, "pos ${GlobalVariables.globalPosition}")
                                             Picasso.get().load(item?.photo).into(singleImageIv)
 
-                                            singleSendTv.setOnClickListener {
+                                            singleSendBtn.setOnClickListener {
                                                 shareImage(itemView)
-
                                             }
-                                            singleDeleteTv.setOnClickListener {
+                                            singleDeleteBtn.setOnClickListener {
                                                 deleteMediaRequest(list, item, adapter)
                                             }
 
@@ -305,13 +342,14 @@ class MediaFragment : DaggerFragment() {
                     "${res.message}",
                     Gravity.BOTTOM
                 )
-                findNavController().navigate(R.id.mediaFragment)
+//                findNavController().navigate(R.id.mediaFragment)
 
             },
             { err ->
                 list?.add(item)
                 adapter.notifyDataSetChanged()
                 i(title, "DeletePhotoReqError $err")
+                requireActivity().gdToast(err, Gravity.BOTTOM)
             })
     }
 
@@ -324,36 +362,103 @@ class MediaFragment : DaggerFragment() {
         val galleryIntent = Intent()
         galleryIntent.type = "image/*"
         galleryIntent.action = Intent.ACTION_GET_CONTENT
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
         val chooser = Intent.createChooser(galleryIntent, "Photo options")
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
         val result = observer.launchImageIntent(chooser)
         result.observe(viewLifecycleOwner, Observer { results ->
             if (results.resultCode == Activity.RESULT_OK) {
-                val data = results.data
-                val imageBitmap =
-                    data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
-                val imageFile = saveBitmap(imageBitmap)
-                i(title, "imageFile $imageFile")
-
-                val reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
-
-
-                val requestBody: RequestBody = MultipartBody.Builder()
+                var imageBitmap: Bitmap? = null
+                var arrayOfImageFile = listOf<File?>()
+                var imageFile: File?
+                var reqBody: RequestBody?
+                var itemUri: Uri?
+                val requestBodyBuilder = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("photo", imageFile?.name, reqBody)
-                    .build()
+                val imageParts: ArrayList<MultipartBody.Part?> = arrayListOf()
+
+                val data = results.data
+                i(title, "Result $result")
+
+                i(title, "ImageData $data")
+                if (data != null) {
+                    val clipData = data.clipData
+                    when (clipData?.itemCount) {
+                        null -> {
+                            imageBitmap = data.data?.let { uriToBitmap(it) }
+                                ?: data.extras?.get("data") as Bitmap?
+                            imageFile = saveBitmap(imageBitmap)
+                            reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
+//                            requestBodyBuilder.addFormDataPart("photo", imageFile.name, reqBody)
+                            imageParts.add(
+                                MultipartBody.Part.createFormData(
+                                    "photo",
+                                    imageFile.name,
+                                    reqBody
+                                )
+                            )
+                        }
+                        in 1..5 -> {
+
+                            arrayOfImageFile = (0 until clipData.itemCount).map {
+                                val itemUriTwo = data.clipData!!.getItemAt(it).uri
+                                i(title, "uri $itemUriTwo")
+                                val imageBitmapTwo = uriToBitmap(itemUriTwo)
+                                i(title, "bitmap $imageBitmap")
+                                val imageFileTwo = saveBitmap(imageBitmapTwo)
+
+                                i(title, "imageFile $imageFileTwo")
+                                imageFileTwo
+                            }
 
 
-                val req = authViewModel.addPhoto(requestBody)
-                observeRequest<NothingExpected>(req, null, null, true, { result ->
-                    val response = result
-                    requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
-                    findNavController().navigate(R.id.mediaFragment)
-                    i(title, "URL ${response.message}")
-                }, { err ->
-                    i(title, "AddPhotoReqError $err")
-                })
+
+                            i(title, "imageFiles $arrayOfImageFile")
+                        }
+                        else -> {
+                            i(title, "Too many images selected")
+                        }
+
+                    }
+                    if (arrayOfImageFile.isNotEmpty()) {
+                        arrayOfImageFile.forEach { imageFile ->
+                            reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                            imageParts.add(
+                                MultipartBody.Part.createFormData(
+                                    "photo", imageFile.name,
+                                    reqBody!!
+                                )
+                            )
+                        }
+                    }
+                    i(title, "imagePart $imageParts")
+
+//                    val requestBody: RequestBody = requestBodyBuilder.build()
+                    val req = authViewModel.addPhoto(imageParts as? List<MultipartBody.Part>)
+                    observeRequest<NothingExpected>(req, null, null, true, { result ->
+                        val response = result
+                        requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
+                        findNavController().navigate(R.id.mediaFragment)
+                        i(title, "URL ${response.message}")
+                    }, { err ->
+                        requireActivity().gdToast(err, Gravity.BOTTOM)
+                        i(title, "AddPhotoReqError $err")
+                    })
+
+                }
+
+
+//                val reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
+//
+//
+//                val requestBody: RequestBody = MultipartBody.Builder()
+//                    .setType(MultipartBody.FORM)
+//                    .addFormDataPart("photo", imageFile?.name, reqBody)
+//                    .build()
+//
+//
 
 
                 dialog.dismiss()

@@ -89,7 +89,7 @@ interface ViewModelInterface  {
         TODO()
     }
     fun addPhoto(body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
-    fun addPhoto(image:MultipartBody.Part, name:RequestBody): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+    fun addPhoto(photo:List<MultipartBody.Part>?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
     fun uploadProfilePicture(header: String?, body: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 

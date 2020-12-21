@@ -1,88 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
-    android:fillViewport="true"
     android:background="@color/colorWhite"
-    xmlns:tools="http://schemas.android.com/tools">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    android:padding="@dimen/_10sdp"
+    tools:context=".ui.MediaFragment">
+
+    <LinearLayout
+        android:id="@+id/media_appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:padding="@dimen/_10sdp"
-        tools:context=".ui.MediaFragment">
+        android:layout_height="?actionBarSize"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/media_appBar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/colorWhite"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/_14sdp"
-                android:text="@string/photo_gallery_str"
-                android:layout_weight="1"
-                />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/photo_gallery_str"
+            android:textSize="@dimen/_14sdp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_photo_iv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/add"
-                android:scaleType="centerCrop"
-                android:background="@color/colorPrimary"
-                app:backgroundTint="@color/colorPrimary"
-                android:layout_gravity="end|center_vertical"
-                app:fabCustomSize="@dimen/_30sdp"
-                />
-
-        </LinearLayout>
-        <ViewFlipper
-            android:id="@+id/media_fragment_vf"
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_photo_iv"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_gravity="end|center_vertical"
+            android:background="@color/colorPrimary"
+            android:scaleType="centerCrop"
+            android:src="@drawable/add"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCustomSize="@dimen/_30sdp" />
+
+    </LinearLayout>
+
+    <ViewFlipper
+        android:id="@+id/media_fragment_vf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/media_appBar">
+
+        <include
+            android:id="@+id/no_data_included_layout"
+            layout="@layout/no_data_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/media_fragment_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/media_appBar"
-            >
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:spanCount="2"
+            tools:itemCount="3"
+            tools:listitem="@layout/media_recycler_item" />
 
-            <include
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/no_data_included_layout"
-                layout="@layout/no_data_layout"
-                android:layout_gravity="center"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/media_fragment_rv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:listitem="@layout/media_recycler_item"
-                tools:itemCount="3"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                />
-
-        </ViewFlipper>
+    </ViewFlipper>
 
 
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.core.widget.NestedScrollView>
 
 
 

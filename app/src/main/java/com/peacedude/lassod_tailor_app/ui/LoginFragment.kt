@@ -215,6 +215,7 @@ class LoginFragment : DaggerFragment() {
             newUser.role = payloadString?.category
             newUser.category = payloadString?.category
             userViewModel.currentUser = newUser
+
             //                            val res = userViewModel.saveUser
             val loginIntent =
                 Intent(requireContext(), DashboardActivity::class.java)

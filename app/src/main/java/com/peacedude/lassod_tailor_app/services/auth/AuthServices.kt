@@ -65,17 +65,14 @@ interface AuthServices {
 
     @Multipart
     @POST("media")
-    @Headers("enctype:multipart/form-data")
     fun addPhoto(
         @PartMap map: HashMap<String, RequestBody>
     ): Call<UserResponse<NothingExpected>>
 
     @Multipart
-    @Headers("enctype:multipart/form-data")
     @POST("media")
     fun addPhoto(
-        @Part file: MultipartBody.Part,
-        @Part("photo") name: RequestBody
+        @Part photo: List<MultipartBody.Part>?
     ): Call<UserResponse<NothingExpected>>
 
     @POST("avatar")

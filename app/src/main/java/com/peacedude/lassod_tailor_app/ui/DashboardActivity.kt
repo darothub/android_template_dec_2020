@@ -148,7 +148,7 @@ class DashboardActivity : BaseActivity() {
         drawerMenuRv = profile_drawer_view.findViewById(R.id.drawer_menu_rv)
 
 
-        Log.i(title, "currentUser ${currentUser?.category}")
+        Log.i(title, "currentUser ${currentUser?.loggedIn}")
 
 
 

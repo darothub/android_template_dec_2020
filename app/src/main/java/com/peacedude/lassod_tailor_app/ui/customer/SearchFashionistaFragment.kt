@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
@@ -274,8 +275,8 @@ class SearchFragment : DaggerFragment() {
         super.onResume()
 
         val user = GlobalVariables.globalUser
-        i(title, "LoggedIn ${GlobalVariables.globalUser?.loggedIn}")
-        if(user != null && user.loggedIn){
+        i(title, "LoggedIn ${GlobalVariables.globalUser?.loggedIn} current${currentUser!!.loggedIn}")
+        if((user != null && user.loggedIn) || (currentUser != null && currentUser!!.loggedIn)){
             search_fragment_login_ib.text = getString(R.string.goto_dashboard)
         }
         else{
@@ -283,6 +284,10 @@ class SearchFragment : DaggerFragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        userViewModel.currentUser = GlobalVariables.globalUser
+    }
 }
 
 data class SearchFilter(

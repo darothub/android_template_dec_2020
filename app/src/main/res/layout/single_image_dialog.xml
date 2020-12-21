@@ -16,56 +16,37 @@
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/media_icon"/>
 
-    <ImageView
-        android:id="@+id/single_media_delete_icon_iv"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
-        app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
-        app:layout_constraintStart_toStartOf="@id/single_media_photo_iv"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/delete_24px"
-        android:visibility="gone"
-        android:layout_marginStart="15dp"
-        />
-    <TextView
-        android:id="@+id/single_media_delete_tv"
+    <include
+        android:id="@+id/single_media_delete_btn"
+        layout="@layout/button_and_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/delete"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
-        android:textColor="@color/colorPrimaryDark"
-        android:drawableStart="@drawable/delete_24px"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:layout_marginStart="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:textSize="@dimen/_8sdp"/>
-
-    <ImageView
-        android:id="@+id/single_media_send_icon_iv"
-        android:layout_width="@dimen/_30sdp"
-        android:layout_height="@dimen/_30sdp"
-        app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
-        app:layout_constraintEnd_toStartOf="@id/single_media_send_tv"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/send_24px"
-        android:visibility="gone"
+        android:layout_marginTop="@dimen/_10sdp"
         />
-    <TextView
-        android:id="@+id/single_media_send_tv"
+
+    <include
+        android:id="@+id/single_media_send_btn"
+        layout="@layout/button_and_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/send"
-        android:textColor="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="@id/single_media_photo_iv"
         app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:drawableStart="@drawable/send_24px"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:textSize="@dimen/_8sdp"/>
+        android:layout_marginTop="@dimen/_10sdp"
+        />
+
+
+    <include
+        android:id="@+id/single_media_edit_btn"
+        layout="@layout/button_and_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/single_media_delete_btn"
+        app:layout_constraintEnd_toStartOf="@id/single_media_send_btn"
+        app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
+        android:layout_marginTop="@dimen/_10sdp"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

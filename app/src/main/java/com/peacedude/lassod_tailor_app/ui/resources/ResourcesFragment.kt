@@ -25,6 +25,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
+import coil.load
+import coil.transform.CircleCropTransformation
+import coil.transform.RoundedCornersTransformation
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -47,6 +50,7 @@ import kotlinx.android.synthetic.main.article_publication_item_layout.view.*
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_resources.*
+import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.android.synthetic.main.resources_item_sublayout_layout.view.*
 import kotlinx.coroutines.*
@@ -243,6 +247,11 @@ class ResourcesFragment : DaggerFragment() {
                                         if (item?.articleImage != null) {
                                             Picasso.get().load(item.articleImage).fit()
                                                 .into(itemView.resource_article_publications_iv)
+                                            itemView.resource_article_publications_iv.load(item.articleImage) {
+                                                crossfade(true)
+                                                placeholder(R.drawable.add)
+                                                transformations(RoundedCornersTransformation(15F, 0F, 0F, 15F))
+                                            }
                                         } else {
                                             itemView.resource_article_publications_iv.setImageDrawable(
                                                 ContextCompat.getDrawable(

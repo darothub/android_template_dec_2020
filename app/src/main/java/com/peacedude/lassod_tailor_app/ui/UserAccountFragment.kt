@@ -138,12 +138,8 @@ class UserAccountFragment : DaggerFragment() {
             saveBtn.background = saveBtnBackground
             saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         })
-        networkMonitor().observe(viewLifecycleOwner, Observer {
-            if (it) {
-                getUserData()
-            }
-        })
 
+        getUserData()
 
         ActivityCompat.requestPermissions(
             requireActivity(),
