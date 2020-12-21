@@ -1,5 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui
 
+import IsEmptyCheck
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,13 +13,11 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -29,6 +28,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -111,7 +111,7 @@ class MediaFragment : DaggerFragment() {
     }
 
     private val singleSendView by lazy {
-        (singleImageDialog.findViewById(R.id.single_media_send_btn) as View)
+        (singleImageDialog.findViewById(R.id.single_media_share_btn) as View)
     }
     private val singleEditView by lazy {
         (singleImageDialog.findViewById(R.id.single_media_edit_btn) as View)
@@ -119,6 +119,16 @@ class MediaFragment : DaggerFragment() {
     private val singleDeleteView by lazy {
         (singleImageDialog.findViewById(R.id.single_media_delete_btn) as View)
     }
+    private val singleUpdateView by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_update_btn) as View)
+    }
+    private val singleUpdateDialogEt by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_dialog_et) as TextInputEditText)
+    }
+    private val singleMediaDialogFlipper by lazy {
+        (singleImageDialog.findViewById(R.id.single_media_dialog_vf) as ViewFlipper)
+    }
+
     val header by lazy {
         authViewModel.header
     }
@@ -129,6 +139,7 @@ class MediaFragment : DaggerFragment() {
     lateinit var singleDeleteBtn: Button
     lateinit var singleSendBtn: Button
     lateinit var singleEditBtn: Button
+    lateinit var singleUpdateBtn: Button
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -164,6 +175,7 @@ class MediaFragment : DaggerFragment() {
                 singleDeleteBtn = singleDeleteView.findViewById(R.id.btn)
                 singleSendBtn = singleSendView.findViewById(R.id.btn)
                 singleEditBtn = singleEditView.findViewById(R.id.btn)
+                singleUpdateBtn = singleUpdateView.findViewById(R.id.btn)
                 singleDeleteBtn.apply {
                     background?.colorFilter = PorterDuffColorFilter(
                         ContextCompat.getColor(requireContext(), R.color.colorRed),
@@ -186,6 +198,14 @@ class MediaFragment : DaggerFragment() {
                         PorterDuff.Mode.SRC_IN
                     )
                     text = getString(R.string.share)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
+                }
+                singleUpdateBtn.apply {
+                    background?.colorFilter = PorterDuffColorFilter(
+                        ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                    text = getString(R.string.update_str)
                     setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
                 }
             }, {
@@ -253,8 +273,8 @@ class MediaFragment : DaggerFragment() {
                                 media_fragment_rv?.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
 
                                     bind { itemView, position, item ->
-                                        itemView.media_item_picture_title_tv.text =
-                                            getString(R.string.elegant_str)
+                                        itemView.media_item_picture_title_tv.text = item?.info
+
                                         Picasso.get().load(item?.photo)
                                             .into(itemView.media_item_picture_iv)
 
@@ -271,6 +291,66 @@ class MediaFragment : DaggerFragment() {
                                             singleDeleteBtn.setOnClickListener {
                                                 deleteMediaRequest(list, item, adapter)
                                             }
+
+                                            singleEditBtn.setOnClickListener {
+                                                singleMediaDialogFlipper.showNext()
+                                                singleUpdateDialogEt.setText(item?.info)
+                                                singleUpdateBtn.setOnClickListener {
+                                                    val newInfo =
+                                                        singleUpdateDialogEt.text.toString().trim()
+                                                    val checkEmpty =
+                                                        IsEmptyCheck(singleUpdateDialogEt)
+                                                    when {
+                                                        checkEmpty != null -> {
+                                                            requireActivity().gdToast(
+                                                                "${singleUpdateDialogEt.tag} cannot be empty",
+                                                                Gravity.BOTTOM
+                                                            )
+                                                        }
+                                                        else -> {
+                                                            val updateReq =
+                                                                authViewModel.editPhotoInfo(
+                                                                    item?.id.toString(),
+                                                                    newInfo
+                                                                )
+                                                            //Observer for get request
+                                                            observeRequest<NothingExpected>(
+                                                                updateReq,
+                                                                null,
+                                                                null,
+                                                                true,
+                                                                {
+                                                                    val res = it
+                                                                    item?.info = newInfo
+                                                                    adapter.notifyDataSetChanged()
+                                                                    singleMediaDialogFlipper.showPrevious()
+                                                                    i(title, "$res list $list")
+                                                                    requireActivity().gdToast(
+                                                                        "${res.message}",
+                                                                        Gravity.BOTTOM
+                                                                    )
+                                                                    singleImageDialog.dismiss()
+
+                                                                },
+                                                                { err ->
+
+                                                                    i(
+                                                                        title,
+                                                                        "DeletePhotoReqError $err"
+                                                                    )
+                                                                    requireActivity().gdToast(
+                                                                        err,
+                                                                        Gravity.BOTTOM
+                                                                    )
+                                                                    item?.info = newInfo
+                                                                    adapter.notifyDataSetChanged()
+                                                                    singleImageDialog.dismiss()
+                                                                })
+                                                        }
+                                                    }
+                                                }
+                                            }
+
 
                                             singleImageDialog.show {
                                                 cornerRadius(10F)

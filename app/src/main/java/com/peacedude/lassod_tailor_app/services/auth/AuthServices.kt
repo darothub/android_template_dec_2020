@@ -75,6 +75,13 @@ interface AuthServices {
         @Part photo: List<MultipartBody.Part>?
     ): Call<UserResponse<NothingExpected>>
 
+    @PATCH("media")
+    @FormUrlEncoded
+    fun editPhotoInfo(
+        @Field("id") id:String,
+        @Field("info") info:String
+    ): Call<UserResponse<UpdatedPhoto>>
+
     @POST("avatar")
     fun uploadProfilePicture(
         @Body avatar: RequestBody

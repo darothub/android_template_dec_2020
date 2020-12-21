@@ -293,4 +293,5 @@
     <string name="edit">Edit</string>
     <string name="goto_dashboard">Return to dashboard</string>
     <string name="share">Share</string>
+    <string name="info">Image info</string>
 </resources>

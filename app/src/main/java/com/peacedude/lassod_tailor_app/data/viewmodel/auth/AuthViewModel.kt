@@ -113,6 +113,14 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest(request, responseLiveData)
     }
 
+    override fun editPhotoInfo(
+        id: String,
+        info: String
+    ): LiveData<ServicesResponseWrapper<ParentData>> {
+        val request = authRequestInterface.editPhotoInfo(id, info)
+        return enqueueRequest(request, responseLiveData)
+    }
+
     override fun uploadProfilePicture(
         body: RequestBody
     ): LiveData<ServicesResponseWrapper<ParentData>> {

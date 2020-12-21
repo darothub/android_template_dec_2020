@@ -24,6 +24,7 @@ interface AuthRequestInterface {
     fun deleteClient(header: String?, id: String?): Call<UserResponse<NothingExpected>> = TODO()
     fun addPhoto(body: RequestBody): Call<UserResponse<NothingExpected>> = TODO()
     fun addPhoto(photo:List<MultipartBody.Part>?): Call<UserResponse<NothingExpected>> = TODO()
+    fun editPhotoInfo(id:String, info:String): Call<UserResponse<UpdatedPhoto>> = TODO()
     fun uploadProfilePicture(body: RequestBody): Call<UserResponse<User>> = TODO()
     fun uploadProfilePicture(header: String?, body: MultipartBody.Part): Call<UserResponse<UploadImageClass>> =
         TODO()

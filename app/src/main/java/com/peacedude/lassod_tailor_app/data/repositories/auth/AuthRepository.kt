@@ -81,6 +81,10 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.addPhoto(photo)
     }
 
+    override fun editPhotoInfo(id: String, info: String): Call<UserResponse<UpdatedPhoto>> {
+        return authServices.editPhotoInfo(id, info)
+    }
+
     override fun addPhoto(
         body: RequestBody
     ): Call<UserResponse<NothingExpected>> {
