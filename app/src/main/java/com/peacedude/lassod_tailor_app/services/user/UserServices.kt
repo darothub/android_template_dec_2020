@@ -1,10 +1,7 @@
 package com.peacedude.lassod_tailor_app.services.user
 
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
-import com.peacedude.lassod_tailor_app.model.response.DeliveryAddress
-import com.peacedude.lassod_tailor_app.model.response.Favourite
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -84,4 +81,21 @@ interface UserServices {
         @Query("artisanId") artisanId:String?
     ): UserResponse<Favourite>
 
+    @POST("addfavourite")
+    @FormUrlEncoded
+    suspend fun addReviewAndRating(
+        @Field("rate") rate: Float?,
+        @Field("artisanId") artisanId:String?,
+        @Field("comment") comment:String?
+    ): UserResponse<ReviewResponse>
+
+    @POST("reviews")
+    suspend fun getReviews(
+        @Query("artisanId") artisanId:String?
+    ): UserResponse<List<ReviewResponse>>
+
+    @POST("removereview")
+    suspend fun removeReview(
+        @Query("id") id:String?
+    ): UserResponse<NothingExpected>
 }

@@ -2,9 +2,7 @@ package com.peacedude.lassod_tailor_app.data.repositories.user
 
 import android.util.Log
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
-import com.peacedude.lassod_tailor_app.model.response.Favourite
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
 import com.peacedude.lassod_tailor_app.services.user.UserServices
 import retrofit2.Call
@@ -61,6 +59,22 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
 
     override fun resendCode(phoneNumber: String): Call<UserResponse<User>> {
         return userServices.resendCode(phoneNumber)
+    }
+
+    override suspend fun addReviewAndRating(
+        rate: Float?,
+        artisanId: String?,
+        comment: String?
+    ): UserResponse<ReviewResponse> {
+        return userServices.addReviewAndRating(rate, artisanId, comment)
+    }
+
+    override suspend fun getReviews(artisanId: String?): UserResponse<List<ReviewResponse>> {
+        return userServices.getReviews(artisanId)
+    }
+
+    override suspend fun removeReview(id: String?): UserResponse<NothingExpected> {
+        return userServices.removeReview(id)
     }
 
     override suspend fun addFavourite(artisanId: String?): UserResponse<Favourite> {

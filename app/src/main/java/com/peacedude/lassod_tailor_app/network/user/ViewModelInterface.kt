@@ -186,6 +186,15 @@ interface ViewModelInterface  {
 
     fun editPhotoInfo(id: String, info: String):LiveData<ServicesResponseWrapper<ParentData>> = TODO()
     suspend fun addFavourite(artisanId: String): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun addReviewAndRating(
+        rate:String?,
+        artisanId:String?,
+        comment:String?
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
+    suspend fun getReviews(artisanId:String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
+    suspend fun removeReview(
+        id:String?
+    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 }

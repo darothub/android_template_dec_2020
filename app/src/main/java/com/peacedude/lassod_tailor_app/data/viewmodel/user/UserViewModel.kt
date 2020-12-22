@@ -158,5 +158,44 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
+    override suspend fun getReviews(artisanId: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+
+        try {
+            val request = userRequestInterface.getReviews(artisanId)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+    @ExperimentalCoroutinesApi
+    override suspend fun removeReview(id: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+
+        try {
+            val request = userRequestInterface.removeReview(id)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun addReviewAndRating(
+        rate: Float,
+        artisanId: String,
+        comment: String
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+
+        try {
+            val request = userRequestInterface.addReviewAndRating(rate, artisanId, comment)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
 
 }

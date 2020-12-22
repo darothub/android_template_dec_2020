@@ -2,10 +2,9 @@ package com.peacedude.lassod_tailor_app.network.user
 
 import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
-import com.peacedude.lassod_tailor_app.model.response.Favourite
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import retrofit2.Call
+import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -60,4 +59,17 @@ interface UserRequestInterface {
     suspend fun addFavourite(
         @Query("artisanId") artisanId:String?
     ): UserResponse<Favourite> = TODO()
+    suspend fun addReviewAndRating(
+        rate:Float?,
+        artisanId:String?,
+        comment:String?
+    ): UserResponse<ReviewResponse> = TODO()
+
+    suspend fun getReviews(
+        artisanId:String?
+    ): UserResponse<List<ReviewResponse>> = TODO()
+
+    suspend fun removeReview(
+        id:String?
+    ): UserResponse<NothingExpected> = TODO()
 }
