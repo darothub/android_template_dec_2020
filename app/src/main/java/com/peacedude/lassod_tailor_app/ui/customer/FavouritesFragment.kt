@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -74,6 +75,7 @@ class FavouritesFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_favourites, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -102,6 +104,16 @@ class FavouritesFragment : DaggerFragment() {
                                 bind { itemView, position, item ->
                                     itemView.favourite_list_name_tv.text = "${item?.user?.firstName} ${item?.user?.lastName}"
                                 }
+                                setLayoutManager(
+                                    LinearLayoutManager(
+                                        requireContext(),
+                                        LinearLayoutManager.VERTICAL,
+                                        false
+                                    )
+                                )
+                                subAdapter.delete(list)
+                                    .attachToRecyclerView(favorite_fragment_rv)
+                                submitList(listOfFavourites)
                             }
                         }
                     }
@@ -110,6 +122,7 @@ class FavouritesFragment : DaggerFragment() {
     }
 
 
+    @ExperimentalCoroutinesApi
     private fun <T> RecyclingAdapter<T>.delete(list: MutableList<T?>?): ItemTouchHelper {
 
         return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
