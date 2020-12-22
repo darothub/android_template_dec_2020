@@ -294,4 +294,5 @@
     <string name="goto_dashboard">Return to dashboard</string>
     <string name="share">Share</string>
     <string name="info">Image info</string>
+    <string name="no_favourite">You do not have any favourites</string>
 </resources>

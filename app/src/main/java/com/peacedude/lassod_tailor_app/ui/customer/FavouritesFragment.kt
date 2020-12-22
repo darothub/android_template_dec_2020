@@ -99,22 +99,29 @@ class FavouritesFragment : DaggerFragment() {
                             val listOfFavourites = it?.data?.map {each ->
                                 each
                             }
-                            favorite_fragment_rv.setupAdapter<Favourite>(R.layout.favourite_list_item) { subAdapter, context, list ->
+                            if(listOfFavourites?.isNotEmpty() == true){
+                                favourite_fragment_vf.showNext()
+                                favorite_fragment_rv.setupAdapter<Favourite>(R.layout.favourite_list_item) { subAdapter, context, list ->
 
-                                bind { itemView, position, item ->
-                                    itemView.favourite_list_name_tv.text = "${item?.user?.firstName} ${item?.user?.lastName}"
-                                }
-                                setLayoutManager(
-                                    LinearLayoutManager(
-                                        requireContext(),
-                                        LinearLayoutManager.VERTICAL,
-                                        false
+                                    bind { itemView, position, item ->
+                                        itemView.favourite_list_name_tv.text = "${item?.user?.firstName} ${item?.user?.lastName}"
+                                    }
+                                    setLayoutManager(
+                                        LinearLayoutManager(
+                                            requireContext(),
+                                            LinearLayoutManager.VERTICAL,
+                                            false
+                                        )
                                     )
-                                )
-                                subAdapter.delete(list)
-                                    .attachToRecyclerView(favorite_fragment_rv)
-                                submitList(listOfFavourites)
+                                    subAdapter.delete(list)
+                                        .attachToRecyclerView(favorite_fragment_rv)
+                                    submitList(listOfFavourites)
+                                }
                             }
+                            else{
+                                favourite_fragment_vf.showPrevious()
+                            }
+
                         }
                     }
             }
