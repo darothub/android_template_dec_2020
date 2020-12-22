@@ -6,7 +6,8 @@ import java.io.Serializable
 
 
 data class ArtisanSearchResponse (
-    val artisans: List<Artisan>,
+    val tailors: List<Artisan>,
+    val weavers: List<Artisan>,
     val meta: Meta
 ):Serializable, ParentData
 

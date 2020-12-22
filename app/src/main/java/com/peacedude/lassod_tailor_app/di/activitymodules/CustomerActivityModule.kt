@@ -1,7 +1,9 @@
 package com.peacedude.lassod_tailor_app.di.activitymodules
 
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.*
+import com.peacedude.lassod_tailor_app.di.fragmentmodules.customer.ReviewFragmentModule
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.customer.SearchFragmentModule
+import com.peacedude.lassod_tailor_app.di.fragmentmodules.customer.SingleFashionistaFragmentModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.auth.AuthRequestModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.user.UserRequestsModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
@@ -24,7 +26,9 @@ abstract class CustomerActivityModule {
             AuthViewModelModule::class,
             UserRequestsModule::class,
             UserViewModelModule::class,
-            SearchFragmentModule::class
+            SearchFragmentModule::class,
+            SingleFashionistaFragmentModule::class,
+            ReviewFragmentModule::class
         ]
     )
     abstract fun provideCustomerActivity(): CustomerActivity

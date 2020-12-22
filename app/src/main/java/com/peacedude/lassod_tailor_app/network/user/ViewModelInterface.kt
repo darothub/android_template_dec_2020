@@ -185,5 +185,7 @@ interface ViewModelInterface  {
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
     fun editPhotoInfo(id: String, info: String):LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun addFavourite(artisanId: String): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
 
 }

@@ -308,6 +308,7 @@ class MediaFragment : DaggerFragment() {
                                                             )
                                                         }
                                                         else -> {
+                                                            singleMediaDialogFlipper.showPrevious()
                                                             val updateReq =
                                                                 authViewModel.editPhotoInfo(
                                                                     item?.id.toString(),
@@ -323,7 +324,7 @@ class MediaFragment : DaggerFragment() {
                                                                     val res = it
                                                                     item?.info = newInfo
                                                                     adapter.notifyDataSetChanged()
-                                                                    singleMediaDialogFlipper.showPrevious()
+
                                                                     i(title, "$res list $list")
                                                                     requireActivity().gdToast(
                                                                         "${res.message}",
@@ -333,7 +334,6 @@ class MediaFragment : DaggerFragment() {
 
                                                                 },
                                                                 { err ->
-
                                                                     i(
                                                                         title,
                                                                         "DeletePhotoReqError $err"
@@ -351,6 +351,9 @@ class MediaFragment : DaggerFragment() {
                                                 }
                                             }
 
+                                            singleImageDialog.setOnDismissListener {
+                                                singleMediaDialogFlipper.showPrevious()
+                                            }
 
                                             singleImageDialog.show {
                                                 cornerRadius(10F)
@@ -484,12 +487,8 @@ class MediaFragment : DaggerFragment() {
 
                             arrayOfImageFile = (0 until clipData.itemCount).map {
                                 val itemUriTwo = data.clipData!!.getItemAt(it).uri
-                                i(title, "uri $itemUriTwo")
                                 val imageBitmapTwo = uriToBitmap(itemUriTwo)
-                                i(title, "bitmap $imageBitmap")
                                 val imageFileTwo = saveBitmap(imageBitmapTwo)
-
-                                i(title, "imageFile $imageFileTwo")
                                 imageFileTwo
                             }
 
@@ -529,16 +528,6 @@ class MediaFragment : DaggerFragment() {
 
                 }
 
-
-//                val reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
-//
-//
-//                val requestBody: RequestBody = MultipartBody.Builder()
-//                    .setType(MultipartBody.FORM)
-//                    .addFormDataPart("photo", imageFile?.name, reqBody)
-//                    .build()
-//
-//
 
 
                 dialog.dismiss()

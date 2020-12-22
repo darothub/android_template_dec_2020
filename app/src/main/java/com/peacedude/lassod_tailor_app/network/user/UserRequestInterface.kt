@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.network.user
 import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
+import com.peacedude.lassod_tailor_app.model.response.Favourite
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import retrofit2.Call
 import retrofit2.http.GET
@@ -55,4 +56,8 @@ interface UserRequestInterface {
         page:Long?,
         size:Long?
     ): UserResponse<ArtisanSearchResponse> = TODO()
+
+    suspend fun addFavourite(
+        @Query("artisanId") artisanId:String?
+    ): UserResponse<Favourite> = TODO()
 }

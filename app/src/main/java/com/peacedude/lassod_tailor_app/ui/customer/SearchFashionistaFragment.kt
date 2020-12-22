@@ -89,8 +89,8 @@ class SearchFragment : DaggerFragment() {
 
         val listOfFilterOptions = arrayListOf<SearchFilter>(
             SearchFilter("Artisan", arrayListOf("All", "Tailor", "Weaver")),
-            SearchFilter("Style", arrayListOf("All", "Tailor", "Weaver")),
-            SearchFilter("Location", arrayListOf("All", "Tailor", "Weaver"))
+            SearchFilter("Style", arrayListOf("All", "Native", "English")),
+            SearchFilter("Location", arrayListOf("All", "Lagos", "Ibadan"))
         )
 
         search_fragment_filter_ib.setOnClickListener {
@@ -130,7 +130,78 @@ class SearchFragment : DaggerFragment() {
 
                         }
                     }
+
                 search_fragment_search_btn.setOnClickListener {
+                    val category = list?.get(0)?.selectedItem as String
+                    val specialty = list?.get(1)?.selectedItem as String
+                    val location =  list?.get(2)?.selectedItem as String
+                    requireActivity().gdToast("$category $specialty $location", Gravity.BOTTOM)
+                    val keyword = search_fragment_search_et.text.toString().trim()
+
+                    search_fragment_search_result_rv.setupAdapter<SearchResultTwo>(R.layout.search_media_category_item) { adapter, context, list ->
+
+                        bind { itemView, position, item ->
+                            itemView.search_result_search_result_title_tv.text = item?.category
+                            itemView.search_result_rv.setupAdapter<Artisan>(R.layout.search_result_media_item) { adapter, context, mediaList ->
+                                bind { mediaItemView, position, mediaItem ->
+                                    mediaItemView.search_result_picture_title_tv.text =
+                                        mediaItem?.firstName
+                                    mediaItemView.search_result_picture_location_tv.text =
+                                       "${ mediaItem?.profile?.workshopAddress?.city } ${ mediaItem?.profile?.workshopAddress?.state }"
+                                    mediaItemView.search_result_picture_iv.load(mediaItem?.profile?.avatar) {
+                                        crossfade(true)
+                                        placeholder(R.drawable.profile_image)
+                                    }
+                                    mediaItemView.setOnClickListener {
+                                        val action = SearchFragmentDirections.actionSearchFragmentToSingleFashionistaFragment()
+                                        action.artisanDetails = mediaItem
+                                        goto(action)
+                                    }
+                                }
+                                setLayoutManager(
+                                    LinearLayoutManager(
+                                        requireContext(),
+                                        LinearLayoutManager.HORIZONTAL,
+                                        false
+                                    )
+                                )
+                                submitList(item?.list)
+                            }
+
+                        }
+
+
+                        val layoutManager =  LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.VERTICAL,
+                            false
+                        )
+                        setLayoutManager(layoutManager)
+
+                        setupData(
+                            this@setupAdapter,
+                            keyword,
+                            location,
+                            specialty,
+                            category,
+                            1
+                        )
+
+//                        onPagingListener(layoutManager) { page, itemCount ->
+//
+//                            // call function setup data with page +1
+//                            setupData(
+//                                this@setupAdapter,
+//                                keyword,
+//                                location,
+//                                specialty,
+//                                category,
+//                                page + 1.toLong()
+//                            )
+//                        }
+
+
+                    }
 
                 }
 
@@ -150,96 +221,7 @@ class SearchFragment : DaggerFragment() {
 
         }
 
-        val listSearchResultTwo = arrayListOf<SearchResultTwo>(
-            SearchResultTwo(
-                "Tailor",
-                arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
-            ),
-            SearchResultTwo(
-                "Weaver",
-                arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
-            ),
-            SearchResultTwo(
-                "Weaver",
-                arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-                    SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
-            )
-        )
 
-
-        search_fragment_search_result_rv.setupAdapter<SearchResultTwo>(R.layout.search_media_category_item) { adapter, context, list ->
-
-            bind { itemView, position, item ->
-                itemView.search_result_search_result_title_tv.text = item?.category
-                itemView.search_result_rv.setupAdapter<SearchResult>(R.layout.search_result_media_item) { adapter, context, mediaList ->
-                    bind { mediaItemView, position, mediaItem ->
-                        mediaItemView.search_result_picture_title_tv.text =
-                            mediaItem?.title
-                        mediaItemView.search_result_picture_location_tv.text = mediaItem?.location
-                        mediaItemView.search_result_picture_iv.load(mediaItem?.media) {
-                            crossfade(true)
-                            placeholder(R.drawable.profile_image)
-                        }
-                        mediaItemView.setOnClickListener {
-                            goto(R.id.singleFashionistaFragment)
-                        }
-                    }
-                    setLayoutManager(
-                        LinearLayoutManager(
-                            requireContext(),
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                        )
-                    )
-                    submitList(item?.list)
-                }
-
-            }
-
-
-            setLayoutManager(
-                LinearLayoutManager(
-                    requireContext(),
-                    LinearLayoutManager.VERTICAL,
-                    false
-                )
-            )
-            submitList(listSearchResultTwo)
-//                                val layoutManager = GridLayoutManager(requireContext(), 2)
-//                                setLayoutManager(layoutManager)
-
-            // for grid layout manager, loader by default is ugly, to fix use fixGridSpan
-//                                fixGridSpan(3)
-//                                setupData(
-//                                    this@setupAdapter,
-//                                    keyword,
-//                                    location,
-//                                    specialty,
-//                                    category,
-//                                    1
-//                                )
-
-            // use paging listener for endless recycler view and loaded data
-//                                onPagingListener(layoutManager) { page, itemCount ->
-//
-//                                    // call function setup data with page +1
-//                                    setupData(
-//                                        this@setupAdapter,
-//                                        keyword,
-//                                        location,
-//                                        specialty,
-//                                        category,
-//                                        page + 1.toLong()
-//                                    )
-//                                }
-
-
-        }
     }
 
 
@@ -261,8 +243,16 @@ class SearchFragment : DaggerFragment() {
                     }
                     .collect {
                         onFlowResponse<ArtisanSearchResponse>(response = it) {
-                            i(title, "artisans ${it?.artisans}")
-//                            recycling.submitList(it?.artisans)
+                            val artisanList = arrayListOf<SearchResultTwo>(
+                                SearchResultTwo("Tailors",
+                                    it?.tailors as List<Artisan>
+                                ),
+                                SearchResultTwo("Weavers",
+                                    it.weavers as List<Artisan>
+                                )
+                            )
+                            i(title, "artisans ${it?.tailors}")
+                            recycling.submitList(artisanList)
                         }
                     }
 
@@ -297,5 +287,25 @@ data class SearchFilter(
 )
 
 data class SearchResult(var title: String, var location: String, var media: String)
-data class SearchResultTwo(var category: String?, var list: ArrayList<SearchResult>)
+data class SearchResultTwo(var category: String?, var list: List<Artisan>)
 
+//val listSearchResultTwo = arrayListOf<SearchResultTwo>(
+//    SearchResultTwo(
+//        "Tailor",
+//        arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+//    ),
+//    SearchResultTwo(
+//        "Weaver",
+//        arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+//    ),
+//    SearchResultTwo(
+//        "Weaver",
+//        arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
+//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
+//    )
+//)

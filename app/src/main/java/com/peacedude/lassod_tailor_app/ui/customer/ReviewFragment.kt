@@ -10,34 +10,47 @@ import android.widget.ProgressBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
+import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
 import com.peacedude.lassod_tailor_app.helpers.changeBackgroundColor
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
+import com.peacedude.lassod_tailor_app.ui.customer.SingleFashionistaFragmentArgs
 import com.utsman.recycling.setupAdapter
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_review.*
+import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.measurement_items.view.*
 import kotlinx.android.synthetic.main.progressbar_review_item.view.*
 import kotlinx.android.synthetic.main.review_list_item.view.*
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
  * Use the [ReviewFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ReviewFragment : Fragment() {
+class ReviewFragment : DaggerFragment() {
     private val title by lazy {
         getName()
     }
     lateinit var reviewPostBtn:Button
     lateinit var reviewProgressBar:ProgressBar
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val userViewModel by viewModels<UserViewModel> {
+        viewModelProviderFactory
+    }
+    val artisanDetails by navArgs<ReviewFragmentArgs>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,6 +74,17 @@ class ReviewFragment : Fragment() {
         },{
 
         })
+
+        val artisan = artisanDetails.artisanDetails
+
+        review_fragment_fashionista_iv.load(artisan?.profile?.avatar) {
+            crossfade(true)
+            placeholder(R.drawable.profile_image)
+            transformations(CircleCropTransformation())
+        }
+        review_fragment_fashionista_name_tv.text = "${artisan?.firstName} ${artisan?.lastName}"
+        review_fragment_rating_value_tv.text = "${artisan?.profile?.rating}"
+        review_fragment_rb.rating = artisan?.profile?.rating.toString().toFloat()
 
         val listOfProgressRating = arrayListOf<ProgressBarRating>(
             ProgressBarRating(5),
