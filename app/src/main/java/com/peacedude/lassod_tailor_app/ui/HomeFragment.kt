@@ -47,7 +47,7 @@ open class HomeFragment : DaggerFragment() {
 
 
     private val currentUser: User? by lazy {
-        userViewModel.currentUsers
+        userViewModel.currentUser
     }
 
     @Inject
@@ -110,10 +110,10 @@ open class HomeFragment : DaggerFragment() {
         val account = GoogleSignIn.getLastSignedInAccount(requireContext())
         val  googleEmail = account?.email
         val sharedPrefEmail = currentUser?.email
-
-        val user = GlobalVariables.globalUser
-        i(title, "onResume1 $user loggedIn ${user?.loggedIn} currentloggedIn${currentUser?.loggedIn}\"")
-        if((user != null && user.loggedIn) || (currentUser != null && currentUser!!.loggedIn)){
+//
+//        userViewModel.currentUser = GlobalVariables.globalUser ?: currentUser
+        i(title, "onResume1 ${userViewModel.currentUser?.loggedIn}  currentloggedIn${currentUser?.loggedIn}")
+        if(currentUser!!.loggedIn){
             goto(DashboardActivity::class.java)
             finish()
         }

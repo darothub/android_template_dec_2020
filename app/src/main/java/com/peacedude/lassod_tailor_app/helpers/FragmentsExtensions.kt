@@ -6,6 +6,7 @@ import android.net.Uri
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Spinner
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -174,9 +175,13 @@ fun Fragment.networkMonitor():MutableLiveData<Boolean>{
 }
 
 fun Fragment.onBackDispatcher(action: () -> Unit){
-    requireActivity().onBackPressedDispatcher.addCallback {
-        action()
-    }
+    requireActivity().onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            // in here you can do logic when backPress is clicked
+            action()
+
+        }
+    })
 }
 
 fun Fragment.finish(){

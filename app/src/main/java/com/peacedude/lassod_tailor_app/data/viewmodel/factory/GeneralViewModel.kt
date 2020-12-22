@@ -70,7 +70,10 @@ open class GeneralViewModel @Inject constructor(
     }
 
     final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey) ?: User()
-        set(currentUser) = storageRequest.keepData(currentUser, loggedInUserKey)
+        set(currentUser) {
+            field = currentUser
+            storageRequest.keepData(currentUser, loggedInUserKey)
+        }
 
     override var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
 

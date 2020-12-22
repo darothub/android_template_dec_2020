@@ -216,15 +216,12 @@ class LoginFragment : DaggerFragment() {
             newUser.category = payloadString?.category
             userViewModel.currentUser = newUser
 
-            //                            val res = userViewModel.saveUser
-            val loginIntent =
-                Intent(requireContext(), DashboardActivity::class.java)
             i(
                 title,
                 "res $newUser \nCategory ${payloadString?.category}\nuvm loggedIn${newUser.loggedIn}\nuser loggedIn${userViewModel.currentUser?.loggedIn}"
             )
             requireActivity().gdToast(getString(R.string.you_are_signed) + " ${newUser.email}", Gravity.BOTTOM)
-            startActivity(loginIntent)
+            goto(DashboardActivity::class.java)
             requireActivity().finish()
         },{err->
             i(title, "LoginWithPhoneError $err")
@@ -281,6 +278,7 @@ class LoginFragment : DaggerFragment() {
         observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
             val user = userDetails.data
             user?.loggedIn = true
+            userViewModel.currentUser?.loggedIn = true
             userViewModel.currentUser = user
             userViewModel.lastLoginForm = PHONE
 //                val res = userViewModel.saveUser
@@ -298,6 +296,7 @@ class LoginFragment : DaggerFragment() {
         observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
             val user = userDetails.data
             user?.loggedIn = true
+            userViewModel.currentUser?.loggedIn = true
             userViewModel.currentUser = user
             if(login_fragment_remember_login_choice_cb.isChecked){
                 userViewModel.lastLoginForm = EMAIL

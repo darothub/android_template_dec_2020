@@ -279,6 +279,7 @@ class MediaFragment : DaggerFragment() {
                                             .into(itemView.media_item_picture_iv)
 
                                         itemView.setOnClickListener {
+                                            singleMediaDialogFlipper.showPrevious()
                                             GlobalVariables.globalId = item?.id.toString()
                                             GlobalVariables.globalPhoto = item
                                             GlobalVariables.globalPosition = position

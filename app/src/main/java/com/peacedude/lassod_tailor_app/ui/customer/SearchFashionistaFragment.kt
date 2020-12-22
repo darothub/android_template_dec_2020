@@ -264,9 +264,11 @@ class SearchFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
 
-        val user = GlobalVariables.globalUser
-        i(title, "LoggedIn ${GlobalVariables.globalUser?.loggedIn} current${currentUser!!.loggedIn}")
-        if((user != null && user.loggedIn) || (currentUser != null && currentUser!!.loggedIn)){
+        val user = GlobalVariables.globalUser ?: User()
+        userViewModel.currentUser = GlobalVariables.globalUser ?: currentUser
+
+        i(title, "LoggedIn ${user?.loggedIn} current ${userViewModel.currentUser!!.loggedIn}")
+        if(userViewModel.currentUser!!.loggedIn){
             search_fragment_login_ib.text = getString(R.string.goto_dashboard)
         }
         else{
@@ -276,7 +278,7 @@ class SearchFragment : DaggerFragment() {
 
     override fun onPause() {
         super.onPause()
-        userViewModel.currentUser = GlobalVariables.globalUser
+
     }
 }
 
