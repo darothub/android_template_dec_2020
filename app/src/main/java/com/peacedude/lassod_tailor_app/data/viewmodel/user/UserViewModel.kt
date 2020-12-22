@@ -197,5 +197,27 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
+    override suspend fun getFavourites(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
+        try {
+            val request = userRequestInterface.getFavourites()
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun removeFavourites(artisanId: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+
+        try {
+            val request = userRequestInterface.removeFavourites(artisanId)
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
 }

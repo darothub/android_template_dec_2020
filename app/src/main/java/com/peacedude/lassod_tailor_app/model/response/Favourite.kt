@@ -10,5 +10,6 @@ data class Favourite (
     val userID: String,
     val favorite: Boolean,
     val updatedAt: String,
-    val createdAt: String
+    val createdAt: String,
+    val user:Artisan?
 ): Serializable, ParentData

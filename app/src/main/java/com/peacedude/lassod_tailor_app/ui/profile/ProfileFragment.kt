@@ -410,7 +410,7 @@ class ProfileFragment : DaggerFragment() {
                                     )
                                 }
                                 else -> {
-                                    item?.apply {
+                                    item.apply {
                                         this.name = name
                                         this.phone = phoneNumber
                                         this.email = email
@@ -420,7 +420,7 @@ class ProfileFragment : DaggerFragment() {
                                         this.gender = gender
                                         this.tailorId = GlobalVariables.globalClient?.tailorId
                                         this.country = country
-                                    }!!
+                                    }
                                     val client = Client(name, phoneNumber, email, address)
                                     val editClientReq = authViewModel.editClient(header, item)
                                     //Task to be done on successful

@@ -81,6 +81,14 @@ interface UserServices {
         @Query("artisanId") artisanId:String?
     ): UserResponse<Favourite>
 
+    @GET("favourites")
+    suspend fun getFavourites(): UserResponse<List<Favourite>>
+
+    @HTTP(method = "DELETE", path = "removefavourite", hasBody = true)
+    suspend fun removeFavourites(
+        @Query("artisanId") artisanId:String?
+    ): UserResponse<NothingExpected>
+
     @POST("addfavourite")
     @FormUrlEncoded
     suspend fun addReviewAndRating(
@@ -94,7 +102,7 @@ interface UserServices {
         @Query("artisanId") artisanId:String?
     ): UserResponse<List<ReviewResponse>>
 
-    @POST("removereview")
+    @HTTP(method = "DELETE", path = "removereview", hasBody = true)
     suspend fun removeReview(
         @Query("id") id:String?
     ): UserResponse<NothingExpected>

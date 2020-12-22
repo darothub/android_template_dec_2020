@@ -14,16 +14,16 @@
 
 
     <TextView
-        android:id="@+id/client_name_tv"
+        android:id="@+id/favourite_list_name_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|center"
         android:layout_weight="3"
         android:text="@string/hello_blank_fragment"
-        app:layout_constraintStart_toEndOf="@id/client_profile_thumbnail" />
+        app:layout_constraintStart_toEndOf="@id/favourite_list_like_thumbnail" />
 
     <ImageView
-        android:id="@+id/client_profile_thumbnail"
+        android:id="@+id/favourite_list_like_thumbnail"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="start|center"

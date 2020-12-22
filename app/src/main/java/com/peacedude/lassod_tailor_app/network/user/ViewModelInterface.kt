@@ -194,7 +194,8 @@ interface ViewModelInterface  {
 
     suspend fun getReviews(artisanId:String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
-    suspend fun removeReview(
-        id:String?
-    ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun removeReview(id:String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
+    suspend fun getFavourites(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun removeFavourites(artisanId:String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 }

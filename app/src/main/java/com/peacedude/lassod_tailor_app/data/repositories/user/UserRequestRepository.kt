@@ -69,8 +69,16 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
         return userServices.addReviewAndRating(rate, artisanId, comment)
     }
 
+    override suspend fun getFavourites(): UserResponse<List<Favourite>> {
+        return userServices.getFavourites()
+    }
+
     override suspend fun getReviews(artisanId: String?): UserResponse<List<ReviewResponse>> {
         return userServices.getReviews(artisanId)
+    }
+
+    override suspend fun removeFavourites(artisanId: String?): UserResponse<NothingExpected> {
+        return userServices.removeFavourites(artisanId)
     }
 
     override suspend fun removeReview(id: String?): UserResponse<NothingExpected> {
