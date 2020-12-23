@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.lassod_tailor_app.R
@@ -72,7 +73,7 @@ class SingleChatFragment : DaggerFragment() {
         }
 
         single_chat_nav_back_iv.setOnClickListener {
-            startActivity(Intent(requireContext(), DashboardActivity::class.java))
+            findNavController().popBackStack()
         }
         
 

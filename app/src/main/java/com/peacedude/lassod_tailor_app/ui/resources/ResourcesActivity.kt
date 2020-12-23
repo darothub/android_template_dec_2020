@@ -49,6 +49,9 @@ class ResourcesActivity : BaseActivity() {
                R.id.resourcesFragment -> {
                    resources_activity_appbar.show()
                    toolbar?.show()
+                   toolbar?.setNavigationOnClickListener {
+                       finish()
+                   }
                }
                R.id.singleVideoFragment -> {
                    resources_activity_appbar.hide()

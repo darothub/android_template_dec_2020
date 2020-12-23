@@ -28,6 +28,7 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.ClientsList
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.peacedude.lassod_tailor_app.model.response.*
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.squareup.picasso.Picasso
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -129,9 +130,11 @@ class AllVideoFragment : DaggerFragment() {
                         mediaController.setAnchorView(itemView.resource_video_item_vv)
 
                         itemView.resource_video_item_title_tv.text = item?.title
-                        itemView.resource_video_item_time_tv.text = item?.title
+                        itemView.resource_video_item_time_tv.text = item?.duration
 
-                        if (item?.videoURL != null) {
+                        if (item?.videoURL != null && item.videoURL.endsWith(".mp4")) {
+                            itemView.resource_video_item_vv.show()
+                            itemView.resource_video_item_ytpv.hide()
                             val uri = Uri.parse(item.videoURL)
                             itemView.resource_video_item_vv.setMediaController(
                                 mediaController
@@ -140,23 +143,26 @@ class AllVideoFragment : DaggerFragment() {
                             itemView.resource_video_item_fl.clipToOutline = true
                             itemView.resource_video_item_vv.seekTo(1)
                         } else {
-                            val uri =
-                                Uri.parse(getString(R.string.sample_video_str))
-                            itemView.resource_video_item_vv.setMediaController(
-                                mediaController
-                            )
-                            itemView.resource_video_item_vv.setVideoURI(uri)
-                            itemView.resource_video_item_fl.clipToOutline = true
-                            itemView.resource_video_item_vv.seekTo(1)
+                            itemView.resource_video_item_vv.hide()
+                            itemView.resource_video_item_ytpv.show()
+                            itemView.resource_video_item_ytpv.clipToOutline = true
+                            val ext = item?.videoURL?.split("=")?.get(1).toString()
+                            itemView.resource_video_item_ytpv.addYouTubePlayerListener(object : AbstractYouTubePlayerListener(){
+                                override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
+                                    youTubePlayer.loadVideo(ext, 0F)
+                                    youTubePlayer.pause()
+
+                                }
+
+                            })
+
                         }
 
 
-                        itemView.resource_video_item_vv.setOnClickListener {
+                        itemView.setOnClickListener {
                             actionToDisplaySingleVideo(item)
                         }
-                        itemView.resource_video_item_fl.setOnClickListener {
-                            actionToDisplaySingleVideo(item)
-                        }
+
                         all_video_fragment_rv.addOnScrollListener(object: RecyclerView.OnScrollListener(){
 
                             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

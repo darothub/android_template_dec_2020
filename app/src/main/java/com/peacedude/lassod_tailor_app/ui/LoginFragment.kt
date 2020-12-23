@@ -109,7 +109,7 @@ class LoginFragment : DaggerFragment() {
 
 
         toolbar.setNavigationOnClickListener {
-            requireActivity().finish()
+            finish()
         }
         buttonTransactions({
             loginBtn = login_page_btn.findViewById(R.id.btn)

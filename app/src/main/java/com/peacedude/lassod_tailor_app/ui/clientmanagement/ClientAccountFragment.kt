@@ -243,6 +243,7 @@ class ClientAccountFragment : DaggerFragment(){
             val msg = result.message.toString()
             val newClientData = result.data?.client
             requireActivity().gdToast(msg, Gravity.BOTTOM)
+            goto(DashboardActivity::class.java)
         }, { err ->
             i(title, "SingleClientUpdateError $err")
         })

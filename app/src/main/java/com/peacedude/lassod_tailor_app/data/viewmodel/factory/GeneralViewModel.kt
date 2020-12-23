@@ -61,13 +61,8 @@ open class GeneralViewModel @Inject constructor(
 
     val logoutLiveData = MutableLiveData<Boolean>()
     val netWorkLiveData = MutableLiveData<Boolean>(true)
-    override var lastFragmentId: Int
-        get() = storageRequest.getLastFragmentId()
+    override var lastFragmentId: Int = storageRequest.getLastFragmentId()
         set(id) = storageRequest.saveLastFragment(id)
-
-    var currentUsers: User by Delegates.vetoable(User()) { property, oldValue, newValue ->
-        newValue.loggedIn != oldValue.loggedIn
-    }
 
     final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey) ?: User()
         set(currentUser) {
@@ -359,19 +354,17 @@ open class GeneralViewModel @Inject constructor(
 
     fun logout(activity: Activity): LiveData<Boolean> {
 
-        currentUser?.token = ""
-        currentUser?.loggedIn = false
-        this.currentUser = currentUser
-        GlobalVariables.globalUser = currentUser
-//        val res = storageRequest.saveData(currentUser, loggedInUserKey)
-        Log.i(title, "current user on logout ${this.currentUser?.loggedIn}")
         mGoogleSignInClient.signOut().addOnCompleteListener { logoutTask ->
             when (logoutTask.isSuccessful) {
                 true -> {
                     activity.startActivity(Intent(activity, MainActivity::class.java))
                     activity.gdToast("Sign-out request successful", Gravity.BOTTOM)
-                    activity.finish()
+                    currentUser?.token = ""
+                    currentUser?.loggedIn = false
+                    this.currentUser = currentUser
+                    GlobalVariables.globalUser = currentUser
                     logoutLiveData.postValue(true)
+                    activity.finish()
                     Log.i(title, "logout")
                 }
             }

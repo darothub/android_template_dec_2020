@@ -372,6 +372,7 @@ class ProfileFragment : DaggerFragment() {
                                 header,
                                 GlobalVariables.globalId
                             )
+                            dialog.dismiss()
                             observeRequest<NothingExpected>(
                                 req,
                                 dialogDeleteProgressBar,
@@ -379,11 +380,15 @@ class ProfileFragment : DaggerFragment() {
                                 true,
                                 { result ->
                                     val res = result
+
                                     requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-                                    //                                        listOfClient.toMutableList().removeAt(position)
+
                                     list?.removeAt(GlobalVariables.globalPosition)
-                                    dialog.dismiss()
                                     adapter.notifyDataSetChanged()
+                                    if(list?.isEmpty() == true){
+                                        findNavController().navigate(R.id.profileFragment)
+                                    }
+
 
                                 },
                                 { err ->
@@ -429,6 +434,7 @@ class ProfileFragment : DaggerFragment() {
                                     }
                                     val client = Client(name, phoneNumber, email, address)
                                     val editClientReq = authViewModel.editClient(header, item)
+                                    dialog.dismiss()
                                     //Task to be done on successful
                                     observeRequest<SingleClient>(
                                         editClientReq,
@@ -440,8 +446,8 @@ class ProfileFragment : DaggerFragment() {
                                             val msg = results.message.toString()
 
                                             result.data?.client
+
                                             requireActivity().gdToast(msg, Gravity.BOTTOM)
-                                            dialog.dismiss()
                                             adapter.notifyDataSetChanged()
 
                                         },

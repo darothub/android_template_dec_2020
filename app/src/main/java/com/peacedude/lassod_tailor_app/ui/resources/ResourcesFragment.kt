@@ -31,6 +31,10 @@ import coil.transform.RoundedCornersTransformation
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
+import com.google.android.youtube.player.YouTubeBaseActivity
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubePlayer
+import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.google.gson.annotations.SerializedName
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
@@ -43,6 +47,7 @@ import com.peacedude.lassod_tailor_app.model.request.ResourcesArticlePublication
 import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.ui.MainActivity
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.squareup.picasso.Picasso
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -51,6 +56,7 @@ import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_resources.*
 import kotlinx.android.synthetic.main.fragment_user_profile.*
+import kotlinx.android.synthetic.main.resource_video_item.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.android.synthetic.main.resources_item_sublayout_layout.view.*
 import kotlinx.coroutines.*
@@ -97,11 +103,14 @@ class ResourcesFragment : DaggerFragment() {
         resources_fragment_article_no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
     }
 
+    lateinit var youtubeOnInitializedListener: YouTubePlayer.OnInitializedListener
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel by viewModels<AuthViewModel> {
         viewModelProviderFactory
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,6 +129,7 @@ class ResourcesFragment : DaggerFragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         noVideoDataFirstIcon.hide()
         noArticleDataFirstIcon.hide()
@@ -153,15 +163,20 @@ class ResourcesFragment : DaggerFragment() {
                                 }.let {
                                     it?.take(5)
                                 }
+
                                 if(!listOfVideos?.isNullOrEmpty()!!) {
                                     resource_fragment_video_rv.setupAdapter<VideoResource>(R.layout.resource_video_item) { adapter, context, list ->
                                         bind { itemView, position, item ->
+                                            lifecycle.addObserver(itemView.resource_video_item_ytpv)
                                             val mediaController = MediaController(requireContext())
                                             mediaController.hide()
                                             mediaController.setAnchorView(itemView.resource_video_item_vv)
+
                                             itemView.resource_video_item_title_tv.text = item?.title
                                             itemView.resource_video_item_time_tv.text = item?.duration
                                             if (item?.videoURL != null && item.videoURL.endsWith(".mp4")) {
+                                                itemView.resource_video_item_vv.show()
+                                                itemView.resource_video_item_ytpv.hide()
                                                 val uri = Uri.parse(item.videoURL)
                                                 itemView.resource_video_item_vv.setMediaController(
                                                     mediaController
@@ -170,14 +185,18 @@ class ResourcesFragment : DaggerFragment() {
                                                 itemView.resource_video_item_fl.clipToOutline = true
                                                 itemView.resource_video_item_vv.seekTo(1)
                                             } else {
-                                                val uri =
-                                                    Uri.parse(getString(R.string.sample_video_str))
-                                                itemView.resource_video_item_vv.setMediaController(
-                                                    mediaController
-                                                )
-                                                itemView.resource_video_item_vv.setVideoURI(uri)
-                                                itemView.resource_video_item_fl.clipToOutline = true
-                                                itemView.resource_video_item_vv.seekTo(1)
+                                                itemView.resource_video_item_vv.hide()
+                                                itemView.resource_video_item_ytpv.show()
+                                                itemView.resource_video_item_ytpv.clipToOutline = true
+                                                val ext = item?.videoURL?.split("=")?.get(1).toString()
+                                                itemView.resource_video_item_ytpv.addYouTubePlayerListener(object : AbstractYouTubePlayerListener(){
+                                                    override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
+                                                        youTubePlayer.loadVideo(ext, 0F)
+                                                        youTubePlayer.pause()
+                                                    }
+
+                                                })
+
                                             }
 
 

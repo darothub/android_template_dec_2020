@@ -22,22 +22,32 @@
             app:expandedTitleMarginBottom="@dimen/_10sdp"
             app:expandedTitleMarginStart="@dimen/_15sdp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-            <RelativeLayout
+            <ViewFlipper
+                android:id="@+id/single_video_fragment_vf"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                >
+                <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                    android:id="@+id/single_video_fragment_ytpv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:autoPlay="false"
+                    app:showVideoCurrentTime="true"
+                    android:background="@drawable/rounded_corner_background"
+                    android:outlineProvider="background"
+                    app:showVideoDuration="true"
+                    app:showSeekBar="true"
+                    app:showFullScreenButton="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    />
                 <VideoView
                     android:id="@+id/single_video_fragment_vv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentStart="true"
-
                     />
 
-            </RelativeLayout>
+            </ViewFlipper>
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/single_video_fragment_tb"
                 android:layout_width="match_parent"
@@ -73,6 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
+        android:layout_marginBottom="@dimen/_10sdp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <TextView
@@ -94,19 +105,20 @@
             android:layout_marginStart="@dimen/_10sdp"
             app:layout_constraintTop_toBottomOf="@id/single_video_fragment_video_title_tv"
             app:layout_constraintStart_toStartOf="parent"
+
              />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/single_video_fragment_rv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/single_video_fragment_video_time_tv"
             app:spanCount="2"
             android:overScrollMode="never"
+            tools:itemCount="2"
             android:descendantFocusability="blocksDescendants"
             tools:listitem="@layout/resource_video_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
