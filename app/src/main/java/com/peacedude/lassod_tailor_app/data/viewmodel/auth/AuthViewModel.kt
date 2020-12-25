@@ -290,6 +290,16 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+    @ExperimentalCoroutinesApi
+    override suspend fun getAllClients(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow{
+        try {
+            val request = authRequestInterface.getAllClients()
+            onSuccessFlowResponse(request)
+        }
+        catch (e:HttpException){
+            onErrorFlowResponse(e)
+        }
+    }
 
 
     @ExperimentalCoroutinesApi

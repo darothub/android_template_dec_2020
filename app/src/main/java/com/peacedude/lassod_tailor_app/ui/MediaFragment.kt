@@ -427,7 +427,6 @@ class MediaFragment : DaggerFragment() {
                     "${res.message}",
                     Gravity.BOTTOM
                 )
-//                findNavController().navigate(R.id.mediaFragment)
 
             },
             { err ->

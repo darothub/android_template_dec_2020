@@ -3,8 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
-    android:padding="@dimen/_10sdp">
+    android:background="@drawable/rounded_corner_background"
+    android:paddingStart="@dimen/_10sdp"
+    android:paddingEnd="@dimen/_10sdp"
+    android:layout_gravity="center"
+    >
 
     <ImageView
         android:id="@+id/single_media_photo_iv"
@@ -22,11 +25,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
             >
 
             <include
@@ -37,6 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+
                 />
 
             <include
@@ -63,22 +70,23 @@
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <LinearLayout
             android:id="@+id/single_media_update_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:baselineAligned="false"
+            android:baselineAligned="true"
             android:orientation="horizontal"
+            android:layout_gravity="center"
             android:weightSum="2"
-            app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv">
+            >
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/single_media_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginTop="@dimen/_15sdp"
+
                 android:layout_weight="2"
                 android:imeOptions="actionNext"
                 android:textColorHint="@color/colorGray">
@@ -104,13 +112,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintEnd_toStartOf="@id/single_media_share_btn"
-                app:layout_constraintStart_toEndOf="@id/single_media_delete_btn"
-                app:layout_constraintTop_toBottomOf="@id/single_media_photo_iv" />
+
+                />
 
         </LinearLayout>
+
     </ViewFlipper>
 
 

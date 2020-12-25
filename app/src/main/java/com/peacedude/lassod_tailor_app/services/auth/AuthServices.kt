@@ -50,6 +50,9 @@ interface AuthServices {
     @GET("client")
     fun getAllClient(): Call<UserResponse<ClientsList>>
 
+    @GET("client")
+    suspend fun getAllClients(): UserResponse<ClientsList>
+
     @HTTP(method = "DELETE", path = "client", hasBody = true)
     @FormUrlEncoded
     fun deleteClient(

@@ -3,10 +3,7 @@ package com.peacedude.lassod_tailor_app.network.user
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.request.ListOfMeasurement
-import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
-import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
@@ -198,4 +195,6 @@ interface ViewModelInterface  {
 
     suspend fun getFavourites(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
     suspend fun removeFavourites(artisanId:String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
+    suspend fun getAllClients(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 }

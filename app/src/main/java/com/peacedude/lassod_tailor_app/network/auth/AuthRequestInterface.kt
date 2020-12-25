@@ -100,4 +100,6 @@ interface AuthRequestInterface {
         artisanId:String,
         comment: String
     ): UserResponse<ReviewData> = TODO()
+
+    suspend fun getAllClients(): UserResponse<ClientsList>  = TODO()
 }
