@@ -60,9 +60,7 @@ class SubscriptionHomeFragment : Fragment() {
         noDataSecondIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.shopping_cart_24px))
         noDataText.text = getString(R.string.you_have_no_sub)
 
-        subscription_home_fragment_fab.setOnClickListener {
-            goto(R.id.addCardFragment)
-        }
+
     }
 
 

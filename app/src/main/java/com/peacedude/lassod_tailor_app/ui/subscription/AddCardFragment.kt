@@ -116,6 +116,7 @@ class AddCardFragment : DaggerFragment() {
         return inflater.inflate(R.layout.fragment_add_card, container, false)
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -153,12 +154,10 @@ class AddCardFragment : DaggerFragment() {
         add_card_fragment_add_card_layout.setOnClickListener {
             goto(R.id.subscriptionPaymentFragment)
             customerNameTv.text = currentUser?.firstName
-
-
         }
 
        if(addCardData != null){
-           CoroutineScope(Dispatchers.Main).launch {
+           CoroutineScope(Main).launch {
                i(title, "hide")
 
                authViewModel.verifyPayment(header, addCardData?.reference.toString())

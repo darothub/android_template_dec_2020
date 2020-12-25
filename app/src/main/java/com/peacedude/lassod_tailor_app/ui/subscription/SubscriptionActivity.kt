@@ -7,8 +7,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.ui.setupWithNavController
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
+import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.activity_subscription.*
@@ -37,6 +39,9 @@ class SubscriptionActivity : BaseActivity() {
                 toolbar.setNavigationOnClickListener {
                     finish()
                 }
+                subscription_activity_fab.setOnClickListener {
+                    navController.navigate(R.id.addCardFragment)
+                }
             }
         }
     }
@@ -51,11 +56,17 @@ class SubscriptionActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        subcription_bnv.setupWithNavController(navController)
+
+//        toolbar.setNavigationOnClickListener {
+//            finish()
+//        }
+
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         navController.addOnDestinationChangedListener(listener)
     }
 
