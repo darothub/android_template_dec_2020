@@ -9,8 +9,8 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import kotlin.reflect.KClass
 
 interface StorageRequest {
-    fun saveLastFragment(id:Int?)
-    fun getLastFragmentId():Int
+    fun saveLastFragment(credential:String, id:Int?)
+    fun getLastFragmentId(credential:String):Int
     fun saveLastLoginForm(emailorphone:String)
     fun getLastLoginForm():String?
 

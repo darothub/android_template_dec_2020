@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -111,6 +113,11 @@ class DashboardActivity : BaseActivity() {
                 R.id.profileFragment ->{
                     profile_header.show()
                     profile_fab.show()
+                    bottomNav.show()
+                }
+                R.id.favouritesFragment ->{
+                    profile_header.show()
+                    profile_fab.hide()
                     bottomNav.show()
                 }
             }
@@ -261,7 +268,6 @@ class DashboardActivity : BaseActivity() {
         super.onResume()
 
         navController.addOnDestinationChangedListener(navListener)
-//        navController.navigate(authViewModel.lastFragmentId)
 
 
     }
@@ -308,6 +314,10 @@ class DashboardActivity : BaseActivity() {
 
             i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
         },{err->
+            gdErrorToast(
+                err,
+                Gravity.BOTTOM
+            )
             i(title, "DashActError $err")
         })
 

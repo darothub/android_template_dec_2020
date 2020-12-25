@@ -224,6 +224,10 @@ class LoginFragment : DaggerFragment() {
             goto(DashboardActivity::class.java)
             requireActivity().finish()
         },{err->
+            requireActivity().gdErrorToast(
+                err,
+                Gravity.BOTTOM
+            )
             i(title, "LoginWithPhoneError $err")
         })
 

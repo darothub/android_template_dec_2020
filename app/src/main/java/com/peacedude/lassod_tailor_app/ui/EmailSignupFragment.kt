@@ -221,6 +221,10 @@ class EmailSignupFragment : DaggerFragment() {
                         )
                     },
                     { err ->
+                        requireActivity().gdErrorToast(
+                            err,
+                            Gravity.BOTTOM
+                        )
                         i(title, "DashActError $err")
                     })
             }

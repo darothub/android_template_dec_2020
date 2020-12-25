@@ -273,11 +273,14 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
+
+
+    @ExperimentalCoroutinesApi
     override suspend fun addCard(
         header: String?,
         email: String?,
         amount: String?
-    ): Flow<ServicesResponseWrapper<ParentData>> =flow {
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
         try {
             val request = authRequestInterface.addCard(header, email, amount)
             onSuccessFlowResponse(request)

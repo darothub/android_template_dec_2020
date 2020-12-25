@@ -22,17 +22,17 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
             apply()
         }
     }
-    override fun saveLastFragment(id: Int?) {
+    override fun saveLastFragment(credential:String, id: Int?) {
         editor.apply {
             if (id != null) {
-                putInt(LASTFRAGMENT, id)
+                putInt(credential, id)
             }
             apply()
         }
     }
 
-    override fun getLastFragmentId(): Int {
-        return sharedPref.getInt(LASTFRAGMENT, R.id.profileFragment)
+    override fun getLastFragmentId(credential: String): Int {
+        return sharedPref.getInt(credential, R.id.profileFragment)
     }
 
     override fun saveLastLoginForm(emailorphone: String) {

@@ -8,17 +8,20 @@
     tools:context=".ui.customer.FavouritesFragment">
     <include
         android:id="@+id/favourite_fragment_appbar"
-        layout="@layout/reusable_appbar" />
+        layout="@layout/reusable_appbar"
+        android:visibility="gone"
+        />
     <ViewFlipper
         android:id="@+id/favourite_fragment_vf"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toBottomOf="@id/favourite_fragment_appbar"
         >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_gravity="center"
             >
             <ImageView
                 android:id="@+id/no_favourite_iv"

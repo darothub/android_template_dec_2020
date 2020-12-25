@@ -136,6 +136,10 @@ class ResetPasswordFragment : DaggerFragment() {
                 Log.i(title, "User $user")
                 findNavController().navigate(R.id.loginFragment)
             },{ err->
+                requireActivity().gdErrorToast(
+                    err,
+                    Gravity.BOTTOM
+                )
                 i(title, "ResetPasswordError $err")
             })
 

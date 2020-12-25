@@ -22,6 +22,7 @@ import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
+import com.peacedude.lassod_tailor_app.model.response.PhotoList
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
 import retrofit2.*
 import java.io.Reader
+import java.io.Serializable
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -61,14 +63,15 @@ open class GeneralViewModel @Inject constructor(
 
     val logoutLiveData = MutableLiveData<Boolean>()
     val netWorkLiveData = MutableLiveData<Boolean>(true)
-    override var lastFragmentId: Int = storageRequest.getLastFragmentId()
-        set(id) = storageRequest.saveLastFragment(id)
+
 
     final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey) ?: User()
         set(currentUser) {
             field = currentUser
             storageRequest.keepData(currentUser, loggedInUserKey)
         }
+    override var lastFragmentId: Int = storageRequest.getLastFragmentId(currentUser?.email ?:currentUser?.phone.toString())
+        set(id) = storageRequest.saveLastFragment(currentUser?.email ?:currentUser?.phone.toString(), id)
 
     override var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
 
@@ -165,49 +168,8 @@ open class GeneralViewModel @Inject constructor(
 
 
     }
-    protected suspend inline fun <reified T:ParentData>FlowCollector<ServicesResponseWrapper<T>>.onErrorFlowResponse(
-        e: HttpException
-    ) {
-        val msg = e.response()?.message()
-        val errorbody = e.response()?.errorBody()?.charStream()
-        val code = e.code()
-        Log.e("Viewmodel error", "${e.response()}")
-        try{
-            val error = errorConverter(code, errorbody)
-            when(error.second){
-                401 ->{
-                    emit(
-                        ServicesResponseWrapper.Logout(
-                            msg.toString(),
-                            code
-                        )
-                    )
-                    logout()
-                }
-                else->{
-                    emit(
-                        ServicesResponseWrapper.Error(
-                            error.first,
-                            code
-                        )
-                    )
-                }
-            }
-        }
-        catch (e:Exception){
-            emit(
-                ServicesResponseWrapper.Error(
-                    msg,
-                    code
-                )
-            )
-            Log.i(title, "CaughtError $msg")
-        }
-
-
-    }
     @ExperimentalCoroutinesApi
-    suspend inline fun <reified T:ParentData> ProducerScope<ServicesResponseWrapper<T>>.onErrorFlowResponse(
+    suspend inline fun  ProducerScope<ServicesResponseWrapper<ParentData>>.onErrorFlowResponse(
         e: HttpException
     ) {
         val msg = e.response()?.message()
@@ -215,7 +177,7 @@ open class GeneralViewModel @Inject constructor(
         val code = e.code()
         Log.e("Viewmodel error", "${e.response()}")
         try{
-            val error = errorConverter(code, errorbody)
+            val error = `access$errorConverter`(code, errorbody)
             when(error.second){
                 401 ->{
                     send(
@@ -224,7 +186,7 @@ open class GeneralViewModel @Inject constructor(
                             code
                         )
                     )
-                    logout()
+                    `access$logout`()
                 }
                 else->{
                     send(
@@ -243,7 +205,7 @@ open class GeneralViewModel @Inject constructor(
                     code
                 )
             )
-            Log.i(title, "CaughtError $msg")
+            Log.i(`access$title`, "CaughtError $msg")
         }
 
 
@@ -259,18 +221,27 @@ open class GeneralViewModel @Inject constructor(
                 "Loading..."
             )
         )
-        netWorkLiveData.observeForever {
+        netWorkLiveData.observeForever {net->
             viewModelScope.launch {
-                if(it){
+                if(net){
 
                     if (data != null){
+                        if(data is ArrayList<*>){
+                            val d = Data(data)
+                            send(
+                                ServicesResponseWrapper.Success(d as? ParentData)
+                            )
+                        }
+                        else{
+                            send(
+                                ServicesResponseWrapper.Success(data as? ParentData)
+                            )
+                        }
 
-                        offer(
-                            ServicesResponseWrapper.Success(data as? ParentData)
-                        )
+
                     }
                     else{
-                        offer(
+                        send(
                             ServicesResponseWrapper.Success(request as? ParentData)
                         )
                     }
@@ -456,5 +427,18 @@ open class GeneralViewModel @Inject constructor(
         netWorkLiveData.removeObserver {  }
     }
 
+    @PublishedApi
+    internal fun `access$errorConverter`(statusCode: Int, errorbody: Reader?) =
+        errorConverter(statusCode, errorbody)
+
+    @PublishedApi
+    internal fun `access$logout`() = logout()
+
+    @PublishedApi
+    internal val `access$title`: String
+        get() = title
+
 
 }
+
+data class Data(var data:ArrayList<*>):Serializable, ParentData

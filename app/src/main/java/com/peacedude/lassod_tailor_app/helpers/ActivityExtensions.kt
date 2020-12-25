@@ -546,7 +546,11 @@ inline fun <reified T> Activity.onFlowResponse(
             dialog.dismiss()
             progressBar?.hide()
             button?.show()
-            success(it.data as T)
+
+            if(it.data != null){
+                success(it.data as T)
+            }
+
 
             Log.i("onFlowResponse", "Success ${it?.data} dialog showin ${dialog.isShowing}")
         }

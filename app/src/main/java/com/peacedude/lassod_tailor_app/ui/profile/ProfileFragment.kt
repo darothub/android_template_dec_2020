@@ -307,7 +307,7 @@ class ProfileFragment : DaggerFragment() {
                         gender = it?.gender
                     }
                 }
-                profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
+                profile_fragment_client_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, clientList ->
 
                     bind { itemView, position, item ->
                         val nameContainsSpace = item?.name?.contains(" ")
@@ -364,38 +364,42 @@ class ProfileFragment : DaggerFragment() {
                                     )
                                 }
                             }
+                            //When dialog delete button is clicked
+                            dialogDeleteBtn.setOnClickListener {
+                                val req = authViewModel.deleteClient(
+                                    header,
+                                    item.id
+                                )
+                                dialog.dismiss()
+                                observeRequest<NothingExpected>(
+                                    req,
+                                    dialogDeleteProgressBar,
+                                    dialogDeleteBtn,
+                                    true,
+                                    { result ->
+                                        val res = result
+
+                                        requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
+
+                                        clientList?.remove(item)
+                                        adapter.notifyDataSetChanged()
+//                                        findNavController().navigate(R.id.profileFragment)
+                                        i(title, "Empty ${list?.isEmpty()} size ${list?.size} ")
+
+
+                                    },
+                                    { err ->
+                                        requireActivity().gdErrorToast(
+                                            err,
+                                            Gravity.BOTTOM
+                                        )
+                                        i(title, "DeleteClientError $err")
+                                    })
+
+                            }
                         }
 
-                        //When dialog delete button is clicked
-                        dialogDeleteBtn.setOnClickListener {
-                            val req = authViewModel.deleteClient(
-                                header,
-                                GlobalVariables.globalId
-                            )
-                            dialog.dismiss()
-                            observeRequest<NothingExpected>(
-                                req,
-                                dialogDeleteProgressBar,
-                                dialogDeleteBtn,
-                                true,
-                                { result ->
-                                    val res = result
 
-                                    requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-
-                                    list?.removeAt(GlobalVariables.globalPosition)
-                                    adapter.notifyDataSetChanged()
-                                    if(list?.isEmpty() == true){
-                                        findNavController().navigate(R.id.profileFragment)
-                                    }
-
-
-                                },
-                                { err ->
-                                    i(title, "DeleteClientError $err")
-                                })
-
-                        }
 
                         dialogUpdateBtn.setOnClickListener {
                             val name = dialogNameEt.text.toString().trim()

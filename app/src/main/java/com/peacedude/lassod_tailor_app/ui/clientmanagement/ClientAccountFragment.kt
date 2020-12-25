@@ -142,7 +142,7 @@ class ClientAccountFragment : DaggerFragment(){
                 }
             }
             else{
-                client_account_fragment_vf.showPrevious()
+
             }
 
 
@@ -218,15 +218,13 @@ class ClientAccountFragment : DaggerFragment(){
                 i(title, "client $newClient Id ${newClient?.id}")
                 goto(DashboardActivity::class.java)
             },{err->
+                requireActivity().gdErrorToast(
+                    err,
+                    Gravity.BOTTOM
+                )
                 i(title, "ClientAccountError $err")
             })
-//        observer.observe(viewLifecycleOwner, Observer {
-//            val (bool, result) = it
-//            onRequestResponseTask<Client>(bool, result) { res ->
-//
-//
-//            }
-//        })
+
     }
 
     private fun updateClientRequest(
@@ -245,6 +243,10 @@ class ClientAccountFragment : DaggerFragment(){
             requireActivity().gdToast(msg, Gravity.BOTTOM)
             goto(DashboardActivity::class.java)
         }, { err ->
+            requireActivity().gdErrorToast(
+                err,
+                Gravity.BOTTOM
+            )
             i(title, "SingleClientUpdateError $err")
         })
     }

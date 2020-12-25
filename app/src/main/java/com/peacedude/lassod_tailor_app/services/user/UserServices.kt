@@ -4,6 +4,7 @@ import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.*
 import retrofit2.Call
 import retrofit2.http.*
+import java.lang.reflect.Array
 
 interface UserServices {
 
@@ -76,20 +77,20 @@ interface UserServices {
         @Query("size") size:Long?
     ): UserResponse<ArtisanSearchResponse>
 
-    @POST("addfavourite")
+    @POST("addfavorite")
     suspend fun addFavourite(
         @Query("artisanId") artisanId:String?
     ): UserResponse<Favourite>
 
-    @GET("favourites")
-    suspend fun getFavourites(): UserResponse<List<Favourite>>
+    @GET("favorites")
+    suspend fun getFavourites(): UserResponse<ArrayList<Favourite>>
 
     @HTTP(method = "DELETE", path = "removefavourite", hasBody = true)
     suspend fun removeFavourites(
         @Query("artisanId") artisanId:String?
     ): UserResponse<NothingExpected>
 
-    @POST("addfavourite")
+    @POST("addfavorite")
     @FormUrlEncoded
     suspend fun addReviewAndRating(
         @Field("rate") rate: Float?,

@@ -165,6 +165,10 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
                 observeRequest<String>(request, progressBar, sendBtn, false, {
                     Log.i(title, "${it.message}")
                 }, { err ->
+                    requireActivity().gdErrorToast(
+                        err,
+                        Gravity.BOTTOM
+                    )
                     Log.i(title, "ForgotPasswordError $err")
                 })
 

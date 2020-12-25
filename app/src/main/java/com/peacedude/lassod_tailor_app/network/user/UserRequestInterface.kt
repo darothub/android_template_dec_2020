@@ -73,7 +73,7 @@ interface UserRequestInterface {
         id:String?
     ): UserResponse<NothingExpected> = TODO()
 
-    suspend fun getFavourites(): UserResponse<List<Favourite>> = TODO()
+    suspend fun getFavourites(): UserResponse<ArrayList<Favourite>> = TODO()
 
     suspend fun removeFavourites(artisanId:String?): UserResponse<NothingExpected> = TODO()
 }

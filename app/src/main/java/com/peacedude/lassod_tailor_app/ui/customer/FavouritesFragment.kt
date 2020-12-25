@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,12 +18,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
+import com.peacedude.lassod_tailor_app.data.viewmodel.factory.Data
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
-import com.peacedude.lassod_tailor_app.helpers.finish
-import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.i
-import com.peacedude.lassod_tailor_app.helpers.onFlowResponse
+import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
 import com.peacedude.lassod_tailor_app.model.response.Favourite
 import com.peacedude.lassod_tailor_app.model.response.NothingExpected
@@ -62,8 +62,8 @@ class FavouritesFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val userViewModel: UserViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
+    private val userViewModel by viewModels<UserViewModel> {
+        viewModelProviderFactory
     }
 
 
@@ -84,6 +84,10 @@ class FavouritesFragment : DaggerFragment() {
         toolbar.setNavigationOnClickListener {
             finish()
         }
+        onBackDispatcher {
+            findNavController().popBackStack()
+            finish()
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             supervisorScope {
@@ -94,8 +98,8 @@ class FavouritesFragment : DaggerFragment() {
                     .catch { err ->
                         requireActivity().gdToast(err.message.toString(), Gravity.BOTTOM)
                     }
-                    .collect {
-                        onFlowResponse<UserResponse<List<Favourite>>>(response = it) { it ->
+                    .collect { data ->
+                        onFlowResponse<Data>(response = data) { it ->
                             val listOfFavourites = it?.data?.map {each ->
                                 each
                             }
@@ -115,11 +119,11 @@ class FavouritesFragment : DaggerFragment() {
                                     )
                                     subAdapter.delete(list)
                                         .attachToRecyclerView(favorite_fragment_rv)
-                                    submitList(listOfFavourites)
+                                    submitList(listOfFavourites as List<Favourite?>?)
                                 }
                             }
                             else{
-                                favourite_fragment_vf.showPrevious()
+
                             }
 
                         }
