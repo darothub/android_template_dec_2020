@@ -1,6 +1,5 @@
 package com.peacedude.lassod_tailor_app.network.auth
 
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import kotlinx.coroutines.flow.Flow
@@ -102,4 +101,6 @@ interface AuthRequestInterface {
     ): UserResponse<ReviewData> = TODO()
 
     suspend fun getAllClients(): UserResponse<ClientsList>  = TODO()
+
+    suspend fun getAllPlans(): UserResponse<SubscriptionResponse>  = TODO()
 }

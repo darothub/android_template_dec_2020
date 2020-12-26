@@ -4,7 +4,6 @@ import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.w3c.dom.Comment
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -213,6 +212,9 @@ interface AuthServices {
         @Field("artisanId")artisanId:String,
         @Field("comment")comment: String
     ): UserResponse<ReviewData>
+
+    @GET("plans")
+    suspend fun getAllPlans(): UserResponse<SubscriptionResponse>
 
 }
 

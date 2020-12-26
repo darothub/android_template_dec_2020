@@ -32,6 +32,9 @@ open class AuthViewModel @Inject constructor(
     val responseLiveData by lazy{
         SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
     }
+
+
+
     val responseLiveDatas by lazy{
         MutableLiveData<MeasurementTypeList>()
     }
@@ -376,6 +379,16 @@ open class AuthViewModel @Inject constructor(
     ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
         try {
             val request = authRequestInterface.addReviewAndRating(rate, artisanId, comment)
+            onSuccessFlowResponse(request)
+        } catch (e: HttpException) {
+            onErrorFlowResponse(e)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun getAllPlans(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+        try {
+            val request = authRequestInterface.getAllPlans()
             onSuccessFlowResponse(request)
         } catch (e: HttpException) {
             onErrorFlowResponse(e)

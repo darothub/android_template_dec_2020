@@ -7,10 +7,6 @@ import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -158,6 +154,10 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         authorizationCode: String?
     ): UserResponse<ChargeCardResponse> {
         return authServices.chargeCard(email, amount, authorizationCode)
+    }
+
+    override suspend fun getAllPlans(): UserResponse<SubscriptionResponse> {
+        return authServices.getAllPlans()
     }
 
     override suspend fun getAllAddress(

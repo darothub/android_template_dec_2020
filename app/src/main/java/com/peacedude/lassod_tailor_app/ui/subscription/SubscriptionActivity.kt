@@ -11,6 +11,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
 import com.peacedude.lassod_tailor_app.helpers.goto
+import com.peacedude.lassod_tailor_app.helpers.hide
+import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.activity_subscription.*
@@ -25,23 +27,33 @@ class SubscriptionActivity : BaseActivity() {
     val listener = NavController.OnDestinationChangedListener{controller, destination, bundle->
         when(destination.id){
             R.id.addCardFragment ->{
+                subcription_bnv.show()
                 toolbar.setNavigationOnClickListener {
                     navController.popBackStack()
                 }
                 title = ""
             }
             R.id.subscriptionPaymentFragment ->{
+                subcription_bnv.show()
                 toolbar.setNavigationOnClickListener {
                     navController.popBackStack()
                 }
             }
             R.id.subscriptionHomeFragment ->{
+                subcription_bnv.show()
                 toolbar.setNavigationOnClickListener {
                     finish()
                 }
                 subscription_activity_fab.setOnClickListener {
-                    navController.navigate(R.id.addCardFragment)
+                    navController.navigate(R.id.subscriptionPlansFragment)
                 }
+            }
+            R.id.subscriptionPlansFragment ->{
+                subcription_bnv.hide()
+                toolbar.setNavigationOnClickListener {
+                    navController.popBackStack()
+                }
+
             }
         }
     }

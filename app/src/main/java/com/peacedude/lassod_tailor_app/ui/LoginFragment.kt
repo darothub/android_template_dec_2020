@@ -15,6 +15,7 @@ import android.widget.ProgressBar
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -73,8 +74,8 @@ class LoginFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    val userViewModel: UserViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
+    val userViewModel by viewModels<UserViewModel> {
+        viewModelProviderFactory
     }
 
     @Inject

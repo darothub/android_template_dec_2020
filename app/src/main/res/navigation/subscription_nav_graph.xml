@@ -30,4 +30,9 @@
             android:id="@+id/gotoAddCard"
             app:destination="@id/addCardFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/subscriptionPlansFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionPlansFragment"
+        android:label="fragment_subscription_plans"
+        tools:layout="@layout/fragment_subscription_plans" />
 </navigation>

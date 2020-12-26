@@ -197,4 +197,5 @@ interface ViewModelInterface  {
     suspend fun removeFavourites(artisanId:String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
     suspend fun getAllClients(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun getAllPlans(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 }

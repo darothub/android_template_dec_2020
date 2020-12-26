@@ -25,10 +25,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/subcription_bnv"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/resources_activity_line"
+
         app:navGraph="@navigation/subscription_nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

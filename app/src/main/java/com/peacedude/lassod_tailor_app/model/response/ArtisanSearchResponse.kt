@@ -65,6 +65,7 @@ data class Profile (
 
 data class Meta (
     val totalItems: Long,
+    val skipped: Long,
     val totalPages: Long,
     val currentPage: Long,
     val prevPage: Long,

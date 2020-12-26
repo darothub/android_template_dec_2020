@@ -19,7 +19,8 @@ abstract class SubscriptionActivityModule {
             AddCardFragmentModule::class,
             AuthRequestModule::class,
             AuthViewModelModule::class,
-            SubscriptionPaymentFragmentModule::class
+            SubscriptionPaymentFragmentModule::class,
+            SubscriptionPlansFragmentModule::class
 
         ]
     )
