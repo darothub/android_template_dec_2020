@@ -4,6 +4,10 @@ import android.os.Build
 import android.view.KeyEvent
 import android.widget.EditText
 import com.auth0.android.jwt.JWT
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 
 
 inline fun buildVersion(forSdkGreaterThankM:()->Unit, forSdkLesserThanM:()->Unit){
@@ -31,5 +35,16 @@ inline fun initEnterKeyToSubmitForm(editText: EditText, crossinline request: () 
             return@setOnKeyListener true
         }
         return@setOnKeyListener false
+    }
+}
+
+suspend fun Flow<ServicesResponseWrapper<ParentData>>.handleResponse(success:(ServicesResponseWrapper<ParentData>)->Unit, error:(String)->Unit) {
+    try {
+        collect {
+            success(it)
+        }
+
+    } catch (e: Throwable) {
+        error(e.message.toString())
     }
 }

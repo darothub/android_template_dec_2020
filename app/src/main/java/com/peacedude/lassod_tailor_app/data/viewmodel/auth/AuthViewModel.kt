@@ -33,8 +33,6 @@ open class AuthViewModel @Inject constructor(
         SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
     }
 
-
-
     val responseLiveDatas by lazy{
         MutableLiveData<MeasurementTypeList>()
     }
@@ -386,6 +384,19 @@ open class AuthViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
+    override suspend fun subscribe(
+        plan: String,
+        customer: String
+    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+        try {
+            val request = authRequestInterface.subscribe(plan, customer)
+            onSuccessFlowResponse(request)
+        } catch (e: HttpException) {
+            onErrorFlowResponse(e)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
     override suspend fun getAllPlans(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
         try {
             val request = authRequestInterface.getAllPlans()
@@ -394,4 +405,26 @@ open class AuthViewModel @Inject constructor(
             onErrorFlowResponse(e)
         }
     }
+
+    @ExperimentalCoroutinesApi
+    override suspend fun getUserAllSubscriptions(): Flow<ServicesResponseWrapper<ParentData>>  = channelFlow {
+        try {
+            val request = authRequestInterface.getUserAllSubscriptions()
+            onSuccessFlowResponse(request)
+        } catch (e: HttpException) {
+            onErrorFlowResponse(e)
+        }
+    }
+
+
+    @ExperimentalCoroutinesApi
+    override suspend fun getSubscriptions(code: String): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
+        try {
+            val request = authRequestInterface.getSubscriptions(code)
+            onSuccessFlowResponse(request)
+        } catch (e: HttpException) {
+            onErrorFlowResponse(e)
+        }
+    }
+
 }

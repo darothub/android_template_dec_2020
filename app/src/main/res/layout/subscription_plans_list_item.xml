@@ -67,6 +67,7 @@
             tools:listitem="@layout/subscription_plans_description_item" />
 
         <Button
+            android:id="@+id/subscription_plans_item_signup_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/sign_up_today"

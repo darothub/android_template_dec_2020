@@ -532,7 +532,7 @@ class MediaFragment : DaggerFragment() {
 
 
                 dialog.dismiss()
-                requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
+//                requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
             } else {
                 i(
                     title,

@@ -117,7 +117,9 @@ class AllVideoFragment : DaggerFragment() {
                     video.description,
                     video.createdAt,
                     video.updatedAt
-                )
+                ).apply{
+                    duration = video.duration
+                }
 
             }
             if (listOfVideo?.isNotEmpty()!!) {

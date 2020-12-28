@@ -112,16 +112,15 @@ class PaymentMethodFragment : DaggerFragment() {
                 val getUserCall = async { authViewModel.getUserDetails(header.toString()) }
                 try {
                     getUserCall.await()
-                        .collect {
+                        .handleResponse({
                             onFlowResponse<User>(response = it) { user ->
                                 i(title, "paymentMethod ${user?.paymentTerms}")
-
 
                                 when{
                                     user?.paymentTerms != null -> {
                                         var pTerms = ""
                                         user.paymentTerms?.forEach {str->
-                                           pTerms +="$str\n\n"
+                                            pTerms +="$str\n\n"
                                             payment_method_payment_terms_value_tv.text = pTerms
                                         }
                                     }
@@ -148,10 +147,13 @@ class PaymentMethodFragment : DaggerFragment() {
                                     setPaymentOptionsValue(newUser)
                                 }
                                 saveChangesBtn.setOnClickListener {
-                                  updateUserData(newUser)
+                                    updateUserData(newUser)
                                 }
                             }
-                        }
+                        },{err ->
+                            i(title, "Caught error $err")
+                        })
+
 
                 } catch (e: Exception) {
                     i(title, "Get user details error data flow ${e.message}")

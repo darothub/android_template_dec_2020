@@ -20,5 +20,5 @@ data class VideoResource (
     val updatedAt: String
 ):Serializable, ParentData{
     @SerializedName("duration")
-    val duration:String?=""
+    var duration:String?=""
 }

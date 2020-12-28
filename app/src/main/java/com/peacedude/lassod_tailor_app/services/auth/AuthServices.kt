@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.services.auth
 
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
+import com.peacedude.lassod_tailor_app.model.typealiases.SubscriptionList
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -214,7 +215,22 @@ interface AuthServices {
     ): UserResponse<ReviewData>
 
     @GET("plans")
-    suspend fun getAllPlans(): UserResponse<SubscriptionResponse>
+    suspend fun getAllPlans(): UserResponse<SubscriptionResponse<List<SubscriptionData>>>
+
+    @POST("subscribe")
+    @FormUrlEncoded
+    suspend fun subscribe(
+        @Field("plan")plan:String,
+        @Field("customer")customer:String
+    ): UserResponse<SubscriptionResponse<List<SubscriptionData>>>
+
+    @GET("subscribe")
+    suspend fun getSubscriptions(
+        @Query("code")code:String
+    ): UserResponse<List<SubscribedData>>
+
+    @GET("subscribers")
+    suspend fun getUserAllSubscriptions(): UserResponse<SubscriptionList>
 
 }
 

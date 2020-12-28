@@ -50,6 +50,7 @@ class SubscriptionActivity : BaseActivity() {
             }
             R.id.subscriptionPlansFragment ->{
                 subcription_bnv.hide()
+                subscription_activity_fab.hide()
                 toolbar.setNavigationOnClickListener {
                     navController.popBackStack()
                 }

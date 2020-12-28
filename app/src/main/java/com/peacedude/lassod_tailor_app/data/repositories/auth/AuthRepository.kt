@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
+import com.peacedude.lassod_tailor_app.model.typealiases.SubscriptionList
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
 import okhttp3.MultipartBody
@@ -156,8 +157,23 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.chargeCard(email, amount, authorizationCode)
     }
 
-    override suspend fun getAllPlans(): UserResponse<SubscriptionResponse> {
+    override suspend fun subscribe(
+        plan: String,
+        customer: String
+    ): UserResponse<SubscriptionResponse<List<SubscriptionData>>> {
+        return authServices.subscribe(plan, customer)
+    }
+
+    override suspend fun getAllPlans(): UserResponse<SubscriptionResponse<List<SubscriptionData>>> {
         return authServices.getAllPlans()
+    }
+
+    override suspend fun getSubscriptions(code: String): UserResponse<List<SubscribedData>> {
+        return authServices.getSubscriptions(code)
+    }
+
+    override suspend fun getUserAllSubscriptions(): UserResponse<SubscriptionList> {
+        return authServices.getUserAllSubscriptions()
     }
 
     override suspend fun getAllAddress(

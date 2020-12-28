@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.peacedude.gdtoast.gdErrorToast
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
@@ -225,7 +226,15 @@ class DashboardActivity : BaseActivity() {
 
         }
 
-        navController.navigate(authViewModel.lastFragmentId)
+        try{
+            //goto the last visited fragment on the bottom navigation
+            navController.navigate(authViewModel.lastFragmentId)
+        }
+        catch (e:Exception){
+            i(title, "${e.message}")
+//            gdToast("Unexpected error occured kind re-install the app", Gravity.BOTTOM)
+        }
+
 
 
     }

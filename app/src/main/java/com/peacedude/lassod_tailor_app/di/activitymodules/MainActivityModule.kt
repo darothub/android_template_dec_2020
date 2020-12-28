@@ -27,7 +27,6 @@ abstract class MainActivityModule {
             UserRequestsModule::class,
             UserViewModelModule::class,
             LoginFragmentModule::class,
-            VerificationFragmentModule::class,
             HomeFragmentModule::class,
             SignupChoicesFragmentModule::class,
             EmailSignupFragmentModule::class,

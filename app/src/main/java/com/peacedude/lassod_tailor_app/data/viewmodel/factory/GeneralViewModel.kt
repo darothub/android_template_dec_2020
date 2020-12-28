@@ -180,7 +180,7 @@ open class GeneralViewModel @Inject constructor(
             val error = `access$errorConverter`(code, errorbody)
             when(error.second){
                 401 ->{
-                    send(
+                    offer(
                         ServicesResponseWrapper.Logout(
                             msg.toString(),
                             code
@@ -189,7 +189,7 @@ open class GeneralViewModel @Inject constructor(
                     `access$logout`()
                 }
                 else->{
-                    send(
+                    offer(
                         ServicesResponseWrapper.Error(
                             error.first,
                             code

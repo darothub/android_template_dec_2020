@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.network.auth
 
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
+import com.peacedude.lassod_tailor_app.model.typealiases.SubscriptionList
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -102,5 +103,14 @@ interface AuthRequestInterface {
 
     suspend fun getAllClients(): UserResponse<ClientsList>  = TODO()
 
-    suspend fun getAllPlans(): UserResponse<SubscriptionResponse>  = TODO()
+    suspend fun getAllPlans(): UserResponse<SubscriptionResponse<List<SubscriptionData>>>  = TODO()
+
+    suspend fun subscribe(
+        plan:String,
+        customer:String
+    ): UserResponse<SubscriptionResponse<List<SubscriptionData>>> = TODO()
+
+    suspend fun getSubscriptions(code:String): UserResponse<List<SubscribedData>> = TODO()
+
+    suspend fun getUserAllSubscriptions(): UserResponse<SubscriptionList> = TODO()
 }

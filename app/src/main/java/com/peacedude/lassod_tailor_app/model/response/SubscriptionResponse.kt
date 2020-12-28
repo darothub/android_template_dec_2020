@@ -1,12 +1,13 @@
 package com.peacedude.lassod_tailor_app.model.response
 
+import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
-data class SubscriptionResponse (
+data class SubscriptionResponse <T>(
     val status: Boolean,
     val message: String,
-    val data: List<SubscriptionData>,
+    val data: T,
     val meta: Meta
 ):ParentData, Serializable
 
@@ -15,6 +16,7 @@ data class SubscriptionData (
     val integration: Long,
     val domain: String,
     val name: String,
+    @SerializedName("plan_code")
     val planCode: String,
     val description: String,
     val amount: Long,
@@ -50,6 +52,15 @@ data class Subscription (
     val openInvoice: Any? = null,
     val invoiceLimit: Long,
     val id: Long,
+    val createdAt: String,
+    val updatedAt: String
+):ParentData, Serializable
+
+data class SubscribedData (
+    val id: String,
+    val customerID: String,
+    val tailorID: String,
+    val planID: String,
     val createdAt: String,
     val updatedAt: String
 ):ParentData, Serializable

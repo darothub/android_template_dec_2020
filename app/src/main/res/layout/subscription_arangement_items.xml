@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/White">
+    <TextView
+        android:id="@+id/subscription_home_fragment_subscription_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_12sdp"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/subscription_arrangementfragment_sub_rv"
+
+        android:text="@string/subscription_str"/>
+
+    <TextView
+        android:id="@+id/subscription_home_fragment_exp_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_12sdp"
+        android:textSize="@dimen/_10sdp"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintTop_toTopOf="@id/subscription_home_fragment_subscription_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/subscription_home_fragment_subscription_tv"
+        android:text="@string/exp_date_str"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subscription_arrangementfragment_sub_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/subscription_home_fragment_exp_date_tv"
+        tools:listitem="@layout/subscription_list_item"
+
+        tools:itemCount="2"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

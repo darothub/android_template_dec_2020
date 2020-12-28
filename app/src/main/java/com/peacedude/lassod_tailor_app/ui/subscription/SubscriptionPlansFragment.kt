@@ -1,6 +1,7 @@
 package com.peacedude.lassod_tailor_app.ui.subscription
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,23 +10,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.handleResponse
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.helpers.onFlowResponse
-import com.peacedude.lassod_tailor_app.helpers.show
-import com.peacedude.lassod_tailor_app.model.response.Photo
-import com.peacedude.lassod_tailor_app.model.response.PhotoList
-import com.peacedude.lassod_tailor_app.model.response.SubscriptionData
-import com.peacedude.lassod_tailor_app.model.response.SubscriptionResponse
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_subscription_plans.*
 import kotlinx.android.synthetic.main.subscription_plans_description_item.view.*
 import kotlinx.android.synthetic.main.subscription_plans_list_item.view.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -120,7 +121,7 @@ class SubscriptionPlansFragment : DaggerFragment() {
                         i(title, "Error All Photo on flow ${it.message}")
                     }
                     .collect {
-                        onFlowResponse<SubscriptionResponse>(response = it) {
+                        onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it) {
 
                             val monthlySubs = it?.data?.groupBy {
                                 it.interval
@@ -136,6 +137,42 @@ class SubscriptionPlansFragment : DaggerFragment() {
                                     itemView.subscription_plans_amt_tv.text = "${item?.amount}"
                                     itemView.subscription_plans_duration_tv.text =
                                         "/${item?.interval?.subSequence(0, 2).toString()}"
+
+                                    itemView.subscription_plans_item_signup_btn.setOnClickListener {
+                                        i(title, "Item $item")
+                                        val planCode = item?.planCode.toString()
+                                        val customer = authViewModel.currentUser?.email ?: ""
+                                        if(customer == ""){
+                                            requireActivity().gdToast("Kindly update your profile with valid email address", Gravity.BOTTOM)
+                                        }
+                                        else{
+
+                                            CoroutineScope(Dispatchers.Main).launch {
+                                                supervisorScope {
+                                                    val subscribe = async {
+                                                        authViewModel.subscribe(planCode, customer)
+                                                    }
+                                                    subscribe.await()
+
+                                                        .handleResponse({
+                                                            onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = { err ->
+                                                                requireActivity().gdToast(err, Gravity.BOTTOM)
+                                                            }) {
+                                                                i(title, "Subscription response $it")
+                                                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+
+                                                            }
+                                                        }, {err ->
+                                                            requireActivity().gdToast(err, Gravity.BOTTOM)
+                                                        })
+
+
+                                                }
+                                            }
+                                        }
+
+
+                                    }
 
                                     val listOfDescriptions = item?.description?.split(",")?.filter {
                                         it != ","
@@ -171,6 +208,9 @@ class SubscriptionPlansFragment : DaggerFragment() {
             }
         }
     }
+
+
+    @ExperimentalCoroutinesApi
     private fun yearlySubscriptions() {
         i(title, "Yearly")
         CoroutineScope(Dispatchers.Main).launch {
@@ -184,7 +224,9 @@ class SubscriptionPlansFragment : DaggerFragment() {
                         i(title, "Error All Photo on flow ${it.message}")
                     }
                     .collect {
-                        onFlowResponse<SubscriptionResponse>(response = it) {
+                        onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = {err->
+                            requireActivity().gdToast(err, Gravity.BOTTOM)
+                        }) {
 
                             val monthlySubs = it?.data?.groupBy {
                                 it.interval
@@ -200,6 +242,41 @@ class SubscriptionPlansFragment : DaggerFragment() {
                                     itemView.subscription_plans_amt_tv.text = "${item?.amount}"
                                     itemView.subscription_plans_duration_tv.text =
                                         "/${item?.interval?.subSequence(0, 2).toString()}"
+
+                                    itemView.subscription_plans_item_signup_btn.setOnClickListener {
+                                        i(title, "Item $item")
+                                        val planCode = item?.planCode.toString()
+                                        val customer = authViewModel.currentUser?.email ?: ""
+                                        if(customer == ""){
+                                            requireActivity().gdToast("Kindly update your profile with valid email address", Gravity.BOTTOM)
+                                        }
+                                        else{
+
+                                            CoroutineScope(Dispatchers.Main).launch {
+                                                supervisorScope {
+                                                    val subscribe = async {
+                                                        authViewModel.subscribe(planCode, customer)
+                                                    }
+                                                    subscribe.await()
+                                                        .handleResponse({
+                                                            onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = { err ->
+                                                                requireActivity().gdToast(err, Gravity.BOTTOM)
+                                                            }) {
+                                                                i(title, "Subscription response $it")
+                                                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+
+                                                            }
+                                                        }, {err ->
+                                                            requireActivity().gdToast(err, Gravity.BOTTOM)
+                                                        })
+
+
+                                                }
+                                            }
+                                        }
+
+
+                                    }
 
                                     val listOfDescriptions = item?.description?.split(",")?.filter {
                                         it != ","

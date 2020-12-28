@@ -198,4 +198,9 @@ interface ViewModelInterface  {
 
     suspend fun getAllClients(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
     suspend fun getAllPlans(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun subscribe(plan:String, customer:String): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun getSubscriptions(code:String): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
+    suspend fun getUserAllSubscriptions(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+
 }

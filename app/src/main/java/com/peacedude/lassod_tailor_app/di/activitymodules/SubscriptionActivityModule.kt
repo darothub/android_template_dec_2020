@@ -20,8 +20,8 @@ abstract class SubscriptionActivityModule {
             AuthRequestModule::class,
             AuthViewModelModule::class,
             SubscriptionPaymentFragmentModule::class,
-            SubscriptionPlansFragmentModule::class
-
+            SubscriptionPlansFragmentModule::class,
+            SubscriptionHomeFragmentModule::class
         ]
     )
     abstract fun provideSubscriptionActivity(): SubscriptionActivity

@@ -130,7 +130,9 @@ class SingleVideoFragment : DaggerFragment() {
                                         v.description,
                                         v.createdAt,
                                         v.updatedAt
-                                    )
+                                    ).apply {
+                                        duration = v.duration
+                                    }
                                 }?.takeIf {
                                     it.size > 5
                                 }.let {

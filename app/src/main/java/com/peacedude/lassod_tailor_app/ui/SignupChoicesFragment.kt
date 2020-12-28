@@ -84,11 +84,9 @@ class SignupChoicesFragment : DaggerFragment() {
 
         }, {
             signupEmailBtn.setOnClickListener {
-
                 goto(R.id.emailSignupFragment)
             }
             signupPhoneBtn.setOnClickListener {
-
                 goto(R.id.phoneSignupFragment)
             }
 

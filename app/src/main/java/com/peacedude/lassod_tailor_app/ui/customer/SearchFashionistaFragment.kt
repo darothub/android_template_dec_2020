@@ -2,30 +2,22 @@ package com.peacedude.lassod_tailor_app.ui.customer
 
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
-import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.peacedude.lassod_tailor_app.model.response.Artisan
 import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
-import com.peacedude.lassod_tailor_app.model.response.Profile
-import com.peacedude.lassod_tailor_app.ui.DashboardActivity
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.utsman.recycling.extentions.Recycling
 import com.utsman.recycling.setupAdapter
@@ -187,18 +179,6 @@ class SearchFragment : DaggerFragment() {
                             1
                         )
 
-//                        onPagingListener(layoutManager) { page, itemCount ->
-//
-//                            // call function setup data with page +1
-//                            setupData(
-//                                this@setupAdapter,
-//                                keyword,
-//                                location,
-//                                specialty,
-//                                category,
-//                                page + 1.toLong()
-//                            )
-//                        }
 
 
                     }
@@ -238,10 +218,7 @@ class SearchFragment : DaggerFragment() {
             supervisorScope {
 
                 userViewModel.searchArtisan(keyword, location, specialty, category, page, 2)
-                    .catch {
-
-                    }
-                    .collect {
+                    .handleResponse({
                         onFlowResponse<ArtisanSearchResponse>(response = it) {
                             val artisanList = arrayListOf<SearchResultTwo>(
                                 SearchResultTwo("Tailors",
@@ -254,7 +231,12 @@ class SearchFragment : DaggerFragment() {
                             i(title, "artisans ${it?.tailors}")
                             recycling.submitList(artisanList)
                         }
-                    }
+
+                    },{err ->
+                        i(title, "$err")
+                        requireActivity().gdToast(err, Gravity.BOTTOM)
+                    })
+
 
             }
         }
@@ -290,24 +272,3 @@ data class SearchFilter(
 
 data class SearchResult(var title: String, var location: String, var media: String)
 data class SearchResultTwo(var category: String?, var list: List<Artisan>)
-
-//val listSearchResultTwo = arrayListOf<SearchResultTwo>(
-//    SearchResultTwo(
-//        "Tailor",
-//        arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
-//    ),
-//    SearchResultTwo(
-//        "Weaver",
-//        arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
-//    ),
-//    SearchResultTwo(
-//        "Weaver",
-//        arrayListOf(SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)),
-//            SearchResult("JJ Fashionista", "Lagos", getString(R.string.test_photo)))
-//    )
-//)
