@@ -89,47 +89,47 @@ class FavouritesFragment : DaggerFragment() {
             finish()
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val getFavouriteReq = async {
-                    userViewModel.getFavourites()
-                }
-                getFavouriteReq.await()
-                    .catch { err ->
-                        requireActivity().gdToast(err.message.toString(), Gravity.BOTTOM)
-                    }
-                    .collect { data ->
-                        onFlowResponse<Data>(response = data) { it ->
-                            val listOfFavourites = it?.data?.map {each ->
-                                each
-                            }
-                            if(listOfFavourites?.isNotEmpty() == true){
-                                favourite_fragment_vf.showNext()
-                                favorite_fragment_rv.setupAdapter<Favourite>(R.layout.favourite_list_item) { subAdapter, context, list ->
-
-                                    bind { itemView, position, item ->
-                                        itemView.favourite_list_name_tv.text = "${item?.user?.firstName} ${item?.user?.lastName}"
-                                    }
-                                    setLayoutManager(
-                                        LinearLayoutManager(
-                                            requireContext(),
-                                            LinearLayoutManager.VERTICAL,
-                                            false
-                                        )
-                                    )
-                                    subAdapter.delete(list)
-                                        .attachToRecyclerView(favorite_fragment_rv)
-                                    submitList(listOfFavourites as List<Favourite?>?)
-                                }
-                            }
-                            else{
-
-                            }
-
-                        }
-                    }
-            }
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            supervisorScope {
+//                val getFavouriteReq = async {
+//                    userViewModel.getFavourites()
+//                }
+//                getFavouriteReq.await()
+//                    .catch { err ->
+//                        requireActivity().gdToast(err.message.toString(), Gravity.BOTTOM)
+//                    }
+//                    .collect { data ->
+//                        onFlowResponse<Data>(response = data) { it ->
+//                            val listOfFavourites = it?.data?.map {each ->
+//                                each
+//                            }
+//                            if(listOfFavourites?.isNotEmpty() == true){
+//                                favourite_fragment_vf.showNext()
+//                                favorite_fragment_rv.setupAdapter<Favourite>(R.layout.favourite_list_item) { subAdapter, context, list ->
+//
+//                                    bind { itemView, position, item ->
+//                                        itemView.favourite_list_name_tv.text = "${item?.user?.firstName} ${item?.user?.lastName}"
+//                                    }
+//                                    setLayoutManager(
+//                                        LinearLayoutManager(
+//                                            requireContext(),
+//                                            LinearLayoutManager.VERTICAL,
+//                                            false
+//                                        )
+//                                    )
+//                                    subAdapter.delete(list)
+//                                        .attachToRecyclerView(favorite_fragment_rv)
+//                                    submitList(listOfFavourites as List<Favourite?>?)
+//                                }
+//                            }
+//                            else{
+//
+//                            }
+//
+//                        }
+//                    }
+//            }
+//        }
     }
 
 
@@ -149,30 +149,30 @@ class FavouritesFragment : DaggerFragment() {
                 val pos = viewHolder.adapterPosition
                 val item = list?.get(pos) as Favourite
 
-                CoroutineScope(Dispatchers.Main).launch {
-                    supervisorScope {
-                        val artisanId = item.artisanID
-                        val removeFavoriteReq =
-                            async { userViewModel.removeFavourites(artisanId) }
-                        removeFavoriteReq.await()
-                            .catch {
-                                i(title, "RecyclingAdapter delete ${it.message}")
-                            }
-                            .collect {
-                                onFlowResponse<UserResponse<NothingExpected>>(response = it) {
-                                    list.removeAt(pos)
-                                    this@delete.notifyDataSetChanged()
-                                    if (list.isEmpty()) {
-
-                                    }
-                                    requireActivity().gdToast(
-                                        it?.message.toString(),
-                                        Gravity.BOTTOM
-                                    )
-                                }
-                            }
-                    }
-                }
+//                CoroutineScope(Dispatchers.Main).launch {
+//                    supervisorScope {
+//                        val artisanId = item.artisanID
+//                        val removeFavoriteReq =
+//                            async { userViewModel.removeFavourites(artisanId) }
+//                        removeFavoriteReq.await()
+//                            .catch {
+//                                i(title, "RecyclingAdapter delete ${it.message}")
+//                            }
+//                            .collect {
+//                                onFlowResponse<UserResponse<NothingExpected>>(response = it) {
+//                                    list.removeAt(pos)
+//                                    this@delete.notifyDataSetChanged()
+//                                    if (list.isEmpty()) {
+//
+//                                    }
+//                                    requireActivity().gdToast(
+//                                        it?.message.toString(),
+//                                        Gravity.BOTTOM
+//                                    )
+//                                }
+//                            }
+//                    }
+//                }
 
                 i("OnRemoved", " pos $pos itemId ${item.id}")
 

@@ -1,7 +1,6 @@
 package com.peacedude.lassod_tailor_app.di.fragmentmodules.user
 
 import com.peacedude.lassod_tailor_app.ui.LoginFragment
-import com.peacedude.lassod_tailor_app.ui.SignupFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

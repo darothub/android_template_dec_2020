@@ -339,7 +339,7 @@ class MeasurementFragment : DaggerFragment() {
 
 
         val addMeasurementReq =
-            authViewModel.addMeasurement(header, clientMeasurement)
+            authViewModel.addMeasurement(clientMeasurement)
         observeRequest<ClientsList>(addMeasurementReq, null, null, true, { result ->
             requireActivity().gdToast(
                 result.message.toString(),
@@ -378,157 +378,157 @@ class MeasurementFragment : DaggerFragment() {
         getAllMeasurements: Deferred<Flow<ServicesResponseWrapper<ParentData>>>,
         activityTitle: TextView
     ) {
-        getAllMeasurements.await()
-            .catch {
-                i(title, "Error All measurement on flow ${it.message}")
-            }
-            .collect {
-                onFlowResponse<ListOfMeasurement>(response = it) {
-                    i(title, "Measure ${it?.measurement}")
-                    i(title, "Measure ${it?.measurement}")
-                    val measurementValueList = it?.measurement?.map { m ->
-                        i(title, "MeasureID ${m.id}")
-                        MeasurementValues(
-                            m.name,
-                            m.type,
-                            m.clientID,
-                            m.values
-                        ).apply {
-                            this.id = m.id
-                        }
-                    }
-                    if (measurementValueList?.isEmpty()!!) {
-                        measurement_fragment_recycler_vf.showNext()
-                    } else {
-                        resource_fragment_measurement_rv.setupAdapter<MeasurementValues>(
-                            R.layout.measurement_sub_item
-                        ) { parentAdapter, context, parentList ->
-
-                            bind { itemView, position, parentItem ->
-                                itemView.measurement_sub_item_type_tv.text = parentItem?.name
-
-                                //On click to edit
-                                setOnMeasurementEdit(
-                                    parentList,
-                                    parentAdapter,
-                                    itemView,
-                                    parentItem,
-                                    activityTitle
-                                )
-
-                                val v = parentItem?.values as? Map<String, String>
-
-                                val valueList = v?.entries?.map { vl ->
-                                    UserNameClass(
-                                        vl.key,
-                                        vl.value
-                                    )
-                                }?.filter { itv ->
-                                    !itv.value.isNullOrEmpty() && itv.value != "null"
-                                }
-
-                                itemView.measurement_sub_item_rv.setupAdapter<UserNameClass>(
-                                    R.layout.measurement_item
-                                ) { adapter, context, list ->
-                                    bind { subItemView, position, item ->
-                                        subItemView.measurement_name.text = item?.title
-                                        subItemView.measurement_value.text = item?.value
-
-                                    }
-
-                                    setLayoutManager(
-                                        GridLayoutManager(
-                                            requireContext(),
-                                            3
-                                        )
-                                    )
-                                    submitList(valueList)
-                                }
-
-                                addMeasurementBtn.setOnClickListener {
-                                    dialog.show()
-                                    dialogAddMeasurementBtn =
-                                        dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
-                                    dialogAddMeasurementProgressBar =
-                                        dialogIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
-
-                                    val dialogBtnBackgound = dialogAddMeasurementBtn.background
-                                    dialogBtnBackgound?.changeBackgroundColor(
-                                        requireContext(),
-                                        R.color.colorPrimary
-                                    )
-
-                                    dialogTitleTv.text = getString(R.string.add_measurement)
-                                    dialogAddMeasurementBtn.background = dialogBtnBackgound
-                                    dialogAddMeasurementBtn.text =
-                                        getString(R.string.add_measurement)
-                                    dialogAddMeasurementBtn.setTextColor(
-                                        ContextCompat.getColor(
-                                            requireContext(),
-                                            R.color.colorAccent
-                                        )
-                                    )
-
-
-                                    CoroutineScope(Main).launch {
-                                        val getMeasurementTypes =
-                                            async { authViewModel.getMeasurementTypes(header) }
-                                        getMeasurementTypes.await()
-                                            .catch {
-                                                i(title, "Error on flow ${it.message}")
-                                            }
-                                            .collect {
-                                                onFlowResponse<MeasurementTypeList>(response = it) {
-                                                    i(title, "Measure ${it?.measurementTypes}")
-                                                    it?.measurementTypes?.associateByTo(
-                                                        measurementMap,
-                                                        { k ->
-                                                            k.id
-                                                        },
-                                                        { v ->
-                                                            v.name
-                                                        })
-                                                    it?.measurementTypes?.associateByTo(
-                                                        measurementListMap,
-                                                        { k ->
-                                                            k.name
-                                                        },
-                                                        { v ->
-                                                            v.form
-                                                        })
-                                                    val measurementTypes =
-                                                        it?.measurementTypes?.map {
-                                                            it.name
-                                                        }
-                                                    setUpSpinnerWithList(
-                                                        getString(R.string.select_str),
-                                                        dialogSpinner,
-                                                        measurementTypes as ArrayList<String>
-                                                    )
-                                                }
-                                            }
-                                        setListOnMeasurementChange(parentAdapter, parentList)
-
-                                    }
-                                }
-
-
-                            }
-                            setLayoutManager(
-                                LinearLayoutManager(
-                                    requireContext(),
-                                    LinearLayoutManager.VERTICAL,
-                                    false
-                                )
-                            )
-                            parentAdapter.delete(parentList)
-                                .attachToRecyclerView(resource_fragment_measurement_rv)
-
-                            submitList(measurementValueList.reversed())
-                        }
-                    }
-                }
-            }
+//        getAllMeasurements.await()
+//            .catch {
+//                i(title, "Error All measurement on flow ${it.message}")
+//            }
+//            .collect {
+//                onFlowResponse<ListOfMeasurement>(response = it) {
+//                    i(title, "Measure ${it?.measurement}")
+//                    i(title, "Measure ${it?.measurement}")
+//                    val measurementValueList = it?.measurement?.map { m ->
+//                        i(title, "MeasureID ${m.id}")
+//                        MeasurementValues(
+//                            m.name,
+//                            m.type,
+//                            m.clientID,
+//                            m.values
+//                        ).apply {
+//                            this.id = m.id
+//                        }
+//                    }
+//                    if (measurementValueList?.isEmpty()!!) {
+//                        measurement_fragment_recycler_vf.showNext()
+//                    } else {
+//                        resource_fragment_measurement_rv.setupAdapter<MeasurementValues>(
+//                            R.layout.measurement_sub_item
+//                        ) { parentAdapter, context, parentList ->
+//
+//                            bind { itemView, position, parentItem ->
+//                                itemView.measurement_sub_item_type_tv.text = parentItem?.name
+//
+//                                //On click to edit
+//                                setOnMeasurementEdit(
+//                                    parentList,
+//                                    parentAdapter,
+//                                    itemView,
+//                                    parentItem,
+//                                    activityTitle
+//                                )
+//
+//                                val v = parentItem?.values as? Map<String, String>
+//
+//                                val valueList = v?.entries?.map { vl ->
+//                                    UserNameClass(
+//                                        vl.key,
+//                                        vl.value
+//                                    )
+//                                }?.filter { itv ->
+//                                    !itv.value.isNullOrEmpty() && itv.value != "null"
+//                                }
+//
+//                                itemView.measurement_sub_item_rv.setupAdapter<UserNameClass>(
+//                                    R.layout.measurement_item
+//                                ) { adapter, context, list ->
+//                                    bind { subItemView, position, item ->
+//                                        subItemView.measurement_name.text = item?.title
+//                                        subItemView.measurement_value.text = item?.value
+//
+//                                    }
+//
+//                                    setLayoutManager(
+//                                        GridLayoutManager(
+//                                            requireContext(),
+//                                            3
+//                                        )
+//                                    )
+//                                    submitList(valueList)
+//                                }
+//
+//                                addMeasurementBtn.setOnClickListener {
+//                                    dialog.show()
+//                                    dialogAddMeasurementBtn =
+//                                        dialogIncludeBtnLayout.findViewById<Button>(R.id.btn)
+//                                    dialogAddMeasurementProgressBar =
+//                                        dialogIncludeBtnLayout.findViewById<ProgressBar>(R.id.progress_bar)
+//
+//                                    val dialogBtnBackgound = dialogAddMeasurementBtn.background
+//                                    dialogBtnBackgound?.changeBackgroundColor(
+//                                        requireContext(),
+//                                        R.color.colorPrimary
+//                                    )
+//
+//                                    dialogTitleTv.text = getString(R.string.add_measurement)
+//                                    dialogAddMeasurementBtn.background = dialogBtnBackgound
+//                                    dialogAddMeasurementBtn.text =
+//                                        getString(R.string.add_measurement)
+//                                    dialogAddMeasurementBtn.setTextColor(
+//                                        ContextCompat.getColor(
+//                                            requireContext(),
+//                                            R.color.colorAccent
+//                                        )
+//                                    )
+//
+//
+//                                    CoroutineScope(Main).launch {
+//                                        val getMeasurementTypes =
+//                                            async { authViewModel.getMeasurementTypes(header) }
+//                                        getMeasurementTypes.await()
+//                                            .catch {
+//                                                i(title, "Error on flow ${it.message}")
+//                                            }
+//                                            .collect {
+//                                                onFlowResponse<MeasurementTypeList>(response = it) {
+//                                                    i(title, "Measure ${it?.measurementTypes}")
+//                                                    it?.measurementTypes?.associateByTo(
+//                                                        measurementMap,
+//                                                        { k ->
+//                                                            k.id
+//                                                        },
+//                                                        { v ->
+//                                                            v.name
+//                                                        })
+//                                                    it?.measurementTypes?.associateByTo(
+//                                                        measurementListMap,
+//                                                        { k ->
+//                                                            k.name
+//                                                        },
+//                                                        { v ->
+//                                                            v.form
+//                                                        })
+//                                                    val measurementTypes =
+//                                                        it?.measurementTypes?.map {
+//                                                            it.name
+//                                                        }
+//                                                    setUpSpinnerWithList(
+//                                                        getString(R.string.select_str),
+//                                                        dialogSpinner,
+//                                                        measurementTypes as ArrayList<String>
+//                                                    )
+//                                                }
+//                                            }
+//                                        setListOnMeasurementChange(parentAdapter, parentList)
+//
+//                                    }
+//                                }
+//
+//
+//                            }
+//                            setLayoutManager(
+//                                LinearLayoutManager(
+//                                    requireContext(),
+//                                    LinearLayoutManager.VERTICAL,
+//                                    false
+//                                )
+//                            )
+//                            parentAdapter.delete(parentList)
+//                                .attachToRecyclerView(resource_fragment_measurement_rv)
+//
+//                            submitList(measurementValueList.reversed())
+//                        }
+//                    }
+//                }
+//            }
     }
 
     private fun setOnMeasurementEdit(
@@ -614,40 +614,40 @@ class MeasurementFragment : DaggerFragment() {
                                 id = parentItem.id
                             }
                             i(title, "Edit measurement ${clientMeasurement.id}")
-                            CoroutineScope(Main).launch {
-                                supervisorScope {
-                                    val updateMeasurementCall = async {
-                                        authViewModel.editMeasurement(
-                                            header,
-                                            clientMeasurement
-                                        )
-                                    }
-                                    updateMeasurementCall.await()
-                                        .catch {
-                                            i(title, "RecyclingAdapter delete ${it.message}")
-                                        }
-                                        .collect {
-                                            onFlowResponse<EditMeasurement>(response = it) {
-
-                                                if (pos != null) {
-                                                    parentList[pos] = clientMeasurement
-                                                    parentAdapter.notifyItemChanged(pos)
-                                                    i(
-                                                        title,
-                                                        "List $parentList item $clientMeasurement"
-                                                    )
-                                                }
-
-                                                GlobalVariables.globalMeasuremenValues = null
-                                                editdialog.dismiss()
-                                                requireActivity().gdToast(
-                                                    "$name is updated successfully",
-                                                    Gravity.BOTTOM
-                                                )
-                                            }
-                                        }
-                                }
-                            }
+//                            CoroutineScope(Main).launch {
+//                                supervisorScope {
+//                                    val updateMeasurementCall = async {
+//                                        authViewModel.editMeasurement(
+//                                            header,
+//                                            clientMeasurement
+//                                        )
+//                                    }
+//                                    updateMeasurementCall.await()
+//                                        .catch {
+//                                            i(title, "RecyclingAdapter delete ${it.message}")
+//                                        }
+//                                        .collect {
+//                                            onFlowResponse<EditMeasurement>(response = it) {
+//
+//                                                if (pos != null) {
+//                                                    parentList[pos] = clientMeasurement
+//                                                    parentAdapter.notifyItemChanged(pos)
+//                                                    i(
+//                                                        title,
+//                                                        "List $parentList item $clientMeasurement"
+//                                                    )
+//                                                }
+//
+//                                                GlobalVariables.globalMeasuremenValues = null
+//                                                editdialog.dismiss()
+//                                                requireActivity().gdToast(
+//                                                    "$name is updated successfully",
+//                                                    Gravity.BOTTOM
+//                                                )
+//                                            }
+//                                        }
+//                                }
+//                            }
                         }
                     }
                     setLayoutManager(GridLayoutManager(requireContext(), 2))
@@ -681,29 +681,29 @@ class MeasurementFragment : DaggerFragment() {
                 val pos = viewHolder.adapterPosition
                 val item = list?.get(pos) as MeasurementValues
 
-                CoroutineScope(Main).launch {
-                    supervisorScope {
-                        val deleteMeasurementCall =
-                            async { authViewModel.deleteMeasurements(header, item.id.toString()) }
-                        deleteMeasurementCall.await()
-                            .catch {
-                                i(title, "RecyclingAdapter delete ${it.message}")
-                            }
-                            .collect {
-                                onFlowResponse<UserResponse<NothingExpected>>(response = it) {
-                                    list.removeAt(pos)
-                                    this@delete.notifyDataSetChanged()
-                                    if (list.isEmpty()) {
-                                        measurement_fragment_recycler_vf.showNext()
-                                    }
-                                    requireActivity().gdToast(
-                                        it?.message.toString(),
-                                        Gravity.BOTTOM
-                                    )
-                                }
-                            }
-                    }
-                }
+//                CoroutineScope(Main).launch {
+//                    supervisorScope {
+//                        val deleteMeasurementCall =
+//                            async { authViewModel.deleteMeasurements(header, item.id.toString()) }
+//                        deleteMeasurementCall.await()
+//                            .catch {
+//                                i(title, "RecyclingAdapter delete ${it.message}")
+//                            }
+//                            .collect {
+//                                onFlowResponse<UserResponse<NothingExpected>>(response = it) {
+//                                    list.removeAt(pos)
+//                                    this@delete.notifyDataSetChanged()
+//                                    if (list.isEmpty()) {
+//                                        measurement_fragment_recycler_vf.showNext()
+//                                    }
+//                                    requireActivity().gdToast(
+//                                        it?.message.toString(),
+//                                        Gravity.BOTTOM
+//                                    )
+//                                }
+//                            }
+//                    }
+//                }
 
                 i("OnRemoved", " pos $pos itemId ${item.id}")
 

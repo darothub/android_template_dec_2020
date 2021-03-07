@@ -207,7 +207,7 @@ class ClientAccountFragment : DaggerFragment(){
         client.country = clientCountry
         client.state = clientState
 
-        val req = authViewModel.addClient(header, client)
+        val req = authViewModel.addClient(client)
             observeRequest<Client>(req, progressBar, addClientBtn, false, {res->
                 val newClient = res?.data
                 requireActivity().gdToast(
@@ -236,7 +236,7 @@ class ClientAccountFragment : DaggerFragment(){
         client.country = clientCountry
         client.state = clientState
 
-        val editClientReq = authViewModel.editClient(header, client)
+        val editClientReq = authViewModel.editClient(client)
         observeRequest<SingleClient>(editClientReq, null, null, true, {result->
             val msg = result.message.toString()
             val newClientData = result.data?.client

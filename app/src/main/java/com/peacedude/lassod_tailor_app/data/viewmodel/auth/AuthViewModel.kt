@@ -1,11 +1,12 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.auth
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
+import androidx.lifecycle.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
+import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
@@ -13,10 +14,13 @@ import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.*
+import java.lang.Exception
 import javax.inject.Inject
 
 open class AuthViewModel @Inject constructor(
@@ -28,358 +32,697 @@ open class AuthViewModel @Inject constructor(
 ) : GeneralViewModel(retrofit, storage, context, mGoogleSignInClient), ViewModelInterface {
 
 
-
-    val responseLiveData by lazy{
-        SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
-    }
-
-    val responseLiveDatas by lazy{
-        MutableLiveData<MeasurementTypeList>()
-    }
     override fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
 
         val request = authRequestInterface.getUserData(header)
-       return enqueueRequest<User>(request, responseLiveData)
+       return enqueueRequest<User>(request)
     }
 
-    override fun getUserData(): LiveData<ServicesResponseWrapper<ParentData>> {
+    var theUserData =netWorkLiveData.switchMap{
+        getTheUserData(it)
+    }
+
+    private fun getTheUserData(it: Boolean) = if (it) {
+        var request: Call<UserResponse<User>> = authRequestInterface.getUserData()
+        enqueueRequest(request)
+        responseObserver
+    } else {
+        i(title, "Bad Connection")
+        badNetworkServiceLiveData
+    }
 
 
+    override fun  getUserData(): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = authRequestInterface.getUserData()
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
+//        return netWorkLiveData.switchMap {
+//            if (it){
+//                responseObserver
+//            }
+//            else{
+//                responseObserver.postValue(ServicesResponseWrapper.Network(502, "Bad connection"))
+//                responseObserver
+//            }
+//        }
+
     }
 
-   override fun updateUserData(user: User): LiveData<ServicesResponseWrapper<ParentData>> {
+   override fun updateUserData(user: User) = netWorkLiveData.switchMap {
+       if (it) {
+           var request: Call<UserResponse<User>> = authRequestInterface.updateUserData(user)
+           enqueueRequest(request)
+           responseObserver
+       } else {
+           i(title, "Bad Connection")
+           badNetworkServiceLiveData
+       }
+   }
 
 
-        val request = authRequestInterface.updateUserData(user)
-       return enqueueRequest<User>(request, responseLiveData)
+    override fun forgetPassword(field: String)=netWorkLiveData.switchMap {
+        if (it) {
+            val request = authRequestInterface.forgetPassword(field)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
-    override fun forgetPassword(field: String): LiveData<ServicesResponseWrapper<ParentData>> {
 
-        val request = authRequestInterface.forgetPassword(field)
-        return enqueueRequest<String>(request, responseLiveData)
-    }
-    override fun resetPassword(header:String?, password:String?, cPassword:String?): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = authRequestInterface.resetPassword(header.toString(), password.toString(), cPassword.toString())
-        return enqueueRequest<String>(request, responseLiveData)
+
+    override fun resetPassword(password:String?, cPassword:String?)=netWorkLiveData.switchMap {
+        if (it) {
+            val request = authRequestInterface.resetPassword(header.toString(), password.toString(), cPassword.toString())
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
     override fun addClient(
-        header: String?,
         client: Client
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
+    )=netWorkLiveData.switchMap {
+        if (it) {
+            val request = authRequestInterface.addClient(client)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
 
-        val request = authRequestInterface.addClient(header.toString(), client)
-        return enqueueRequest<Client>(request, responseLiveData)
     }
 
     override fun editClient(
-        header: String?,
         client: Client
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
+    )=netWorkLiveData.switchMap {
+        if (it) {
+            val request = authRequestInterface.editClient(client)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
 
-        val request = authRequestInterface.editClient(header.toString(), client)
-        return enqueueRequest<SingleClient>(request, responseLiveData)
     }
 
     override fun getAllClient(): LiveData<ServicesResponseWrapper<ParentData>> {
 
         val request = authRequestInterface.getAllClient()
-        return enqueueRequest<ClientsList>(request, responseLiveData)
+        return enqueueRequest<ClientsList>(request)
     }
 
-    override fun deleteClient(
-        header: String?,
-        id: String?
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
 
-        val request = authRequestInterface.deleteClient(header, id)
-        return enqueueRequest<NothingExpected>(request, responseLiveData)
+
+    override suspend fun getAllClientsTwo(): Flow<ServicesResponseWrapper<ParentData>> = netWorkStateFlow.flatMapLatest{
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllClients()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            uiState
+        }
+    }
+
+
+    override fun deleteClient(
+        id: String?
+    )=netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.deleteClient(id)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
     override fun addPhoto(
         body: RequestBody
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val request = authRequestInterface.addPhoto(body)
-        return enqueueRequest(request, responseLiveData)
+    )=netWorkLiveData.switchMap {
+        if (it) {
+            val request = authRequestInterface.addPhoto(body)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
     override fun addPhoto(
         photo: List<MultipartBody.Part>?
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = authRequestInterface.addPhoto(photo)
-        return enqueueRequest(request, responseLiveData)
+    )=netWorkLiveData.switchMap {
+        if (it) {
+            val request = authRequestInterface.addPhoto(photo)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
     override fun editPhotoInfo(
         id: String,
         info: String
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = authRequestInterface.editPhotoInfo(id, info)
-        return enqueueRequest(request, responseLiveData)
+    )=netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.editPhotoInfo(id, info)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
     override fun uploadProfilePicture(
         body: RequestBody
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val request = authRequestInterface.uploadProfilePicture(body)
-        return enqueueRequest<User>(request, responseLiveData)
+    )=netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.uploadProfilePicture(body)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
     override fun addMeasurement(
-        header: String?,
         body: MeasurementValues
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val request = authRequestInterface.addMeasurement(header, body)
-        return enqueueRequest<ClientMeasurement>(request, responseLiveData)
+    )=netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.addMeasurement(body)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
-    @ExperimentalCoroutinesApi
-    override suspend fun getAllPhoto(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
 
-        try {
-            val request = authRequestInterface.getAllPhoto()
-            onSuccessFlowResponse(request)
+
+    var theClientsList = netWorkLiveData.switchMap {
+
+        if(it){
+            try{
+                viewModelScope.launch {
+                    val r = authRequestInterface.getAllClients()
+                    onSuccessStateFlow(r)
+                }
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState.asLiveData()
         }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+        else{
+            onNetworkStateFlow()
+            uiState.asLiveData()
         }
+
+    }
+
+
+    val allPhotos  = netWorkLiveData.switchMap{
+        if(it){
+            try{
+                viewModelScope.launch {
+                    val request = authRequestInterface.getAllPhoto()
+                    onSuccessStateFlow(request)
+                }
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState.asLiveData()
+        }
+        else{
+            badNetworkServiceLiveData
+        }
+
+    }
+    val photos = netWorkStateFlow.flatMapLatest{
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllPhoto()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+
+    }
+    
+    @ExperimentalCoroutinesApi
+    override suspend fun getAllPhoto()= netWorkStateFlow.flatMapLatest{
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllPhoto()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+
+    }
+
+
+    val getClientStateFlow = netWorkStateFlow.flatMapLatest{
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllClients()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+
     }
 
     @ExperimentalCoroutinesApi
     override suspend fun deleteMeasurements(
-        header: String?,
         id: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-
-        try {
-            val request = authRequestInterface.deleteMeasurement(header, id)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    ) = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.deleteMeasurement(id)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
     @ExperimentalCoroutinesApi
     override suspend fun editMeasurement(
-        header: String?,
         measurementValues: MeasurementValues
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-
-        try {
-            val request = authRequestInterface.editMeasurement(header, measurementValues)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.editMeasurement(measurementValues)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
+
 
 
     @ExperimentalCoroutinesApi
     override suspend fun verifyPayment(
-        header: String?,
         reference: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-
-        try {
-            val request = authRequestInterface.verifyPayment(header, reference)
-            onSuccessFlowResponse(request)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.verifyPayment(reference)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
-        }
     }
 
-    override fun addPhoto(map: HashMap<String, RequestBody>): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = authRequestInterface.addPhoto(map)
-        return enqueueRequest(request, responseLiveData)
-    }
+//
+//    override fun addPhoto(map: HashMap<String, RequestBody>): LiveData<ServicesResponseWrapper<ParentData>> {
+//        val request = authRequestInterface.addPhoto(map)
+//        return enqueueRequest(request)
+//    }
 
-    override fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val request = authRequestInterface.getAllPhoto(header)
-        return enqueueRequest<PhotoList>(request, responseLiveData)
-    }
+//    override fun getAllPhoto(): LiveData<ServicesResponseWrapper<ParentData>> {
+//
+//        val request = authRequestInterface.getAllPhoto()
+//        return enqueueRequest<PhotoList>(request)
+//    }
 
     override fun deleteMedia(
-        header: String?,
         id: String?
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val request = authRequestInterface.deleteMedia(header, id)
-        return enqueueRequest<NothingExpected>(request, responseLiveData)
+    )=netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.deleteMedia(id)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
-    override fun getAllArticles(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = authRequestInterface.getAllArticles(header)
-        return enqueueRequest<ArticleList>(request, responseLiveData)
+    val articles =netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.getAllArticles()
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
+    }
+
+    override fun getAllArticles()=netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.getAllArticles()
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
+    }
+
+
+    var videos = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getVideos()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+    @ExperimentalCoroutinesApi
+    override suspend fun getVideos()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getVideos()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+
+
+    @ExperimentalCoroutinesApi
+    override suspend fun getArticles()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getArticles()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+
+    var measurementTypes = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getMeasurementTypes()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-
-        try {
-            val request = authRequestInterface.getVideos(header)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    override suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-
-        try {
-            val request = authRequestInterface.getArticles(header)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
-        }
-
-    }
-
-    @ExperimentalCoroutinesApi
-    override suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-
-        try {
-            val request = authRequestInterface.getMeasurementTypes(header)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    override suspend fun getMeasurementTypes()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getMeasurementTypes()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
+
 
     @ExperimentalCoroutinesApi
     override suspend fun addDeliveryAddress(
-        header: String?,
         clientId: String?,
         deliveryAddress: String?
-    ): Flow<ServicesResponseWrapper<ParentData>> =channelFlow {
-        try {
-            val request = authRequestInterface.addDeliveryAddress(header, clientId, deliveryAddress)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.addDeliveryAddress(clientId, deliveryAddress)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
+
 
 
 
     @ExperimentalCoroutinesApi
     override suspend fun addCard(
-        header: String?,
         email: String?,
         amount: String?
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-        try {
-            val request = authRequestInterface.addCard(header, email, amount)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.addCard(email, amount)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
+
+
     @ExperimentalCoroutinesApi
-    override suspend fun getAllClients(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow{
-        try {
-            val request = authRequestInterface.getAllClients()
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    override suspend fun getAllClients()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllClients()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
+
+
+
 
 
     @ExperimentalCoroutinesApi
     override fun getAllAddress(
-        header: String?,
         clientId: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow{
-        try {
-            val request = authRequestInterface.getAllAddress(header, clientId)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllAddress(clientId)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
+    var userDetails = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getUserDetails()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
     @ExperimentalCoroutinesApi
-    override suspend fun getUserDetails(header: String): Flow<ServicesResponseWrapper<ParentData>> =channelFlow{
-        try {
-            val request = authRequestInterface.getUserDetails(header)
-            onSuccessFlowResponse(request)
-        }
-        catch (e:HttpException){
-            onErrorFlowResponse(e)
+    override suspend fun getUserDetails()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getUserDetails()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
 
-    override fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = authRequestInterface.getAllVideos(header)
-        return enqueueRequest<VideoList>(request, responseLiveData)
+
+    override fun getAllVideos()=netWorkLiveData.switchMap{
+        if (it) {
+            val request = authRequestInterface.getAllVideos()
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
+
 
     override fun uploadProfilePicture(
-        header: String?,
         body: MultipartBody.Part
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-
-        val request = authRequestInterface.uploadProfilePicture(header, body)
-        return enqueueRequest<UploadImageClass>(request, responseLiveData)
+    )=netWorkLiveData.switchMap {
+        if (it) {
+            val request = authRequestInterface.uploadProfilePicture(body)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
     }
 
     @ExperimentalCoroutinesApi
     override suspend fun changePassword(
-        header: String?,
         oldPassword: String?,
         newPassword: String?
-    ): Flow<ServicesResponseWrapper<ParentData>> =channelFlow {
-        try {
-            val request = authRequestInterface.changePassword(header, oldPassword, newPassword)
-            onSuccessFlowResponse(request)
-        } catch (e: HttpException) {
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.changePassword(oldPassword, newPassword)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
     @ExperimentalCoroutinesApi
     override  fun getAllMeasurements(
         clientId: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-        try {
-            val request = authRequestInterface.getAllMeasurements(clientId)
-            onSuccessFlowResponse(request)
-        } catch (e: HttpException) {
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllMeasurements(clientId)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
+
 
     @ExperimentalCoroutinesApi
     override suspend fun addReviewAndRating(
         rate: Float,
         artisanId: String,
         comment: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-        try {
-            val request = authRequestInterface.addReviewAndRating(rate, artisanId, comment)
-            onSuccessFlowResponse(request)
-        } catch (e: HttpException) {
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.addReviewAndRating(rate, artisanId, comment)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
@@ -387,44 +730,104 @@ open class AuthViewModel @Inject constructor(
     override suspend fun subscribe(
         plan: String,
         customer: String
-    ): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-        try {
-            val request = authRequestInterface.subscribe(plan, customer)
-            onSuccessFlowResponse(request)
-        } catch (e: HttpException) {
-            onErrorFlowResponse(e)
+    )= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.subscribe(plan, customer)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+
+    val plans = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllPlans()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getAllPlans(): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-        try {
-            val request = authRequestInterface.getAllPlans()
-            onSuccessFlowResponse(request)
-        } catch (e: HttpException) {
-            onErrorFlowResponse(e)
+    override suspend fun getAllPlans()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getAllPlans()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+
+    val subscriptions = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getUserAllSubscriptions()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getUserAllSubscriptions(): Flow<ServicesResponseWrapper<ParentData>>  = channelFlow {
-        try {
-            val request = authRequestInterface.getUserAllSubscriptions()
-            onSuccessFlowResponse(request)
-        } catch (e: HttpException) {
-            onErrorFlowResponse(e)
+    override suspend fun getUserAllSubscriptions()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getUserAllSubscriptions()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
-
 
     @ExperimentalCoroutinesApi
-    override suspend fun getSubscriptions(code: String): Flow<ServicesResponseWrapper<ParentData>> = channelFlow {
-        try {
-            val request = authRequestInterface.getSubscriptions(code)
-            onSuccessFlowResponse(request)
-        } catch (e: HttpException) {
-            onErrorFlowResponse(e)
+    override suspend fun getSubscriptions(code: String)= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getSubscriptions(code)
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
         }
     }
-
 }
+
+

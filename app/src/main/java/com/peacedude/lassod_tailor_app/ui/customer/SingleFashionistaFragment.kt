@@ -96,23 +96,23 @@ class SingleFashionistaFragment : DaggerFragment() {
         })
 
         single_fashionista_fragment_favourite_iv.setOnClickListener {
-             CoroutineScope(Dispatchers.Main).launch {
-                 supervisorScope {
-                     val addFavourite = async {
-                         userViewModel.addFavourite(artisan?.id.toString())
-                     }
-                     addFavourite.await()
-                     .catch {
-                        i(title, "Error All Photo on flow ${it.message}")
-                    }
-                    .collect {
-                        onFlowResponse<UserResponse<Artisan>>(response = it) { it ->
-                            requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-                            single_fashionista_fragment_favourite_vf.showNext()
-                        }
-                    }
-                 }
-             }
+//             CoroutineScope(Dispatchers.Main).launch {
+//                 supervisorScope {
+//                     val addFavourite = async {
+//                         userViewModel.addFavourite(artisan?.id.toString())
+//                     }
+//                     addFavourite.await()
+//                     .catch {
+//                        i(title, "Error All Photo on flow ${it.message}")
+//                    }
+//                    .collect {
+//                        onFlowResponse<UserResponse<Artisan>>(response = it) { it ->
+//                            requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+//                            single_fashionista_fragment_favourite_vf.showNext()
+//                        }
+//                    }
+//                 }
+//             }
 
 
         }

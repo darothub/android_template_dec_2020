@@ -31,8 +31,6 @@ import kotlinx.android.synthetic.main.search_filter_item.view.*
 import kotlinx.android.synthetic.main.search_media_category_item.view.*
 import kotlinx.android.synthetic.main.search_result_media_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 
@@ -213,33 +211,33 @@ class SearchFragment : DaggerFragment() {
         category: String?,
         page: Long
     ) {
-        CoroutineScope(Dispatchers.Main).launch {
-
-            supervisorScope {
-
-                userViewModel.searchArtisan(keyword, location, specialty, category, page, 2)
-                    .handleResponse({
-                        onFlowResponse<ArtisanSearchResponse>(response = it) {
-                            val artisanList = arrayListOf<SearchResultTwo>(
-                                SearchResultTwo("Tailors",
-                                    it?.tailors as List<Artisan>
-                                ),
-                                SearchResultTwo("Weavers",
-                                    it.weavers as List<Artisan>
-                                )
-                            )
-                            i(title, "artisans ${it?.tailors}")
-                            recycling.submitList(artisanList)
-                        }
-
-                    },{err ->
-                        i(title, "$err")
-                        requireActivity().gdToast(err, Gravity.BOTTOM)
-                    })
-
-
-            }
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//
+//            supervisorScope {
+//
+//                userViewModel.searchArtisan(keyword, location, specialty, category, page, 2)
+//                    .handleResponse({
+//                        onFlowResponse<ArtisanSearchResponse>(response = it) {
+//                            val artisanList = arrayListOf<SearchResultTwo>(
+//                                SearchResultTwo("Tailors",
+//                                    it?.tailors as List<Artisan>
+//                                ),
+//                                SearchResultTwo("Weavers",
+//                                    it.weavers as List<Artisan>
+//                                )
+//                            )
+//                            i(title, "artisans ${it?.tailors}")
+//                            recycling.submitList(artisanList)
+//                        }
+//
+//                    }) { err ->
+//                        i(title, "$err")
+//                        requireActivity().gdToast(err, Gravity.BOTTOM)
+//                    }
+//
+//
+//            }
+//        }
 
     }
 

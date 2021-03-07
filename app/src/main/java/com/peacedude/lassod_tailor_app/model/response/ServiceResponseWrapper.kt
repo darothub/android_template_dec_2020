@@ -26,4 +26,6 @@ sealed class ServicesResponseWrapper<T>(
      */
     class Error<T>(message: String?, code:Int?= null,  data: T? = null) : ServicesResponseWrapper<T>(data,  message, code)
     class Network<T>(code:Int?= null, message: String?,  data: T? = null) : ServicesResponseWrapper<T>(data,  message, code)
+    class Empty<T> : ServicesResponseWrapper<T>()
+
 }

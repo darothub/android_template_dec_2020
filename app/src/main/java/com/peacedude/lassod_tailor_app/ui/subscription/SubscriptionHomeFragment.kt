@@ -21,6 +21,9 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.Data
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
+import com.peacedude.lassod_tailor_app.model.request.ClientsList
+import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.SubscribedDataDetails
 import com.peacedude.lassod_tailor_app.model.response.SubscriptionResponse
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
@@ -36,9 +39,11 @@ import kotlinx.android.synthetic.main.subscription_arangement_items.view.*
 import kotlinx.android.synthetic.main.subscription_list_item.view.*
 import kotlinx.android.synthetic.main.subscription_plans_description_item.view.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -88,85 +93,97 @@ class SubscriptionHomeFragment : DaggerFragment() {
 
 
         //launch scope for coroutine jobs
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val getUserSubscriptions = async {
-                    authViewModel.getUserAllSubscriptions()
-                }
-                //Get user subscriptions
-                getUserSubscriptions.await()
-                    .handleResponse({
-                        onFlowResponse<Data>(response = it, error = { err ->
-                            i(title, "error on subscriptionlist $err")
-                            requireActivity().gdToast(err, Gravity.BOTTOM)
-                        }) { it1 ->
+//        CoroutineScope(Dispatchers.Main).launch {
+//            val st = subscriptionTask()
+//            st.handleResponse({
+//                onFlowResponse<Data>(response = it, error = { err ->
+//                    i(title, "Error on client getallClicent $err")
+//                    requireActivity().gdToast(err, Gravity.BOTTOM)
+//                }){response->
+//                    i(title, "Success on client getsubs $it")
+//                    val listOfSubscriptions = arrayListOf<SubscriptionsInfoByExpiryDate>()
+//                    (response?.data as? SubscriptionList)?.map {
+//                        SubscriptionsInfo(it.plan.name, it.nextPaymentDate)
+//                    }?.groupBy {
+//                        it.expiryDate
+//                    }?.onEachIndexed { index, entry ->
+//                        if(index == 0){
+//                            listOfSubscriptions.add(SubscriptionsInfoByExpiryDate("latest", entry.value))
+//                        }
+//                        listOfSubscriptions.add(SubscriptionsInfoByExpiryDate("Old", entry.value))
+//                    }
+//                    setupSubscriptionListView(listOfSubscriptions)
+//                }
+//
+//                true
+//            }){ err ->
+//                i(title, "error2 on subscriptionlist $err")
+//                requireActivity().gdToast(err, Gravity.BOTTOM)
+//            }
+//        }
 
-                            val listOfSubscriptions = arrayListOf<SubscriptionsInfoByExpiryDate>()
-                            //Mapping and grouping subscription by expiry date.
-                            (it1?.data as? SubscriptionList)?.map {
-                                SubscriptionsInfo(it.plan.name, it.nextPaymentDate)
-                            }?.groupBy {
-                                it.expiryDate
-                            }?.onEachIndexed { index, entry ->
-                                if(index == 0){
-                                    listOfSubscriptions.add(SubscriptionsInfoByExpiryDate("latest", entry.value))
-                                }
-                                listOfSubscriptions.add(SubscriptionsInfoByExpiryDate("Old", entry.value))
-                            }
-                            if(listOfSubscriptions.isEmpty()){
 
-                            }
-                            else{
-                                subscription_home_fragment_vf.showNext()
-                                val listOfString = arrayListOf("Subscription", "Expiry date")
-                                subscription_home_fragment_rv.setupAdapter<SubscriptionsInfoByExpiryDate>(R.layout.subscription_arangement_items) { adapter, context, list ->
+    }
 
-                                    bind { itemView, position, item ->
+    private fun setupSubscriptionListView(listOfSubscriptions: ArrayList<SubscriptionsInfoByExpiryDate>) {
+        if (listOfSubscriptions.isNotEmpty()) {
+            subscription_home_fragment_vf.showNext()
+            val listOfString = arrayListOf("Subscription", "Expiry date")
+            subscription_home_fragment_rv.setupAdapter<SubscriptionsInfoByExpiryDate>(R.layout.subscription_arangement_items) { adapter, context, list ->
 
-                                        itemView.subscription_arrangementfragment_sub_rv.setupAdapter<SubscriptionsInfo>(R.layout.subscription_list_item) { subadapter, context, sublist ->
+                bind { itemView, position, item ->
 
-                                            bind { subitemView, subposition, subitem ->
-                                                val expDate = subitem?.expiryDate.toString().replace("[TZ]".toRegex(), " ")
-                                                val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                                                simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
-                                                val dateString = simpleDateFormat.parse(expDate)?.toString()
-                                                val dayOfWeek = dateString?.subSequence(0, 11)
-                                                val year = dateString?.takeLast(4)
-                                                subitemView.subscription_type_tv.text = subitem?.planName
-                                                subitemView.subscription_exp_tv.text = "$dayOfWeek $year"
+                    itemView.subscription_arrangementfragment_sub_rv.setupAdapter<SubscriptionsInfo>(
+                        R.layout.subscription_list_item
+                    ) { subadapter, context, sublist ->
 
-                                            }
+                        bind { subitemView, subposition, subitem ->
+                            val expDate =
+                                subitem?.expiryDate.toString().replace("[TZ]".toRegex(), " ")
+                            val simpleDateFormat =
+                                SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                            simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
+                            val dateString = simpleDateFormat.parse(expDate)?.toString()
+                            val dayOfWeek = dateString?.subSequence(0, 11)
+                            val year = dateString?.takeLast(4)
+                            subitemView.subscription_type_tv.text = subitem?.planName
+                            subitemView.subscription_exp_tv.text = "$dayOfWeek $year"
 
-                                            setLayoutManager(
-                                                LinearLayoutManager(
-                                                    requireContext(),
-                                                    LinearLayoutManager.VERTICAL,
-                                                    false
-                                                )
-                                            )
-                                            submitList(item?.list)
-                                        }
-                                    }
-                                    setLayoutManager(
-                                        LinearLayoutManager(
-                                            requireContext(),
-                                            LinearLayoutManager.VERTICAL,
-                                            false
-                                        )
-                                    )
-                                    submitList(listOfSubscriptions)
-                                }
-                            }
                         }
-                    }, {err ->
-                        i(title, "error2 on subscriptionlist $err")
-                        requireActivity().gdToast(err, Gravity.BOTTOM)
-                    })
 
-
+                        setLayoutManager(
+                            LinearLayoutManager(
+                                requireContext(),
+                                LinearLayoutManager.VERTICAL,
+                                false
+                            )
+                        )
+                        submitList(item?.list)
+                    }
+                }
+                setLayoutManager(
+                    LinearLayoutManager(
+                        requireContext(),
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
+                )
+                submitList(listOfSubscriptions)
             }
         }
+    }
 
+    @ExperimentalCoroutinesApi
+    @SuppressLint("SetTextI18n")
+    private suspend fun subscriptionTask(): Flow<ServicesResponseWrapper<ParentData>> {
+        //Observer for get all clients request
+        return supervisorScope {
+            val getUserSubscriptions = async {
+                authViewModel.getUserAllSubscriptions()
+            }
+            getUserSubscriptions.await()
+
+        }
 
     }
 

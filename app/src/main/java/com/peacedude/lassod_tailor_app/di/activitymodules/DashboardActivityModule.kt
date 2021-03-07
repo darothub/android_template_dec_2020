@@ -2,6 +2,7 @@ package com.peacedude.lassod_tailor_app.di.activitymodules
 
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.auth.*
 import com.peacedude.lassod_tailor_app.di.fragmentmodules.customer.FavouriteFragmentModule
+import com.peacedude.lassod_tailor_app.di.fragmentmodules.user.DrawerFragmentModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.auth.AuthRequestModule
 import com.peacedude.lassod_tailor_app.di.networkmodules.user.UserRequestsModule
 import com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth.AuthViewModelModule
@@ -29,7 +30,8 @@ abstract class DashboardActivityModule {
             MediaFragmentModule::class,
             SingleChatFragmentModule::class,
             MessageFragmentModule::class,
-            FavouriteFragmentModule::class
+            FavouriteFragmentModule::class,
+            DrawerFragmentModule::class
         ]
     )
     abstract fun provideDashboardActivity(): DashboardActivity

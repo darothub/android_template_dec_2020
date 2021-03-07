@@ -124,29 +124,29 @@ class SecurityFragment : DaggerFragment() {
                     )
                 }
                 else -> {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        supervisorScope {
-                            val changePasswordRequest = async {
-                                authViewModel.changePassword(
-                                    header.toString(),
-                                    oldPassword,
-                                    newPassword
-                                )
-                            }
-                            changePasswordRequest.await()
-                                .collect {
-                                    onFlowResponse<UserResponse<NothingExpected>>(saveChangesBtn, saveChangesProgressbar, response = it) {
-                                        requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-                                    }
-                                }
-                            try {
-
-
-                            } catch (e: Exception) {
-                                i(title, "Change password error data flow ${e.message}")
-                            }
-                        }
-                    }
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        supervisorScope {
+//                            val changePasswordRequest = async {
+//                                authViewModel.changePassword(
+//                                    header.toString(),
+//                                    oldPassword,
+//                                    newPassword
+//                                )
+//                            }
+//                            changePasswordRequest.await()
+//                                .collect {
+//                                    onFlowResponse<UserResponse<NothingExpected>>(saveChangesBtn, saveChangesProgressbar, response = it) {
+//                                        requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+//                                    }
+//                                }
+//                            try {
+//
+//
+//                            } catch (e: Exception) {
+//                                i(title, "Change password error data flow ${e.message}")
+//                            }
+//                        }
+//                    }
                 }
             }
         }

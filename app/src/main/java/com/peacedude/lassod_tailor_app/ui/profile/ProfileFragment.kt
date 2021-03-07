@@ -1,6 +1,5 @@
 package com.peacedude.lassod_tailor_app.ui.profile
 
-import IsEmptyCheck
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
@@ -15,16 +14,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.textfield.TextInputEditText
@@ -34,22 +35,25 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
+import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.PhotoList
-import com.peacedude.lassod_tailor_app.model.response.SubscriptionResponse
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
+import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.ui.DashboardActivity
+import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
+import com.utsman.recycling.adapter.RecyclingAdapter
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 
@@ -61,10 +65,10 @@ import javax.inject.Inject
 class ProfileFragment : DaggerFragment() {
 
 
-
     private val title by lazy {
         getName()
     }
+
     //Get logged-in user
     private val currentUser: User? by lazy {
         authViewModel.currentUser
@@ -76,11 +80,16 @@ class ProfileFragment : DaggerFragment() {
             customView(R.layout.single_client_layout)
         }
     }
-
+    val dialog2 by lazy {
+        Dialog(requireContext(), R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            setCanceledOnTouchOutside(false)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+        }
+    }
 
 
     lateinit var dialogDeleteProgressBar: ProgressBar
-
 
 
     private val dialogNameInitialsTv by lazy {
@@ -144,23 +153,22 @@ class ProfileFragment : DaggerFragment() {
     }
 
 
-    lateinit var dialogEditBtn:Button
-    lateinit var dialogDeleteBtn:Button
-    lateinit var dialogUpdateBtn:Button
-    lateinit var dialogUpdateProgressBar:ProgressBar
-    lateinit var dialogSendPhotoBtn:Button
-    lateinit var dialogChatBtn:Button
+    lateinit var dialogEditBtn: Button
+    lateinit var dialogDeleteBtn: Button
+    lateinit var dialogUpdateBtn: Button
+    lateinit var dialogUpdateProgressBar: ProgressBar
+    lateinit var dialogSendPhotoBtn: Button
+    lateinit var dialogChatBtn: Button
     lateinit var recyclerView: RecyclerView
     lateinit var viewFlipper: ViewFlipper
 
-    private val header by lazy {
-        authViewModel.header
-    }
+
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val authViewModel: AuthViewModel by viewModels {
+        viewModelProviderFactory
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -199,7 +207,8 @@ class ProfileFragment : DaggerFragment() {
             //Get included view for update button
             val includedViewForUpdateBtn =
                 (dialog.findViewById(R.id.single_client_edit_update_btn) as View)
-            val includedViewForSendPhotoBtn = (dialog.findViewById(R.id.single_client_send_photo_btn) as View)
+            val includedViewForSendPhotoBtn =
+                (dialog.findViewById(R.id.single_client_send_photo_btn) as View)
 
             val includedViewForChatBtn = (dialog.findViewById(R.id.single_client_chat_btn) as View)
             dialogDeleteBtn = includedViewForDeleteBtn.findViewById(R.id.btn)
@@ -265,9 +274,6 @@ class ProfileFragment : DaggerFragment() {
                     R.color.colorPrimary
                 )
             )
-
-
-
             exitClientIv.setOnClickListener {
                 dialog.dismiss()
             }
@@ -277,9 +283,9 @@ class ProfileFragment : DaggerFragment() {
 
         })
 
-        clientTransaction()
-
-
+//        lifecycleScope.launchWhenStarted {
+//            authViewModel.getClientStateFlow.collect()
+//        }
 
         onBackDispatcher {
             i(title, "Back pressed")
@@ -292,181 +298,193 @@ class ProfileFragment : DaggerFragment() {
     }
 
     @ExperimentalCoroutinesApi
-    @SuppressLint("SetTextI18n")
-    private fun clientTransaction() {
-        //Observer for get all clients request
-        CoroutineScope(Main).launch {
-            supervisorScope {
-                val getAllClients = async {
-                    authViewModel.getAllClients()
+    override fun onResume() {
+        super.onResume()
+
+
+        observeRequest<ClientsList>(authViewModel.theClientsList, null, null, true, {
+            val data = it?.data?.clients
+            i(title, "ClientState flow $data")
+            if (data?.isNotEmpty() == true) {
+                setUpClientListView(data)
+            }
+            else{
+                profile_fragment_recyclerview_vf.displayedChild = 1
+            }
+
+        }, { error ->
+
+        })
+
+
+//        observeResponseState<ClientsList>(
+//            authViewModel.uiState,
+//            null,
+//            null,
+//            {
+//                val data = it?.data?.clients
+//                i(title, "ClientState flow $data")
+//                if (data?.isNotEmpty() == true) {
+//                    setUpClientListView(data)
+//                }
+//            },
+//            {
+//
+//            })
+
+
+    }
+
+    private fun setUpClientListView(listOfClient: List<Client?>?) {
+        recyclerView.setupAdapter<Client>(R.layout.client_list_item) { adapter, _, clientList ->
+            bind { itemView, position, item ->
+                val nameContainsSpace = item?.name?.contains(" ")
+                if (nameContainsSpace!!) {
+                    val nameSplit = item.name.split(" ")
+                    val firstName = nameSplit.get(0)
+                    val lastName = nameSplit.get(1)
+                    itemView.client_item_name_initials_tv.text =
+                        "${firstName.get(0)}${lastName.get(0)}"
+                } else {
+                    val firstName = item.name[0]
+                    itemView.client_item_name_initials_tv.text = "$firstName"
                 }
 
-                getAllClients.await()
-                    .handleResponse({
-                        onFlowResponse<ClientsList>(response = it, error = { err ->
-                            i(title, "Error on client getallClicent $err")
-                            requireActivity().gdToast(err, Gravity.BOTTOM)
-                        }) {result->
-                                val list = result?.clients
-                                if (list?.isEmpty() == true) {
-                                    i(title, "list of clients empty")
+                itemView.client_location_tv.text = item.deliveryAddress
+                itemView.client_name_tv.text = item.name
 
-                                } else {
-                                    i(title, "list of clients not empty")
+                //Set on click listener for item view
+                onItemViewClick(itemView, item, position, nameContainsSpace, clientList, adapter)
 
-                                    val listOfClient = list?.map {
-                                        Client(
-                                            it?.name.toString(),
-                                            it?.phone.toString(),
-                                            it?.email.toString(),
-                                            it?.deliveryAddress.toString()
-                                        ).apply {
-                                            country = it?.country
-                                            state = it?.state
-                                            tailorId = it?.tailorId
-                                            id = it?.id
-                                            gender = it?.gender
-                                        }
-                                    }
-                                    recyclerView.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, clientList ->
+                dialog.setOnDismissListener {
+                    displayClientDialog.hide()
+                    editClientDialog.hide()
+                }
 
-                                        bind { itemView, position, item ->
-                                            val nameContainsSpace = item?.name?.contains(" ")
-                                            if (nameContainsSpace!!) {
-                                                val nameSplit = item.name.split(" ")
-                                                val firstName = nameSplit.get(0)
-                                                val lastName = nameSplit.get(1)
-                                                itemView.client_item_name_initials_tv.text =
-                                                    "${firstName.get(0)}${lastName.get(0)}"
-                                            } else {
-                                                val firstName = item.name[0]
-                                                itemView.client_item_name_initials_tv.text = "$firstName"
-                                            }
-
-                                            itemView.client_location_tv.text = item.deliveryAddress
-                                            itemView.client_name_tv.text = item.name
-
-                                            //Set on click listener for item view
-                                            itemView.setOnClickListener {
-
-                                                GlobalVariables.globalId = item?.id.toString()
-                                                GlobalVariables.globalPosition = position
-
-                                                if (nameContainsSpace) {
-                                                    val nameSplit = item.name.split(" ")
-                                                    val firstName = nameSplit.get(0)
-                                                    val lastName = nameSplit.get(1)
-                                                    dialogNameInitialsTv.text = "${firstName.get(0)}${lastName.get(0)}"
-                                                } else {
-                                                    val firstName = item.name[0]
-                                                    dialogNameInitialsTv.text = "$firstName"
-                                                }
-
-                                                dialogNameTv.text = item.name
-
-                                                dialog.show {
-                                                    cornerRadius(10F)
-                                                }
-                                                dialogEditBtn.setOnClickListener {
-
-                                                    GlobalVariables.globalClient = item
-                                                    if (item != null) {
-
-                                                        Log.i(
-                                                            title,
-                                                            "Client $item  global ${GlobalVariables.globalClient}"
-                                                        )
-                                                        dialog.dismiss()
-                                                        startActivity(
-                                                            Intent(
-                                                                requireActivity(),
-                                                                ClientActivity::class.java
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                                //When dialog delete button is clicked
-                                                dialogDeleteBtn.setOnClickListener {
-                                                    dialog.dismiss()
-
-                                                    clientList?.remove(item)
-                                                    adapter.notifyDataSetChanged()
-                                                    if (clientList?.isEmpty()!!) {
-                                                        profile_fragment_recyclerview_vf.showPrevious()
-                                                    }
-                                                    val req = authViewModel.deleteClient(
-                                                        header,
-                                                        item.id
-                                                    )
-
-                                                    observeRequest<NothingExpected>(
-                                                        req,
-                                                        dialogDeleteProgressBar,
-                                                        dialogDeleteBtn,
-                                                        false,
-                                                        { result ->
-                                                            val res = result
-                                                            requireActivity().gdToast(
-                                                                "${res.message}",
-                                                                Gravity.BOTTOM
-                                                            )
-
-                                                            i(title, "We are here ")
-
-
-                                                        },
-                                                        { err ->
-                                                            clientList.add(item)
-                                                            adapter.notifyDataSetChanged()
-                                                            requireActivity().gdErrorToast(
-                                                                err,
-                                                                Gravity.BOTTOM
-                                                            )
-                                                            i(title, "DeleteClientError $err")
-                                                        })
-
-                                                }
-                                            }
-
-
-
-
-                                            dialog.setOnDismissListener {
-                                                displayClientDialog.hide()
-                                                editClientDialog.hide()
-                                            }
-
-                                        }
-                                        setLayoutManager(
-                                            LinearLayoutManager(
-                                                requireContext(),
-                                                LinearLayoutManager.VERTICAL,
-                                                false
-                                            )
-                                        )
-                                        submitList(listOfClient)
-                                        viewFlipper.showNext()
-                                    }
-
-                                }
-
-
-//                            requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-
-                        }
-                    }, {err ->
-                        requireActivity().gdToast(err, Gravity.BOTTOM)
-                    })
             }
+            setLayoutManager(
+                LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL,
+                    false
+                )
+            )
+            submitList(listOfClient)
+
+        }
+    }
+
+    private fun onItemViewClick(
+        itemView: View,
+        item: Client,
+        position: Int,
+        nameContainsSpace: Boolean,
+        clientList: MutableList<Client?>?,
+        adapter: RecyclingAdapter<Client>
+    ) {
+        itemView.setOnClickListener {
+
+            GlobalVariables.globalId = item?.id.toString()
+            GlobalVariables.globalPosition = position
+
+            if (nameContainsSpace) {
+                val nameSplit = item.name.split(" ")
+                val firstName = nameSplit.get(0)
+                val lastName = nameSplit.get(1)
+                dialogNameInitialsTv.text = "${firstName.get(0)}${lastName.get(0)}"
+            } else {
+                val firstName = item.name[0]
+                dialogNameInitialsTv.text = "$firstName"
+            }
+
+            dialogNameTv.text = item.name
+            dialog.show {
+                cornerRadius(10F)
+            }
+            onDialogEditTask(item)
+            //When dialog delete button is clicked
+            onDialogDeleteTask(clientList, item, adapter)
+        }
+    }
+
+    private fun onDialogDeleteTask(
+        clientList: MutableList<Client?>?,
+        item: Client,
+        adapter: RecyclingAdapter<Client>
+    ) {
+        dialogDeleteBtn.setOnClickListener {
+            dialog.dismiss()
+            clientList?.remove(item)
+            adapter.notifyDataSetChanged()
+            if (clientList?.isEmpty()!!) {
+                profile_fragment_recyclerview_vf.showPrevious()
+            }
+            val req = authViewModel.deleteClient(
+                item.id
+            )
+            observeRequest<NothingExpected>(
+                req,
+                dialogDeleteProgressBar,
+                dialogDeleteBtn,
+                false,
+                { result ->
+                    val res = result
+                    requireActivity().gdToast(
+                        "${res.message}",
+                        Gravity.BOTTOM
+                    )
+                    i(title, "We are here ")
+
+                },
+                { err ->
+                    clientList.add(item)
+                    adapter.notifyDataSetChanged()
+                    requireActivity().gdErrorToast(
+                        err,
+                        Gravity.BOTTOM
+                    )
+                    i(title, "DeleteClientError $err")
+                })
+
+        }
+    }
+
+    private fun onDialogEditTask(item: Client) {
+        dialogEditBtn.setOnClickListener {
+
+            GlobalVariables.globalClient = item
+            if (item != null) {
+
+                Log.i(
+                    title,
+                    "Client $item  global ${GlobalVariables.globalClient}"
+                )
+                dialog.dismiss()
+                startActivity(
+                    Intent(
+                        requireActivity(),
+                        ClientActivity::class.java
+                    )
+                )
+            }
+        }
+    }
+
+
+    @ExperimentalCoroutinesApi
+    @SuppressLint("SetTextI18n")
+    private suspend fun clientTransaction(): Flow<ServicesResponseWrapper<ParentData>> {
+        //Observer for get all clients request
+        return supervisorScope {
+            val getAllClients = async {
+                authViewModel.getAllClients()
+            }
+            getAllClients.await()
+
         }
 
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        i(title, "onresume")
-    }
 
     override fun onPause() {
         super.onPause()
@@ -475,4 +493,5 @@ class ProfileFragment : DaggerFragment() {
     }
 
 }
+
 

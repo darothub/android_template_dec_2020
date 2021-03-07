@@ -143,71 +143,71 @@ class DeliveryAddressFragment : DaggerFragment() {
             i(title, "Invalid client")
         }
         else{
-            CoroutineScope(Dispatchers.Main).launch {
-                supervisorScope {
-
-                    val req = async { authViewModel.getAllAddress(header, clientId.toString()) }
-                    req.await()
-                        .catch {
-                            i(title, "Error on flow ${it.message}")
-                        }
-                        .collect {
-                            onFlowResponse<DeliveryAddress>(
-                                button = dialogAddDeliveryBtn,
-                                progressBar = addDeliveryaddressProgressBar,
-                                response = it
-                            ) {
-                                i(title, "addresses data flow $it")
-                                val listOfAddress = it?.deliveryAddress?.map { address ->
-                                    Client(
-                                        clientToBeEdited?.name.toString(),
-                                        clientToBeEdited?.phone.toString(),
-                                        clientToBeEdited?.email.toString(),
-                                        address.deliveryAddress
-                                    ).apply {
-                                        this.id = address.clientId
-                                        this.state
-                                    }
-                                }
-
-                                if (listOfAddress?.isEmpty()!!) {
-                                    delivery_address_fragment_recycler_vf.showNext()
-                                } else {
-                                    delivery_address_fragment_delivery_address_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
-
-                                        bind { itemView, position, item ->
-                                            val nameContainsSpace = item?.name?.contains(" ")
-                                            if (nameContainsSpace!!) {
-                                                val nameSplit = item.name.split(" ")
-                                                val firstName = nameSplit.get(0)
-                                                val lastName = nameSplit.get(1)
-                                                itemView.client_item_name_initials_tv.text =
-                                                    "${firstName.get(0)}${lastName.get(0)}"
-                                            } else {
-                                                val firstName = item.name[0]
-                                                itemView.client_item_name_initials_tv.text =
-                                                    "$firstName"
-                                            }
-
-                                            itemView.client_location_tv.text = item.deliveryAddress
-                                            itemView.client_name_tv.text = item.name
-                                        }
-                                        setLayoutManager(
-                                            LinearLayoutManager(
-                                                requireContext(),
-                                                LinearLayoutManager.VERTICAL,
-                                                false
-                                            )
-                                        )
-                                        submitList(listOfAddress)
-                                    }
-                                }
-
-                            }
-                        }
-                }
-
-            }
+//            CoroutineScope(Dispatchers.Main).launch {
+//                supervisorScope {
+//
+//                    val req = async { authViewModel.getAllAddress(header, clientId.toString()) }
+//                    req.await()
+//                        .catch {
+//                            i(title, "Error on flow ${it.message}")
+//                        }
+//                        .collect {
+//                            onFlowResponse<DeliveryAddress>(
+//                                button = dialogAddDeliveryBtn,
+//                                progressBar = addDeliveryaddressProgressBar,
+//                                response = it
+//                            ) {
+//                                i(title, "addresses data flow $it")
+//                                val listOfAddress = it?.deliveryAddress?.map { address ->
+//                                    Client(
+//                                        clientToBeEdited?.name.toString(),
+//                                        clientToBeEdited?.phone.toString(),
+//                                        clientToBeEdited?.email.toString(),
+//                                        address.deliveryAddress
+//                                    ).apply {
+//                                        this.id = address.clientId
+//                                        this.state
+//                                    }
+//                                }
+//
+//                                if (listOfAddress?.isEmpty()!!) {
+//                                    delivery_address_fragment_recycler_vf.showNext()
+//                                } else {
+//                                    delivery_address_fragment_delivery_address_rv.setupAdapter<Client>(R.layout.client_list_item) { adapter, context, list ->
+//
+//                                        bind { itemView, position, item ->
+//                                            val nameContainsSpace = item?.name?.contains(" ")
+//                                            if (nameContainsSpace!!) {
+//                                                val nameSplit = item.name.split(" ")
+//                                                val firstName = nameSplit.get(0)
+//                                                val lastName = nameSplit.get(1)
+//                                                itemView.client_item_name_initials_tv.text =
+//                                                    "${firstName.get(0)}${lastName.get(0)}"
+//                                            } else {
+//                                                val firstName = item.name[0]
+//                                                itemView.client_item_name_initials_tv.text =
+//                                                    "$firstName"
+//                                            }
+//
+//                                            itemView.client_location_tv.text = item.deliveryAddress
+//                                            itemView.client_name_tv.text = item.name
+//                                        }
+//                                        setLayoutManager(
+//                                            LinearLayoutManager(
+//                                                requireContext(),
+//                                                LinearLayoutManager.VERTICAL,
+//                                                false
+//                                            )
+//                                        )
+//                                        submitList(listOfAddress)
+//                                    }
+//                                }
+//
+//                            }
+//                        }
+//                }
+//
+//            }
         }
 
 
@@ -253,28 +253,28 @@ class DeliveryAddressFragment : DaggerFragment() {
 
             } else {
                 dialogAddDeliveryBtn.setOnClickListener {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val clientId = clientToBeEdited?.id
-                        val address = dialogDeliveryAddressEt.text.toString().trim()
-                        authViewModel.addDeliveryAddress(header, clientId, address)
-                            .catch {
-                                i(title, "Error on flow ${it.message}")
-                            }
-                            .collect {
-                                onFlowResponse<AddressData>(
-                                    button = dialogAddDeliveryBtn,
-                                    progressBar = addDeliveryaddressProgressBar,
-                                    response = it
-                                ) {
-                                    requireActivity().gdToast(
-                                        getString(R.string.client_address_added_successfully_str),
-                                        Gravity.BOTTOM
-                                    )
-                                    i(title, "Address data flow $it")
-                                    dialog.dismiss()
-                                }
-                            }
-                    }
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        val clientId = clientToBeEdited?.id
+//                        val address = dialogDeliveryAddressEt.text.toString().trim()
+//                        authViewModel.addDeliveryAddress(header, clientId, address)
+//                            .catch {
+//                                i(title, "Error on flow ${it.message}")
+//                            }
+//                            .collect {
+//                                onFlowResponse<AddressData>(
+//                                    button = dialogAddDeliveryBtn,
+//                                    progressBar = addDeliveryaddressProgressBar,
+//                                    response = it
+//                                ) {
+//                                    requireActivity().gdToast(
+//                                        getString(R.string.client_address_added_successfully_str),
+//                                        Gravity.BOTTOM
+//                                    )
+//                                    i(title, "Address data flow $it")
+//                                    dialog.dismiss()
+//                                }
+//                            }
+//                    }
                 }
             }
 

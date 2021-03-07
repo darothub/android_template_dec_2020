@@ -7,6 +7,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
 import com.peacedude.lassod_tailor_app.helpers.getName
+import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.helpers.safeApiCall
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
@@ -31,10 +32,6 @@ class UserViewModel @Inject constructor(
     var mGoogleSignInClient: GoogleSignInClient
 ) : GeneralViewModel(retrofit, storage, context, mGoogleSignInClient), ViewModelInterface {
 
-    private val responseLiveData by lazy{
-        SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
-    }
-
 
     override val title: String by lazy {
         this.getName()
@@ -42,7 +39,7 @@ class UserViewModel @Inject constructor(
     override fun registerUser(user: User?): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = userRequestInterface.registerUser(
             user)
-        return enqueueRequest(request, responseLiveData)
+        return enqueueRequest(request)
     }
 
     override fun registerUser(
@@ -52,7 +49,7 @@ class UserViewModel @Inject constructor(
 
         val request = userRequestInterface.registerUser(header,
             user)
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
     }
 
 
@@ -75,7 +72,7 @@ class UserViewModel @Inject constructor(
             phoneNumber,
             password
         )
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
     }
 
     override fun registerUserWithEmail(
@@ -88,33 +85,43 @@ class UserViewModel @Inject constructor(
             email,
             password
         )
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
     }
 
 
     override fun loginWithGoogle(header: String?): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = userRequestInterface.loginWithGoogle(header)
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
 
     }
+
+
 
     override fun loginWithEmailOrPhoneNumber(
         field: String?,
         password: String?
-    ): LiveData<ServicesResponseWrapper<ParentData>> {
-        val request = userRequestInterface.loginWithEmailOrPhoneNumber(field, password)
-        return enqueueRequest<User>(request, responseLiveData)
+    ) = netWorkLiveData.switchMap {
+        if (it) {
+            val request = userRequestInterface.loginWithEmailOrPhoneNumber(field, password)
+            enqueueRequest<User>(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            responseObserver.postValue(ServicesResponseWrapper.Network(502, "Bad connection"))
+            responseObserver
+        }
+
     }
 
     override fun resendCode(phoneNumber: String): LiveData<ServicesResponseWrapper<ParentData>>  {
         val request = userRequestInterface.resendCode(phoneNumber)
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
     }
 
     override fun activateUser(phoneNumber:String, code: String): LiveData<ServicesResponseWrapper<ParentData>> {
         Log.i(title, "$phoneNumber $code")
         val request = userRequestInterface.activateUser(phoneNumber, code)
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
 
     }
 
@@ -123,7 +130,7 @@ class UserViewModel @Inject constructor(
         password: String
     ): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = userRequestInterface.loginRequest(emailOrPhone, password)
-        return enqueueRequest<User>(request, responseLiveData)
+        return enqueueRequest<User>(request)
 
     }
 

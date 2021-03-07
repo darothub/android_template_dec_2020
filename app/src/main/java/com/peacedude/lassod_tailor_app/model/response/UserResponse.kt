@@ -12,7 +12,7 @@ data class UserResponse<T>(
     val data: T?
 ) : ParentData, Serializable
 
-interface NothingExpected
+interface NothingExpected:ParentData
 
 
 

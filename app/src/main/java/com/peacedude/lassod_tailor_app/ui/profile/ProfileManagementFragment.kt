@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
+import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
@@ -47,8 +49,8 @@ class ProfileManagementFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val userViewModel: UserViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(UserViewModel::class.java)
+    private val userViewModel: AuthViewModel by activityViewModels {
+        viewModelProviderFactory
     }
 
     lateinit var adapter : ViewPagerAdapter

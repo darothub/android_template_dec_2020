@@ -18,7 +18,6 @@ import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.handleResponse
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.helpers.onFlowResponse
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -26,7 +25,6 @@ import kotlinx.android.synthetic.main.fragment_subscription_plans.*
 import kotlinx.android.synthetic.main.subscription_plans_description_item.view.*
 import kotlinx.android.synthetic.main.subscription_plans_list_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -110,207 +108,213 @@ class SubscriptionPlansFragment : DaggerFragment() {
     @ExperimentalCoroutinesApi
     private fun monthlySubscriptions() {
         i(title, "Monthly")
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val getAllPlans = async {
-                    authViewModel.getAllPlans()
-                }
-
-                getAllPlans.await()
-                    .catch {
-                        i(title, "Error All Photo on flow ${it.message}")
-                    }
-                    .collect {
-                        onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it) {
-
-                            val monthlySubs = it?.data?.groupBy {
-                                it.interval
-                            }?.get("monthly")
-
-                            i(title, "$it")
-
-
-                            subscription_plans_monthly_rv.setupAdapter<SubscriptionData>(R.layout.subscription_plans_list_item) { adapter, context, list ->
-
-                                bind { itemView, position, item ->
-                                    itemView.subscription_plans_title_tv.text = item?.name
-                                    itemView.subscription_plans_amt_tv.text = "${item?.amount}"
-                                    itemView.subscription_plans_duration_tv.text =
-                                        "/${item?.interval?.subSequence(0, 2).toString()}"
-
-                                    itemView.subscription_plans_item_signup_btn.setOnClickListener {
-                                        i(title, "Item $item")
-                                        val planCode = item?.planCode.toString()
-                                        val customer = authViewModel.currentUser?.email ?: ""
-                                        if(customer == ""){
-                                            requireActivity().gdToast("Kindly update your profile with valid email address", Gravity.BOTTOM)
-                                        }
-                                        else{
-
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                supervisorScope {
-                                                    val subscribe = async {
-                                                        authViewModel.subscribe(planCode, customer)
-                                                    }
-                                                    subscribe.await()
-
-                                                        .handleResponse({
-                                                            onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = { err ->
-                                                                requireActivity().gdToast(err, Gravity.BOTTOM)
-                                                            }) {
-                                                                i(title, "Subscription response $it")
-                                                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-
-                                                            }
-                                                        }, {err ->
-                                                            requireActivity().gdToast(err, Gravity.BOTTOM)
-                                                        })
-
-
-                                                }
-                                            }
-                                        }
-
-
-                                    }
-
-                                    val listOfDescriptions = item?.description?.split(",")?.filter {
-                                        it != ","
-                                    }
-
-                                    itemView.subscription_plans_item_rv.setupAdapter<String>(R.layout.subscription_plans_description_item) { subadapter, context, sublist ->
-
-                                        bind { subitemView, subposition, subitem ->
-                                            subitemView.subscription_plans_description_tv.text =
-                                                subitem
-                                        }
-                                        setLayoutManager(
-                                            LinearLayoutManager(
-                                                requireContext(),
-                                                LinearLayoutManager.VERTICAL,
-                                                false
-                                            )
-                                        )
-                                        submitList(listOfDescriptions)
-                                    }
-                                }
-                                setLayoutManager(
-                                    LinearLayoutManager(
-                                        requireContext(),
-                                        LinearLayoutManager.VERTICAL,
-                                        false
-                                    )
-                                )
-                                submitList(monthlySubs)
-                            }
-                        }
-                    }
-            }
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            supervisorScope {
+//                val getAllPlans = async {
+//                    authViewModel.getAllPlans()
+//                }
+//
+//                getAllPlans.await()
+//                    .catch {
+//                        i(title, "Error All Photo on flow ${it.message}")
+//                    }
+//                    .collect {
+//                        onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it) {
+//
+//                            val monthlySubs = it?.data?.groupBy {
+//                                it.interval
+//                            }?.get("monthly")
+//
+//                            i(title, "$it")
+//
+//
+//                            subscription_plans_monthly_rv.setupAdapter<SubscriptionData>(R.layout.subscription_plans_list_item) { adapter, context, list ->
+//
+//                                bind { itemView, position, item ->
+//                                    itemView.subscription_plans_title_tv.text = item?.name
+//                                    itemView.subscription_plans_amt_tv.text = "${item?.amount}"
+//                                    itemView.subscription_plans_duration_tv.text =
+//                                        "/${item?.interval?.subSequence(0, 2).toString()}"
+//
+//                                    itemView.subscription_plans_item_signup_btn.setOnClickListener {
+//                                        i(title, "Item $item")
+//                                        val planCode = item?.planCode.toString()
+//                                        val customer = authViewModel.currentUser?.email ?: ""
+//                                        if(customer == ""){
+//                                            requireActivity().gdToast("Kindly update your profile with valid email address", Gravity.BOTTOM)
+//                                        }
+//                                        else{
+//
+//                                            CoroutineScope(Dispatchers.Main).launch {
+//                                                supervisorScope {
+//                                                    val subscribe = async {
+//                                                        authViewModel.subscribe(planCode, customer)
+//                                                    }
+//                                                    subscribe.await()
+//
+//                                                        .handleResponse({
+//                                                            onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = { err ->
+//                                                                requireActivity().gdToast(err, Gravity.BOTTOM)
+//                                                            }) {
+//                                                                i(title, "Subscription response $it")
+//                                                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+//
+//                                                            }
+//                                                        }) { err ->
+//                                                            requireActivity().gdToast(
+//                                                                err,
+//                                                                Gravity.BOTTOM
+//                                                            )
+//                                                        }
+//
+//
+//                                                }
+//                                            }
+//                                        }
+//
+//
+//                                    }
+//
+//                                    val listOfDescriptions = item?.description?.split(",")?.filter {
+//                                        it != ","
+//                                    }
+//
+//                                    itemView.subscription_plans_item_rv.setupAdapter<String>(R.layout.subscription_plans_description_item) { subadapter, context, sublist ->
+//
+//                                        bind { subitemView, subposition, subitem ->
+//                                            subitemView.subscription_plans_description_tv.text =
+//                                                subitem
+//                                        }
+//                                        setLayoutManager(
+//                                            LinearLayoutManager(
+//                                                requireContext(),
+//                                                LinearLayoutManager.VERTICAL,
+//                                                false
+//                                            )
+//                                        )
+//                                        submitList(listOfDescriptions)
+//                                    }
+//                                }
+//                                setLayoutManager(
+//                                    LinearLayoutManager(
+//                                        requireContext(),
+//                                        LinearLayoutManager.VERTICAL,
+//                                        false
+//                                    )
+//                                )
+//                                submitList(monthlySubs)
+//                            }
+//                        }
+//                    }
+//            }
+//        }
     }
 
 
     @ExperimentalCoroutinesApi
     private fun yearlySubscriptions() {
         i(title, "Yearly")
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val getAllPlans = async {
-                    authViewModel.getAllPlans()
-                }
-
-                getAllPlans.await()
-                    .catch {
-                        i(title, "Error All Photo on flow ${it.message}")
-                    }
-                    .collect {
-                        onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = {err->
-                            requireActivity().gdToast(err, Gravity.BOTTOM)
-                        }) {
-
-                            val monthlySubs = it?.data?.groupBy {
-                                it.interval
-                            }?.get("annually")
-
-                            i(title, "$it")
-
-
-                            subscription_plans_yearly_rv.setupAdapter<SubscriptionData>(R.layout.subscription_plans_list_item) { adapter, context, list ->
-
-                                bind { itemView, position, item ->
-                                    itemView.subscription_plans_title_tv.text = item?.name
-                                    itemView.subscription_plans_amt_tv.text = "${item?.amount}"
-                                    itemView.subscription_plans_duration_tv.text =
-                                        "/${item?.interval?.subSequence(0, 2).toString()}"
-
-                                    itemView.subscription_plans_item_signup_btn.setOnClickListener {
-                                        i(title, "Item $item")
-                                        val planCode = item?.planCode.toString()
-                                        val customer = authViewModel.currentUser?.email ?: ""
-                                        if(customer == ""){
-                                            requireActivity().gdToast("Kindly update your profile with valid email address", Gravity.BOTTOM)
-                                        }
-                                        else{
-
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                supervisorScope {
-                                                    val subscribe = async {
-                                                        authViewModel.subscribe(planCode, customer)
-                                                    }
-                                                    subscribe.await()
-                                                        .handleResponse({
-                                                            onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = { err ->
-                                                                requireActivity().gdToast(err, Gravity.BOTTOM)
-                                                            }) {
-                                                                i(title, "Subscription response $it")
-                                                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-
-                                                            }
-                                                        }, {err ->
-                                                            requireActivity().gdToast(err, Gravity.BOTTOM)
-                                                        })
-
-
-                                                }
-                                            }
-                                        }
-
-
-                                    }
-
-                                    val listOfDescriptions = item?.description?.split(",")?.filter {
-                                        it != ","
-                                    }
-
-                                    itemView.subscription_plans_item_rv.setupAdapter<String>(R.layout.subscription_plans_description_item) { subadapter, context, sublist ->
-
-                                        bind { subitemView, subposition, subitem ->
-                                            subitemView.subscription_plans_description_tv.text =
-                                                subitem
-                                        }
-                                        setLayoutManager(
-                                            LinearLayoutManager(
-                                                requireContext(),
-                                                LinearLayoutManager.VERTICAL,
-                                                false
-                                            )
-                                        )
-                                        submitList(listOfDescriptions)
-                                    }
-                                }
-                                setLayoutManager(
-                                    LinearLayoutManager(
-                                        requireContext(),
-                                        LinearLayoutManager.VERTICAL,
-                                        false
-                                    )
-                                )
-                                submitList(monthlySubs)
-                            }
-                        }
-                    }
-            }
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            supervisorScope {
+//                val getAllPlans = async {
+//                    authViewModel.getAllPlans()
+//                }
+//
+//                getAllPlans.await()
+//                    .catch {
+//                        i(title, "Error All Photo on flow ${it.message}")
+//                    }
+//                    .collect {
+//                        onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = {err->
+//                            requireActivity().gdToast(err, Gravity.BOTTOM)
+//                        }) {
+//
+//                            val monthlySubs = it?.data?.groupBy {
+//                                it.interval
+//                            }?.get("annually")
+//
+//                            i(title, "$it")
+//
+//
+//                            subscription_plans_yearly_rv.setupAdapter<SubscriptionData>(R.layout.subscription_plans_list_item) { adapter, context, list ->
+//
+//                                bind { itemView, position, item ->
+//                                    itemView.subscription_plans_title_tv.text = item?.name
+//                                    itemView.subscription_plans_amt_tv.text = "${item?.amount}"
+//                                    itemView.subscription_plans_duration_tv.text =
+//                                        "/${item?.interval?.subSequence(0, 2).toString()}"
+//
+//                                    itemView.subscription_plans_item_signup_btn.setOnClickListener {
+//                                        i(title, "Item $item")
+//                                        val planCode = item?.planCode.toString()
+//                                        val customer = authViewModel.currentUser?.email ?: ""
+//                                        if(customer == ""){
+//                                            requireActivity().gdToast("Kindly update your profile with valid email address", Gravity.BOTTOM)
+//                                        }
+//                                        else{
+//
+//                                            CoroutineScope(Dispatchers.Main).launch {
+//                                                supervisorScope {
+//                                                    val subscribe = async {
+//                                                        authViewModel.subscribe(planCode, customer)
+//                                                    }
+//                                                    subscribe.await()
+//                                                        .handleResponse({
+//                                                            onFlowResponse<SubscriptionResponse<List<SubscriptionData>>>(response = it, error = { err ->
+//                                                                requireActivity().gdToast(err, Gravity.BOTTOM)
+//                                                            }) {
+//                                                                i(title, "Subscription response $it")
+//                                                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+//
+//                                                            }
+//                                                        }) { err ->
+//                                                            requireActivity().gdToast(
+//                                                                err,
+//                                                                Gravity.BOTTOM
+//                                                            )
+//                                                        }
+//
+//
+//                                                }
+//                                            }
+//                                        }
+//
+//
+//                                    }
+//
+//                                    val listOfDescriptions = item?.description?.split(",")?.filter {
+//                                        it != ","
+//                                    }
+//
+//                                    itemView.subscription_plans_item_rv.setupAdapter<String>(R.layout.subscription_plans_description_item) { subadapter, context, sublist ->
+//
+//                                        bind { subitemView, subposition, subitem ->
+//                                            subitemView.subscription_plans_description_tv.text =
+//                                                subitem
+//                                        }
+//                                        setLayoutManager(
+//                                            LinearLayoutManager(
+//                                                requireContext(),
+//                                                LinearLayoutManager.VERTICAL,
+//                                                false
+//                                            )
+//                                        )
+//                                        submitList(listOfDescriptions)
+//                                    }
+//                                }
+//                                setLayoutManager(
+//                                    LinearLayoutManager(
+//                                        requireContext(),
+//                                        LinearLayoutManager.VERTICAL,
+//                                        false
+//                                    )
+//                                )
+//                                submitList(monthlySubs)
+//                            }
+//                        }
+//                    }
+//            }
+//        }
     }
 
 

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
@@ -71,7 +72,7 @@ class DashboardActivity : BaseActivity() {
         profile_header.findViewById<TextView>(R.id.hi_user_name)
     }
 
-    val navListener =
+    private val navListener =
         NavController.OnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.singleChatFragment -> {
@@ -107,7 +108,7 @@ class DashboardActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel by viewModels<AuthViewModel> {
+    private val authViewModel:AuthViewModel by viewModels{
         viewModelProviderFactory
     }
 
@@ -139,12 +140,11 @@ class DashboardActivity : BaseActivity() {
 
 
         GlobalVariables.globalUser = currentUser
-        getUserData()
+
 
         when(currentUser?.category){
             getString(R.string.tailor) -> bottomNav.menu.findItem(R.id.favouritesFragment).isVisible = false
             getString(R.string.weaver) ->  bottomNav.menu.findItem(R.id.favouritesFragment).isVisible = false
-
         }
 
 
@@ -174,7 +174,6 @@ class DashboardActivity : BaseActivity() {
             DrawerMenuItem(R.drawable.theaters_24px, getString(R.string.resources)),
             DrawerMenuItem(R.drawable.ic_shopping_cart_24px, getString(R.string.subscription)),
             DrawerMenuItem(R.drawable.ic_power_settings_new_24px, getString(R.string.logout))
-
         )
         drawerMenuRv.setupAdapter<DrawerMenuItem>(R.layout.drawer_menu_item) { _, _, list ->
 
@@ -222,8 +221,6 @@ class DashboardActivity : BaseActivity() {
                 submitList(listOfDrawerMenuItem)
             }
 
-
-
         }
 
         try{
@@ -253,7 +250,7 @@ class DashboardActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        getUserData()
         navController.addOnDestinationChangedListener(navListener)
 
 
@@ -272,6 +269,7 @@ class DashboardActivity : BaseActivity() {
 
     override fun onRestart() {
         super.onRestart()
+
         i(title, "Restart")
     }
 
@@ -282,9 +280,9 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun getUserData() {
-        val request = authViewModel.getUserData()
+
         i(title, "header $header")
-        observeRequest<User>(request, null, null, false, {userDetails->
+        observeRequest<User>(authViewModel.theUserData, null, null, false, {userDetails->
             val user = userDetails?.data
             greeting.text = "Hi ${user?.firstName}"
             profileName.text = "${user?.firstName} ${user?.lastName}"

@@ -157,42 +157,42 @@ class AddCardFragment : DaggerFragment() {
         }
 
        if(addCardData != null){
-           CoroutineScope(Main).launch {
-               i(title, "hide")
-
-               authViewModel.verifyPayment(header, addCardData?.reference.toString())
-                   .catch {
-                       val exceptionRegex =
-                           Regex("""java.lang.\w+Exception: (\w+\s)+,?\w+""")
-                       val exception =
-                           exceptionRegex.find(it.message.toString())?.value
-                       val exceptionSplit = exception?.split(":")
-                       val errorMessage = exceptionSplit?.get(1).toString()
-                       i(title, "Error on flow $errorMessage")
-                       requireActivity().gdErrorToast(
-                           errorMessage,
-                           Gravity.BOTTOM
-                       )
-                   }
-                   .collect {
-
-                       onFlowResponse<UserResponse<AddCardResponse>>(
-                           response = it,
-                           action = {
-
-                               requireActivity().gdToast(
-                                   it?.message.toString(),
-                                   Gravity.BOTTOM
-                               )
-                           },
-                           error = { message ->
-
-                               i(title, "Error on nested flow  ${message}")
-
-
-                           })
-                   }
-           }
+//           CoroutineScope(Main).launch {
+//               i(title, "hide")
+//
+//               authViewModel.verifyPayment(header, addCardData?.reference.toString())
+//                   .catch {
+//                       val exceptionRegex =
+//                           Regex("""java.lang.\w+Exception: (\w+\s)+,?\w+""")
+//                       val exception =
+//                           exceptionRegex.find(it.message.toString())?.value
+//                       val exceptionSplit = exception?.split(":")
+//                       val errorMessage = exceptionSplit?.get(1).toString()
+//                       i(title, "Error on flow $errorMessage")
+//                       requireActivity().gdErrorToast(
+//                           errorMessage,
+//                           Gravity.BOTTOM
+//                       )
+//                   }
+//                   .collect {
+//
+//                       onFlowResponse<UserResponse<AddCardResponse>>(
+//                           response = it,
+//                           action = {
+//
+//                               requireActivity().gdToast(
+//                                   it?.message.toString(),
+//                                   Gravity.BOTTOM
+//                               )
+//                           },
+//                           error = { message ->
+//
+//                               i(title, "Error on nested flow  ${message}")
+//
+//
+//                           })
+//                   }
+//           }
        }
         else{
 

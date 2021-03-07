@@ -6,6 +6,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -52,19 +53,19 @@ interface ViewModelInterface  {
     fun getUserData(): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun updateUserData(user: User): LiveData<ServicesResponseWrapper<ParentData>>{
+    fun updateUserData(user:User): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
     fun forgetPassword(email:String): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun resetPassword(header: String?, password: String?, cpasswod:String?): LiveData<ServicesResponseWrapper<ParentData>>{
+    fun resetPassword( password: String?, cpasswod:String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun addClient(header: String?, client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
+    fun addClient( client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
-    fun editClient(header: String?, client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
+    fun editClient( client: Client):LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
 
@@ -82,46 +83,46 @@ interface ViewModelInterface  {
     fun getAllClient(): LiveData<ServicesResponseWrapper<ParentData>> {
         TODO()
     }
-    fun deleteClient(header:String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
+    suspend fun getAllClientsTwo(): Flow<ServicesResponseWrapper<ParentData>>  {
+        TODO()
+    }
+    fun deleteClient(id: String?): LiveData<ServicesResponseWrapper<ParentData>>{
         TODO()
     }
     fun addPhoto(body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
     fun addPhoto(photo:List<MultipartBody.Part>?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
-    fun uploadProfilePicture(header: String?, body: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
+    fun uploadProfilePicture(body: MultipartBody.Part): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
     fun uploadProfilePicture(body: RequestBody): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
-    fun addMeasurement(header: String?, body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
+    fun addMeasurement(body: MeasurementValues): LiveData<ServicesResponseWrapper<ParentData>>  = TODO()
 
     fun getAllPhoto(header: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
-    fun deleteMedia(header: String?, id: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+    fun deleteMedia(id: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
-    fun getAllVideos(header: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+    fun getAllVideos(): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
-    fun getAllArticles(header: String?): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
+    fun getAllArticles(): LiveData<ServicesResponseWrapper<ParentData>> = TODO()
 
-    suspend fun getVideos(header: String?): Flow<ServicesResponseWrapper<ParentData>>  = TODO()
+    suspend fun getVideos(): Flow<ServicesResponseWrapper<ParentData>>  = TODO()
 
-    suspend fun getArticles(header: String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun getArticles(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
-    suspend fun getMeasurementTypes(header: String?): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun getMeasurementTypes(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
     suspend fun addDeliveryAddress(
-        header: String?,
         clientId:String?,
         deliveryAddress:String?
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
     suspend fun addCard(
-        header: String?,
         email:String?,
         amount:String?
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
     suspend fun verifyPayment(
-        header: String?,
         reference:String
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
@@ -134,15 +135,13 @@ interface ViewModelInterface  {
 
 
     fun getAllAddress(
-        header:String?,
         clientId:String
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
 
-    suspend fun getUserDetails( header: String): Flow<ServicesResponseWrapper<ParentData>> = TODO()
+    suspend fun getUserDetails(): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
     suspend fun changePassword(
-        header:String?,
         oldPassword:String?,
         newPassword:String?
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
@@ -153,13 +152,11 @@ interface ViewModelInterface  {
 
 
     suspend fun deleteMeasurements(
-        header: String?,
         id: String
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 
 
     suspend fun editMeasurement(
-        header: String?,
         measurementValues: MeasurementValues
     ): Flow<ServicesResponseWrapper<ParentData>> = TODO()
 

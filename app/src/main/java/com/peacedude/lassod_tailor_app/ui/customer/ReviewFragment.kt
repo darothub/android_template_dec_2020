@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -24,7 +23,6 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.*
-import com.peacedude.lassod_tailor_app.ui.customer.SingleFashionistaFragmentArgs
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.client_list_item.view.*
@@ -89,33 +87,33 @@ class ReviewFragment : DaggerFragment() {
                 val comment = review_fragment_describe_rate_et.text?.toString()?.trim()
 
 
-                CoroutineScope(Main).launch {
-                    supervisorScope {
-                        val addReviewAndRating = async {
-                            userViewModel.addReviewAndRating(
-                                rate,
-                                artisanId.toString(),
-                                comment.toString()
-                            )
-                        }
-                        addReviewAndRating.await()
-                            .handleResponse({
-                                onFlowResponse<UserResponse<ReviewResponse>>(response = it, error = { err ->
-                                    requireActivity().gdToast(err, Gravity.BOTTOM)
-                                }) {
-                                    findNavController().navigate(R.id.reviewFragment)
-                                    requireActivity().gdToast(
-                                        it?.message.toString(),
-                                        Gravity.BOTTOM
-                                    )
-
-                                }
-                            }, {err ->
-                                requireActivity().gdToast(err, Gravity.BOTTOM)
-                            })
-                    }
-
-                }
+//                CoroutineScope(Main).launch {
+//                    supervisorScope {
+//                        val addReviewAndRating = async {
+//                            userViewModel.addReviewAndRating(
+//                                rate,
+//                                artisanId.toString(),
+//                                comment.toString()
+//                            )
+//                        }
+//                        addReviewAndRating.await()
+//                            .handleResponse({
+//                                onFlowResponse<UserResponse<ReviewResponse>>(response = it, error = { err ->
+//                                    requireActivity().gdToast(err, Gravity.BOTTOM)
+//                                }) {
+//                                    findNavController().navigate(R.id.reviewFragment)
+//                                    requireActivity().gdToast(
+//                                        it?.message.toString(),
+//                                        Gravity.BOTTOM
+//                                    )
+//
+//                                }
+//                            }) { err ->
+//                                requireActivity().gdToast(err, Gravity.BOTTOM)
+//                            }
+//                    }
+//
+//                }
             }
 
         })
@@ -165,95 +163,95 @@ class ReviewFragment : DaggerFragment() {
         review_fragment_rating_bar_rb.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
             i("Hello", "Rating bar clicked $rating")
         }
-        CoroutineScope(Main).launch {
-            supervisorScope {
-                val getReviews = async {
-                    userViewModel.getReviews(artisanId.toString())
-                }
-                getReviews.await()
-                    .handleResponse({
-                        onFlowResponse<UserResponse<List<ReviewResponse>>>(response = it, error = { err ->
-                            requireActivity().gdToast(err, Gravity.BOTTOM)
-                        }) {
-
-                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-                                var listOfReviews = it?.data?.map { it ->
-                                    it
-                                }
-                                review_fragment_reviews_rv.setupAdapter<ReviewResponse>(R.layout.review_list_item) { subAdapter, context, list ->
-
-                                    bind { itemView, position, item ->
-                                        val name =
-                                            "${item?.userDetails?.firstName} ${item?.userDetails?.lastName}"
-                                        itemView.review_list_name_tv.text = name
-                                        itemView.review_list_rb.rating = item?.rate?.toFloat() ?: 0F
-                                        itemView.review_list_date_tv.text = item?.createdAt
-                                        val nameContainsSpace = name.contains(" ")
-                                        if (item?.userDetails?.avatar?.isNotEmpty() == true) {
-                                            itemView.review_list_image_iv.load(item?.userDetails?.avatar) {
-                                                crossfade(true)
-                                                transformations(CircleCropTransformation())
-                                                placeholder(R.drawable.profile_image)
-                                            }
-                                        } else {
-                                            if (nameContainsSpace!!) {
-                                                val nameSplit = name.split(" ")
-                                                val firstName = nameSplit.get(0)
-                                                val lastName = nameSplit.get(1)
-                                                itemView.review_list_name_initials_tv.text =
-                                                    "${firstName.get(0)}${lastName.get(0)}"
-                                            } else {
-                                                val firstName = name[0]
-                                                itemView.review_list_name_initials_tv.text =
-                                                    "$firstName"
-                                            }
-                                        }
-
-                                        itemView.review_list_more_iv.setOnClickListener { v ->
-                                            val popup = PopupMenu(
-                                                requireContext(),
-                                                itemView.review_list_more_iv
-                                            )
-                                            popup.setOnMenuItemClickListener {
-                                                when (it.itemId) {
-                                                    R.id.edit -> {
-                                                        i(title, "Edit")
-                                                        true
-                                                    }
-                                                    R.id.delete -> {
-                                                        i(title, "delete")
-                                                        deleteReview(item, getReviews)
-                                                        true
-                                                    }
-                                                    else -> {
-                                                        i(title, "Else")
-                                                        false
-                                                    }
-                                                }
-                                            }
-                                            popup.inflate(R.menu.review_popup_menu)
-                                            popup.show()
-                                        }
-                                    }
-                                    setLayoutManager(
-                                        LinearLayoutManager(
-                                            requireContext(),
-                                            LinearLayoutManager.VERTICAL,
-                                            false
-                                        )
-                                    )
-                                    submitList(listOfReviews)
-                                }
-
-                            requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-
-                        }
-                    }, {err ->
-                        requireActivity().gdToast(err, Gravity.BOTTOM)
-                    })
-            }
-
-        }
+//        CoroutineScope(Main).launch {
+//            supervisorScope {
+//                val getReviews = async {
+//                    userViewModel.getReviews(artisanId.toString())
+//                }
+//                getReviews.await()
+//                    .handleResponse({
+//                        onFlowResponse<UserResponse<List<ReviewResponse>>>(response = it, error = { err ->
+//                            requireActivity().gdToast(err, Gravity.BOTTOM)
+//                        }) {
+//
+//                                requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+//                                var listOfReviews = it?.data?.map { it ->
+//                                    it
+//                                }
+//                                review_fragment_reviews_rv.setupAdapter<ReviewResponse>(R.layout.review_list_item) { subAdapter, context, list ->
+//
+//                                    bind { itemView, position, item ->
+//                                        val name =
+//                                            "${item?.userDetails?.firstName} ${item?.userDetails?.lastName}"
+//                                        itemView.review_list_name_tv.text = name
+//                                        itemView.review_list_rb.rating = item?.rate?.toFloat() ?: 0F
+//                                        itemView.review_list_date_tv.text = item?.createdAt
+//                                        val nameContainsSpace = name.contains(" ")
+//                                        if (item?.userDetails?.avatar?.isNotEmpty() == true) {
+//                                            itemView.review_list_image_iv.load(item?.userDetails?.avatar) {
+//                                                crossfade(true)
+//                                                transformations(CircleCropTransformation())
+//                                                placeholder(R.drawable.profile_image)
+//                                            }
+//                                        } else {
+//                                            if (nameContainsSpace!!) {
+//                                                val nameSplit = name.split(" ")
+//                                                val firstName = nameSplit.get(0)
+//                                                val lastName = nameSplit.get(1)
+//                                                itemView.review_list_name_initials_tv.text =
+//                                                    "${firstName.get(0)}${lastName.get(0)}"
+//                                            } else {
+//                                                val firstName = name[0]
+//                                                itemView.review_list_name_initials_tv.text =
+//                                                    "$firstName"
+//                                            }
+//                                        }
+//
+//                                        itemView.review_list_more_iv.setOnClickListener { v ->
+//                                            val popup = PopupMenu(
+//                                                requireContext(),
+//                                                itemView.review_list_more_iv
+//                                            )
+//                                            popup.setOnMenuItemClickListener {
+//                                                when (it.itemId) {
+//                                                    R.id.edit -> {
+//                                                        i(title, "Edit")
+//                                                        true
+//                                                    }
+//                                                    R.id.delete -> {
+//                                                        i(title, "delete")
+//                                                        deleteReview(item, getReviews)
+//                                                        true
+//                                                    }
+//                                                    else -> {
+//                                                        i(title, "Else")
+//                                                        false
+//                                                    }
+//                                                }
+//                                            }
+//                                            popup.inflate(R.menu.review_popup_menu)
+//                                            popup.show()
+//                                        }
+//                                    }
+//                                    setLayoutManager(
+//                                        LinearLayoutManager(
+//                                            requireContext(),
+//                                            LinearLayoutManager.VERTICAL,
+//                                            false
+//                                        )
+//                                    )
+//                                    submitList(listOfReviews)
+//                                }
+//
+//                            requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+//
+//                        }
+//                    }) { err ->
+//                        requireActivity().gdToast(err, Gravity.BOTTOM)
+//                    }
+//            }
+//
+//        }
 
 
     }
@@ -263,31 +261,31 @@ class ReviewFragment : DaggerFragment() {
         item: ReviewResponse?,
         getReviews: Deferred<Flow<ServicesResponseWrapper<ParentData>>>
     ) {
-        CoroutineScope(Main).launch {
-            supervisorScope {
-                val removeReviewReq = async {
-                    userViewModel.removeReview(item?.id)
-                }
-                getReviews.await()
-                    .catch { err ->
-                        requireActivity().gdToast(
-                            err.message.toString(),
-                            Gravity.BOTTOM
-                        )
-                    }
-                    .collect {
-                        onFlowResponse<UserResponse<NothingExpected>>(
-                            response = it
-                        ) { it ->
-
-                            requireActivity().gdToast(
-                                it?.message.toString(),
-                                Gravity.BOTTOM
-                            )
-                        }
-                    }
-            }
-        }
+//        CoroutineScope(Main).launch {
+//            supervisorScope {
+//                val removeReviewReq = async {
+//                    userViewModel.removeReview(item?.id)
+//                }
+//                getReviews.await()
+//                    .catch { err ->
+//                        requireActivity().gdToast(
+//                            err.message.toString(),
+//                            Gravity.BOTTOM
+//                        )
+//                    }
+//                    .collect {
+//                        onFlowResponse<UserResponse<NothingExpected>>(
+//                            response = it
+//                        ) { it ->
+//
+//                            requireActivity().gdToast(
+//                                it?.message.toString(),
+//                                Gravity.BOTTOM
+//                            )
+//                        }
+//                    }
+//            }
+//        }
     }
 
 }

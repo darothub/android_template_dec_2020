@@ -174,44 +174,44 @@ class SpecialtyFragment : DaggerFragment() {
 //            }
 //        })
 
-        CoroutineScope(Main).launch {
-            supervisorScope {
-                val getUserCall = async { authViewModel.getUserDetails(header) }
-                try {
-                    getUserCall.await()
-                        .collect {
-                            onFlowResponse<User>(response = it) { user ->
-                                i(title, "User ${user?.category}")
-
-                                setUpSpecialityRv(user)
-                                val qaList = setupQaRecylerView(user)
-                                val genderList = setupGenderFocusRecyclerView(user)
-                                val measurementList = setupMeasurementOptionRv(user)
-                                saveBtn.setOnClickListener {
-                                    user?.deliveryTimePeriod = qaList[1].value
-                                    if (qaList[1].value != "null") {
-                                        user?.deliveryTimeNo = qaList[1].value?.toInt()
-                                    } else {
-                                        user?.deliveryTimeNo = 0
-                                    }
-
-                                    user?.visitUsMeasurement = measurementList[0].selected
-                                    user?.acceptSelfMeasurement = measurementList[1].selected
-                                    i(title, "checked1 ${measurementList[0].selected}")
-                                    i(title, "checked2 ${measurementList[1].selected}")
-                                    if (user != null) {
-                                        updateUserData(user)
-                                    }
-                                }
-
-                            }
-                        }
-
-                } catch (e: Exception) {
-                    i(title, "Get user details error data flow ${e.message}")
-                }
-            }
-        }
+//        CoroutineScope(Main).launch {
+//            supervisorScope {
+//                val getUserCall = async { authViewModel.getUserDetails(header) }
+//                try {
+//                    getUserCall.await()
+//                        .collect {
+//                            onFlowResponse<User>(response = it) { user ->
+//                                i(title, "User ${user?.category}")
+//
+//                                setUpSpecialityRv(user)
+//                                val qaList = setupQaRecylerView(user)
+//                                val genderList = setupGenderFocusRecyclerView(user)
+//                                val measurementList = setupMeasurementOptionRv(user)
+//                                saveBtn.setOnClickListener {
+//                                    user?.deliveryTimePeriod = qaList[1].value
+//                                    if (qaList[1].value != "null") {
+//                                        user?.deliveryTimeNo = qaList[1].value?.toInt()
+//                                    } else {
+//                                        user?.deliveryTimeNo = 0
+//                                    }
+//
+//                                    user?.visitUsMeasurement = measurementList[0].selected
+//                                    user?.acceptSelfMeasurement = measurementList[1].selected
+//                                    i(title, "checked1 ${measurementList[0].selected}")
+//                                    i(title, "checked2 ${measurementList[1].selected}")
+//                                    if (user != null) {
+//                                        updateUserData(user)
+//                                    }
+//                                }
+//
+//                            }
+//                        }
+//
+//                } catch (e: Exception) {
+//                    i(title, "Get user details error data flow ${e.message}")
+//                }
+//            }
+//        }
     }
 
     private fun setupQaRecylerView(user: User?): ArrayList<UserNameClass> {

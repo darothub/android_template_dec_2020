@@ -82,76 +82,76 @@ class AllArticlesFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val articleListCall = async { authViewModel.getArticles(header) }
-
-                try {
-                    articleListCall.await()
-                        .collect {
-                            onFlowResponse<ArticleList>(response = it) {
-                                val listOfArticles = it?.article?.map {a->
-                                    Article(
-                                        a.id,
-                                        a.tailorID,
-                                        a.title,
-                                        a.description,
-                                        a.isBlacklisted,
-                                        a.body,
-                                        a.articleImage,
-                                        a.createdAt,
-                                        a.updatedAt
-                                    )
-                                }
-                                i(title, "article data flow $it")
-                                if (listOfArticles?.isNotEmpty()!!) {
-                                    all_articles_fragment_rv.setupAdapter<Article>(
-                                        R.layout.article_publication_item_layout
-                                    ) { adapter, context, list ->
-                                        bind { itemView, position, item ->
-
-                                            if (item?.articleImage != null) {
-                                                Picasso.get().load(item.articleImage).fit()
-                                                    .into(itemView.resource_article_publications_iv)
-                                            } else {
-                                                itemView.resource_article_publications_iv.setImageDrawable(
-                                                    ContextCompat.getDrawable(
-                                                        requireContext(),
-                                                        R.drawable.obioma_logo_blue
-                                                    )
-                                                )
-                                            }
-                                            itemView.resource_article_publication_item_title_tv.text =
-                                                item?.title
-                                            itemView.resource_article_publication_item_author_tv.text =
-                                                item?.description
-                                            itemView.article_pub_item_image_ll.clipToOutline = true
-
-                                            itemView.resource_article_publications_iv.clipToOutline =
-                                                true
-
-                                            itemView.setOnClickListener {
-                                                GlobalVariables.globalArticle = item
-                                                goto(R.id.singleArticleFragment)
-                                            }
-
-                                        }
-                                        setLayoutManager(GridLayoutManager(requireContext(), 2))
-                                        submitList(listOfArticles)
-                                    }
-                                } else {
-                                    resources_fragment_article_recycler_vf.showNext()
-
-                                }
-                            }
-                        }
-                }
-                catch (e:Exception){
-                    i(title, "resource error data flow ${e.message}")
-                }
-            }
-
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            supervisorScope {
+//                val articleListCall = async { authViewModel.getArticles(header) }
+//
+//                try {
+//                    articleListCall.await()
+//                        .collect {
+//                            onFlowResponse<ArticleList>(response = it) {
+//                                val listOfArticles = it?.article?.map {a->
+//                                    Article(
+//                                        a.id,
+//                                        a.tailorID,
+//                                        a.title,
+//                                        a.description,
+//                                        a.isBlacklisted,
+//                                        a.body,
+//                                        a.articleImage,
+//                                        a.createdAt,
+//                                        a.updatedAt
+//                                    )
+//                                }
+//                                i(title, "article data flow $it")
+//                                if (listOfArticles?.isNotEmpty()!!) {
+//                                    all_articles_fragment_rv.setupAdapter<Article>(
+//                                        R.layout.article_publication_item_layout
+//                                    ) { adapter, context, list ->
+//                                        bind { itemView, position, item ->
+//
+//                                            if (item?.articleImage != null) {
+//                                                Picasso.get().load(item.articleImage).fit()
+//                                                    .into(itemView.resource_article_publications_iv)
+//                                            } else {
+//                                                itemView.resource_article_publications_iv.setImageDrawable(
+//                                                    ContextCompat.getDrawable(
+//                                                        requireContext(),
+//                                                        R.drawable.obioma_logo_blue
+//                                                    )
+//                                                )
+//                                            }
+//                                            itemView.resource_article_publication_item_title_tv.text =
+//                                                item?.title
+//                                            itemView.resource_article_publication_item_author_tv.text =
+//                                                item?.description
+//                                            itemView.article_pub_item_image_ll.clipToOutline = true
+//
+//                                            itemView.resource_article_publications_iv.clipToOutline =
+//                                                true
+//
+//                                            itemView.setOnClickListener {
+//                                                GlobalVariables.globalArticle = item
+//                                                goto(R.id.singleArticleFragment)
+//                                            }
+//
+//                                        }
+//                                        setLayoutManager(GridLayoutManager(requireContext(), 2))
+//                                        submitList(listOfArticles)
+//                                    }
+//                                } else {
+//                                    resources_fragment_article_recycler_vf.showNext()
+//
+//                                }
+//                            }
+//                        }
+//                }
+//                catch (e:Exception){
+//                    i(title, "resource error data flow ${e.message}")
+//                }
+//            }
+//
+//        }
 
     }
 

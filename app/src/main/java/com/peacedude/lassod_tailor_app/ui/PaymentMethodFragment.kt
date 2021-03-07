@@ -20,14 +20,12 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import kotlinx.android.synthetic.main.fragment_specialty.*
 import kotlinx.android.synthetic.main.specialty_layout_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -107,59 +105,59 @@ class PaymentMethodFragment : DaggerFragment() {
 
         var n:User? = null
 
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val getUserCall = async { authViewModel.getUserDetails(header.toString()) }
-                try {
-                    getUserCall.await()
-                        .handleResponse({
-                            onFlowResponse<User>(response = it) { user ->
-                                i(title, "paymentMethod ${user?.paymentTerms}")
-
-                                when{
-                                    user?.paymentTerms != null -> {
-                                        var pTerms = ""
-                                        user.paymentTerms?.forEach {str->
-                                            pTerms +="$str\n\n"
-                                            payment_method_payment_terms_value_tv.text = pTerms
-                                        }
-                                    }
-                                }
-                                when{
-                                    user?.paymentOptions != null -> {
-                                        var pOptions = ""
-                                        user.paymentOptions?.forEach { st ->
-                                            pOptions += "$st\n\n"
-                                            payment_method_payment_options_value_tv.text = pOptions
-                                        }
-                                    }
-                                }
-
-                                n = user
-                                var newUser = user
-
-                                payment_method_fab.setOnClickListener {
-                                    checkBoxStringForPaymentTerm.clear()
-                                    setPaymentTermsValue(newUser)
-                                }
-
-                                payment_options_fab.setOnClickListener {
-                                    setPaymentOptionsValue(newUser)
-                                }
-                                saveChangesBtn.setOnClickListener {
-                                    updateUserData(newUser)
-                                }
-                            }
-                        },{err ->
-                            i(title, "Caught error $err")
-                        })
-
-
-                } catch (e: Exception) {
-                    i(title, "Get user details error data flow ${e.message}")
-                }
-            }
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            supervisorScope {
+//                val getUserCall = async { authViewModel.getUserDetails(header.toString()) }
+//                try {
+//                    getUserCall.await()
+//                        .handleResponse({
+//                            onFlowResponse<User>(response = it) { user ->
+//                                i(title, "paymentMethod ${user?.paymentTerms}")
+//
+//                                when{
+//                                    user?.paymentTerms != null -> {
+//                                        var pTerms = ""
+//                                        user.paymentTerms?.forEach {str->
+//                                            pTerms +="$str\n\n"
+//                                            payment_method_payment_terms_value_tv.text = pTerms
+//                                        }
+//                                    }
+//                                }
+//                                when{
+//                                    user?.paymentOptions != null -> {
+//                                        var pOptions = ""
+//                                        user.paymentOptions?.forEach { st ->
+//                                            pOptions += "$st\n\n"
+//                                            payment_method_payment_options_value_tv.text = pOptions
+//                                        }
+//                                    }
+//                                }
+//
+//                                n = user
+//                                var newUser = user
+//
+//                                payment_method_fab.setOnClickListener {
+//                                    checkBoxStringForPaymentTerm.clear()
+//                                    setPaymentTermsValue(newUser)
+//                                }
+//
+//                                payment_options_fab.setOnClickListener {
+//                                    setPaymentOptionsValue(newUser)
+//                                }
+//                                saveChangesBtn.setOnClickListener {
+//                                    updateUserData(newUser)
+//                                }
+//                            }
+//                        }) { err ->
+//                            i(title, "Caught error $err")
+//                        }
+//
+//
+//                } catch (e: Exception) {
+//                    i(title, "Get user details error data flow ${e.message}")
+//                }
+//            }
+//        }
 
 
     }

@@ -130,7 +130,7 @@ class ResetPasswordFragment : DaggerFragment() {
         } else if (password != cpassword) {
             requireActivity().gdErrorToast("passwords do not match", Gravity.BOTTOM)
         } else {
-            val req = authViewModel.resetPassword(token, password, cpassword)
+            val req = authViewModel.resetPassword(password, cpassword)
             observeRequest<String>(req, null, null, true, {
                 val user = it.data
                 Log.i(title, "User $user")

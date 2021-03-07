@@ -21,6 +21,7 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 import java.util.ArrayList
 
@@ -100,22 +101,13 @@ private fun Fragment.hideKeyboard() {
 inline fun <reified T>Fragment.observeRequest(
     request: LiveData<ServicesResponseWrapper<ParentData>>?,
     progressBar: ProgressBar?, button: Button?, loader: Boolean = false,
-    crossinline sucess: (UserResponse<T>) -> Unit,
+    crossinline success: (UserResponse<T>) -> Unit,
     crossinline error: (String) -> Unit
-): LiveData<Pair<Boolean, Any?>> {
-    return requireActivity().observeRequest<T>(request, progressBar, button, loader, sucess, error)
-}
-
-
-fun Fragment.requestObserver(
-    progressBar: ProgressBar?,
-    btn: Button?,
-    req: LiveData<ServicesResponseWrapper<ParentData>>,
-    loader: Boolean = false,
-    action: (Boolean, Any?) -> Unit
 ) {
-    requireActivity().requestObserver(progressBar, btn, req, loader, action)
+    return requireActivity().observeRequest<T>(request, progressBar, button, loader, success, error)
 }
+
+
 
 fun Fragment.changeStatusBarColor(colorRes: Int) {
     requireActivity().changeStatusBarColor(colorRes)
@@ -154,32 +146,37 @@ fun Fragment.setUpSpinnerWithList(
     requireActivity().setUpSpinnerWithList(header, spinner, list)
 }
 
-inline fun <reified T> Fragment.onFlowResponse(
+suspend inline fun <reified T> Fragment.onFlowResponse(
     button: Button? = null,
     progressBar: ProgressBar? = null,
     loader: Boolean = false,
-    response: ServicesResponseWrapper<ParentData>,
+    response: ServicesResponseWrapper<out ParentData>,
     noinline error:((String)->Unit)?=null,
-    action: (T?) -> Unit
+    crossinline success: (T?) -> Unit
 
 ) {
-    requireActivity().onFlowResponse<T>(button, progressBar, loader, response, error, action)
+    requireActivity().onFlowResponse<T>(button, progressBar, loader, response, error, success)
 }
+inline fun <T:ParentData> Fragment.observeResponseState(
+    state: StateFlow<ServicesResponseWrapper<ParentData>>,
+    progressBar: ProgressBar?,
+    button: Button?,
+    crossinline success: (UserResponse<T>) -> Unit,
+    noinline error: ((String?) -> Unit)? = null
 
+) {
+    requireActivity().observeResponseState<T>(state, progressBar, button, success, error)
+}
 fun Fragment.goto(destination: Class<*>) {
     requireActivity().goto(destination)
 }
 
-fun Fragment.networkMonitor():MutableLiveData<Boolean>{
-    return requireActivity().networkMonitor()
-}
 
 fun Fragment.onBackDispatcher(action: () -> Unit){
     requireActivity().onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             // in here you can do logic when backPress is clicked
             action()
-
         }
     })
 }

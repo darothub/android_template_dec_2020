@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import androidx.navigation.ActivityNavigator
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
@@ -33,14 +32,12 @@ import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.ui.REQUEST_CODE
 import io.michaelrocks.libphonenumber.android.PhoneNumberUtil
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -59,7 +56,7 @@ inline fun <reified T> Activity.observeRequest(
     progressBar: ProgressBar?, button: Button?, loader: Boolean = false,
     crossinline success: (UserResponse<T>) -> Unit,
     crossinline error: (String) -> Unit
-): LiveData<Pair<Boolean, Any?>> {
+) {
     val result = MutableLiveData<Pair<Boolean, Any?>>()
     val title: String by lazy {
         this.getName()
@@ -74,6 +71,7 @@ inline fun <reified T> Activity.observeRequest(
     val textView by lazy {
         dialog.findViewById<TextView>(R.id.loader_layout_tv)
     }
+
 
     hideKeyboard()
     request?.observe(this as LifecycleOwner, Observer {
@@ -134,12 +132,10 @@ inline fun <reified T> Activity.observeRequest(
             progressBar?.hide()
             dialog.dismiss()
             button?.show()
-            i(title, e.localizedMessage?:"")
+            i(title, e.localizedMessage ?: "")
         }
 
     })
-
-    return result
 }
 
 fun Activity.requestObserver(
@@ -326,7 +322,7 @@ fun Activity.saveBitmap(bmp: Bitmap?): File? {
     var outStream: OutputStream? = null
     var file: File? = null
     val time = System.currentTimeMillis()
-    val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
+
     val child = "JPEG_${time}_.jpg"
     // String temp = null;
     if (extStorageDirectory != null) {
@@ -348,38 +344,6 @@ fun Activity.saveBitmap(bmp: Bitmap?): File? {
 
     return file
 }
-
-//suspend fun Activity.saveBitmaps(bmp: Bitmap?): File? {
-//    return GlobalScope.async {
-//        val extStorageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//        var outStream: OutputStream? = null
-//        var file: File? = null
-//        val time = System.currentTimeMillis()
-//        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(Date())
-//        val child = "JPEG_${time}_.jpg"
-//        // String temp = null;
-//        if (extStorageDirectory != null) {
-//            file = File(extStorageDirectory, child)
-//            if (file.exists()) {
-//                file.delete()
-//                file = File(extStorageDirectory, child)
-//            }
-//            try {
-//                outStream = FileOutputStream(file)
-//                bmp?.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
-//                outStream.flush()
-//                outStream.close()
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                return@async null
-//            }
-//        }
-//        return@async file
-//    }.await()
-//
-//
-//
-//}
 
 
 fun Activity.uriToBitmap(uriImage: Uri): Bitmap? {
@@ -445,7 +409,7 @@ fun Activity.setUpSpinnerWithList(
 }
 
 object GlobalVariables {
-    var globalWrapper:LiveData<ServicesResponseWrapper<ParentData>>?=null
+    var globalWrapper: LiveData<ServicesResponseWrapper<ParentData>>? = null
     var globalClient: Client? = null
     var globalClientList: List<Client?>? = null
     var globalListOfString: List<String>? = null
@@ -465,7 +429,7 @@ object GlobalVariables {
     var globalVideoListLiveData = MutableLiveData<List<CommonMediaClass>>()
     var globalPosition = 0
     var globalId = ""
-    var globalAddCardRes:AddCardRes?=null
+    var globalAddCardRes: AddCardRes? = null
 
 }
 
@@ -514,12 +478,12 @@ fun getBitmapFromImageView(view: ImageView): Bitmap {
     return bitmap
 }
 
-inline fun <reified T> Activity.onFlowResponse(
+suspend inline fun <reified T> Activity.onFlowResponse(
     button: Button? = null,
     progressBar: ProgressBar? = null,
     loader: Boolean = false,
-    it: ServicesResponseWrapper<ParentData>,
-    noinline error:((String)->Unit)?=null,
+    response: ServicesResponseWrapper<out ParentData>,
+    noinline error: ((String) -> Unit)? = null,
     success: (T?) -> Unit
 
 ) {
@@ -535,32 +499,23 @@ inline fun <reified T> Activity.onFlowResponse(
         dialog.findViewById<TextView>(R.id.loader_layout_tv)
     }
 
-    when (it) {
+    when (response) {
         is ServicesResponseWrapper.Loading<*> -> {
-            if (loader) dialog.show() else dialog.dismiss()
+//            if (loader) dialog.show() else dialog.dismiss()
+            dialog.show()
             progressBar?.show()
             button?.hide()
-            Log.i("onFlowResponse", "Loading ${it.message} dialog showin ${dialog.isShowing}")
+            delay(1000)
+            Log.i("onFlowResponse", "Loading ${response.message} dialog showin ${dialog.isShowing}")
         }
-        is ServicesResponseWrapper.Success -> {
-            dialog.dismiss()
-            progressBar?.hide()
-            button?.show()
 
-            if(it.data != null){
-                success(it.data as T)
-            }
-
-
-            Log.i("onFlowResponse", "Success ${it?.data} dialog showin ${dialog.isShowing}")
-        }
         is ServicesResponseWrapper.Error -> {
             dialog.dismiss()
             progressBar?.hide()
             button?.show()
-            error(it.message.toString())
+            error(response.message.toString())
 //            gdToast(it.message.toString(), Gravity.BOTTOM)
-            Log.e("onFlowResponse", "Error ${it?.message}")
+            Log.e("onFlowResponse", "Error ${response?.message}")
         }
         is ServicesResponseWrapper.Logout -> {
             dialog.dismiss()
@@ -568,7 +523,7 @@ inline fun <reified T> Activity.onFlowResponse(
             button?.show()
             goto(MainActivity::class.java)
             this.finish()
-            Log.i("onFlowResponse", "Logout ${it?.message}")
+            Log.i("onFlowResponse", "Logout ${response?.message}")
         }
         is ServicesResponseWrapper.Network -> {
 
@@ -576,8 +531,113 @@ inline fun <reified T> Activity.onFlowResponse(
             textView.text = getString(R.string.bad_network)
             dialog.show()
         }
+        is ServicesResponseWrapper.Success -> {
+            dialog.dismiss()
+            progressBar?.hide()
+            button?.show()
+
+            if (response.data != null) {
+                success(response.data as T)
+            }
+
+
+            Log.i("onFlowResponse", "Success ${response?.data} dialog showin ${dialog.isShowing}")
+        }
+    }
+
+}
+
+inline fun <T : ParentData> Activity.observeResponseState(
+    state: StateFlow<ServicesResponseWrapper<ParentData>>,
+    progressBar: ProgressBar?,
+    button: Button?,
+    crossinline success: (UserResponse<T>) -> Unit,
+    noinline error: ((String?) -> Unit)? = null
+) {
+
+    this as LifecycleOwner
+    lifecycleScope.launchWhenStarted {
+        val d = showOrHideLoader()
+        state.collectLatest {
+            when (it) {
+                is ServicesResponseWrapper.Loading<*>  -> {
+                    i("Stateflow", "Loading")
+                    d.second.text = it.message
+                    d.first.show()
+                    toggleProgressBarAndButton(progressBar, button)
+                }
+
+                is ServicesResponseWrapper.Error -> {
+                    i("Stateflow", "Error")
+                    d.first.dismiss()
+                    toggleProgressBarAndButton(progressBar, button)
+                    if (error != null) {
+                        val data = it.data as UserResponse<T>
+                        error(it.data.message)
+                    }
+                }
+                is ServicesResponseWrapper.Success -> {
+                    i("Stateflow", "Success")
+                    d.first.dismiss()
+                    val data = it.data as UserResponse<T>
+                    toggleProgressBarAndButton(progressBar, button)
+                    success(data)
+
+                }
+                is ServicesResponseWrapper.Logout -> {
+                    i("Stateflow", "Logout")
+                    d.first.dismiss()
+                    toggleProgressBarAndButton(progressBar, button)
+
+                }
+                is ServicesResponseWrapper.Network -> {
+                    i("Stateflow", "Network")
+                    d.first.show()
+                    d.second.text = it.message
+                    toggleProgressBarAndButton(progressBar, button)
+                }
+
+                else -> {
+                    showOrHideLoader()
+                }
+            }
+        }
     }
 }
+
+
+
+fun Activity.toggleProgressBarAndButton(progressBar: ProgressBar?, button: Button?){
+   if(progressBar?.show() == true){
+       button?.show()
+       progressBar?.hide()
+   }
+    else{
+       button?.hide()
+       progressBar?.show()
+   }
+}
+
+fun Activity.showOrHideLoader(message: String?=null):Pair<Dialog, TextView>{
+    val dialog by lazy {
+        Dialog(this, R.style.DialogTheme).apply {
+            setContentView(R.layout.loader_layout)
+            setCanceledOnTouchOutside(false)
+            window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+    }
+    val textView by lazy {
+        dialog.findViewById<TextView>(R.id.loader_layout_tv)
+    }
+    if (message.isNullOrEmpty()){
+    }
+    else{
+        textView.text = message
+    }
+    return Pair(dialog, textView)
+}
+
+
 
 fun Activity.goto(destination: Class<*>) {
     startActivity(Intent(this, destination))

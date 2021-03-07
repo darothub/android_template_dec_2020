@@ -107,6 +107,7 @@ open class ActivityStaticModule {
                 req = req.newBuilder()
                     .cacheControl(CacheControl.FORCE_NETWORK)
                     .addHeader("Authorization", header)
+                    .addHeader("Connection", "close")
                     .addHeader("Cache-control", "no-cache")
                     .build()
                 val res = it.proceed(req)
@@ -115,6 +116,7 @@ open class ActivityStaticModule {
             .addInterceptor(loggingInterceptor)
             .connectTimeout(5, TimeUnit.MINUTES)
             .readTimeout(5, TimeUnit.MINUTES)
+            .retryOnConnectionFailure(false)
             .build()
     }
 
@@ -137,7 +139,6 @@ open class ActivityStaticModule {
             .build()
 
     }
-
 
     @Singleton
     @Provides

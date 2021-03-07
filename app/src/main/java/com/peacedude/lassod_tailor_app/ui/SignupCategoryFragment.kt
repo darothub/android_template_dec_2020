@@ -17,7 +17,6 @@ import com.peacedude.lassod_tailor_app.helpers.goto
 import com.peacedude.lassod_tailor_app.helpers.setupCategorySpinner
 import com.peacedude.lassod_tailor_app.model.request.User
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_signup.*
 import kotlinx.android.synthetic.main.fragment_signup_category.*
 
 

@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.services.auth
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.model.typealiases.SubscriptionList
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -16,7 +17,7 @@ interface AuthServices {
     @GET("auth/profile/me")
     fun getUserData(): Call<UserResponse<User>>
     @GET("auth/profile/me")
-    suspend fun getUserDetails(@Header("Authorization") header: String): UserResponse<User>
+    suspend fun getUserDetails(): UserResponse<User>
 
     @PATCH("auth/profile/me")
     fun updateUserData(
@@ -37,13 +38,11 @@ interface AuthServices {
 
     @POST("client")
     fun addClient(
-        @Header("Authorization") header: String,
         @Body client: Client
     ): Call<UserResponse<Client>>
 
     @PATCH("client")
     fun editClient(
-        @Header("Authorization") header: String,
         @Body client: Client
     ): Call<UserResponse<SingleClient>>
 
@@ -53,10 +52,12 @@ interface AuthServices {
     @GET("client")
     suspend fun getAllClients(): UserResponse<ClientsList>
 
+    @GET("client")
+    suspend fun getAllClientsTwo(): UserResponse<ClientsList>
+
     @HTTP(method = "DELETE", path = "client", hasBody = true)
     @FormUrlEncoded
     fun deleteClient(
-        @Header("Authorization") header: String?,
         @Field("id") id: String?
     ): Call<UserResponse<NothingExpected>>
 
@@ -93,13 +94,11 @@ interface AuthServices {
     @POST("avatar")
     @Multipart
     fun uploadProfilePicture(
-        @Header("Authorization") header: String?,
         @Part avatar: MultipartBody.Part
     ): Call<UserResponse<UploadImageClass>>
 
     @POST("measurement")
     fun addMeasurement(
-        @Header("Authorization") header: String?,
         @Body measurementValues: MeasurementValues
     ): Call<UserResponse<ClientMeasurement>>
 
@@ -116,39 +115,27 @@ interface AuthServices {
     @HTTP(method = "DELETE", path = "media", hasBody = true)
     @FormUrlEncoded
     fun deleteMedia(
-        @Header("Authorization") header: String?,
         @Field("id") id: String?
     ): Call<UserResponse<NothingExpected>>
 
     @GET("video")
-    fun getAllVideos(
-        @Header("Authorization") header: String?
-    ): Call<UserResponse<VideoList>>
+    fun getAllVideos(): Call<UserResponse<VideoList>>
 
     @GET("article")
-    fun getAllArticles(
-        @Header("Authorization") header: String?
-    ): Call<UserResponse<ArticleList>>
+    fun getAllArticles(): Call<UserResponse<ArticleList>>
 
     @GET("video")
-    suspend fun getVideos(
-        @Header("Authorization") header: String?
-    ):UserResponse<VideoList>
+    suspend fun getVideos():UserResponse<VideoList>
 
     @GET("article")
-    suspend fun getArticles(
-        @Header("Authorization") header: String?
-    ):UserResponse<ArticleList>
+    suspend fun getArticles():UserResponse<ArticleList>
 
     @GET("measurementypes")
-    suspend fun getMeasurementTypes(
-        @Header("Authorization") header: String?
-    ): UserResponse<MeasurementTypeList>
+    suspend fun getMeasurementTypes(): UserResponse<MeasurementTypeList>
 
     @POST("address")
     @FormUrlEncoded
     suspend fun addDeliveryAddress(
-        @Header("Authorization") header: String?,
         @Field("clientId") clientId: String?,
         @Field("deliveryAddress") deliveryAddress: String?
     ): UserResponse<AddressData>
@@ -156,7 +143,6 @@ interface AuthServices {
     @POST("addcard")
     @FormUrlEncoded
     suspend fun addCard(
-        @Header("Authorization") header: String?,
         @Field("email") email: String?,
         @Field("amount") amount: String?
     ): UserResponse<AddCardWrapper<AddCardRes>>
@@ -164,7 +150,6 @@ interface AuthServices {
 
     @GET("verifypayment")
     suspend fun verifyPayment(
-        @Header("Authorization") header: String?,
         @Query("reference") reference: String
     ): UserResponse<UserResponse<AddCardResponse>>
 
@@ -177,7 +162,6 @@ interface AuthServices {
 
     @GET("addresses")
     suspend fun getAllAddress(
-        @Header("Authorization") header: String?,
         @Query("clientId") clientId: String
     ): UserResponse<DeliveryAddress>
 
@@ -185,7 +169,6 @@ interface AuthServices {
     @PATCH("  auth/chpassword")
     @FormUrlEncoded
     suspend fun changePassword(
-        @Header("Authorization") header: String?,
         @Field("oldPassword") oldPassword: String?,
         @Field("newPassword") newPassword: String?
     ): UserResponse<NothingExpected>
@@ -193,13 +176,11 @@ interface AuthServices {
     @HTTP(method = "DELETE", path = "measurement", hasBody = true)
     @FormUrlEncoded
     suspend fun deleteMeasurement(
-        @Header("Authorization") header: String?,
         @Field("id") id: String?
     ): UserResponse<NothingExpected>
 
     @PATCH("measurement")
     suspend fun editMeasurement(
-        @Header("Authorization") header: String?,
         @Body measurementValues: MeasurementValues
     ): UserResponse<EditMeasurement>
 

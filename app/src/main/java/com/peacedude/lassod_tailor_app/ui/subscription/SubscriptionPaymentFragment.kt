@@ -83,44 +83,44 @@ class SubscriptionPaymentFragment : DaggerFragment() {
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val email = currentUser?.email
-                i(title, "User $email")
-
-                authViewModel.addCard(header, email, "1000")
-                    .catch {
-                        i(title, "Error on flow ${it.message}")
-                    }
-                    .collect {
-                        onFlowResponse<AddCardWrapper<AddCardRes>>(response = it) {
-                            GlobalVariables.globalString = it?.data?.reference.toString()
-
-                            val reference = it?.data?.reference
-                            val settings: WebSettings = webviewone.settings
-                            settings.setJavaScriptEnabled(true)
-                            settings.allowContentAccess = true
-                            settings.domStorageEnabled = true
-                            webviewone.loadUrl("${it?.data?.authorizationURL}")
-                            webviewone.webViewClient = CustomWebViewClient {
-                                i(title, "We are here")
-                                CoroutineScope(Main).launch {
-                                    GlobalVariables.globalString = it?.data?.reference.toString()
-                                    GlobalVariables.globalAddCardRes = it?.data
-                                    val action = SubscriptionPaymentFragmentDirections.gotoAddCard()
-                                    action.addCardData = it?.data
-                                    goto(action)
-                                }
-
-                            }
-
-
-                        }
-                    }
-                i(title, "Address data flow ${GlobalVariables.globalString}")
-            }
-
-        }
+//        CoroutineScope(Dispatchers.Main).launch {
+//            supervisorScope {
+//                val email = currentUser?.email
+//                i(title, "User $email")
+//
+//                authViewModel.addCard(header, email, "1000")
+//                    .catch {
+//                        i(title, "Error on flow ${it.message}")
+//                    }
+//                    .collect {
+//                        onFlowResponse<AddCardWrapper<AddCardRes>>(response = it) {
+//                            GlobalVariables.globalString = it?.data?.reference.toString()
+//
+//                            val reference = it?.data?.reference
+//                            val settings: WebSettings = webviewone.settings
+//                            settings.setJavaScriptEnabled(true)
+//                            settings.allowContentAccess = true
+//                            settings.domStorageEnabled = true
+//                            webviewone.loadUrl("${it?.data?.authorizationURL}")
+//                            webviewone.webViewClient = CustomWebViewClient {
+//                                i(title, "We are here")
+//                                CoroutineScope(Main).launch {
+//                                    GlobalVariables.globalString = it?.data?.reference.toString()
+//                                    GlobalVariables.globalAddCardRes = it?.data
+//                                    val action = SubscriptionPaymentFragmentDirections.gotoAddCard()
+//                                    action.addCardData = it?.data
+//                                    goto(action)
+//                                }
+//
+//                            }
+//
+//
+//                        }
+//                    }
+//                i(title, "Address data flow ${GlobalVariables.globalString}")
+//            }
+//
+//        }
     }
 
 

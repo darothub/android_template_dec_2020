@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,8 +102,8 @@ class UserAccountFragment : DaggerFragment() {
     lateinit var observer: StartActivityForResults
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val authViewModel: AuthViewModel by activityViewModels {
+        viewModelProviderFactory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -563,7 +564,6 @@ class UserAccountFragment : DaggerFragment() {
                     data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
                 val file = saveBitmap(imageBitmap)
                 if (file != null) {
-//                    Picasso.get().load(file).into(user_account_profile_image)
 
                     val reqBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
 
@@ -571,17 +571,6 @@ class UserAccountFragment : DaggerFragment() {
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("avatar", file.name, reqBody)
                         .build()
-
-                    val req = authViewModel.uploadProfilePicture(requestBody)
-                    observeRequest<User>(req, null, null, true, {result->
-                        val responseData = result.data
-                        i(title, "URL ${responseData?.avatar}")
-                    }, { err ->
-                        i(title, "ResetPasswordError $err")
-                    })
-
-                    i(title, "File $file")
-//                    requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
                 }
 
             } else {
@@ -597,5 +586,8 @@ class UserAccountFragment : DaggerFragment() {
 
 data class UserNameClass(var title:String, var value:String?)
 data class UserAddressClass(var title:String, var value:UserAddress)
+
+
+
 
 

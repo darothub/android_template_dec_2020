@@ -23,7 +23,6 @@ abstract class MainActivityModule {
         modules = [
             AuthViewModelModule::class,
             AuthRequestModule::class,
-            SignupFragmentModule::class,
             UserRequestsModule::class,
             UserViewModelModule::class,
             LoginFragmentModule::class,

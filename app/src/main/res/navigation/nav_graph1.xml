@@ -12,9 +12,9 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/signupFragment"
-        android:name="com.peacedude.lassod_tailor_app.ui.SignupFragment"
+        android:name="com.peacedude.lassod_tailor_app.ui.DrawerFragment"
         android:label=" "
-        tools:layout="@layout/fragment_signup" />
+        tools:layout="@layout/fragment_drawer" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.peacedude.lassod_tailor_app.ui.LoginFragment"

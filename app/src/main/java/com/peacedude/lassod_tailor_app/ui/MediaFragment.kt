@@ -19,10 +19,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -143,9 +145,7 @@ class MediaFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel by viewModels<AuthViewModel> {
-        viewModelProviderFactory
-    }
+    private val authViewModel by activityViewModels<AuthViewModel>()
 
     lateinit var observer: StartActivityForResults
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -224,8 +224,6 @@ class MediaFragment : DaggerFragment() {
 
 
 
-        mediaTransaction()
-
 
 
         add_photo_iv.setOnClickListener {
@@ -244,138 +242,194 @@ class MediaFragment : DaggerFragment() {
                 requireActivity().gdToast(getString(R.string.no_permission), Gravity.BOTTOM)
             }
         }
+//        lifecycleScope.launchWhenStarted {
+//            authViewModel.photos.collect()
+//        }
+
+        mediaTransaction()
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun onResume() {
+        super.onResume()
+
     }
 
     @ExperimentalCoroutinesApi
     private fun mediaTransaction() {
 
-        CoroutineScope(Dispatchers.Main).launch {
-            supervisorScope {
-                val getAllPhotos = async {
-                    authViewModel.getAllPhoto()
+        observeRequest<PhotoList>(authViewModel.allPhotos, null, null, true, {
+            val data = it?.data?.photo
+            i(title, "Photo flow $data")
+            if (data?.isNotEmpty() == true) {
+                setUpPhotoListView(data)
+            }
+            else{
+                media_fragment_vf.displayedChild = 0
+            }
+
+        }, { error ->
+            i(
+                title,
+                "PhotoList $error"
+            )
+            if (error != null) {
+                requireActivity().gdToast(
+                    error,
+                    Gravity.BOTTOM
+                )
+            }
+        })
+//        observeResponseState<PhotoList>(
+//            authViewModel.uiState,
+//            null,
+//            null,
+//            {
+//                val data = it?.data?.photo
+//                i(title, "PhotoState flow $data")
+//                if (data?.isNotEmpty() == true) {
+//                    setUpPhotoListView(data)
+//                }
+//                else{
+//                    media_fragment_vf.showNext()
+//                }
+//            },
+//            {err ->
+//                i(
+//                    title,
+//                    "PhotoList $err"
+//                )
+//                if (err != null) {
+//                    requireActivity().gdToast(
+//                        err,
+//                        Gravity.BOTTOM
+//                    )
+//                }
+//
+//            })
+
+    }
+
+    private fun setUpPhotoListView(data: List<Photo>) {
+        media_fragment_vf.displayedChild = 1
+        media_fragment_rv?.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
+
+            bind { itemView, position, item ->
+                itemView.media_item_picture_title_tv.text = item?.info
+
+                Picasso.get().load(item?.photo)
+                    .into(itemView.media_item_picture_iv)
+
+                itemView.setOnClickListener {
+                    singleMediaDialogFlipper[0].show()
+                    singleMediaDialogFlipper[1].hide()
+                    GlobalVariables.globalId = item?.id.toString()
+                    GlobalVariables.globalPhoto = item
+                    GlobalVariables.globalPosition = position
+                    i(title, "pos ${GlobalVariables.globalPosition}")
+                    Picasso.get().load(item?.photo).into(singleImageIv)
+
+                    singleSendBtn.setOnClickListener {
+                        shareImage(itemView)
+                    }
+                    singleDeleteBtn.setOnClickListener {
+                        deleteMediaRequest(list, item, adapter)
+                    }
+
+                    singleEditBtn.setOnClickListener {
+                        onPhotoDataEdit(item, adapter, list)
+                    }
+
+                    singleImageDialog.setOnDismissListener {
+                        singleMediaDialogFlipper.showPrevious()
+                    }
+
+                    singleImageDialog.show {
+                        cornerRadius(10F)
+                    }
                 }
 
-                getAllPhotos.await()
-                    .catch {
-                        i(title, "Error All Photo on flow ${it.message}")
-                    }
-                    .collect {
-                        onFlowResponse<PhotoList>(response = it) { it ->
-                            val listOfPhoto = it?.photo?.map { photo ->
-                                photo
-                            }?.reversed()
-                            i(title, "${listOfPhoto?.isEmpty()}")
-                            if (listOfPhoto?.isEmpty()!! || media_fragment_rv == null) {
 
-
-                            } else {
-
-                                media_fragment_rv?.setupAdapter<Photo>(R.layout.media_recycler_item) { adapter, context, list ->
-
-                                    bind { itemView, position, item ->
-                                        itemView.media_item_picture_title_tv.text = item?.info
-
-                                        Picasso.get().load(item?.photo)
-                                            .into(itemView.media_item_picture_iv)
-
-                                        itemView.setOnClickListener {
-                                            singleMediaDialogFlipper[0].show()
-                                            singleMediaDialogFlipper[1].hide()
-                                            GlobalVariables.globalId = item?.id.toString()
-                                            GlobalVariables.globalPhoto = item
-                                            GlobalVariables.globalPosition = position
-                                            i(title, "pos ${GlobalVariables.globalPosition}")
-                                            Picasso.get().load(item?.photo).into(singleImageIv)
-
-                                            singleSendBtn.setOnClickListener {
-                                                shareImage(itemView)
-                                            }
-                                            singleDeleteBtn.setOnClickListener {
-                                                deleteMediaRequest(list, item, adapter)
-                                            }
-
-                                            singleEditBtn.setOnClickListener {
-                                                singleMediaDialogFlipper.showNext()
-                                                singleUpdateDialogEt.setText(item?.info)
-                                                singleUpdateBtn.setOnClickListener {
-                                                    val newInfo =
-                                                        singleUpdateDialogEt.text.toString().trim()
-                                                    val checkEmpty =
-                                                        IsEmptyCheck(singleUpdateDialogEt)
-                                                    when {
-                                                        checkEmpty != null -> {
-                                                            requireActivity().gdToast(
-                                                                "${singleUpdateDialogEt.tag} cannot be empty",
-                                                                Gravity.BOTTOM
-                                                            )
-                                                        }
-                                                        else -> {
-                                                            singleMediaDialogFlipper.showPrevious()
-                                                            val updateReq =
-                                                                authViewModel.editPhotoInfo(
-                                                                    item?.id.toString(),
-                                                                    newInfo
-                                                                )
-                                                            //Observer for get request
-                                                            observeRequest<NothingExpected>(
-                                                                updateReq,
-                                                                null,
-                                                                null,
-                                                                true,
-                                                                {
-                                                                    val res = it
-                                                                    item?.info = newInfo
-                                                                    adapter.notifyDataSetChanged()
-
-                                                                    i(title, "$res list $list")
-                                                                    requireActivity().gdToast(
-                                                                        "${res.message}",
-                                                                        Gravity.BOTTOM
-                                                                    )
-                                                                    singleImageDialog.dismiss()
-
-                                                                },
-                                                                { err ->
-                                                                    i(
-                                                                        title,
-                                                                        "DeletePhotoReqError $err"
-                                                                    )
-                                                                    requireActivity().gdToast(
-                                                                        err,
-                                                                        Gravity.BOTTOM
-                                                                    )
-                                                                    item?.info = newInfo
-                                                                    adapter.notifyDataSetChanged()
-                                                                    singleImageDialog.dismiss()
-                                                                })
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            singleImageDialog.setOnDismissListener {
-                                                singleMediaDialogFlipper.showPrevious()
-                                            }
-
-                                            singleImageDialog.show {
-                                                cornerRadius(10F)
-                                            }
-                                        }
-
-
-                                    }
-                                    setLayoutManager(GridLayoutManager(requireContext(), 2))
-                                    submitList(listOfPhoto)
-                                    media_fragment_vf.showNext()
-                                }
-
-                            }
-
-                        }
-                    }
             }
+            setLayoutManager(GridLayoutManager(requireContext(), 2))
+            submitList(data)
+
         }
 
+    }
+
+    private fun onPhotoDataEdit(
+        item: Photo?,
+        adapter: RecyclingAdapter<Photo>,
+        list: MutableList<Photo?>?
+    ) {
+        singleMediaDialogFlipper.showNext()
+        singleUpdateDialogEt.setText(item?.info)
+        singleUpdateBtn.setOnClickListener {
+            val newInfo =
+                singleUpdateDialogEt.text.toString().trim()
+            val checkEmpty =
+                IsEmptyCheck(singleUpdateDialogEt)
+            when {
+                checkEmpty != null -> {
+                    requireActivity().gdToast(
+                        "${singleUpdateDialogEt.tag} cannot be empty",
+                        Gravity.BOTTOM
+                    )
+                }
+                else -> {
+                    singleMediaDialogFlipper.showPrevious()
+                    updatePhotoRequest(item, newInfo, list, adapter)
+                }
+            }
+        }
+    }
+
+    private fun updatePhotoRequest(
+        item: Photo?,
+        newInfo: String,
+        list: MutableList<Photo?>?,
+        adapter: RecyclingAdapter<Photo>
+    ) {
+        val updateReq =
+            authViewModel.editPhotoInfo(
+                item?.id.toString(),
+                newInfo
+            )
+        //Observer for get request
+        observeRequest<NothingExpected>(
+            updateReq,
+            null,
+            null,
+            true,
+            {
+                val res = it
+                item?.info = newInfo
+                list?.set(list.indexOf(item), item)
+                adapter.notifyDataSetChanged()
+
+                i(title, "$res list $list")
+                requireActivity().gdToast(
+                    "${res.message}",
+                    Gravity.BOTTOM
+                )
+                singleImageDialog.dismiss()
+
+            },
+            { err ->
+                i(
+                    title,
+                    "DeletePhotoReqError $err"
+                )
+                requireActivity().gdToast(
+                    err,
+                    Gravity.BOTTOM
+                )
+                item?.info = newInfo
+                list?.set(list.indexOf(item), item)
+                adapter.notifyDataSetChanged()
+                singleImageDialog.dismiss()
+            })
     }
 
     private fun shareImage(itemView: View) {
@@ -412,8 +466,7 @@ class MediaFragment : DaggerFragment() {
         if (list?.isEmpty()!!) {
             media_fragment_vf.showPrevious()
         }
-        val deleteReq =
-            authViewModel.deleteMedia(header, item?.id)
+        val deleteReq = authViewModel.deleteMedia(item?.id)
         //Observer for get request
         observeRequest<NothingExpected>(
             deleteReq,
