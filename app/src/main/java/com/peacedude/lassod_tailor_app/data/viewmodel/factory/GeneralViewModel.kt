@@ -74,6 +74,7 @@ open class GeneralViewModel @Inject constructor(
         get() = _uiState
 
 
+
     final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey) ?: User()
         set(currentUser) {
             field = currentUser
@@ -271,6 +272,7 @@ open class GeneralViewModel @Inject constructor(
                     msg.toString(),
                     code
                 )
+
                 `access$logout`()
             }
             else -> {
@@ -278,15 +280,21 @@ open class GeneralViewModel @Inject constructor(
                     error.first,
                     code
                 )
+
             }
         }
     }
 
-    fun<T> onSuccessStateFlow(r: UserResponse<T>) {
+    @Synchronized fun<T> onSuccessStateFlow(r: UserResponse<T>) {
         _uiState.value = ServicesResponseWrapper.Success(r)
     }
 
-    fun onNetworkStateFlow(){
+    @Synchronized fun<T> onSuccessStateFlow(state:MutableStateFlow<ServicesResponseWrapper<ParentData>>, r: UserResponse<T>) {
+        state.value = ServicesResponseWrapper.Success(r)
+    }
+
+
+    @Synchronized fun onNetworkStateFlow(){
         _uiState.value = ServicesResponseWrapper.Network(502, "Bad connection")
     }
 

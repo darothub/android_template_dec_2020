@@ -1,23 +1,20 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'kotlin-kapt'
-apply plugin: "androidx.navigation.safeargs"
-apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion compile_sdk_version
-    buildToolsVersion build_tool_version
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.peacedude.lassod_tailor_app"
         minSdkVersion min_sdk_version
         targetSdkVersion compile_sdk_version
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -27,42 +24,28 @@ android {
         }
     }
     compileOptions {
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        freeCompilerArgs = ["-Xallow-result-return-type"]
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-    testOptions {
-        unitTests.all {
-            useJUnitPlatform()
-        }
+        jvmTarget = '1.8'
     }
 }
-
-
 
 dependencies {
     // Dependency on local binaries
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation project(':utils')
-
     //Pin entry view
     implementation ('com.alimuzaffar.lib:pinentryedittext:2.0.6') {
         // Exclude is only needed if you already have
         // androidx.appcompat as a dependency in your app.
         exclude group: 'androidx.appcompat', module: 'appcompat'
     }
-    
+
     implementation libraries
     kapt kaptLibraries
     coreLibraryDesugaring deSugarLibrary
     testImplementation testLibraries
     androidTestImplementation androidTestLibraries
     debugImplementation debugLibraries
-
-//    implementation platform('com.google.firebase:firebase-bom:26.0.0')
-//    implementation 'com.google.firebase:firebase-analytics'
 }

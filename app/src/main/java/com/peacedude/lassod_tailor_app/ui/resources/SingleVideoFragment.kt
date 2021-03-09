@@ -54,7 +54,9 @@ class SingleVideoFragment : DaggerFragment() {
     private val toolbar by lazy {
         (single_video_fragment_tb as Toolbar)
     }
-    val singleVideoArg by navArgs<SingleVideoFragmentArgs>()
+    val singleVideo by lazy {
+        GlobalVariables.globalVideo
+    }
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -85,7 +87,7 @@ class SingleVideoFragment : DaggerFragment() {
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
 
-        val single = singleVideoArg.video
+        val single = singleVideo
         val singleMediaController = MediaController(requireContext())
 
         if(single != null){

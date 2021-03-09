@@ -3,18 +3,157 @@ apply from: 'versions.gradle'
 buildscript {
     apply from: 'versions.gradle'
     ext.kotlin_version = "1.4.10"
+    ext {
+        // global variables
+        compile_sdk_version = 30
+        kotlin_version = '1.4.10'
+        min_sdk_version = 21
+        build_tool_version = "30.0.2"
+
+
+        libraries = [
+                // Kotlin standard library
+                "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+                // Android UI and appcompat
+                "androidx.activity:activity-ktx:1.2.0-rc01",
+                "androidx.fragment:fragment-ktx:1.3.0-rc01",
+                'androidx.core:core-ktx:1.3.2',
+                'androidx.appcompat:appcompat:1.2.0',
+                'androidx.constraintlayout:constraintlayout:2.0.4',
+                'androidx.legacy:legacy-support-v4:1.0.0',
+                "androidx.viewpager2:viewpager2:1.0.0",
+                //Jetpack Navigation
+                "androidx.navigation:navigation-fragment-ktx:$versions.navigation_fragment",
+                "androidx.navigation:navigation-ui-ktx:$versions.navigation_fragment",
+                //Material design
+                "com.google.android.material:material:$versions.material_design",
+                //Retrofit
+                "com.squareup.retrofit2:retrofit:$versions.retrofit_version",
+                'com.squareup.okhttp:okhttp:2.7.2',
+                "com.squareup.retrofit2:converter-gson:$versions.retrofit_version",
+                "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit_version",
+                "com.squareup.retrofit2:converter-scalars:$versions.retrofit_version",
+                //Interceptor
+                ("com.squareup.okhttp3:logging-interceptor:4.9.0"),
+                //Coroutine
+                 "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9",
+                 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9',
+                //Dagger 2
+                "com.google.dagger:dagger-android:$versions.dagger_version",
+                "com.google.dagger:dagger-android-support:$versions.dagger_version",
+                'com.google.dagger:dagger:2.28.1',
+                //ProgressView
+                "com.github.skydoves:progressview:1.1.0",
+                //Jwt decoder
+                'com.auth0.android:jwtdecode:2.0.0',
+                //Paystack
+                'co.paystack.android:paystack:3.1.2',
+                //Date picker
+                'com.github.dewinjm:monthyear-picker:1.0.2',
+                //Rich text
+                'org.sufficientlysecure:html-textview:4.0',
+                //Emoji
+                'com.vanniktech:emoji-facebook:0.7.0',
+                //Bubble view
+                'com.github.MasayukiSuda:BubbleLayout:v1.2.1',
+                //Emoji
+                'com.github.hani-momanii:SuperNova-Emoji:1.1',
+                //Country picker
+                 'com.hbb20:ccp:2.4.2',
+                //Youtube player
+                 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5',
+                 "androidx.preference:preference-ktx:1.1.1",
+                //OkHttp
+                 'com.squareup.okhttp3:okhttp:4.9.0',
+                // ViewModel and LiveData
+                 "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle_version",
+                 "androidx.lifecycle:lifecycle-livedata-ktx:$versions.lifecycle_version",
+                //Firebase storage
+                 'com.google.firebase:firebase-storage-ktx:19.2.0',
+                //Picasso
+                 'com.squareup.picasso:picasso:2.71828',
+                //Permission
+                 "com.github.illiashenkoo:startask-permissions:1.0.6",
+                //lottiefiles
+                 'com.airbnb.android:lottie:3.4.1',
+                // Recommended: Add the Firebase SDK for Google Analytics.
+                 'com.google.firebase:firebase-analytics-ktx:18.0.0',
+                // Add the Firebase Crashlytics SDK.
+                 'com.google.firebase:firebase-crashlytics:17.3.0',
+                //TextView size scaling
+                 'com.intuit.sdp:sdp-android:1.0.6',
+                //Toast
+                 'com.github.darothub:DarotToastLib:1.0.3',
+                //Dialog dependency
+                 'com.afollestad.material-dialogs:core:3.3.0',
+                //Pin edit text
+                 'com.poovam:pin-edittext-field:1.2.3',
+                //For shared preference encryption
+                 "androidx.security:security-crypto:1.1.0-alpha02",
+                //recyclerView
+                 "com.utsman.recycling:recycling:$versions.recycling",
+                //Shimmer
+                 "com.facebook.shimmer:shimmer:0.5.0",
+                //Google play-services-auth
+                 'com.google.android.gms:play-services-auth:19.0.0',
+                 'com.shobhitpuri.custombuttons:google-signin:1.1.0',
+                //phone utils
+                 'io.michaelrocks:libphonenumber-android:8.12.9',
+                //Moshi
+                ("com.squareup.moshi:moshi:1.9.3"),
+                //Connectivity
+                 "org.jetbrains.kotlin:kotlin-reflect:1.4.20",
+                //Progress bar layout
+                 'com.github.JDevZone:FillProgressLayout:0.0.6',
+                //Picasso
+                 'com.squareup.picasso:picasso:2.71828',
+                //Coil
+                ("io.coil-kt:coil:1.0.0-rc3"),
+        ]
+        kaptLibraries = [
+                //kapt
+                 "com.google.dagger:dagger-android-processor:$versions.dagger_version",
+                 'com.google.dagger:dagger-compiler:2.28.1',
+                 ("com.squareup.moshi:moshi-kotlin-codegen:1.9.3")
+        ]
+        deSugarLibrary=[
+                //coreLibraryDesugaring
+                // Support for Java 8 features
+                'com.android.tools:desugar_jdk_libs:1.1.1'
+        ]
+        testLibraries =[
+                //testImplementation
+                'junit:junit:4.13',
+                ("io.kotest:kotest-runner-junit5-jvm:4.2.0.RC2"),
+                ("io.kotest:kotest-assertions-core-jvm:4.2.0.RC2"),
+                ("io.kotest:kotest-property-jvm:4.2.0.RC2")
+        ]
+        androidTestLibraries =[
+                //androidTestImplementation
+                'androidx.test.ext:junit:1.1.2',
+                "androidx.test.espresso:espresso-core:$versions.espresso",
+                "androidx.test.espresso:espresso-intents:$versions.espresso",
+                "androidx.test:runner:$versions.testrunner",
+                "androidx.test:core:1.3.0",
+                "androidx.test.ext:junit-ktx:1.1.2"
+        ]
+        debugLibraries=[
+                //debugImplementation
+                "androidx.fragment:fragment-testing:$versions.fragment_version"
+        ]
+    }
     repositories {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.android.tools.build:gradle:4.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation_fragment"
-        classpath 'com.google.gms:google-services:4.3.4'
+        classpath 'com.google.gms:google-services:4.3.5'
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.0'
 
 
         // NOTE: Do not place your application dependencies here; they belong

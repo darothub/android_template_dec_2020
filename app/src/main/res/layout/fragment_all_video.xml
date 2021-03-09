@@ -13,8 +13,8 @@
 
     <include
         android:id="@+id/all_video_fragment_tb"
-        android:visibility="gone"
-        layout="@layout/reusable_appbar" />
+        layout="@layout/reusable_appbar"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/all_video_fragment_videos_tv"
@@ -24,25 +24,33 @@
         android:layout_marginTop="@dimen/_18sdp"
         android:text="@string/videos_str"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/_13sdp"/>
+        android:textSize="@dimen/_13sdp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/all_video_fragment_rv"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:text="@string/hello_blank_fragment"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        android:visibility="gone"
-        tools:listitem="@layout/resource_video_item" />
+    <ViewFlipper
+        android:id="@+id/all_video_fragment_recycler_vf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/resource_fragment_video_tv">
 
-    <include
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:id="@+id/all_video_fragment_no_data_included_layout"
-        layout="@layout/no_data_layout"
-        android:layout_gravity="center"
-        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/all_video_fragment_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="@string/hello_blank_fragment"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/resource_video_item" />
+
+        <include
+            android:id="@+id/all_video_fragment_no_data_included_layout"
+            layout="@layout/no_data_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+    </ViewFlipper>
+
+
 </LinearLayout>
 

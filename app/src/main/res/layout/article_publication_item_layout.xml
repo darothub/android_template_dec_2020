@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.darothub.utils.ui.MaskedCardView
     android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:id="@+id/article_pub_item_image_ll"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="26dp"
+    app:cardElevation="2dp"
+    android:layout_marginTop="30dp"
+    app:cardPreventCornerOverlap="false"
+    android:background="@color/design_default_color_error"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.Sunflower.Card"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="@dimen/_130sdp"
-        android:layout_height="@dimen/_230sdp"
-        android:background="@drawable/top_left_bottom_right_rounded_corners"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:outlineProvider="background"
-        android:clipChildren="true"
-
-
-        >
+        android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/resource_article_publications_iv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_230sdp"
             android:scaleType="centerCrop"
-
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-    </LinearLayout>
+            />
 
-    <TextView
-        android:id="@+id/resource_article_publication_item_title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/article_pub_item_image_ll"
-        app:layout_constraintStart_toStartOf="@id/article_pub_item_image_ll"
-        app:layout_constraintEnd_toEndOf="@id/article_pub_item_image_ll"
-        app:layout_constraintHorizontal_bias=".1"
-        android:textSize="@dimen/_10sdp"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:text="@string/hello_blank_fragment"/>
+        <TextView
+            android:id="@+id/resource_article_publication_item_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/resource_article_publications_iv"
+            app:layout_constraintStart_toStartOf="@id/resource_article_publications_iv"
+            app:layout_constraintEnd_toEndOf="@id/resource_article_publications_iv"
+            app:layout_constraintHorizontal_bias=".1"
+            android:textSize="@dimen/_10sdp"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/_10sdp"
+            />
 
-    <TextView
-        android:id="@+id/resource_article_publication_item_author_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/resource_article_publication_item_title_tv"
-        app:layout_constraintStart_toStartOf="@id/resource_article_publication_item_title_tv"
-        android:textSize="@dimen/_7sdp"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintVertical_bias=".5"
-        app:layout_constraintEnd_toEndOf="@id/article_pub_item_image_ll"
-        android:text="@string/by_author_str"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/resource_article_publication_item_author_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/resource_article_publication_item_title_tv"
+            app:layout_constraintStart_toStartOf="@id/resource_article_publication_item_title_tv"
+            android:textSize="@dimen/_7sdp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintVertical_bias=".5"
+            app:layout_constraintEnd_toEndOf="@id/resource_article_publications_iv"
+            android:text="@string/library_emoji_author"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.darothub.utils.ui.MaskedCardView>
+

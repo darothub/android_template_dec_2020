@@ -31,7 +31,13 @@ open class AuthViewModel @Inject constructor(
     var mGoogleSignInClient: GoogleSignInClient
 ) : GeneralViewModel(retrofit, storage, context, mGoogleSignInClient), ViewModelInterface {
 
-
+    private val _articleState = MutableStateFlow<ServicesResponseWrapper<ParentData>>(ServicesResponseWrapper.Loading(message = "Loading"))
+    val articleState: StateFlow<ServicesResponseWrapper<ParentData>>
+        get() = _articleState
+    // Backing property to avoid state updates from other classes
+    private val _videoState = MutableStateFlow<ServicesResponseWrapper<ParentData>>(ServicesResponseWrapper.Loading(message = "Loading"))
+    val videoState: StateFlow<ServicesResponseWrapper<ParentData>>
+        get() = _videoState
     override fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
 
         val request = authRequestInterface.getUserData(header)
@@ -424,7 +430,37 @@ open class AuthViewModel @Inject constructor(
             badNetworkServiceLiveData
         }
     }
-
+    val articlesStateFlow = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getArticles()
+                onSuccessStateFlow(_articleState, request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+    @ExperimentalCoroutinesApi
+    override suspend fun getArticles()= netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getArticles()
+                onSuccessStateFlow(request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
     override fun getAllArticles()=netWorkLiveData.switchMap{
         if (it) {
             val request = authRequestInterface.getAllArticles()
@@ -437,7 +473,22 @@ open class AuthViewModel @Inject constructor(
     }
 
 
-    var videos = netWorkStateFlow.flatMapLatest {
+    var videosStateflow = netWorkStateFlow.flatMapLatest {
+        if (it) {
+            try {
+                val request = authRequestInterface.getVideos()
+                onSuccessStateFlow(_videoState, request)
+            }
+            catch (e:HttpException){
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+    val videos = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getVideos()
@@ -470,22 +521,7 @@ open class AuthViewModel @Inject constructor(
     }
 
 
-    @ExperimentalCoroutinesApi
-    override suspend fun getArticles()= netWorkStateFlow.flatMapLatest {
-        if (it) {
-            try {
-                val request = authRequestInterface.getArticles()
-                onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
-                onErrorStateFlow(e)
-            }
-            uiState
-        } else {
-            i(title, "Bad Connection")
-            badNetworkState
-        }
-    }
+
 
     var measurementTypes = netWorkStateFlow.flatMapLatest {
         if (it) {

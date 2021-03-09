@@ -3,6 +3,7 @@ package com.peacedude.lassod_tailor_app.ui.resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
@@ -64,8 +65,8 @@ class ResourcesActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel: AuthViewModel by lazy {
-        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    private val authViewModel: AuthViewModel by viewModels {
+        viewModelProviderFactory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
