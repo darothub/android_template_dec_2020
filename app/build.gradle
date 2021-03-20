@@ -5,6 +5,7 @@ apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: "org.jmailen.kotlinter"
 
 android {
     compileSdkVersion compile_sdk_version
@@ -42,7 +43,13 @@ android {
     }
 }
 
-
+//kotlinter {
+//    ignoreFailures = false
+//    indentSize = 4
+//    reporters = ['checkstyle', 'plain']
+//    experimentalRules = false
+//    disabledRules = ["no-wildcard-imports"]
+//}
 
 dependencies {
     // Dependency on local binaries

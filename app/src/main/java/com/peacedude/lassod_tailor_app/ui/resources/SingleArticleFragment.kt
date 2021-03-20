@@ -1,10 +1,10 @@
 package com.peacedude.lassod_tailor_app.ui.resources
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.article_publication_item_layout.view.*
 import kotlinx.android.synthetic.main.fragment_single_article.*
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -45,11 +44,11 @@ class SingleArticleFragment : DaggerFragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -59,28 +58,23 @@ class SingleArticleFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Nav controller set on toolbar
+        // Nav controller set on toolbar
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(single_articlefragment_tb, navController)
 
-
-        if(singleArticle != null){
+        if (singleArticle != null) {
             i(title, "$singleArticle")
             single_article_fragment_article_tv.setHtml(
                 singleArticle?.body.toString(),
                 HtmlHttpImageGetter(single_article_fragment_article_tv)
             )
-            single_article_fragment_iv.load(singleArticle?.articleImage){
+            single_article_fragment_iv.load(singleArticle?.articleImage) {
                 crossfade(true)
                 placeholder(R.drawable.obioma_logo_blue)
             }
             single_article_collapsingtbl.title = singleArticle?.title
-        }
-        else{
+        } else {
             i(title, "Cannot resolve body of null")
         }
-
-
     }
-
 }

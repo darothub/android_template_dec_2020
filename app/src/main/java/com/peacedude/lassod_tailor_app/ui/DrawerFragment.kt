@@ -1,38 +1,25 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
-import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.ui.resources.ResourcesActivity
-import com.peacedude.lassod_tailor_app.ui.subscription.SubscriptionActivity
-import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.drawer_menu_item.view.*
 import kotlinx.android.synthetic.main.fragment_drawer.*
 import java.util.*
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -60,9 +47,9 @@ class DrawerFragment : DaggerFragment() {
         }
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -102,7 +89,7 @@ class DrawerFragment : DaggerFragment() {
 //                        }
 //                        getString(R.string.logout) -> {
 //                            requireActivity().drawer_layout.closeDrawer(requireActivity().profile_drawer_view.requireView(), true)
-////                            logoutRequest()
+// //                            logoutRequest()
 //                        }
 //
 //                    }
@@ -128,8 +115,6 @@ class DrawerFragment : DaggerFragment() {
 //
 //
 //        }
-
-
     }
 
     override fun onStart() {
@@ -165,10 +150,5 @@ class DrawerFragment : DaggerFragment() {
 //            )
 //            i(title, "DashActError $err")
 //        })
-
-
     }
-
-
-
 }

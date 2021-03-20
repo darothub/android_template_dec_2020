@@ -3,19 +3,18 @@ package com.peacedude.lassod_tailor_app.ui.clientmanagement
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.textfield.TextInputEditText
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.buttonTransactions
-import com.peacedude.lassod_tailor_app.helpers.invisible
 import com.peacedude.lassod_tailor_app.helpers.show
 import com.peacedude.lassod_tailor_app.model.request.Client
 import dagger.android.support.DaggerFragment
@@ -26,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_english_measurement.*
  * Use the [EnglishMeasurementFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class  EnglishMeasurementFragment : DaggerFragment() {
+class EnglishMeasurementFragment : DaggerFragment() {
     private lateinit var saveBtn: Button
     private lateinit var progressBar: ProgressBar
     private val dialog by lazy {
@@ -44,13 +43,13 @@ class  EnglishMeasurementFragment : DaggerFragment() {
     private val EditMeasurementButton by lazy {
         dialogIncludedButtonView.findViewById(R.id.btn) as Button
     }
-    private val dialogAddNameField by lazy{
+    private val dialogAddNameField by lazy {
         dialog.findViewById<TextInputEditText>(R.id.add_measurement_et)
     }
 //    private val dialogEditNameField by lazy{
 //        dialog.findViewById<TextInputEditText>(R.id.edit_measurement_et)
 //    }
-    private val addTextCountTv by lazy{
+    private val addTextCountTv by lazy {
         dialog.findViewById<TextView>(R.id.add_measurement_text_count_tv)
     }
 //    private val editTextCountTv by lazy{
@@ -66,15 +65,15 @@ class  EnglishMeasurementFragment : DaggerFragment() {
         dialog.findViewById<TextView>(R.id.add_measurement_dialog_title_tv)
     }
 
-    var client: Client? = Client("","", "", "")
+    var client: Client? = Client("", "", "", "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -85,32 +84,33 @@ class  EnglishMeasurementFragment : DaggerFragment() {
         super.onResume()
 
         arguments?.let {
-
         }
 
         val saveBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         saveBtnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
             PorterDuff.Mode.SRC_IN
         )
 
-        buttonTransactions({
-            saveBtn = english_measurement_save_btn.findViewById(R.id.btn)
-            progressBar = english_measurement_save_btn.findViewById(R.id.progress_bar)
-        },{
-            saveBtn.text = getString(R.string.save)
-            saveBtn.background = saveBtnBackground
-            saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-            addMeasurementButton.apply {
-                text = getString(R.string.add)
-                background = saveBtnBackground
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-            }
-            EditMeasurementButton.apply{
-                text = getString(R.string.save)
-                background = saveBtnBackground
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-            }
+        buttonTransactions(
+            {
+                saveBtn = english_measurement_save_btn.findViewById(R.id.btn)
+                progressBar = english_measurement_save_btn.findViewById(R.id.progress_bar)
+            },
+            {
+                saveBtn.text = getString(R.string.save)
+                saveBtn.background = saveBtnBackground
+                saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+                addMeasurementButton.apply {
+                    text = getString(R.string.add)
+                    background = saveBtnBackground
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+                }
+                EditMeasurementButton.apply {
+                    text = getString(R.string.save)
+                    background = saveBtnBackground
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+                }
 //            authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
 //                if (it) {
 //                    saveBtn.show()
@@ -119,7 +119,8 @@ class  EnglishMeasurementFragment : DaggerFragment() {
 //                    saveBtn.invisible()
 //                }
 //            })
-        })
+            }
+        )
 //        dialogAddNameField.textCountListener(addTextCountTv)
 //        dialogEditNameField.textCountListener(editTextCountTv)
 
@@ -129,7 +130,7 @@ class  EnglishMeasurementFragment : DaggerFragment() {
             dialog.show()
         }
     }
-    fun EditText.textCountListener(tv:TextView){
+    fun EditText.textCountListener(tv: TextView) {
         this.doOnTextChanged { text, start, count, after ->
             if (text != null) {
                 tv.text = "${text.length}/50"

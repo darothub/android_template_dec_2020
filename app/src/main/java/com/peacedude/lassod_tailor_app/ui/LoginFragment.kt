@@ -6,21 +6,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.view.*
-import androidx.fragment.app.Fragment
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
-import com.auth0.android.jwt.JWT
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.gdtoast.gdErrorToast
 import com.peacedude.gdtoast.gdToast
@@ -28,17 +22,13 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
-import java.io.Serializable
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -69,7 +59,7 @@ class LoginFragment : DaggerFragment() {
     private val spannableString: SpannableString by lazy {
         newUserText.setAsSpannable()
     }
-    private var textColor = 0;
+    private var textColor = 0
     private var googleBtnTextColor = 0
 
     @Inject
@@ -82,7 +72,6 @@ class LoginFragment : DaggerFragment() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var observer: StartActivityForResults
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         changeStatusBarColor(R.color.colorPrimary)
@@ -91,13 +80,13 @@ class LoginFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -108,16 +97,18 @@ class LoginFragment : DaggerFragment() {
 
         val navController = Navigation.findNavController(login_appbar)
 
-
         toolbar.setNavigationOnClickListener {
             finish()
         }
-        buttonTransactions({
-            loginBtn = login_page_btn.findViewById(R.id.btn)
-            progressBar = login_page_btn.findViewById(R.id.progress_bar)
-        }, {
-            loginBtn.text = getString(R.string.login)
-        })
+        buttonTransactions(
+            {
+                loginBtn = login_page_btn.findViewById(R.id.btn)
+                progressBar = login_page_btn.findViewById(R.id.progress_bar)
+            },
+            {
+                loginBtn.text = getString(R.string.login)
+            }
+        )
         userViewModel.lastLoginForm.toString()
 
         login_use_email_tv.setOnClickListener {
@@ -127,11 +118,7 @@ class LoginFragment : DaggerFragment() {
             login_vf.showPrevious()
         }
 
-
-
-
         loginBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-
 
         loginBtn.setOnClickListener {
             emailOrPhoneNumberLoginRequest()
@@ -171,7 +158,6 @@ class LoginFragment : DaggerFragment() {
         forgot_password_tv.setOnClickListener {
             goto(R.id.forgotPassword)
         }
-
     }
 
     private fun emailOrPhoneNumberLoginRequest() {
@@ -202,40 +188,40 @@ class LoginFragment : DaggerFragment() {
     }
 
     private fun loginWithGoogle(user: User) {
-        val googleAuthHeader = "$bearer ${user.token.toString()}"
+        val googleAuthHeader = "$bearer ${user.token}"
         val req = userViewModel.loginWithGoogle(googleAuthHeader)
         i(title, "header ${user.token}")
 
         var newUser = user
-        observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
-            val remoteDetails = userDetails.data
-            newUser.loggedIn = true
-            newUser.token = remoteDetails?.token
-            i(title, "User1 $newUser")
-            val payloadString = user<User>(user.token.toString())
-            newUser.role = payloadString?.category
-            newUser.category = payloadString?.category
-            userViewModel.currentUser = newUser
+        observeRequest<User>(
+            req, progressBar, loginBtn, false,
+            { userDetails ->
+                val remoteDetails = userDetails.data
+                newUser.loggedIn = true
+                newUser.token = remoteDetails?.token
+                i(title, "User1 $newUser")
+                val payloadString = user<User>(user.token.toString())
+                newUser.role = payloadString?.category
+                newUser.category = payloadString?.category
+                userViewModel.currentUser = newUser
 
-            i(
-                title,
-                "res $newUser \nCategory ${payloadString?.category}\nuvm loggedIn${newUser.loggedIn}\nuser loggedIn${userViewModel.currentUser?.loggedIn}"
-            )
-            requireActivity().gdToast(getString(R.string.you_are_signed) + " ${newUser.email}", Gravity.BOTTOM)
-            goto(DashboardActivity::class.java)
-            requireActivity().finish()
-        },{err->
-            requireActivity().gdErrorToast(
-                err,
-                Gravity.BOTTOM
-            )
-            i(title, "LoginWithPhoneError $err")
-        })
-
+                i(
+                    title,
+                    "res $newUser \nCategory ${payloadString?.category}\nuvm loggedIn${newUser.loggedIn}\nuser loggedIn${userViewModel.currentUser?.loggedIn}"
+                )
+                requireActivity().gdToast(getString(R.string.you_are_signed) + " ${newUser.email}", Gravity.BOTTOM)
+                goto(DashboardActivity::class.java)
+                requireActivity().finish()
+            },
+            { err ->
+                requireActivity().gdErrorToast(
+                    err,
+                    Gravity.BOTTOM
+                )
+                i(title, "LoginWithPhoneError $err")
+            }
+        )
     }
-
-
-
 
     private inline fun validateAndLogin(
         editText: EditText,
@@ -250,12 +236,11 @@ class LoginFragment : DaggerFragment() {
             v = IsEmptyCheck.fieldsValidation(email = input, password = passwordString)
         } else if (filter == PHONE) {
 
-
             val dialCode = login_ccp.selectedCountryCode
             var phoneNumber = editText.text.toString().trim()
             val firstZeroPattern = Regex("""[0]\d+""")
             val checkFirstZero = firstZeroPattern.matches(phoneNumber)
-            if(checkFirstZero){
+            if (checkFirstZero) {
                 phoneNumber = phoneNumber.removePrefix("0")
                 editText.setText(phoneNumber)
             }
@@ -275,51 +260,55 @@ class LoginFragment : DaggerFragment() {
                 action(input, passwordString)
             }
         }
-
     }
 
     private fun loginWithPhoneNumber(phoneNumberOrEmail: String, passwordString: String) {
         val req = userViewModel.loginUserRequest(phoneNumberOrEmail, passwordString)
-        observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
-            val user = userDetails.data
-            user?.loggedIn = true
-            userViewModel.currentUser?.loggedIn = true
-            userViewModel.currentUser = user
-            userViewModel.lastLoginForm = PHONE
+        observeRequest<User>(
+            req, progressBar, loginBtn, false,
+            { userDetails ->
+                val user = userDetails.data
+                user?.loggedIn = true
+                userViewModel.currentUser?.loggedIn = true
+                userViewModel.currentUser = user
+                userViewModel.lastLoginForm = PHONE
 //                val res = userViewModel.saveUser
-            goto(DashboardActivity::class.java)
-            requireActivity().finish()
-        },{err->
-            requireActivity().gdErrorToast(err, Gravity.BOTTOM)
-            i(title, "LoginWithPhoneError $err")
-        })
-
+                goto(DashboardActivity::class.java)
+                requireActivity().finish()
+            },
+            { err ->
+                requireActivity().gdErrorToast(err, Gravity.BOTTOM)
+                i(title, "LoginWithPhoneError $err")
+            }
+        )
     }
 
     private fun loginWithEmail(email: String, passwordString: String) {
         val req = userViewModel.loginWithEmailOrPhoneNumber(email, passwordString)
-        observeRequest<User>(req, progressBar, loginBtn, false, {userDetails->
-            val user = userDetails.data
-            user?.loggedIn = true
-            userViewModel.currentUser?.loggedIn = true
-            userViewModel.currentUser = user
-            if(login_fragment_remember_login_choice_cb.isChecked){
-                userViewModel.lastLoginForm = EMAIL
-            }
-            else{
-                userViewModel.lastLoginForm = PHONE
-            }
+        observeRequest<User>(
+            req, progressBar, loginBtn, false,
+            { userDetails ->
+                val user = userDetails.data
+                user?.loggedIn = true
+                userViewModel.currentUser?.loggedIn = true
+                userViewModel.currentUser = user
+                if (login_fragment_remember_login_choice_cb.isChecked) {
+                    userViewModel.lastLoginForm = EMAIL
+                } else {
+                    userViewModel.lastLoginForm = PHONE
+                }
 
 //                val res = userViewModel.saveUser
-            val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
+                val loginIntent = Intent(requireContext(), DashboardActivity::class.java)
 //                Log.i("$this", "res ${res.size}")
-            requireActivity().gdToast(getString(R.string.you_are_signed) + " $email", Gravity.BOTTOM)
-            startActivity(loginIntent)
-            requireActivity().finish()
-        },{err->
-            requireActivity().gdErrorToast(err, Gravity.BOTTOM)
-            i(title, "LoginWithEmailError $err")
-        })
-
+                requireActivity().gdToast(getString(R.string.you_are_signed) + " $email", Gravity.BOTTOM)
+                startActivity(loginIntent)
+                requireActivity().finish()
+            },
+            { err ->
+                requireActivity().gdErrorToast(err, Gravity.BOTTOM)
+                i(title, "LoginWithEmailError $err")
+            }
+        )
     }
 }

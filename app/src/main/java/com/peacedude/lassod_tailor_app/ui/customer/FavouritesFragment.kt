@@ -1,35 +1,22 @@
 package com.peacedude.lassod_tailor_app.ui.customer
 
 import android.os.Bundle
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
-import com.peacedude.lassod_tailor_app.data.viewmodel.factory.Data
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
 import com.peacedude.lassod_tailor_app.model.response.Favourite
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.ReviewResponse
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.ui.resources.SingleVideoFragmentArgs
 import com.utsman.recycling.adapter.RecyclingAdapter
-import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.favourite_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_favourites.*
@@ -37,8 +24,6 @@ import kotlinx.android.synthetic.main.fragment_measurement.*
 import kotlinx.android.synthetic.main.fragment_review.*
 import kotlinx.android.synthetic.main.fragment_single_video.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -47,7 +32,6 @@ import javax.inject.Inject
  * create an instance of this fragment.
  */
 class FavouritesFragment : DaggerFragment() {
-
 
     private val title by lazy {
         getName()
@@ -66,9 +50,9 @@ class FavouritesFragment : DaggerFragment() {
         viewModelProviderFactory
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -132,7 +116,6 @@ class FavouritesFragment : DaggerFragment() {
 //        }
     }
 
-
     @ExperimentalCoroutinesApi
     private fun <T> RecyclingAdapter<T>.delete(list: MutableList<T?>?): ItemTouchHelper {
 
@@ -175,12 +158,7 @@ class FavouritesFragment : DaggerFragment() {
 //                }
 
                 i("OnRemoved", " pos $pos itemId ${item.id}")
-
-
             }
-
         })
-
     }
-
 }

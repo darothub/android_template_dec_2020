@@ -1,11 +1,8 @@
 package com.peacedude.lassod_tailor_app.di.networkmodules.auth
 
 import com.peacedude.lassod_tailor_app.data.repositories.auth.AuthRepository
-import com.peacedude.lassod_tailor_app.data.repositories.user.UserRequestRepository
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
-import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
-import com.peacedude.lassod_tailor_app.services.user.UserServices
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -31,5 +28,4 @@ class AuthRequestModule {
             authServices
         )
     }
-
 }

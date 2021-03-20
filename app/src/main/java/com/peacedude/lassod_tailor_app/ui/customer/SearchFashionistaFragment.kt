@@ -17,7 +17,6 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.Artisan
-import com.peacedude.lassod_tailor_app.model.response.ArtisanSearchResponse
 import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.utsman.recycling.extentions.Recycling
 import com.utsman.recycling.setupAdapter
@@ -32,7 +31,6 @@ import kotlinx.android.synthetic.main.search_media_category_item.view.*
 import kotlinx.android.synthetic.main.search_result_media_item.view.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -60,12 +58,12 @@ class SearchFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -117,14 +115,13 @@ class SearchFragment : DaggerFragment() {
                         ) {
                             val itemSelected = itemView.search_filter_spinner.selectedItem as String
                             item?.selectedItem = itemSelected
-
                         }
                     }
 
                 search_fragment_search_btn.setOnClickListener {
                     val category = list?.get(0)?.selectedItem as String
                     val specialty = list?.get(1)?.selectedItem as String
-                    val location =  list?.get(2)?.selectedItem as String
+                    val location = list?.get(2)?.selectedItem as String
                     requireActivity().gdToast("$category $specialty $location", Gravity.BOTTOM)
                     val keyword = search_fragment_search_et.text.toString().trim()
 
@@ -137,7 +134,7 @@ class SearchFragment : DaggerFragment() {
                                     mediaItemView.search_result_picture_title_tv.text =
                                         mediaItem?.firstName
                                     mediaItemView.search_result_picture_location_tv.text =
-                                       "${ mediaItem?.profile?.workshopAddress?.city } ${ mediaItem?.profile?.workshopAddress?.state }"
+                                        "${ mediaItem?.profile?.workshopAddress?.city } ${ mediaItem?.profile?.workshopAddress?.state }"
                                     mediaItemView.search_result_picture_iv.load(mediaItem?.profile?.avatar) {
                                         crossfade(true)
                                         placeholder(R.drawable.profile_image)
@@ -157,11 +154,9 @@ class SearchFragment : DaggerFragment() {
                                 )
                                 submitList(item?.list)
                             }
-
                         }
 
-
-                        val layoutManager =  LinearLayoutManager(
+                        val layoutManager = LinearLayoutManager(
                             requireContext(),
                             LinearLayoutManager.VERTICAL,
                             false
@@ -176,15 +171,9 @@ class SearchFragment : DaggerFragment() {
                             category,
                             1
                         )
-
-
-
                     }
-
                 }
-
             }
-
 
             setLayoutManager(
                 LinearLayoutManager(
@@ -195,13 +184,8 @@ class SearchFragment : DaggerFragment() {
             )
 
             submitList(listOfFilterOptions)
-
-
         }
-
-
     }
-
 
     private fun setupData(
         recycling: Recycling<SearchResultTwo>,
@@ -238,7 +222,6 @@ class SearchFragment : DaggerFragment() {
 //
 //            }
 //        }
-
     }
 
     override fun onResume() {
@@ -248,17 +231,15 @@ class SearchFragment : DaggerFragment() {
         userViewModel.currentUser = GlobalVariables.globalUser ?: currentUser
 
         i(title, "LoggedIn ${user?.loggedIn} current ${userViewModel.currentUser!!.loggedIn}")
-        if(userViewModel.currentUser!!.loggedIn){
+        if (userViewModel.currentUser!!.loggedIn) {
             search_fragment_login_ib.text = getString(R.string.goto_dashboard)
-        }
-        else{
+        } else {
             search_fragment_login_ib.text = getString(R.string.login)
         }
     }
 
     override fun onPause() {
         super.onPause()
-
     }
 }
 

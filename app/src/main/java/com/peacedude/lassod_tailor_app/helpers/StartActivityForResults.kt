@@ -29,55 +29,56 @@ class StartActivityForResults @Inject constructor(private val registry: Activity
             "key",
             owner,
             ActivityResultContracts.StartActivityForResult(),
-            ActivityResultCallback {result ->
+            ActivityResultCallback { result ->
 
                 if (result.resultCode == Activity.RESULT_OK) {
                     getResultLiveData.value = result
-
                 } else {
                     i(title, "OKCODE ${Activity.RESULT_OK} RESULTCODE ${result.resultCode}")
                 }
-            })
+            }
+        )
     }
 
-    fun launchIntentToSignIn(intent: Intent, owner: LifecycleOwner, action:(User)->Unit):LiveData<User> {
+    fun launchIntentToSignIn(intent: Intent, owner: LifecycleOwner, action: (User) -> Unit): LiveData<User> {
         getIntentResult.launch(intent)
-        getResultLiveData.observe(owner, Observer {result->
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            task.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val account: GoogleSignInAccount? =
-                        it.getResult(ApiException::class.java)
+        getResultLiveData.observe(
+            owner,
+            Observer { result ->
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                task.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val account: GoogleSignInAccount? =
+                            it.getResult(ApiException::class.java)
 
-                    val email = account?.email
-                    val lastName = account?.familyName
-                    val firstName = account?.givenName
-                    val otherName = account?.displayName
-                    val imageUrl = account?.photoUrl
-                    val idToken = account?.idToken
-                    var newUser = User()
-                    newUser.firstName = firstName
-                    newUser.lastName = lastName
-                    newUser.otherName = otherName
-                    newUser.imageUrl = imageUrl.toString()
-                    newUser.email = email
-                    newUser.token = idToken
+                        val email = account?.email
+                        val lastName = account?.familyName
+                        val firstName = account?.givenName
+                        val otherName = account?.displayName
+                        val imageUrl = account?.photoUrl
+                        val idToken = account?.idToken
+                        var newUser = User()
+                        newUser.firstName = firstName
+                        newUser.lastName = lastName
+                        newUser.otherName = otherName
+                        newUser.imageUrl = imageUrl.toString()
+                        newUser.email = email
+                        newUser.token = idToken
 
-                    i(title, "Task is successful $email")
-                    getUserLiveData.value = newUser
-                    action(newUser)
-
-
-                } else {
-                    i(title, "Task not successful")
+                        i(title, "Task is successful $email")
+                        getUserLiveData.value = newUser
+                        action(newUser)
+                    } else {
+                        i(title, "Task not successful")
+                    }
                 }
             }
-        })
+        )
 
         return getUserLiveData
     }
 
-    fun launchImageIntent(intent: Intent):LiveData<ActivityResult>{
+    fun launchImageIntent(intent: Intent): LiveData<ActivityResult> {
         getIntentResult.launch(intent)
         return getResultLiveData
     }

@@ -4,30 +4,26 @@ import IsEmptyCheck
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.peacedude.gdtoast.gdErrorToast
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.User
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import java.util.*
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -49,10 +45,8 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
         super.onCreate(savedInstanceState)
         changeStatusBarColor(R.color.colorWhite)
         arguments?.let {
-
         }
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -67,46 +61,42 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
             findNavController().popBackStack()
         }
 
-        buttonTransactions({
-            progressBar = forgot_password_include_btn.findViewById(R.id.progress_bar)
-            sendBtn = forgot_password_include_btn.findViewById(R.id.btn)
-            sendBtn.apply {
-                background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-                text = getString(R.string.send)
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
-            }
-
-        }, {
-            sendBtn.setOnClickListener {
-                if(forgot_password_vf[0].isShown){
-                    forgotPasswordRequestWithPhone()
+        buttonTransactions(
+            {
+                progressBar = forgot_password_include_btn.findViewById(R.id.progress_bar)
+                sendBtn = forgot_password_include_btn.findViewById(R.id.btn)
+                sendBtn.apply {
+                    background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+                    text = getString(R.string.send)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
                 }
-                else{
-                    forgotPasswordRequest()
+            },
+            {
+                sendBtn.setOnClickListener {
+                    if (forgot_password_vf[0].isShown) {
+                        forgotPasswordRequestWithPhone()
+                    } else {
+                        forgotPasswordRequest()
+                    }
                 }
 
+                forgot_password_use_email_tv.setOnClickListener {
+                    forgot_password_vf.showNext()
+                }
+                forgot_password_use_phone_tv.setOnClickListener {
+                    forgot_password_vf.showPrevious()
+                }
             }
-
-            forgot_password_use_email_tv.setOnClickListener {
-                forgot_password_vf.showNext()
-            }
-            forgot_password_use_phone_tv.setOnClickListener {
-                forgot_password_vf.showPrevious()
-            }
-
-        })
+        )
         initEnterKeyToSubmitForm(forgot_password_email_et) { forgotPasswordRequest() }
-
     }
 
     override fun onResume() {
         super.onResume()
-
     }
 
     override fun onPause() {
         super.onPause()
-
     }
 
     private fun forgotPasswordRequest() {
@@ -126,12 +116,15 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
             else -> {
 
                 val request = authViewModel.forgetPassword(field)
-                observeRequest<String>(request, progressBar, sendBtn, false, {
-                    Log.i(title, "${it.message}")
-                }, { err ->
-                    Log.i(title, "ForgotPasswordError $err")
-                })
-
+                observeRequest<String>(
+                    request, progressBar, sendBtn, false,
+                    {
+                        Log.i(title, "${it.message}")
+                    },
+                    { err ->
+                        Log.i(title, "ForgotPasswordError $err")
+                    }
+                )
             }
         }
     }
@@ -144,7 +137,6 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
         val firstZeroPattern = Regex("""[0]\d+""")
         val checkFirstZero = firstZeroPattern.matches(phoneNumber)
         val checkPhoneStandard = phonePattern.matches(phoneNumber)
-
 
         when {
             emptyEditText != null -> {
@@ -162,18 +154,20 @@ class ForgotPassword : DaggerFragment(R.layout.fragment_forgot_password) {
             else -> {
                 val field = dialCode + phoneNumber
                 val request = authViewModel.forgetPassword(field)
-                observeRequest<String>(request, progressBar, sendBtn, false, {
-                    Log.i(title, "${it.message}")
-                }, { err ->
-                    requireActivity().gdErrorToast(
-                        err,
-                        Gravity.BOTTOM
-                    )
-                    Log.i(title, "ForgotPasswordError $err")
-                })
-
+                observeRequest<String>(
+                    request, progressBar, sendBtn, false,
+                    {
+                        Log.i(title, "${it.message}")
+                    },
+                    { err ->
+                        requireActivity().gdErrorToast(
+                            err,
+                            Gravity.BOTTOM
+                        )
+                        Log.i(title, "ForgotPasswordError $err")
+                    }
+                )
             }
         }
     }
-
 }

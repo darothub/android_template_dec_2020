@@ -12,12 +12,10 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.ui.adapters.ChatBubbleAdapter
-import com.utsman.recycling.setupAdapter
 import com.vanniktech.emoji.EmojiPopup
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_message.*
@@ -25,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_single_chat.*
 import kotlinx.android.synthetic.main.message_list_item.view.*
 import kotlinx.android.synthetic.main.single_chat_customer_item.view.*
 import kotlinx.android.synthetic.main.single_chat_outgoing_item.view.*
-
 
 /**
  * A simple [Fragment] subclass.
@@ -44,11 +41,11 @@ class SingleChatFragment : DaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -75,17 +72,16 @@ class SingleChatFragment : DaggerFragment() {
         single_chat_nav_back_iv.setOnClickListener {
             findNavController().popBackStack()
         }
-        
 
         var listOfChatMessageTwo = arrayListOf<ChatMessage>(
             ChatMessage("Hello", CHATSENDER)
         )
         val listOfChatMessage = arrayListOf<ChatMessage>(
-            ChatMessage("Hi",  CHATRECEIVER),
+            ChatMessage("Hi", CHATRECEIVER),
             ChatMessage("Hello", CHATSENDER)
         )
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        val chatBubbleAdapter = ChatBubbleAdapter(listOfChatMessage){
+        val chatBubbleAdapter = ChatBubbleAdapter(listOfChatMessage) {
             i(title, "Message ${it.message} chatmessage $it")
         }
         single_chat_send_fab.setOnClickListener {
@@ -124,18 +120,13 @@ class SingleChatFragment : DaggerFragment() {
             false
         }
 
-
         requireActivity().onBackPressedDispatcher.addCallback {
             startActivity(Intent(requireContext(), DashboardActivity::class.java))
         }
     }
-
 }
-
 
 data class ChatMessage(
     var message: String?,
     var sender: Int = CHATSENDER
 )
-
-

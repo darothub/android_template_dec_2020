@@ -12,13 +12,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -29,11 +28,8 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.squareup.picasso.Picasso
+import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_user_account.account_save_changes_btn
@@ -44,13 +40,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -65,7 +59,7 @@ class UserAccountFragment : DaggerFragment() {
     private lateinit var saveBtn: Button
     private lateinit var progressBar: ProgressBar
 
-    //Get logged-in user
+    // Get logged-in user
     private val currentUser: User? by lazy {
         authViewModel.currentUser
     }
@@ -81,22 +75,22 @@ class UserAccountFragment : DaggerFragment() {
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT
             val window = this.window
             window?.attributes = lp
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
-    private val dialogNameAndOtherLayout by lazy{
+    private val dialogNameAndOtherLayout by lazy {
         dialog.findViewById<ViewGroup>(R.id.multipurpose_name_dialog)
     }
-    private val genderLayout by lazy{
+    private val genderLayout by lazy {
         dialog.findViewById<ViewGroup>(R.id.multipurpose_gender_dialog)
     }
-    private val addressLayout by lazy{
+    private val addressLayout by lazy {
         dialog.findViewById<ViewGroup>(R.id.multipurpose_address_dialog)
     }
-    private val dialogOkTv by lazy{
+    private val dialogOkTv by lazy {
         dialog.findViewById<TextView>(R.id.multipurpose_dialog_ok_tv)
     }
-    private val dialogCancelTv by lazy{
+    private val dialogCancelTv by lazy {
         dialog.findViewById<TextView>(R.id.multipurpose_dialog_cancel_tv)
     }
     lateinit var observer: StartActivityForResults
@@ -113,7 +107,8 @@ class UserAccountFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -123,22 +118,24 @@ class UserAccountFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         val saveBtnBackground = ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         saveBtnBackground?.colorFilter = PorterDuffColorFilter(
-            ContextCompat.getColor( requireContext(), R.color.colorPrimary),
+            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
             PorterDuff.Mode.SRC_IN
         )
 
         i(title, "header $header token ${currentUser?.token}")
-        buttonTransactions({
-            saveBtn = account_save_changes_btn.findViewById(R.id.btn)
-            progressBar = account_save_changes_btn.findViewById(R.id.progress_bar)
-        },{
-            saveBtn.text = getString(R.string.save_changes)
-            saveBtn.background = saveBtnBackground
-            saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-        })
+        buttonTransactions(
+            {
+                saveBtn = account_save_changes_btn.findViewById(R.id.btn)
+                progressBar = account_save_changes_btn.findViewById(R.id.progress_bar)
+            },
+            {
+                saveBtn.text = getString(R.string.save_changes)
+                saveBtn.background = saveBtnBackground
+                saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+            }
+        )
 
         getUserData()
 
@@ -167,50 +164,53 @@ class UserAccountFragment : DaggerFragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getUserData(){
-        //Get user data request
+    private fun getUserData() {
+        // Get user data request
         val request = authViewModel.getUserData(header.toString())
-        //Get User data response
-        observeRequest<User>(request, null, null, true, {resp->
-            val user = resp?.data
+        // Get User data response
+        observeRequest<User>(
+            request, null, null, true,
+            { resp ->
+                val user = resp?.data
 
-            user_account_profile_image.load(user?.avatar) {
-                crossfade(true)
-                placeholder(R.drawable.profile_image)
-                transformations(CircleCropTransformation())
-            }
-
-            //Initialize new user for data update
-            val newUserData = User()
-            val nameList = setUserNamesAndOtherFields(user, newUserData)
-            val addressList = setUserAddress(user)
-            val unionList = setUnionData(user)
-
-            saveBtn.setOnClickListener {
-                newUserData.firstName = nameList[0].value
-                newUserData.lastName = nameList[1].value
-                newUserData.otherName = nameList[2].value
-                if(nameList[4].value != "null"){
-                    newUserData.noOfEmployees = nameList[4].value?.toInt()
-                }
-                else{
-                    newUserData.noOfEmployees = 0
+                user_account_profile_image.load(user?.avatar) {
+                    crossfade(true)
+                    placeholder(R.drawable.profile_image)
+                    transformations(CircleCropTransformation())
                 }
 
-                newUserData.workshopUserAddress = addressList[0].value
-                newUserData.showroomUserAddress = addressList[1].value
-                newUserData.showroomUserAddress = addressList[1].value
-                newUserData.unionName = unionList[0].value
-                newUserData.unionWard = unionList[1].value
-                newUserData.unionLga = unionList[2].value
-                newUserData.unionState = unionList[3].value
-                i(title, "new user ${newUserData.workshopUserAddress}")
-                updateUserData(newUserData)
+                // Initialize new user for data update
+                val newUserData = User()
+                val nameList = setUserNamesAndOtherFields(user, newUserData)
+                val addressList = setUserAddress(user)
+                val unionList = setUnionData(user)
+
+                saveBtn.setOnClickListener {
+                    newUserData.firstName = nameList[0].value
+                    newUserData.lastName = nameList[1].value
+                    newUserData.otherName = nameList[2].value
+                    if (nameList[4].value != "null") {
+                        newUserData.noOfEmployees = nameList[4].value?.toInt()
+                    } else {
+                        newUserData.noOfEmployees = 0
+                    }
+
+                    newUserData.workshopUserAddress = addressList[0].value
+                    newUserData.showroomUserAddress = addressList[1].value
+                    newUserData.showroomUserAddress = addressList[1].value
+                    newUserData.unionName = unionList[0].value
+                    newUserData.unionWard = unionList[1].value
+                    newUserData.unionLga = unionList[2].value
+                    newUserData.unionState = unionList[3].value
+                    i(title, "new user ${newUserData.workshopUserAddress}")
+                    updateUserData(newUserData)
+                }
+            },
+            { err ->
+                i(title, "UserAccountError $err")
             }
-        },{err->
-            i(title, "UserAccountError $err")
-        })
-        //Observe response
+        )
+        // Observe response
 //        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 //            val (bool, result) = it
 //            //Do on response
@@ -259,7 +259,6 @@ class UserAccountFragment : DaggerFragment() {
         user_profile_name_union_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
             bind { itemView, position, item ->
 
-
                 CoroutineScope(Dispatchers.Main).launch {
                     itemView.user_profile_rv_item_name_title_tv.text = item?.title
                     itemView.user_profile_rv_item_name_value_tv.text = item?.value
@@ -293,7 +292,6 @@ class UserAccountFragment : DaggerFragment() {
                         dialogNameAndOtherLayout.hide()
                     }
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -302,17 +300,17 @@ class UserAccountFragment : DaggerFragment() {
                     false
                 )
             )
-            if(currentUser?.category == getString(R.string.fashionista)){
-                submitList(unionList.apply{
-                    clear()
-                })
+            if (currentUser?.category == getString(R.string.fashionista)) {
+                submitList(
+                    unionList.apply {
+                        clear()
+                    }
+                )
                 union_membership.hide()
                 union_membership_line.hide()
-            }
-            else{
+            } else {
                 submitList(unionList)
             }
-
         }
         return unionList
     }
@@ -381,7 +379,6 @@ class UserAccountFragment : DaggerFragment() {
                         addressLayout.hide()
                     }
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -390,13 +387,11 @@ class UserAccountFragment : DaggerFragment() {
                     false
                 )
             )
-            if(currentUser?.category == getString(R.string.fashionista)){
+            if (currentUser?.category == getString(R.string.fashionista)) {
                 submitList(addressList.take(1))
-            }
-            else{
+            } else {
                 submitList(addressList.takeLast(2))
             }
-
         }
         return addressList
     }
@@ -405,7 +400,7 @@ class UserAccountFragment : DaggerFragment() {
         user: User?,
         newUserData: User
     ): ArrayList<UserNameClass> {
-        //List of fields to be filled with names and others
+        // List of fields to be filled with names and others
         val nameList = arrayListOf<UserNameClass>(
             UserNameClass(getString(R.string.first_name), user?.firstName.toString()),
             UserNameClass(getString(R.string.last_name), user?.lastName.toString()),
@@ -414,7 +409,7 @@ class UserAccountFragment : DaggerFragment() {
             UserNameClass(getString(R.string.no_of_emplyee), user?.noOfEmployees.toString()),
             UserNameClass(getString(R.string.legal_status), user?.legalStatus.toString())
         )
-        //Recycler view to display names and others
+        // Recycler view to display names and others
         user_profile_name_rv.setupAdapter<UserNameClass>(R.layout.user_profile_name_item) { adapter, context, list ->
             bind { itemView, position, item ->
                 CoroutineScope(Dispatchers.Main).launch {
@@ -428,10 +423,10 @@ class UserAccountFragment : DaggerFragment() {
                 dialogCancelTv.setOnClickListener {
                     dialog.dismiss()
                 }
-                //If gender is clicked
+                // If gender is clicked
                 if (item?.title == getString(R.string.gender)) {
                     itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
-                        //Provide gender layout
+                        // Provide gender layout
                         val genderRadioGroup =
                             dialog.findViewById<RadioGroup>(R.id.multipurpose_gender_dialog_gender_rg)
                         val femaleRadioBtn =
@@ -441,44 +436,42 @@ class UserAccountFragment : DaggerFragment() {
                         val dialogTitle =
                             dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
                         dialogTitle.text = item.title
-                        //When
+                        // When
                         when (item.value) {
-                            //female radio is ticked
+                            // female radio is ticked
                             getString(R.string.female) -> {
-                                //Display female radio ticked
+                                // Display female radio ticked
                                 femaleRadioBtn.isChecked = true
-
                             }
-                            //male radio is ticked
+                            // male radio is ticked
                             getString(R.string.male) -> {
-                                //Display female radio ticked
+                                // Display female radio ticked
                                 maleRadioBtn.isChecked = true
                             }
                             else -> {
                                 maleRadioBtn.isChecked = false
                                 femaleRadioBtn.isChecked = false
                             }
-
                         }
 
                         genderLayout.show()
                         dialog.show()
 
                         dialogOkTv.setOnClickListener {
-                            //When
+                            // When
                             when (genderRadioGroup.checkedRadioButtonId) {
-                                //female radio is ticked
+                                // female radio is ticked
                                 R.id.multipurpose_gender_dialog_female_rbtn -> {
                                     itemView.user_profile_rv_item_name_value_tv.text =
                                         getString(R.string.female)
-                                    //Update new user data
+                                    // Update new user data
                                     newUserData.gender = femaleRadioBtn.text.toString()
                                 }
-                                //male radio is ticked
+                                // male radio is ticked
                                 R.id.multipurpose_gender_dialog_male_rbtn -> {
                                     itemView.user_profile_rv_item_name_value_tv.text =
                                         getString(R.string.male)
-                                    //Update new user data
+                                    // Update new user data
                                     newUserData.gender = maleRadioBtn.text.toString()
                                 }
                             }
@@ -490,7 +483,7 @@ class UserAccountFragment : DaggerFragment() {
                     }
                 } else {
 
-                    //If not gender value clicked
+                    // If not gender value clicked
                     itemView.user_profile_rv_item_name_value_tv.setOnClickListener {
                         val dialogTitle =
                             dialog.findViewById<TextView>(R.id.multipurpose_title_name_tv)
@@ -504,9 +497,9 @@ class UserAccountFragment : DaggerFragment() {
                         dialogNameAndOtherLayout.show()
                         dialog.show()
                         dialogOkTv.setOnClickListener {
-                            //Update itemin the list
+                            // Update itemin the list
                             item?.value = dialogEditText.text.toString()
-                            //Update recycler view
+                            // Update recycler view
                             adapter.notifyDataSetChanged()
                             dialog.dismiss()
                         }
@@ -515,7 +508,6 @@ class UserAccountFragment : DaggerFragment() {
                         }
                     }
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -524,29 +516,30 @@ class UserAccountFragment : DaggerFragment() {
                     false
                 )
             )
-            if(currentUser?.category == getString(R.string.fashionista)){
+            if (currentUser?.category == getString(R.string.fashionista)) {
                 submitList(nameList.subList(0, 4))
-            }
-            else{
+            } else {
                 submitList(nameList)
             }
-
         }
         return nameList
     }
 
-    private fun updateUserData(user: User){
+    private fun updateUserData(user: User) {
         val request = authViewModel.updateUserData(user)
-        observeRequest<User>(request, progressBar, saveBtn, false, {response->
-            val msg = response?.message
-            val profileData = response?.data
-            authViewModel.profileData = profileData
-            requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
-            i(title, "msg $msg ${profileData?.firstName}")
-        },{err ->
-            i(title, "UserAccountError $err")
-        })
-
+        observeRequest<User>(
+            request, progressBar, saveBtn, false,
+            { response ->
+                val msg = response?.message
+                val profileData = response?.data
+                authViewModel.profileData = profileData
+                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+                i(title, "msg $msg ${profileData?.firstName}")
+            },
+            { err ->
+                i(title, "UserAccountError $err")
+            }
+        )
     }
 
     private fun getPhotoData() {
@@ -557,37 +550,33 @@ class UserAccountFragment : DaggerFragment() {
         val chooser = Intent.createChooser(galleryIntent, "Photo options")
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
         val result = observer.launchImageIntent(chooser)
-        result.observe(viewLifecycleOwner, Observer { results ->
-            if (results.resultCode == Activity.RESULT_OK) {
-                val data = results.data
-                val imageBitmap =
-                    data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
-                val file = saveBitmap(imageBitmap)
-                if (file != null) {
+        result.observe(
+            viewLifecycleOwner,
+            Observer { results ->
+                if (results.resultCode == Activity.RESULT_OK) {
+                    val data = results.data
+                    val imageBitmap =
+                        data?.data?.let { uriToBitmap(it) } ?: data?.extras?.get("data") as Bitmap
+                    val file = saveBitmap(imageBitmap)
+                    if (file != null) {
 
-                    val reqBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                        val reqBody = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
 
-                    val requestBody: RequestBody = MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("avatar", file.name, reqBody)
-                        .build()
+                        val requestBody: RequestBody = MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("avatar", file.name, reqBody)
+                            .build()
+                    }
+                } else {
+                    i(
+                        title,
+                        "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
+                    )
                 }
-
-            } else {
-                i(
-                    title,
-                    "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
-                )
             }
-        })
-
+        )
     }
 }
 
-data class UserNameClass(var title:String, var value:String?)
-data class UserAddressClass(var title:String, var value:UserAddress)
-
-
-
-
-
+data class UserNameClass(var title: String, var value: String?)
+data class UserAddressClass(var title: String, var value: UserAddress)

@@ -3,9 +3,8 @@ package com.peacedude.lassod_tailor_app.model.request
 import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
-import java.util.HashMap
 
-data class Measurement (val name:String, var value:String):Serializable, ParentData {}
+data class Measurement(val name: String, var value: String) : Serializable, ParentData
 data class MeasurementValues(
     val name: String,
     val type: String,
@@ -13,12 +12,12 @@ data class MeasurementValues(
     val clientID: String,
     val values: Any
 
-):Serializable, ParentData{
-    var id:String?=null
-    var gender:String?=""
+) : Serializable, ParentData {
+    var id: String? = null
+    var gender: String? = ""
 }
 
-data class Values (
+data class Values(
     val ankle: String,
     val backWidth: Any? = "",
     val bottom: Any? = "",
@@ -44,9 +43,9 @@ data class Values (
     val roundBody: Any? = "",
     val shoulder: Any? = "",
     val waist: Any? = ""
-):Serializable
+) : Serializable
 
-data class Valuess(val map:Map<String?, String?>){
+data class Valuess(val map: Map<String?, String?>) {
     val ankle by map
     val backWidth by map
     val bottom by map
@@ -74,6 +73,6 @@ data class Valuess(val map:Map<String?, String?>){
     val waist by map
 }
 
-data class ClientMeasurement(var client:MeasurementValues):Serializable, ParentData
-data class EditMeasurement(var measurement:MeasurementValues):Serializable, ParentData
-data class ListOfMeasurement(var measurement:List<MeasurementValues>):Serializable, ParentData
+data class ClientMeasurement(var client: MeasurementValues) : Serializable, ParentData
+data class EditMeasurement(var measurement: MeasurementValues) : Serializable, ParentData
+data class ListOfMeasurement(var measurement: List<MeasurementValues>) : Serializable, ParentData

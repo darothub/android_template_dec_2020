@@ -1,10 +1,9 @@
 package com.peacedude.lassod_tailor_app.model.response
 
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.response.Metadatas
 import java.io.Serializable
 
-data class AwsDetails (
+data class AwsDetails(
     val fieldname: String,
     val originalname: String,
     val encoding: String,
@@ -20,5 +19,4 @@ data class AwsDetails (
     val metadata: Metadatas,
     val location: String,
     val etag: String
-): Serializable, ParentData
-
+) : Serializable, ParentData

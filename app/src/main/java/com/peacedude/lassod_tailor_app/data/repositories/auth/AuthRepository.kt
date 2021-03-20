@@ -1,14 +1,13 @@
 package com.peacedude.lassod_tailor_app.data.repositories.auth
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
 import com.peacedude.lassod_tailor_app.model.typealiases.SubscriptionList
 import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.services.auth.AuthServices
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -17,7 +16,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import javax.inject.Inject
 
-class AuthRepository @Inject constructor(private val authServices: AuthServices):AuthRequestInterface {
+class AuthRepository @Inject constructor(private val authServices: AuthServices) : AuthRequestInterface {
 
     override fun getUserData(header: String): Call<UserResponse<User>> {
         return authServices.getUserData(header)
@@ -29,6 +28,10 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
 
     override suspend fun getUserDetails(): UserResponse<User> {
         return authServices.getUserDetails()
+    }
+
+    override fun getUserDetailsFlow(): Flow<UserResponse<User>> {
+        return authServices.getUserDetailsFlow().flowOn(IO)
     }
 
     override fun getAllVideos(): Call<UserResponse<VideoList>> {
@@ -55,7 +58,7 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.forgetPassword(field)
     }
 
-    override fun resetPassword(token: String, password:String, cPassword: String): Call<UserResponse<String>> {
+    override fun resetPassword(token: String, password: String, cPassword: String): Call<UserResponse<String>> {
         return authServices.resetPassword(token, password, cPassword)
     }
 
@@ -64,7 +67,7 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
     }
 
     override fun editClient(client: Client): Call<UserResponse<SingleClient>> {
-        return authServices.editClient( client)
+        return authServices.editClient(client)
     }
 
     override fun getAllClient(): Call<UserResponse<ClientsList>> {
@@ -72,7 +75,7 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
     }
 
     override fun deleteClient(id: String?): Call<UserResponse<NothingExpected>> {
-        return authServices.deleteClient( id)
+        return authServices.deleteClient(id)
     }
 
     override fun addPhoto(
@@ -131,13 +134,13 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         clientId: String?,
         deliveryAddress: String?
     ): UserResponse<AddressData> {
-        return authServices.addDeliveryAddress( clientId, deliveryAddress)
+        return authServices.addDeliveryAddress(clientId, deliveryAddress)
     }
 
     override suspend fun addCard(
         email: String?,
         amount: String?
-    ): UserResponse<AddCardWrapper<AddCardRes>>{
+    ): UserResponse<AddCardWrapper<AddCardRes>> {
         return authServices.addCard(email, amount)
     }
 
@@ -198,7 +201,6 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
             val fooList = authServices.getAllClientsTwo()
             fooList.data?.clients
                 ?.map { fooFromApi ->
-
                 }
 
             // Emit the list to the stream
@@ -235,12 +237,8 @@ class AuthRepository @Inject constructor(private val authServices: AuthServices)
         return authServices.getAllMeasurements(clientId)
     }
 
-
-
 //    override suspend fun getM(header:String): Flow<MeasurementTypeList> = flow{
 //        val h = authServices.getMeasurementTypes(header)
 //        emit(h)
 //    }.flowOn(IO)
-
 }
-

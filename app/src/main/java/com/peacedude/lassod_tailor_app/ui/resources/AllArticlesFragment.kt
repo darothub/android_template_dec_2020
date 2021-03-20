@@ -1,22 +1,13 @@
 package com.peacedude.lassod_tailor_app.ui.resources
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.system.Os.bind
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
@@ -26,22 +17,16 @@ import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.response.Article
 import com.peacedude.lassod_tailor_app.model.response.ArticleList
-import com.squareup.picasso.Picasso
-import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.article_publication_item_layout.view.*
-
 import kotlinx.android.synthetic.main.fragment_all_articles.*
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_resources.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -60,7 +45,6 @@ class AllArticlesFragment : DaggerFragment() {
         authViewModel.header
     }
 
-
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by viewModels {
@@ -73,7 +57,8 @@ class AllArticlesFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -87,9 +72,7 @@ class AllArticlesFragment : DaggerFragment() {
 
         lifecycleScope.launchWhenStarted {
             authViewModel.articlesStateFlow.collect()
-
         }
-
     }
 
     override fun onResume() {
@@ -104,7 +87,6 @@ class AllArticlesFragment : DaggerFragment() {
                 if (data?.isNotEmpty() == true) {
                     val lm = GridLayoutManager(requireContext(), 2)
                     setUpRecyclerViewForArticles(all_articles_fragment_rv, data, lm)
-
                 } else {
                 }
             },
@@ -119,14 +101,12 @@ class AllArticlesFragment : DaggerFragment() {
                         Gravity.BOTTOM
                     )
                 }
-
-            })
+            }
+        )
     }
-
-
 }
 
-//private val broadcastReceiver = object : BroadcastReceiver() {
+// private val broadcastReceiver = object : BroadcastReceiver() {
 //    @RequiresApi(Build.VERSION_CODES.M)
 //    override fun onReceive(context: Context, intent: Intent) {
 //        if (true) {
@@ -135,9 +115,9 @@ class AllArticlesFragment : DaggerFragment() {
 //
 //        }
 //    }
-//}
+// }
 
-//class FoodOrder private constructor(
+// class FoodOrder private constructor(
 //    val bread: String?,
 //    val condiments: String?,
 //    val meat: String?,
@@ -155,4 +135,4 @@ class AllArticlesFragment : DaggerFragment() {
 //        fun fish(fish: String) = apply { this.fish = fish }
 //        fun build() = FoodOrder(bread, condiments, meat, fish)
 //    }
-//}
+// }

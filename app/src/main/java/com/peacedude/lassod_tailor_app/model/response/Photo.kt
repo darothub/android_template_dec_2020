@@ -3,7 +3,7 @@ package com.peacedude.lassod_tailor_app.model.response
 import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 
-data class Photo (
+data class Photo(
     val id: String?,
     @SerializedName("artisanId")
     val tailorID: String,
@@ -12,13 +12,12 @@ data class Photo (
     var info: String,
     val createdAt: String,
     val updatedAt: String
-):ParentData
+) : ParentData
 
-data class PhotoList (
+data class PhotoList(
     val photo: List<Photo>
-):ParentData
+) : ParentData
 
 data class UpdatedPhoto(
-    val newPhoto:Photo
+    val newPhoto: Photo
 )
-

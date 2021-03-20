@@ -3,7 +3,6 @@ package com.peacedude.lassod_tailor_app.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,14 +20,11 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.utils.bearer
-import com.peacedude.lassod_tailor_app.utils.loggedInUserKey
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_reset_password.*
 import validatePasswordAndAdvise
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -40,7 +37,7 @@ class ResetPasswordFragment : DaggerFragment() {
         getName()
     }
 
-    //Get logged-in user
+    // Get logged-in user
     val currentUser: User? by lazy {
         authViewModel.currentUser
     }
@@ -48,7 +45,7 @@ class ResetPasswordFragment : DaggerFragment() {
     private lateinit var resetPasswordProgressabar: ProgressBar
     private lateinit var resetBtn: Button
     private val arg: ResetPasswordFragmentArgs by navArgs()
-    var token:String?=""
+    var token: String? = ""
     val header by lazy {
         "$bearer $token"
     }
@@ -59,11 +56,9 @@ class ResetPasswordFragment : DaggerFragment() {
         ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {instateBundle ->
+        savedInstanceState?.let { instateBundle ->
             (instateBundle["token"] as String).let {
                 token = it
             }
@@ -76,7 +71,8 @@ class ResetPasswordFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -89,23 +85,24 @@ class ResetPasswordFragment : DaggerFragment() {
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_trans)
         val signupBackgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        buttonTransactions({
-            resetBtn = reset_password_btn.findViewById(R.id.btn)
-            resetBtn.text = getString((R.string.send))
-            resetBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorPrimary
+        buttonTransactions(
+            {
+                resetBtn = reset_password_btn.findViewById(R.id.btn)
+                resetBtn.text = getString((R.string.send))
+                resetBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorPrimary
+                    )
                 )
-            )
-            resetPasswordProgressabar = reset_password_btn.findViewById(R.id.progress_bar)
-
-        }, {
-            resetBtn.setOnClickListener {
-                resetPasswordRequest()
+                resetPasswordProgressabar = reset_password_btn.findViewById(R.id.progress_bar)
+            },
+            {
+                resetBtn.setOnClickListener {
+                    resetPasswordRequest()
+                }
             }
-
-        })
+        )
 
         initEnterKeyToSubmitForm(reset_password_conf_password_et) { resetPasswordRequest() }
         reset_password_conf_password_et.doOnTextChanged { text, start, count, after ->
@@ -114,7 +111,6 @@ class ResetPasswordFragment : DaggerFragment() {
             }
             return@doOnTextChanged
         }
-
 
         token = arg.token
         Log.i(title, "token $token")
@@ -131,20 +127,21 @@ class ResetPasswordFragment : DaggerFragment() {
             requireActivity().gdErrorToast("passwords do not match", Gravity.BOTTOM)
         } else {
             val req = authViewModel.resetPassword(password, cpassword)
-            observeRequest<String>(req, null, null, true, {
-                val user = it.data
-                Log.i(title, "User $user")
-                findNavController().navigate(R.id.loginFragment)
-            },{ err->
-                requireActivity().gdErrorToast(
-                    err,
-                    Gravity.BOTTOM
-                )
-                i(title, "ResetPasswordError $err")
-            })
-
+            observeRequest<String>(
+                req, null, null, true,
+                {
+                    val user = it.data
+                    Log.i(title, "User $user")
+                    findNavController().navigate(R.id.loginFragment)
+                },
+                { err ->
+                    requireActivity().gdErrorToast(
+                        err,
+                        Gravity.BOTTOM
+                    )
+                    i(title, "ResetPasswordError $err")
+                }
+            )
         }
     }
-
 }
-

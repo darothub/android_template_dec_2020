@@ -1,13 +1,13 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
@@ -19,13 +19,11 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
-import kotlinx.android.synthetic.main.fragment_media.media_fragment_rv
 import kotlinx.android.synthetic.main.fragment_message.*
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.android.synthetic.main.message_list_item.view.*
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -41,10 +39,9 @@ class MessageFragment : DaggerFragment() {
         authViewModel.header
     }
 
-    lateinit var noDataFirstIcon:ImageView
-    lateinit var noDataSecondIcon:ImageView
-    lateinit var noDataText:TextView
-
+    lateinit var noDataFirstIcon: ImageView
+    lateinit var noDataSecondIcon: ImageView
+    lateinit var noDataText: TextView
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
@@ -59,7 +56,8 @@ class MessageFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -110,7 +108,7 @@ class MessageFragment : DaggerFragment() {
                     itemView.message_item_name_tv.text = item?.senderName
                     itemView.message_item_time_tv.text = item?.time
                     itemView.message_item_message_tv.text = item?.message
-                    itemView.message_item_thumbnail_iv.load(item?.senderImage){
+                    itemView.message_item_thumbnail_iv.load(item?.senderImage) {
                         crossfade(true)
                         placeholder(R.drawable.profile_image)
                         transformations(CircleCropTransformation())
@@ -128,16 +126,11 @@ class MessageFragment : DaggerFragment() {
                 )
                 submitList(listOfMessage)
             }
-
         } else {
             message_fragment_vf.showNext()
         }
-
     }
-
 }
-
-
 
 data class MessageItem(
     var senderName: String,

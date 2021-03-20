@@ -2,13 +2,13 @@ package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,9 +26,7 @@ import kotlinx.android.synthetic.main.fragment_payment_method.*
 import kotlinx.android.synthetic.main.fragment_specialty.*
 import kotlinx.android.synthetic.main.specialty_layout_item.view.*
 import kotlinx.coroutines.*
-import java.lang.Exception
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -39,7 +37,7 @@ class PaymentMethodFragment : DaggerFragment() {
     val title: String by lazy {
         getName()
     }
-    //Get logged-in user
+    // Get logged-in user
     private val currentUser: User? by lazy {
         authViewModel.currentUser
     }
@@ -74,36 +72,37 @@ class PaymentMethodFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_payment_method, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        buttonTransactions({
-            saveChangesBtn = payment_method_save_btn_include.findViewById(R.id.btn)
-            saveChangesProgressbar = payment_method_save_btn_include.findViewById(R.id.progress_bar)
-            val saveChangesBtnBackground = saveChangesBtn.background
-            saveChangesBtnBackground.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-            saveChangesBtn.background = saveChangesBtnBackground
-            saveChangesBtn.text = getString(R.string.save_changes)
-        },{
+        buttonTransactions(
+            {
+                saveChangesBtn = payment_method_save_btn_include.findViewById(R.id.btn)
+                saveChangesProgressbar = payment_method_save_btn_include.findViewById(R.id.progress_bar)
+                val saveChangesBtnBackground = saveChangesBtn.background
+                saveChangesBtnBackground.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+                saveChangesBtn.background = saveChangesBtnBackground
+                saveChangesBtn.text = getString(R.string.save_changes)
+            },
+            {
 
-            var y:ArrayList<Any> = arrayListOf(1, "2", 3)
+                var y: ArrayList<Any> = arrayListOf(1, "2", 3)
+            }
+        )
 
-        })
-
-        var n:User? = null
+        var n: User? = null
 
 //        CoroutineScope(Dispatchers.Main).launch {
 //            supervisorScope {
@@ -158,8 +157,6 @@ class PaymentMethodFragment : DaggerFragment() {
 //                }
 //            }
 //        }
-
-
     }
 
     private fun setPaymentOptionsValue(user: User?) {
@@ -189,26 +186,22 @@ class PaymentMethodFragment : DaggerFragment() {
                     when (isChecked) {
                         true -> {
                             item?.selected = isChecked
-
                         }
                         false -> {
                             item?.selected = isChecked
-
                         }
                     }
 
                     adapter.notifyDataSetChanged()
                 }
 
-
                 dialogOk.setOnClickListener {
                     val selectedOptions = paymentOptionsList.filter { it.selected }.map { it.text }
                     user?.paymentOptions = selectedOptions
-                    payment_method_payment_options_value_tv.text = selectedOptions.joinToString( "\n\n")
+                    payment_method_payment_options_value_tv.text = selectedOptions.joinToString("\n\n")
                     adapter.notifyDataSetChanged()
                     dialog.dismiss()
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -252,35 +245,30 @@ class PaymentMethodFragment : DaggerFragment() {
                     itemView.item_container.background = null
                 }
 
-
                 itemView.specialty_item_checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
                     when (isChecked) {
                         true -> {
                             checkBoxStringForPaymentTerm.add("${buttonView.text}")
                             i(title, " check $isChecked list $checkBoxStringForPaymentTerm")
                             item?.selected = isChecked
-
                         }
-                        false ->{
+                        false -> {
                             checkBoxStringForPaymentTerm.remove("${buttonView.text}")
                             item?.selected = isChecked
                             i(title, " check $isChecked list $checkBoxStringForPaymentTerm")
-
                         }
                     }
                     adapter.notifyDataSetChanged()
-
                 }
                 dialogOk.setOnClickListener {
                     val selectedTerms = paymentTermsList.filter { it.selected }.map { it.text }
-                    payment_method_payment_terms_value_tv.text = selectedTerms.joinToString( "\n\n")
+                    payment_method_payment_terms_value_tv.text = selectedTerms.joinToString("\n\n")
 //                        val pTerms = paymentTermString.split("\n\n").map{str -> str.replace("*", "")}.dropLast(1)
                     user?.paymentTerms = selectedTerms
                     adapter.notifyDataSetChanged()
                     i("PaymentTerms", "$selectedTerms")
                     dialog.dismiss()
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -298,18 +286,22 @@ class PaymentMethodFragment : DaggerFragment() {
     private fun updateUserData(user: User?) {
         user?.isVerified = true
         val request = user?.let { authViewModel.updateUserData(it) }
-        observeRequest<User>(request, saveChangesProgressbar, saveChangesBtn, false, {response ->
-            val msg = response.message
-            val profileData = response.data
-            authViewModel.profileData = profileData
-            currentUser?.paymentOptions = user?.paymentOptions
-            currentUser?.paymentTerms = user?.paymentTerms
-            authViewModel.currentUser = currentUser!!
-            i(title, "Update user ${user?.paymentTerms}")
-            requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
-        },{err->
-            i(title, "PaymentMethodError $err")
-        })
+        observeRequest<User>(
+            request, saveChangesProgressbar, saveChangesBtn, false,
+            { response ->
+                val msg = response.message
+                val profileData = response.data
+                authViewModel.profileData = profileData
+                currentUser?.paymentOptions = user?.paymentOptions
+                currentUser?.paymentTerms = user?.paymentTerms
+                authViewModel.currentUser = currentUser!!
+                i(title, "Update user ${user?.paymentTerms}")
+                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+            },
+            { err ->
+                i(title, "PaymentMethodError $err")
+            }
+        )
 //        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 //            val (bool, result) = it
 //            onRequestResponseTask<User>(bool, result) {

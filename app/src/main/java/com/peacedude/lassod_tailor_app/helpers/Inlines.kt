@@ -5,13 +5,9 @@ import android.view.KeyEvent
 import android.widget.EditText
 import com.auth0.android.jwt.JWT
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-
 
 inline fun buildVersion(forSdkGreaterThankM: () -> Unit, forSdkLesserThanM: () -> Unit) {
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
@@ -44,15 +40,14 @@ inline fun initEnterKeyToSubmitForm(editText: EditText, crossinline request: () 
 }
 
 suspend fun Flow<ServicesResponseWrapper<ParentData>>.handleResponse(
-     success: suspend (ServicesResponseWrapper<ParentData>) -> Boolean,
+    success: suspend (ServicesResponseWrapper<ParentData>) -> Boolean,
     error: (String) -> Unit
-){
+) {
     try {
 
         collectLatest {
             success(it)
         }
-
     } catch (e: Throwable) {
         error(e.message.toString())
     }

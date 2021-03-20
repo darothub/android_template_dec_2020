@@ -1,34 +1,25 @@
 package com.peacedude.lassod_tailor_app.ui.subscription
 
 import android.os.Bundle
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.getName
-import com.peacedude.lassod_tailor_app.helpers.handleResponse
 import com.peacedude.lassod_tailor_app.helpers.i
-import com.peacedude.lassod_tailor_app.helpers.onFlowResponse
 import com.peacedude.lassod_tailor_app.model.response.*
-import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_subscription_plans.*
 import kotlinx.android.synthetic.main.subscription_plans_description_item.view.*
 import kotlinx.android.synthetic.main.subscription_plans_list_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -47,7 +38,8 @@ class SubscriptionPlansFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -85,24 +77,14 @@ class SubscriptionPlansFragment : DaggerFragment() {
                 background = chosenBackGround
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
             }
-
         }
 
         val monthlyRv = subscription_plans_fragment_vf[0]
         val yearlyRv = subscription_plans_fragment_vf[1]
-        if(monthlyRv.isShown){
+        if (monthlyRv.isShown) {
             i(title, "MonthlyRv")
             monthlySubscriptions()
         }
-
-
-
-
-
-
-
-
-
     }
 
     @ExperimentalCoroutinesApi
@@ -210,7 +192,6 @@ class SubscriptionPlansFragment : DaggerFragment() {
 //        }
     }
 
-
     @ExperimentalCoroutinesApi
     private fun yearlySubscriptions() {
         i(title, "Yearly")
@@ -316,6 +297,4 @@ class SubscriptionPlansFragment : DaggerFragment() {
 //            }
 //        }
     }
-
-
 }

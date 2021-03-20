@@ -1,38 +1,28 @@
 package com.peacedude.lassod_tailor_app.ui.profile
 
 import IsEmptyCheck
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
-import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.peacedude.gdtoast.gdErrorToast
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_email_signup.*
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import kotlinx.android.synthetic.main.fragment_security.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import validatePasswordAndAdvise
-import java.lang.Exception
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -44,7 +34,7 @@ class SecurityFragment : DaggerFragment() {
         getName()
     }
 
-    //Get logged-in user
+    // Get logged-in user
     private val currentUser: User? by lazy {
         authViewModel.currentUser
     }
@@ -63,12 +53,12 @@ class SecurityFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -80,17 +70,18 @@ class SecurityFragment : DaggerFragment() {
 
         security_fragment_phone_number_value_tv.text = currentUser?.phone
 
-        buttonTransactions({
-            saveChangesBtn = security_fragment_btn_include.findViewById(R.id.btn)
-            saveChangesProgressbar = security_fragment_btn_include.findViewById(R.id.progress_bar)
-            val saveChangesBtnBackground = saveChangesBtn.background
-            saveChangesBtnBackground.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-            saveChangesBtn.background = saveChangesBtnBackground
-            saveChangesBtn.text = getString(R.string.save_changes)
-        }, {
-
-
-        })
+        buttonTransactions(
+            {
+                saveChangesBtn = security_fragment_btn_include.findViewById(R.id.btn)
+                saveChangesProgressbar = security_fragment_btn_include.findViewById(R.id.progress_bar)
+                val saveChangesBtnBackground = saveChangesBtn.background
+                saveChangesBtnBackground.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+                saveChangesBtn.background = saveChangesBtnBackground
+                saveChangesBtn.text = getString(R.string.save_changes)
+            },
+            {
+            }
+        )
 
         security_fragment_old_password_et.doOnTextChanged { text, start, count, after ->
             if (text != null) {
@@ -150,7 +141,5 @@ class SecurityFragment : DaggerFragment() {
                 }
             }
         }
-
     }
-
 }

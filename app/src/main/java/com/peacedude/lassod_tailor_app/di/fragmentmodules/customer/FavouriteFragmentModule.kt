@@ -4,7 +4,6 @@ import com.peacedude.lassod_tailor_app.ui.customer.FavouritesFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-
 @Module
 abstract class FavouriteFragmentModule {
     /**
@@ -12,5 +11,4 @@ abstract class FavouriteFragmentModule {
      */
     @ContributesAndroidInjector()
     abstract fun provideFavouritesFragment(): FavouritesFragment
-
 }

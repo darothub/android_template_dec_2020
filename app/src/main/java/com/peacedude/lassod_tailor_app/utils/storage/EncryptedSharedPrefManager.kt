@@ -3,15 +3,11 @@ package com.peacedude.lassod_tailor_app.utils.storage
 import androidx.security.crypto.EncryptedSharedPreferences
 import com.google.gson.Gson
 import com.peacedude.lassod_tailor_app.R
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import javax.inject.Inject
-import kotlin.reflect.KClass
 const val LASTFRAGMENT = "lastFragment"
 const val LOGINFORM = "lastLoginWith"
-class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: EncryptedSharedPreferences):StorageRequest {
-
+class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: EncryptedSharedPreferences) : StorageRequest {
 
     override var sharedPrefer: EncryptedSharedPreferences = sharedPref
     override var editor = sharedPrefer.edit()
@@ -22,7 +18,7 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
             apply()
         }
     }
-    override fun saveLastFragment(credential:String, id: Int?) {
+    override fun saveLastFragment(credential: String, id: Int?) {
         editor.apply {
             if (id != null) {
                 putInt(credential, id)
@@ -47,7 +43,7 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
     }
 
     override fun <T> saveData(user: T?, key: String): ArrayList<String> {
-        val result:ArrayList<String>
+        val result: ArrayList<String>
         val userJson = gson.toJson(user)
         result = arrayListOf(userJson)
         editor
@@ -67,10 +63,9 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
             }
     }
 
-
     override fun clearByKey(key: String): Boolean {
         val data = sharedPrefer.contains(key)
-        if (data){
+        if (data) {
             sharedPrefer.edit().apply {
                 remove(key)
                 apply()
@@ -81,3 +76,11 @@ class EncryptedSharedPrefManager @Inject internal constructor(val sharedPref: En
     }
 }
 
+
+fun main(){
+    hell<String, Boolean>("Ball", true)
+}
+
+fun <T, X> hell(t:T, x:X){
+    println("$t $x")
+}

@@ -4,7 +4,6 @@ import com.peacedude.lassod_tailor_app.ui.SingleChatFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-
 @Module
 abstract class SingleChatFragmentModule {
     /**
@@ -12,5 +11,4 @@ abstract class SingleChatFragmentModule {
      */
     @ContributesAndroidInjector()
     abstract fun provideSingleChatFragment(): SingleChatFragment
-
 }

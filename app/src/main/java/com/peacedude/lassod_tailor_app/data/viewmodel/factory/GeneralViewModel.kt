@@ -22,7 +22,6 @@ import com.peacedude.lassod_tailor_app.model.error.ErrorModel
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.PhotoList
 import com.peacedude.lassod_tailor_app.model.response.ServicesResponseWrapper
 import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
@@ -35,7 +34,6 @@ import com.peacedude.lassod_tailor_app.utils.newClientKey
 import com.peacedude.lassod_tailor_app.utils.profileDataKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.*
@@ -44,7 +42,6 @@ import java.io.Serializable
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-
 open class GeneralViewModel @Inject constructor(
     open var retrofit: Retrofit,
     private val storageRequest: StorageRequest,
@@ -52,15 +49,13 @@ open class GeneralViewModel @Inject constructor(
     private val mGoogleSignInClient: GoogleSignInClient
 ) : ViewModel(), ViewModelInterface {
 
-
     protected open val title: String = this.getName()
 
-
     val logoutLiveData = MutableLiveData<Boolean>()
-    private val responseLiveData by lazy{
+    private val responseLiveData by lazy {
         SingleLiveEvent<ServicesResponseWrapper<ParentData>>()
     }
-    val responseObserver:SingleLiveEvent<ServicesResponseWrapper<ParentData>>
+    val responseObserver: SingleLiveEvent<ServicesResponseWrapper<ParentData>>
         get() = responseLiveData
 
     val netWorkLiveData = SingleLiveEvent<Boolean>()
@@ -69,19 +64,17 @@ open class GeneralViewModel @Inject constructor(
         networkMonitor()
     }
     // Backing property to avoid state updates from other classes
-    private val _uiState = MutableStateFlow<ServicesResponseWrapper<ParentData>>(ServicesResponseWrapper.Loading(message = "Loading"))
+    private val _uiState = MutableStateFlow<ServicesResponseWrapper<ParentData>>(ServicesResponseWrapper.Empty())
     val uiState: StateFlow<ServicesResponseWrapper<ParentData>>
         get() = _uiState
-
-
 
     final override var currentUser: User? = storageRequest.checkData<User>(loggedInUserKey) ?: User()
         set(currentUser) {
             field = currentUser
             storageRequest.keepData(currentUser, loggedInUserKey)
         }
-    override var lastFragmentId: Int = storageRequest.getLastFragmentId(currentUser?.email ?:currentUser?.phone.toString())
-        set(id) = storageRequest.saveLastFragment(currentUser?.email ?:currentUser?.phone.toString(), id)
+    override var lastFragmentId: Int = storageRequest.getLastFragmentId(currentUser?.email ?: currentUser?.phone.toString())
+        set(id) = storageRequest.saveLastFragment(currentUser?.email ?: currentUser?.phone.toString(), id)
 
     override var saveUser = storageRequest.saveData(currentUser, loggedInUserKey)
 
@@ -96,10 +89,7 @@ open class GeneralViewModel @Inject constructor(
         set(lastLoginForm) = storageRequest.saveLastLoginForm(lastLoginForm.toString())
     override var saveClient = storageRequest.saveData(newClient, newClientKey)
 
-
-
-
-    var badNetworkServiceLiveData = liveData<ServicesResponseWrapper<ParentData>>{
+    var badNetworkServiceLiveData = liveData<ServicesResponseWrapper<ParentData>> {
         responseObserver.postValue(ServicesResponseWrapper.Network(502, "Bad connection"))
         responseObserver
     }
@@ -144,7 +134,6 @@ open class GeneralViewModel @Inject constructor(
                                 statusCode
                             )
                         logout()
-
                     } else {
                         val err = errorConverter(statusCode, errorbody)
                         responseLiveData.value =
@@ -152,9 +141,7 @@ open class GeneralViewModel @Inject constructor(
                                 err.first,
                                 statusCode
                             )
-
                     }
-
                 }
                 in 500..599 -> {
                     val err = errorConverter(statusCode, errorbody)
@@ -170,29 +157,27 @@ open class GeneralViewModel @Inject constructor(
                         i(title, "success $res")
                         responseLiveData.postValue(ServicesResponseWrapper.Success(res))
                     } catch (e: java.lang.Exception) {
-                        Log.e(title, "GeneralViewModel success exception ${e.message.toString()}")
+                        Log.e(title, "GeneralViewModel success exception ${e.message}")
                     }
                 }
             }
-
         } catch (e: Exception) {
             Log.i(title, "ViewModel Exception" + " " + e.message.toString())
             responseLiveData.value = ServicesResponseWrapper.Error(msg, statusCode)
         }
-
     }
     @ExperimentalCoroutinesApi
-    suspend inline fun  ProducerScope<ServicesResponseWrapper<ParentData>>.onErrorFlowResponse(
+    suspend inline fun ProducerScope<ServicesResponseWrapper<ParentData>>.onErrorFlowResponse(
         e: HttpException
     ) {
         val msg = e.response()?.message()
         val errorbody = e.response()?.errorBody()?.charStream()
         val code = e.code()
         Log.e("Viewmodel error", "${e.response()}")
-        try{
+        try {
             val error = `access$errorConverter`(code, errorbody)
-            when(error.second){
-                401 ->{
+            when (error.second) {
+                401 -> {
                     send(
                         ServicesResponseWrapper.Logout(
                             msg.toString(),
@@ -201,7 +186,7 @@ open class GeneralViewModel @Inject constructor(
                     )
                     `access$logout`()
                 }
-                else->{
+                else -> {
                     send(
                         ServicesResponseWrapper.Error(
                             error.first,
@@ -210,8 +195,7 @@ open class GeneralViewModel @Inject constructor(
                     )
                 }
             }
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             send(
                 ServicesResponseWrapper.Error(
                     msg,
@@ -220,13 +204,11 @@ open class GeneralViewModel @Inject constructor(
             )
             Log.i(`access$title`, "CaughtError $msg")
         }
-
-
     }
     @ExperimentalCoroutinesApi
     protected inline fun <reified T> ProducerScope<ServicesResponseWrapper<ParentData>>.onSuccessFlowResponse(
         request: UserResponse<T>
-    ){
+    ) {
         val data = request.data
         offer(
             ServicesResponseWrapper.Loading(
@@ -236,86 +218,90 @@ open class GeneralViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            if (data != null){
-                if(data is ArrayList<*>){
+            if (data != null) {
+                if (data is ArrayList<*>) {
                     val d = Data(data)
                     offer(
                         ServicesResponseWrapper.Success(d as? ParentData)
                     )
-                }
-                else{
+                } else {
                     offer(
                         ServicesResponseWrapper.Success(data as? ParentData)
                     )
                 }
-
-            }
-            else{
+            } else {
                 offer(
                     ServicesResponseWrapper.Success(request as? ParentData)
                 )
             }
-
-
         }
     }
 
     fun onErrorStateFlow(e: HttpException) {
+        _uiState.value = ServicesResponseWrapper.Loading(message = "Loading...")
         val msg = e.response()?.message()
         val errorbody = e.response()?.errorBody()?.charStream()
         val code = e.code()
         Log.e("Viewmodel Flowerror", "${e.response()}")
         val error = `access$errorConverter`(code, errorbody)
-        when (error.second) {
-            401 -> {
-                _uiState.value = ServicesResponseWrapper.Logout(
-                    msg.toString(),
-                    code
-                )
 
-                `access$logout`()
+        when (error.second) {
+            in 400..499 -> {
+                if (error.second == 401) {
+                    _uiState.value = ServicesResponseWrapper.Logout(
+                        msg.toString(),
+                        code
+                    )
+                    `access$logout`()
+                } else {
+                    _uiState.value = ServicesResponseWrapper.Error(
+                        error.first,
+                        code
+                    )
+                    `access$logout`()
+                }
             }
             else -> {
                 _uiState.value = ServicesResponseWrapper.Error(
                     error.first,
                     code
                 )
-
             }
         }
     }
 
-    @Synchronized fun<T> onSuccessStateFlow(r: UserResponse<T>) {
+    @Synchronized fun <T> onSuccessStateFlow(r: UserResponse<T>) {
+        _uiState.value = ServicesResponseWrapper.Loading(message = "Loading...")
         _uiState.value = ServicesResponseWrapper.Success(r)
     }
 
-    @Synchronized fun<T> onSuccessStateFlow(state:MutableStateFlow<ServicesResponseWrapper<ParentData>>, r: UserResponse<T>) {
+    @Synchronized fun <T> onSuccessStateFlow(state: MutableStateFlow<ServicesResponseWrapper<ParentData>>, r: UserResponse<T>) {
         state.value = ServicesResponseWrapper.Success(r)
     }
 
-
-    @Synchronized fun onNetworkStateFlow(){
+    @Synchronized fun onNetworkStateFlow() {
         _uiState.value = ServicesResponseWrapper.Network(502, "Bad connection")
     }
 
     private fun errorConverter(
-        statusCode:Int,
+        statusCode: Int,
         errorbody: Reader?
     ): Pair<String?, Int> {
         val gson = Gson()
         val type = object : TypeToken<ErrorModel>() {}.type
         val errorResponse: ErrorModel? = gson.fromJson(errorbody, type)
         val errorBodyString = "Invalid session"
-        var er:String by Delegates.vetoable(errorBodyString, {property, oldValue, newValue ->
-            newValue != "jwt malformed"
-        })
+        var er: String by Delegates.vetoable(
+            errorBodyString,
+            { property, oldValue, newValue ->
+                newValue != "jwt malformed"
+            }
+        )
 
         er = errorResponse?.errors?.get(0).toString()
 
         return Pair(er, statusCode)
-
     }
-
 
     fun logout(activity: Activity): LiveData<Boolean> {
 
@@ -352,7 +338,7 @@ open class GeneralViewModel @Inject constructor(
         return logoutLiveData
     }
 
-    protected  fun <T> enqueueRequest(
+    protected fun <T> enqueueRequest(
         request: Call<UserResponse<T>>
     ): SingleLiveEvent<ServicesResponseWrapper<ParentData>> {
         responseLiveData.value = ServicesResponseWrapper.Loading(
@@ -372,9 +358,7 @@ open class GeneralViewModel @Inject constructor(
                 response: Response<UserResponse<T>>
             ) {
                 onResponseTask(response as Response<ParentData>, responseLiveData)
-
             }
-
         })
         return responseLiveData
     }
@@ -392,24 +376,22 @@ open class GeneralViewModel @Inject constructor(
         return responseLiveData
     }
 
-
     @Synchronized
     private fun networkMonitor(): LiveData<Boolean> {
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                //take action when network connection is gained
+                // take action when network connection is gained
 //                i(title, "onAvailable")
                 netWorkLiveData.postValue(true)
                 netWorkStateFlow.value = true
             }
 
             override fun onLost(network: Network) {
-                //take action when network connection is lost
+                // take action when network connection is lost
 //                i(title, "onLost")
                 netWorkLiveData.postValue(false)
                 netWorkStateFlow.value = false
             }
-
         }
 
         val connectivityManager =
@@ -428,7 +410,7 @@ open class GeneralViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        netWorkLiveData.removeObserver {  }
+        netWorkLiveData.removeObserver { }
     }
 
     @PublishedApi
@@ -441,8 +423,6 @@ open class GeneralViewModel @Inject constructor(
     @PublishedApi
     internal val `access$title`: String
         get() = title
-
-
 }
 
-data class Data(var data:ArrayList<*>):Serializable, ParentData
+data class Data(var data: ArrayList<*>) : Serializable, ParentData

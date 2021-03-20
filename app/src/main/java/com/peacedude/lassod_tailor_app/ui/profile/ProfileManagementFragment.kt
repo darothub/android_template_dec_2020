@@ -1,22 +1,18 @@
 package com.peacedude.lassod_tailor_app.ui.profile
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
-import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.changeStatusBarColor
 import com.peacedude.lassod_tailor_app.helpers.getName
 import com.peacedude.lassod_tailor_app.helpers.hide
@@ -27,7 +23,6 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client.*
 import kotlinx.android.synthetic.main.fragment_profile_management.*
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -53,14 +48,15 @@ class ProfileManagementFragment : DaggerFragment() {
         viewModelProviderFactory
     }
 
-    lateinit var adapter : ViewPagerAdapter
+    lateinit var adapter: ViewPagerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         changeStatusBarColor(R.color.colorWhite)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -78,10 +74,8 @@ class ProfileManagementFragment : DaggerFragment() {
 //        val newView = View.inflate(requireContext(), R.layout.tab_custom_layout, null)
 //        val tv = newView.findViewById<TextView>(R.id.textViewTab)
 
-
-
-        adapter = ViewPagerAdapter(requireActivity(), 4) { position->
-            when(position){
+        adapter = ViewPagerAdapter(requireActivity(), 4) { position ->
+            when (position) {
                 0 -> UserAccountFragment()
                 1 -> SpecialtyFragment()
                 2 -> PaymentMethodFragment()
@@ -91,12 +85,12 @@ class ProfileManagementFragment : DaggerFragment() {
         }
         val profileManagementViewPager = (profile_management_included_viewPager as? ViewPager2)
 
-
         profile_management_tabLayout.setBackgroundColor(setCustomColor(R.color.colorWhite))
         (profile_management_included_viewPager as? ViewPager2)?.adapter = adapter
         val tabLayoutMediator =
             profileManagementViewPager?.let {
-                TabLayoutMediator(profile_management_tabLayout, it,
+                TabLayoutMediator(
+                    profile_management_tabLayout, it,
                     TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                         when (position) {
 
@@ -107,7 +101,6 @@ class ProfileManagementFragment : DaggerFragment() {
                                 } else {
                                     tab.text = getString(R.string.specialty)
                                 }
-
                             }
                             2 -> {
                                 if (currentUser?.category == "fashionista") {
@@ -115,14 +108,14 @@ class ProfileManagementFragment : DaggerFragment() {
                                 } else {
                                     tab.text = getString(R.string.payment_method)
                                 }
-
                             }
                             3 -> {
                                 tab.text = getString(R.string.security_str)
                             }
                             else -> ProfileFragment()
                         }
-                    }).apply {
+                    }
+                ).apply {
                     attach()
                 }
             }
@@ -133,7 +126,5 @@ class ProfileManagementFragment : DaggerFragment() {
 //            profile_management_tabLayout.getChildAt(1).visibility = View.GONE
 //            profile_management_tabLayout.getChildAt(2).visibility = View.GONE
 //        }
-
     }
-
 }

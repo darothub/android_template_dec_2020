@@ -12,7 +12,6 @@ import com.peacedude.lassod_tailor_app.ui.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-
 @Module
 abstract class MainActivityModule {
     /**

@@ -1,14 +1,9 @@
 package com.peacedude.lassod_tailor_app.ui.resources
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.peacedude.lassod_tailor_app.R
@@ -33,34 +28,34 @@ class ResourcesActivity : BaseActivity() {
 
     val navListener =
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
-           when(destination.id){
-               R.id.allVideoFragment -> {
-                   resources_activity_appbar.show()
-                   toolbar?.setNavigationOnClickListener {
-                       controller.popBackStack()
-                   }
-               }
-               R.id.allArticlesFragment -> {
-                   toolbar?.show()
-                   resources_activity_appbar.show()
-                   toolbar?.setNavigationOnClickListener {
-                       controller.popBackStack()
-                   }
-               }
-               R.id.resourcesFragment -> {
-                   resources_activity_appbar.show()
-                   toolbar?.show()
-                   toolbar?.setNavigationOnClickListener {
-                       finish()
-                   }
-               }
-               R.id.singleVideoFragment -> {
-                   resources_activity_appbar.hide()
-               }
-               R.id.singleArticleFragment ->{
-                   resources_activity_appbar.hide()
-               }
-           }
+            when (destination.id) {
+                R.id.allVideoFragment -> {
+                    resources_activity_appbar.show()
+                    toolbar?.setNavigationOnClickListener {
+                        controller.popBackStack()
+                    }
+                }
+                R.id.allArticlesFragment -> {
+                    toolbar?.show()
+                    resources_activity_appbar.show()
+                    toolbar?.setNavigationOnClickListener {
+                        controller.popBackStack()
+                    }
+                }
+                R.id.resourcesFragment -> {
+                    resources_activity_appbar.show()
+                    toolbar?.show()
+                    toolbar?.setNavigationOnClickListener {
+                        finish()
+                    }
+                }
+                R.id.singleVideoFragment -> {
+                    resources_activity_appbar.hide()
+                }
+                R.id.singleArticleFragment -> {
+                    resources_activity_appbar.hide()
+                }
+            }
         }
 
     @Inject
@@ -80,7 +75,6 @@ class ResourcesActivity : BaseActivity() {
 
 //        toolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
 
-
 //        networkMonitor().observe(this, Observer {
 //            if (it) {
 //                resourcesFragment.view?.show()
@@ -89,7 +83,6 @@ class ResourcesActivity : BaseActivity() {
 //                resourcesFragment.view?.invisible()
 //            }
 //        })
-
     }
 
     override fun onResume() {
@@ -100,7 +93,6 @@ class ResourcesActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         i(title, "OnStart")
-
     }
 
     override fun onPause() {

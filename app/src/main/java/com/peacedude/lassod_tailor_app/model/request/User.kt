@@ -33,7 +33,7 @@ data class User(
     var id: String? = null
     var isVerified: Boolean? = null
     var gender: String? = null
-    var avatar:String? = null
+    var avatar: String? = null
     @SerializedName("deliveryAddress")
     var deliveryAddress: UserAddress? = null
     @SerializedName("workshopAddress")
@@ -49,7 +49,7 @@ data class User(
     var acceptSelfMeasurement: Boolean? = null
     var deliveryTimePeriod: String? = null
     var deliveryTimeNo: Int? = null
-    var paymentOptions: List<String>?  = null
+    var paymentOptions: List<String>? = null
     var paymentTerms: List<String>? = null
     var unionName: String? = null
     var unionWard: String? = null
@@ -59,13 +59,10 @@ data class User(
     var email: String? = null
     var loggedIn: Boolean = false
     var imageUrl: String? = null
-
 }
-data class UserAddress(var street:String?, var city:String?, var state:String?):Serializable
+data class UserAddress(var street: String?, var city: String?, var state: String?) : Serializable
 
-
-
-data class UploadImageClass (
+data class UploadImageClass(
     val id: String,
     val firstName: String,
     val lastName: String,
@@ -106,7 +103,4 @@ data class UploadImageClass (
     val paymentOptions: Any? = null,
     val createdAt: String,
     val updatedAt: String
-):ParentData
-
-
-
+) : ParentData

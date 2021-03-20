@@ -3,7 +3,7 @@ package com.peacedude.lassod_tailor_app.model.response
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
-data class ReviewResponse (
+data class ReviewResponse(
     val id: String,
     val userID: String,
     val artisanID: String,
@@ -12,11 +12,11 @@ data class ReviewResponse (
     val userDetails: UserDetail,
     val updatedAt: String,
     val createdAt: String
-):Serializable, ParentData
+) : Serializable, ParentData
 
-data class UserDetail (
+data class UserDetail(
     val avatar: String,
     val lastName: String,
     val firstName: String,
     val otherName: String
-):Serializable, ParentData
+) : Serializable, ParentData

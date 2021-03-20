@@ -4,38 +4,28 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
-import com.peacedude.lassod_tailor_app.model.response.VideoList
-import com.peacedude.lassod_tailor_app.model.response.VideoResource
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_all_video.*
 import kotlinx.android.synthetic.main.fragment_single_video.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import java.lang.Exception
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -67,12 +57,12 @@ class SingleVideoFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -83,14 +73,14 @@ class SingleVideoFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Nav controller set on toolbar
+        // Nav controller set on toolbar
         val navController = Navigation.findNavController(view)
         NavigationUI.setupWithNavController(toolbar, navController)
 
         val single = singleVideo
         val singleMediaController = MediaController(requireContext())
 
-        if(single != null){
+        if (single != null) {
             single_video_fragment_video_title_tv.text = single.title
             single_video_fragment_video_time_tv.text = single.description
             if (single.videoURL != null && single.videoURL.endsWith(".mp4")) {
@@ -102,16 +92,13 @@ class SingleVideoFragment : DaggerFragment() {
                 single_video_fragment_vv.seekTo(1)
             } else {
                 val ext = single.videoURL?.split("=")?.get(1).toString()
-                single_video_fragment_ytpv.addYouTubePlayerListener(object : AbstractYouTubePlayerListener(){
+                single_video_fragment_ytpv.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
                     override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
                         youTubePlayer.loadVideo(ext, 0F)
                     }
-
                 })
-
             }
-        }
-        else{
+        } else {
             requireActivity().gdToast("Invalid video resource", Gravity.BOTTOM)
         }
 
@@ -200,14 +187,6 @@ class SingleVideoFragment : DaggerFragment() {
 //            }
 //        }
 
-
         i(title, "Single $single")
-
-
-
-
-
-
     }
-
 }

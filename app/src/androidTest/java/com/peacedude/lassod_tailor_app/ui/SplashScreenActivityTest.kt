@@ -12,9 +12,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4ClassRunner::class)
-internal class SplashScreenActivityTest{
+internal class SplashScreenActivityTest {
     @get: Rule
-    val activityRule : ActivityScenarioRule<SplashScreenActivity> = ActivityScenarioRule(SplashScreenActivity::class.java)
+    val activityRule: ActivityScenarioRule<SplashScreenActivity> = ActivityScenarioRule(SplashScreenActivity::class.java)
 
     @Test
     fun app_logo_is_displayed() {

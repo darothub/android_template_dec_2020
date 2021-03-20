@@ -5,7 +5,6 @@ import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientAccountFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-
 @Module
 abstract class ClientAccountFragmentModule {
     /**
@@ -13,5 +12,4 @@ abstract class ClientAccountFragmentModule {
      */
     @ContributesAndroidInjector()
     abstract fun provideClientAccountFragment(): ClientAccountFragment
-
 }

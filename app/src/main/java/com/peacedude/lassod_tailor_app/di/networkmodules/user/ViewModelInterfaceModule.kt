@@ -2,12 +2,9 @@ package com.peacedude.lassod_tailor_app.di.networkmodules.user
 
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.peacedude.lassod_tailor_app.data.repositories.user.UserRequestRepository
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
-import com.peacedude.lassod_tailor_app.network.user.UserRequestInterface
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
-import com.peacedude.lassod_tailor_app.services.user.UserServices
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -31,5 +28,4 @@ class ViewModelInterfaceModule {
             mGoogleSignInClient
         )
     }
-
 }

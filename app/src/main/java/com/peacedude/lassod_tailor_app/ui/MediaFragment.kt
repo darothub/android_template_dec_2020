@@ -20,11 +20,9 @@ import androidx.core.content.FileProvider
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -49,15 +47,12 @@ import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
-
 
 const val REQUEST_CODE = 1
 const val GALLERY_PHOTO_CODE = 0
@@ -151,15 +146,14 @@ class MediaFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
         observer = StartActivityForResults(requireActivity().activityResultRegistry)
         lifecycle.addObserver(observer)
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -208,8 +202,8 @@ class MediaFragment : DaggerFragment() {
                     text = getString(R.string.update_str)
                     setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
                 }
-            }, {
-
+            },
+            {
             }
         )
 
@@ -222,16 +216,11 @@ class MediaFragment : DaggerFragment() {
         )
         noDataText.text = getString(R.string.you_have_no_photo_str)
 
-
-
-
-
         add_photo_iv.setOnClickListener {
             dialog.show {
                 cornerRadius(15F)
             }
         }
-
 
         addPhotoDialogFab.setOnClickListener {
             val res = checkCameraPermission()
@@ -252,34 +241,35 @@ class MediaFragment : DaggerFragment() {
     @ExperimentalCoroutinesApi
     override fun onResume() {
         super.onResume()
-
     }
 
     @ExperimentalCoroutinesApi
     private fun mediaTransaction() {
 
-        observeRequest<PhotoList>(authViewModel.allPhotos, null, null, true, {
-            val data = it?.data?.photo
-            i(title, "Photo flow $data")
-            if (data?.isNotEmpty() == true) {
-                setUpPhotoListView(data)
-            }
-            else{
-                media_fragment_vf.displayedChild = 0
-            }
-
-        }, { error ->
-            i(
-                title,
-                "PhotoList $error"
-            )
-            if (error != null) {
-                requireActivity().gdToast(
-                    error,
-                    Gravity.BOTTOM
+        observeRequest<PhotoList>(
+            authViewModel.allPhotos, null, null, true,
+            {
+                val data = it?.data?.photo
+                i(title, "Photo flow $data")
+                if (data?.isNotEmpty() == true) {
+                    setUpPhotoListView(data)
+                } else {
+                    media_fragment_vf.displayedChild = 0
+                }
+            },
+            { error ->
+                i(
+                    title,
+                    "PhotoList $error"
                 )
+                if (error != null) {
+                    requireActivity().gdToast(
+                        error,
+                        Gravity.BOTTOM
+                    )
+                }
             }
-        })
+        )
 //        observeResponseState<PhotoList>(
 //            authViewModel.uiState,
 //            null,
@@ -307,7 +297,6 @@ class MediaFragment : DaggerFragment() {
 //                }
 //
 //            })
-
     }
 
     private fun setUpPhotoListView(data: List<Photo>) {
@@ -348,14 +337,10 @@ class MediaFragment : DaggerFragment() {
                         cornerRadius(10F)
                     }
                 }
-
-
             }
             setLayoutManager(GridLayoutManager(requireContext(), 2))
             submitList(data)
-
         }
-
     }
 
     private fun onPhotoDataEdit(
@@ -396,7 +381,7 @@ class MediaFragment : DaggerFragment() {
                 item?.id.toString(),
                 newInfo
             )
-        //Observer for get request
+        // Observer for get request
         observeRequest<NothingExpected>(
             updateReq,
             null,
@@ -414,7 +399,6 @@ class MediaFragment : DaggerFragment() {
                     Gravity.BOTTOM
                 )
                 singleImageDialog.dismiss()
-
             },
             { err ->
                 i(
@@ -429,7 +413,8 @@ class MediaFragment : DaggerFragment() {
                 list?.set(list.indexOf(item), item)
                 adapter.notifyDataSetChanged()
                 singleImageDialog.dismiss()
-            })
+            }
+        )
     }
 
     private fun shareImage(itemView: View) {
@@ -467,7 +452,7 @@ class MediaFragment : DaggerFragment() {
             media_fragment_vf.showPrevious()
         }
         val deleteReq = authViewModel.deleteMedia(item?.id)
-        //Observer for get request
+        // Observer for get request
         observeRequest<NothingExpected>(
             deleteReq,
             null,
@@ -480,16 +465,15 @@ class MediaFragment : DaggerFragment() {
                     "${res.message}",
                     Gravity.BOTTOM
                 )
-
             },
             { err ->
                 list?.add(item)
                 adapter.notifyDataSetChanged()
                 i(title, "DeletePhotoReqError $err")
                 requireActivity().gdToast(err, Gravity.BOTTOM)
-            })
+            }
+        )
     }
-
 
     @ExperimentalCoroutinesApi
     private fun getPhotoData() {
@@ -499,108 +483,105 @@ class MediaFragment : DaggerFragment() {
         val galleryIntent = Intent()
         galleryIntent.type = "image/*"
         galleryIntent.action = Intent.ACTION_GET_CONTENT
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         val chooser = Intent.createChooser(galleryIntent, "Photo options")
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(intent))
         val result = observer.launchImageIntent(chooser)
-        result.observe(viewLifecycleOwner, Observer { results ->
-            if (results.resultCode == Activity.RESULT_OK) {
-                var imageBitmap: Bitmap? = null
-                var arrayOfImageFile = listOf<File?>()
-                var imageFile: File?
-                var reqBody: RequestBody?
-                var itemUri: Uri?
-                val requestBodyBuilder = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                val imageParts: ArrayList<MultipartBody.Part?> = arrayListOf()
+        result.observe(
+            viewLifecycleOwner,
+            Observer { results ->
+                if (results.resultCode == Activity.RESULT_OK) {
+                    var imageBitmap: Bitmap? = null
+                    var arrayOfImageFile = listOf<File?>()
+                    var imageFile: File?
+                    var reqBody: RequestBody?
+                    var itemUri: Uri?
+                    val requestBodyBuilder = MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                    val imageParts: ArrayList<MultipartBody.Part?> = arrayListOf()
 
-                val data = results.data
-                i(title, "Result $result")
+                    val data = results.data
+                    i(title, "Result $result")
 
-                i(title, "ImageData $data")
-                if (data != null) {
-                    val clipData = data.clipData
-                    when (clipData?.itemCount) {
-                        null -> {
-                            imageBitmap = data.data?.let { uriToBitmap(it) }
-                                ?: data.extras?.get("data") as Bitmap?
-                            imageFile = saveBitmap(imageBitmap)
-                            reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                    i(title, "ImageData $data")
+                    if (data != null) {
+                        val clipData = data.clipData
+                        when (clipData?.itemCount) {
+                            null -> {
+                                imageBitmap = data.data?.let { uriToBitmap(it) }
+                                    ?: data.extras?.get("data") as Bitmap?
+                                imageFile = saveBitmap(imageBitmap)
+                                reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
 //                            requestBodyBuilder.addFormDataPart("photo", imageFile.name, reqBody)
-                            imageParts.add(
-                                MultipartBody.Part.createFormData(
-                                    "photo",
-                                    imageFile.name,
-                                    reqBody
+                                imageParts.add(
+                                    MultipartBody.Part.createFormData(
+                                        "photo",
+                                        imageFile.name,
+                                        reqBody
+                                    )
                                 )
-                            )
-                        }
-                        in 1..5 -> {
-
-                            arrayOfImageFile = (0 until clipData.itemCount).map {
-                                val itemUriTwo = data.clipData!!.getItemAt(it).uri
-                                val imageBitmapTwo = uriToBitmap(itemUriTwo)
-                                val imageFileTwo = saveBitmap(imageBitmapTwo)
-                                imageFileTwo
                             }
+                            in 1..5 -> {
 
+                                arrayOfImageFile = (0 until clipData.itemCount).map {
+                                    val itemUriTwo = data.clipData!!.getItemAt(it).uri
+                                    val imageBitmapTwo = uriToBitmap(itemUriTwo)
+                                    val imageFileTwo = saveBitmap(imageBitmapTwo)
+                                    imageFileTwo
+                                }
 
-
-                            i(title, "imageFiles $arrayOfImageFile")
+                                i(title, "imageFiles $arrayOfImageFile")
+                            }
+                            else -> {
+                                i(title, "Too many images selected")
+                            }
                         }
-                        else -> {
-                            i(title, "Too many images selected")
-                        }
-
-                    }
-                    if (arrayOfImageFile.isNotEmpty()) {
-                        arrayOfImageFile.forEach { imageFile ->
-                            reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                            imageParts.add(
-                                MultipartBody.Part.createFormData(
-                                    "photo", imageFile.name,
-                                    reqBody!!
+                        if (arrayOfImageFile.isNotEmpty()) {
+                            arrayOfImageFile.forEach { imageFile ->
+                                reqBody = imageFile!!.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                                imageParts.add(
+                                    MultipartBody.Part.createFormData(
+                                        "photo", imageFile.name,
+                                        reqBody!!
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
-                    i(title, "imagePart $imageParts")
+                        i(title, "imagePart $imageParts")
 
 //                    val requestBody: RequestBody = requestBodyBuilder.build()
-                    val req = authViewModel.addPhoto(imageParts as? List<MultipartBody.Part>)
-                    observeRequest<NothingExpected>(req, null, null, true, { result ->
-                        val response = result
-                        requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
-                        findNavController().navigate(R.id.mediaFragment)
-                        i(title, "URL ${response.message}")
-                    }, { err ->
-                        requireActivity().gdToast(err, Gravity.BOTTOM)
-                        i(title, "AddPhotoReqError $err")
-                    })
+                        val req = authViewModel.addPhoto(imageParts as? List<MultipartBody.Part>)
+                        observeRequest<NothingExpected>(
+                            req, null, null, true,
+                            { result ->
+                                val response = result
+                                requireActivity().gdToast(response.message.toString(), Gravity.BOTTOM)
+                                findNavController().navigate(R.id.mediaFragment)
+                                i(title, "URL ${response.message}")
+                            },
+                            { err ->
+                                requireActivity().gdToast(err, Gravity.BOTTOM)
+                                i(title, "AddPhotoReqError $err")
+                            }
+                        )
+                    }
 
-                }
-
-
-
-                dialog.dismiss()
+                    dialog.dismiss()
 //                requireActivity().gdToast("Picture opened", Gravity.BOTTOM)
-            } else {
-                i(
-                    title,
-                    "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
-                )
+                } else {
+                    i(
+                        title,
+                        "OKCODE ${Activity.RESULT_OK} RESULTCODE ${results.resultCode}"
+                    )
+                }
             }
-        })
-
+        )
 
         addPhotoCancelIcon.setOnClickListener {
             addPhotoLoaderLayout.hide()
             addPhotoDialogFab.show()
         }
     }
-
-
 }
-

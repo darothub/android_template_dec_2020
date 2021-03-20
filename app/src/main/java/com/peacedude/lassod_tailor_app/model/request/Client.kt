@@ -17,8 +17,9 @@ data class Client(
     var state: String? = null
     var gender: String? = null
     var country: String? = null
-    var tailorId:String?=null
+    var tailorId: String? = null
 }
-data class SingleClient(val client:Client): Serializable, ParentData
-data class ClientsList(val clients:List<Client?>?): Serializable,
+data class SingleClient(val client: Client) : Serializable, ParentData
+data class ClientsList(val clients: List<Client?>?) :
+    Serializable,
     ParentData

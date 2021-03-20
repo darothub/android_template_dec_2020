@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
-data class SubscribedDataDetails (
+data class SubscribedDataDetails(
     val invoices: List<Any?>,
     val domain: String,
     val start: Long,
@@ -27,9 +27,9 @@ data class SubscribedDataDetails (
     val authorization: Long,
     val createdAt: String,
     val updatedAt: String
-):ParentData, Serializable
+) : ParentData, Serializable
 
-data class Plan (
+data class Plan(
     val subscriptions: List<Any?>,
     val pages: List<Any?>,
     val domain: String,
@@ -51,4 +51,4 @@ data class Plan (
     val integration: Long,
     val createdAt: String,
     val updatedAt: String
-):ParentData, Serializable
+) : ParentData, Serializable

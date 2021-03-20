@@ -1,24 +1,14 @@
 package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
-import androidx.annotation.ColorRes
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.peacedude.lassod_tailor_app.R
@@ -30,7 +20,6 @@ import com.peacedude.lassod_tailor_app.ui.adapters.ViewPagerAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_client.*
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -63,7 +52,8 @@ class ClientFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -80,7 +70,6 @@ class ClientFragment : DaggerFragment() {
         val nextBtnBackground = nextBtn.background
         nextBtnBackground?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
 
-
         nextBtn.text = getString(R.string.next)
         nextBtn.background = nextBtnBackground
         nextBtn.setTextColor(setCustomColor(R.color.colorWhite))
@@ -90,17 +79,15 @@ class ClientFragment : DaggerFragment() {
         }
 
         clientManagementViewPager?.registerOnPageChangeCallback(object :
-            ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                when (position) {
-                    1 -> nextBtn.hide()
-                    0 -> nextBtn.show()
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    when (position) {
+                        1 -> nextBtn.hide()
+                        0 -> nextBtn.show()
+                    }
                 }
-            }
-
-        })
-
+            })
     }
 
     private fun setupViewPager() {
@@ -117,7 +104,8 @@ class ClientFragment : DaggerFragment() {
         (client_management_included_viewPager as? ViewPager2)?.adapter = adapter
         val tabLayoutMediator =
             clientManagementViewPager?.let {
-                TabLayoutMediator(client_management_tabLayout, it,
+                TabLayoutMediator(
+                    client_management_tabLayout, it,
                     TabLayoutMediator.TabConfigurationStrategy { tab, position ->
                         when (position) {
                             0 -> tab.text = "Client Account"
@@ -131,7 +119,8 @@ class ClientFragment : DaggerFragment() {
                             2 -> tab.text = "Delivery Address"
                             else -> tab.text = "Client"
                         }
-                    }).apply {
+                    }
+                ).apply {
                     attach()
                 }
             }
@@ -142,11 +131,7 @@ class ClientFragment : DaggerFragment() {
                 R.color.colorPrimary
             )
         )
-
-
     }
-
-
 
     fun setItem(item: Int) {
         Log.i(title, "here")
@@ -156,5 +141,4 @@ class ClientFragment : DaggerFragment() {
 //    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
 //        source.lifecycle.addObserver(this)
 //    }
-
 }

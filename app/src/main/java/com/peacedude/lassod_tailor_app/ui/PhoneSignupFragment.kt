@@ -3,13 +3,11 @@ package com.peacedude.lassod_tailor_app.ui
 import IsEmptyCheck
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +17,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -33,15 +31,12 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.peacedude.lassod_tailor_app.receiver.SMSReceiver
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_phone_signup.*
 import validatePasswordAndAdvise
 import java.util.*
-
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -55,13 +50,13 @@ class PhoneSignupFragment : DaggerFragment() {
     lateinit var resendCodeBtn: Button
     private lateinit var confirmProgressBar: ProgressBar
     private lateinit var resendProgressBar: ProgressBar
-    private lateinit var progressBar:ProgressBar
+    private lateinit var progressBar: ProgressBar
     lateinit var phonesignupBtn: Button
 
     private val loginAdviseText: String by lazy {
         getString(R.string.have_an_account)
     }
-    private var spannableTextColor = 0;
+    private var spannableTextColor = 0
     private val spannableString: SpannableString by lazy {
         loginAdviseText.setAsSpannable()
     }
@@ -80,10 +75,10 @@ class PhoneSignupFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
-
     }
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -107,60 +102,61 @@ class PhoneSignupFragment : DaggerFragment() {
     }
 
     private fun requestSMSPermission() {
-        if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECEIVE_SMS), 100)
         }
     }
 
     private fun buttonAndProgressBarActivity() {
-        //Drawable background for confirm button
+        // Drawable background for confirm button
         val confirmBtnBackgroundDrawable = ContextCompat.getDrawable(
             requireContext(),
             R.drawable.rounded_corner_background_primary
         )
-        //Drawable background for resend code button
+        // Drawable background for resend code button
         val resendCodeBtnBackgroudDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background_trans)
         val signupBackgroundDrawable =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
-        buttonTransactions({
-            phonesignupBtn = phone_signup_btn.findViewById(R.id.btn)
-            phonesignupBtn = phone_signup_btn.findViewById(R.id.btn)
-            progressBar = phone_signup_btn.findViewById(R.id.progress_bar)
-            phonesignupBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorPrimary
+        buttonTransactions(
+            {
+                phonesignupBtn = phone_signup_btn.findViewById(R.id.btn)
+                phonesignupBtn = phone_signup_btn.findViewById(R.id.btn)
+                progressBar = phone_signup_btn.findViewById(R.id.progress_bar)
+                phonesignupBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorPrimary
+                    )
                 )
-            )
-            //Get included view for confirm button
-            val includedViewForConfirmBtn = dialog.findViewById<View>(R.id.confirm_btn)
-            //Get included view for resend code button
-            val includedViewForResendBtn = dialog.findViewById<View>(R.id.resend_code_btn)
-            //Set confirm button
-            confirmBtn = includedViewForConfirmBtn.findViewById(R.id.btn)
-            //Set confirm button background
-            confirmBtn.background = confirmBtnBackgroundDrawable
-            //Set resend code button
-            resendCodeBtn = includedViewForResendBtn.findViewById(R.id.btn)
-            //Set resend code button background
-            resendCodeBtn.background = resendCodeBtnBackgroudDrawable
-            //Set resend code button text color
-            resendCodeBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorPrimary
+                // Get included view for confirm button
+                val includedViewForConfirmBtn = dialog.findViewById<View>(R.id.confirm_btn)
+                // Get included view for resend code button
+                val includedViewForResendBtn = dialog.findViewById<View>(R.id.resend_code_btn)
+                // Set confirm button
+                confirmBtn = includedViewForConfirmBtn.findViewById(R.id.btn)
+                // Set confirm button background
+                confirmBtn.background = confirmBtnBackgroundDrawable
+                // Set resend code button
+                resendCodeBtn = includedViewForResendBtn.findViewById(R.id.btn)
+                // Set resend code button background
+                resendCodeBtn.background = resendCodeBtnBackgroudDrawable
+                // Set resend code button text color
+                resendCodeBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorPrimary
+                    )
                 )
-            )
-            confirmBtn.text = getString(R.string.confirm)
-            resendCodeBtn.text = getString(R.string.resend_code)
-            phonesignupBtn.text = getString(R.string.continue_text)
-            //Set resend code button progress bar
-            resendProgressBar = includedViewForResendBtn.findViewById(R.id.progress_bar)
-            //Set confirm button progress bar
-            confirmProgressBar = includedViewForConfirmBtn.findViewById(R.id.progress_bar)
-
-        }, {
+                confirmBtn.text = getString(R.string.confirm)
+                resendCodeBtn.text = getString(R.string.resend_code)
+                phonesignupBtn.text = getString(R.string.continue_text)
+                // Set resend code button progress bar
+                resendProgressBar = includedViewForResendBtn.findViewById(R.id.progress_bar)
+                // Set confirm button progress bar
+                confirmProgressBar = includedViewForConfirmBtn.findViewById(R.id.progress_bar)
+            },
+            {
 
 //            networkMonitor().observe(viewLifecycleOwner, Observer {
 //                if (it) {
@@ -169,15 +165,12 @@ class PhoneSignupFragment : DaggerFragment() {
 //                    phonesignupBtn.invisible()
 //                }
 //            })
-            phonesignupBtn.setOnClickListener {
-                signupRequest()
-                return@setOnClickListener
+                phonesignupBtn.setOnClickListener {
+                    signupRequest()
+                    return@setOnClickListener
+                }
             }
-
-
-        })
-
-
+        )
 
         phone_signup_password_et.doOnTextChanged { text, start, count, after ->
             if (text != null) {
@@ -187,8 +180,6 @@ class PhoneSignupFragment : DaggerFragment() {
         }
         setupCategorySpinner(requireContext(), phone_signup_category_spinner, R.array.categories_array)
     }
-
-
 
     private fun setupLoginSpannableString() {
         spannableTextColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
@@ -240,21 +231,23 @@ class PhoneSignupFragment : DaggerFragment() {
                 userData.password = passwordString
 
                 val request = userViewModel.registerUser(userData)
-                observeRequest<User>(request, confirmProgressBar, confirmBtn, false, {
-                    i(title, "Phonesignup message ${it?.message.toString()}")
-                    requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
-                    activateUserRequest(phoneNumber)
-                },{ err ->
-                    requireActivity().gdToast(err, Gravity.BOTTOM)
-                    i(title, "PhoneSignUpError $err")
-                })
+                observeRequest<User>(
+                    request, confirmProgressBar, confirmBtn, false,
+                    {
+                        i(title, "Phonesignup message ${it?.message}")
+                        requireActivity().gdToast(it?.message.toString(), Gravity.BOTTOM)
+                        activateUserRequest(phoneNumber)
+                    },
+                    { err ->
+                        requireActivity().gdToast(err, Gravity.BOTTOM)
+                        i(title, "PhoneSignUpError $err")
+                    }
+                )
             }
         }
-
-
     }
-    private fun activateUserRequest(phone:String) {
-        dialog.show{
+    private fun activateUserRequest(phone: String) {
+        dialog.show {
             cornerRadius(15F)
         }
 //        var code:String? = null
@@ -268,36 +261,33 @@ class PhoneSignupFragment : DaggerFragment() {
             val code = pinEditText.text.toString()
             if (code.isBlank()) {
                 requireActivity().gdErrorToast("Empty code is not allowed", Gravity.BOTTOM)
-            }
-            else{
+            } else {
                 Log.i(title, "$code")
                 val request = userViewModel.activateUser(phone, code)
 //                requireActivity().gdToast("$code $phone", Gravity.BOTTOM)
-                    observeRequest<User>(request, confirmProgressBar, confirmBtn, false, {
+                observeRequest<User>(
+                    request, confirmProgressBar, confirmBtn, false,
+                    {
                         dialog.dismiss()
                         findNavController().navigate(R.id.loginFragment)
-                    },{ err ->
+                    },
+                    { err ->
                         i(title, "PhoneSignUpError $err")
-                    })
-
-
+                    }
+                )
             }
-
         }
         resendCodeBtn.setOnClickListener {
             val request = userViewModel.resendCode(phone)
-            observeRequest<User>(request, confirmProgressBar, confirmBtn, false, {
-                smsReceiver.setEditText(pinEditText)
-            },{err ->
-                i(title, "PhoneSignUpError $err")
-            })
-
+            observeRequest<User>(
+                request, confirmProgressBar, confirmBtn, false,
+                {
+                    smsReceiver.setEditText(pinEditText)
+                },
+                { err ->
+                    i(title, "PhoneSignUpError $err")
+                }
+            )
         }
-
-
-
     }
-
 }
-
-

@@ -1,41 +1,27 @@
 package com.peacedude.lassod_tailor_app.ui.resources
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.MediaController
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.request.ClientsList
-import com.peacedude.lassod_tailor_app.model.request.ResourcesVideo
 import com.peacedude.lassod_tailor_app.model.response.*
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.squareup.picasso.Picasso
-import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.fragment_all_video.*
@@ -46,7 +32,6 @@ import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -76,7 +61,6 @@ class AllVideoFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
     @Inject
@@ -86,7 +70,8 @@ class AllVideoFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -111,9 +96,7 @@ class AllVideoFragment : DaggerFragment() {
 
         lifecycleScope.launchWhenStarted {
             authViewModel.videosStateflow.collect()
-
         }
-
     }
 
     override fun onResume() {
@@ -143,10 +126,7 @@ class AllVideoFragment : DaggerFragment() {
                         Gravity.BOTTOM
                     )
                 }
-
-            })
+            }
+        )
     }
-
-
-
 }

@@ -4,14 +4,13 @@ import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.UserAddress
 import java.io.Serializable
 
-
-data class ArtisanSearchResponse (
+data class ArtisanSearchResponse(
     val tailors: List<Artisan>,
     val weavers: List<Artisan>,
     val meta: Meta
-):Serializable, ParentData
+) : Serializable, ParentData
 
-data class Artisan (
+data class Artisan(
     val id: String,
     val firstName: String,
     val lastName: String,
@@ -28,42 +27,40 @@ data class Artisan (
     val createdAt: String,
     val updatedAt: String,
     val profile: Profile
-):Serializable, ParentData
+) : Serializable, ParentData
 
-data class Profile (
-    val id: String?="",
-    val userID: String?="",
-    val gender: String?="",
+data class Profile(
+    val id: String? = "",
+    val userID: String? = "",
+    val gender: String? = "",
     val bio: Any? = null,
-    val avatar: String?="",
+    val avatar: String? = "",
     val avatarAwsDetails: Any? = null,
-    val unionName: String?="",
-    val unionWard: String?="",
-    val unionLGA: String?="",
-    val unionState: String?="",
-    val country: String?="",
-    val workshopAddress: UserAddress?=null,
-    val showroomAddress: UserAddress?=null,
-    val noOfEmployees: Long?=0,
+    val unionName: String? = "",
+    val unionWard: String? = "",
+    val unionLGA: String? = "",
+    val unionState: String? = "",
+    val country: String? = "",
+    val workshopAddress: UserAddress? = null,
+    val showroomAddress: UserAddress? = null,
+    val noOfEmployees: Long? = 0,
     val rating: Any? = null,
-    val legalStatus: String?="",
+    val legalStatus: String? = "",
     val specialty: List<String>,
     val genderFocus: List<String>,
-    val obiomaCERT: String?="",
-    val visitUsMeasurement: Boolean=false,
-    val acceptSelfMeasurement: Boolean=false,
-    val deliveryTimePeriod: String?="",
-    val deliveryTimeNo: Long?=0,
+    val obiomaCERT: String? = "",
+    val visitUsMeasurement: Boolean = false,
+    val acceptSelfMeasurement: Boolean = false,
+    val deliveryTimePeriod: String? = "",
+    val deliveryTimeNo: Long? = 0,
     val paymentTerms: List<String>,
     val subscriptions: Any? = null,
-    val paymentOptions: List<String>?=null,
-    val createdAt: String?="",
-    val updatedAt: String?=""
-):Serializable, ParentData
+    val paymentOptions: List<String>? = null,
+    val createdAt: String? = "",
+    val updatedAt: String? = ""
+) : Serializable, ParentData
 
-
-
-data class Meta (
+data class Meta(
     val totalItems: Long,
     val skipped: Long,
     val totalPages: Long,

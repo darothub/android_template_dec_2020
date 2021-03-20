@@ -57,7 +57,6 @@ inline fun <reified T> Activity.observeRequest(
     crossinline success: (UserResponse<T>) -> Unit,
     crossinline error: (String) -> Unit
 ) {
-    val result = MutableLiveData<Pair<Boolean, Any?>>()
     val title: String by lazy {
         this.getName()
     }
@@ -85,7 +84,7 @@ inline fun <reified T> Activity.observeRequest(
                     if (loader) dialog.show()
                     progressBar?.show()
                     button?.hide()
-                    i(title, "Loading..")
+                    i(title, "Loading...")
                 }
                 is ServicesResponseWrapper.Success -> {
                     dialog.dismiss()
@@ -552,24 +551,24 @@ inline fun <T : ParentData> Activity.observeResponseState(
     progressBar: ProgressBar?,
     button: Button?,
     crossinline success: (UserResponse<T>) -> Unit,
-    noinline error: ((String?) -> Unit)? = null
+    noinline error: ((String?) -> Unit)? = null,
+    dialog: Pair<Dialog, TextView> = showOrHideLoader()
 ) {
 
     this as LifecycleOwner
     lifecycleScope.launchWhenStarted {
-        val d = showOrHideLoader()
         state.collectLatest {
             when (it) {
                 is ServicesResponseWrapper.Loading<*>  -> {
                     i("Stateflow", "Loading")
-                    d.second.text = it.message
-                    d.first.show()
+                    dialog.second.text = it.message
+                    dialog.first.show()
                     toggleProgressBarAndButton(progressBar, button)
                 }
 
                 is ServicesResponseWrapper.Error -> {
                     i("Stateflow", "Error")
-                    d.first.dismiss()
+                    dialog.first.dismiss()
                     toggleProgressBarAndButton(progressBar, button)
                     if (error != null) {
                         val data = it.data as UserResponse<T>
@@ -578,7 +577,7 @@ inline fun <T : ParentData> Activity.observeResponseState(
                 }
                 is ServicesResponseWrapper.Success -> {
                     i("Stateflow", "Success")
-                    d.first.dismiss()
+                    dialog.first.dismiss()
                     val data = it.data as UserResponse<T>
                     toggleProgressBarAndButton(progressBar, button)
                     success(data)
@@ -586,14 +585,14 @@ inline fun <T : ParentData> Activity.observeResponseState(
                 }
                 is ServicesResponseWrapper.Logout -> {
                     i("Stateflow", "Logout")
-                    d.first.dismiss()
+                    dialog.first.dismiss()
                     toggleProgressBarAndButton(progressBar, button)
 
                 }
                 is ServicesResponseWrapper.Network -> {
                     i("Stateflow", "Network")
-                    d.first.show()
-                    d.second.text = it.message
+                    dialog.first.show()
+                    dialog.second.text = it.message
                     toggleProgressBarAndButton(progressBar, button)
                 }
 

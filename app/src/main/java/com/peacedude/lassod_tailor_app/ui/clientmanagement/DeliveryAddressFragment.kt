@@ -8,29 +8,20 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputEditText
-import com.google.gson.annotations.SerializedName
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.Client
 import com.peacedude.lassod_tailor_app.model.response.*
-import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.activity_resources.*
 import kotlinx.android.synthetic.main.client_list_item.view.*
@@ -38,12 +29,7 @@ import kotlinx.android.synthetic.main.fragment_delivery_address.*
 import kotlinx.android.synthetic.main.fragment_measurement.*
 import kotlinx.android.synthetic.main.measurement_items.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import java.io.Serializable
-import java.util.ArrayList
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -104,7 +90,8 @@ class DeliveryAddressFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -132,17 +119,15 @@ class DeliveryAddressFragment : DaggerFragment() {
             this.changeBackgroundColor(requireContext(), R.color.colorPrimary)
         }
 
-
         dialogToolbar.setNavigationOnClickListener {
             dialog.dismiss()
         }
 
         val clientId = clientToBeEdited?.id
 
-        if(clientId == null){
+        if (clientId == null) {
             i(title, "Invalid client")
-        }
-        else{
+        } else {
 //            CoroutineScope(Dispatchers.Main).launch {
 //                supervisorScope {
 //
@@ -210,49 +195,47 @@ class DeliveryAddressFragment : DaggerFragment() {
 //            }
         }
 
-
-
-        buttonTransactions({
-            addDeliveryaddressBtn.apply {
-                background = btnBackground
-                text = getString(R.string.add_address_str)
-                setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.colorAccent
+        buttonTransactions(
+            {
+                addDeliveryaddressBtn.apply {
+                    background = btnBackground
+                    text = getString(R.string.add_address_str)
+                    setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.colorAccent
+                        )
                     )
-                )
-            }
+                }
 
-            dialogAddDeliveryBtn.apply {
-                background = dialogBtnBackgound
-                text = getString(R.string.save)
-                setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.colorAccent
+                dialogAddDeliveryBtn.apply {
+                    background = dialogBtnBackgound
+                    text = getString(R.string.save)
+                    setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.colorAccent
+                        )
                     )
-                )
-            }
-        }, {
+                }
+            },
+            {
 
-            addDeliveryaddressBtn.setOnClickListener {
-                dialog.show()
-            }
+                addDeliveryaddressBtn.setOnClickListener {
+                    dialog.show()
+                }
 
-
-            Log.i(title, "ClientAccountDeliveryAdd ${clientToBeEdited?.tailorId}")
-            if (clientToBeEdited == null) {
-                i(title, "No client found")
-                btnBackground?.colorFilter = PorterDuffColorFilter(
-                    ContextCompat.getColor(requireContext(), R.color.colorGray),
-                    PorterDuff.Mode.SRC_IN
-                )
-                addDeliveryaddressBtn.background = btnBackground
-                addDeliveryaddressBtn.isClickable = false
-
-            } else {
-                dialogAddDeliveryBtn.setOnClickListener {
+                Log.i(title, "ClientAccountDeliveryAdd ${clientToBeEdited?.tailorId}")
+                if (clientToBeEdited == null) {
+                    i(title, "No client found")
+                    btnBackground?.colorFilter = PorterDuffColorFilter(
+                        ContextCompat.getColor(requireContext(), R.color.colorGray),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                    addDeliveryaddressBtn.background = btnBackground
+                    addDeliveryaddressBtn.isClickable = false
+                } else {
+                    dialogAddDeliveryBtn.setOnClickListener {
 //                    CoroutineScope(Dispatchers.Main).launch {
 //                        val clientId = clientToBeEdited?.id
 //                        val address = dialogDeliveryAddressEt.text.toString().trim()
@@ -275,14 +258,9 @@ class DeliveryAddressFragment : DaggerFragment() {
 //                                }
 //                            }
 //                    }
+                    }
                 }
             }
-
-
-        })
-
-
+        )
     }
-
-
 }

@@ -1,11 +1,8 @@
 package com.peacedude.lassod_tailor_app.network.user
 
-import androidx.lifecycle.LiveData
 import com.peacedude.lassod_tailor_app.model.request.User
 import com.peacedude.lassod_tailor_app.model.response.*
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface UserRequestInterface {
@@ -30,50 +27,49 @@ interface UserRequestInterface {
 
     fun loginWithEmailOrPhoneNumber(field: String?, password: String?): Call<UserResponse<User>> =
         TODO()
-   fun registerUser(
+    fun registerUser(
         user: User?
-    ):Call<UserResponse<User>> = TODO()
+    ): Call<UserResponse<User>> = TODO()
 
     fun registerUser(
-        header:String,
+        header: String,
         user: User?
-    ):Call<UserResponse<User>> = TODO()
+    ): Call<UserResponse<User>> = TODO()
     fun loginWithGoogle(
-        header:String?
-    ):Call<UserResponse<User>> = TODO()
+        header: String?
+    ): Call<UserResponse<User>> = TODO()
 
     fun resendCode(
         phoneNumber: String
-    ):Call<UserResponse<User>> = TODO()
-
+    ): Call<UserResponse<User>> = TODO()
 
     suspend fun searchArtisan(
-        keyword:String?,
-        location:String?,
-        specialty:String?,
-        category:String?,
-        page:Long?,
-        size:Long?
+        keyword: String?,
+        location: String?,
+        specialty: String?,
+        category: String?,
+        page: Long?,
+        size: Long?
     ): UserResponse<ArtisanSearchResponse> = TODO()
 
     suspend fun addFavourite(
-        @Query("artisanId") artisanId:String?
+        @Query("artisanId") artisanId: String?
     ): UserResponse<Favourite> = TODO()
     suspend fun addReviewAndRating(
-        rate:Float?,
-        artisanId:String?,
-        comment:String?
+        rate: Float?,
+        artisanId: String?,
+        comment: String?
     ): UserResponse<ReviewResponse> = TODO()
 
     suspend fun getReviews(
-        artisanId:String?
+        artisanId: String?
     ): UserResponse<List<ReviewResponse>> = TODO()
 
     suspend fun removeReview(
-        id:String?
+        id: String?
     ): UserResponse<NothingExpected> = TODO()
 
     suspend fun getFavourites(): UserResponse<ArrayList<Favourite>> = TODO()
 
-    suspend fun removeFavourites(artisanId:String?): UserResponse<NothingExpected> = TODO()
+    suspend fun removeFavourites(artisanId: String?): UserResponse<NothingExpected> = TODO()
 }

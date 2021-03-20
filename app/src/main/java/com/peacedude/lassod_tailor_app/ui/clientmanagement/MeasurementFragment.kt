@@ -2,8 +2,6 @@ package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
 import android.app.Dialog
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
@@ -14,16 +12,12 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.textfield.TextInputEditText
-import com.google.gson.internal.LinkedTreeMap
 import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
@@ -45,13 +39,10 @@ import kotlinx.android.synthetic.main.measurement_sub_item.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-
 
 /**
  * A simple [Fragment] subclass.
@@ -62,7 +53,6 @@ class MeasurementFragment : DaggerFragment() {
     private val title by lazy {
         getName()
     }
-
 
     val header by lazy {
         authViewModel.header
@@ -98,20 +88,16 @@ class MeasurementFragment : DaggerFragment() {
 
     private val dialogIncludeBtnLayout by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_btn) as View)
-
     }
     private val dialogEditIncludeBtnLayout by lazy {
         (editdialog.findViewById(R.id.add_measurement_layout_dialog_btn) as View)
-
     }
     private val dialogNameEditText by lazy {
         (dialog.findViewById(R.id.add_measurement_layout_dialog_et) as TextInputEditText)
-
     }
 
     private val dialogEditNameEditText by lazy {
         (editdialog.findViewById(R.id.add_measurement_layout_dialog_et) as TextInputEditText)
-
     }
 
     private val dialogSpinner by lazy {
@@ -184,7 +170,8 @@ class MeasurementFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -204,7 +191,6 @@ class MeasurementFragment : DaggerFragment() {
         val btnBackground = addMeasurementBtn.background
         btnBackground?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
 
-
         dialogToolbar.setNavigationOnClickListener {
             dialog.dismiss()
         }
@@ -212,23 +198,20 @@ class MeasurementFragment : DaggerFragment() {
             editdialog.dismiss()
         }
 
-
-
-        buttonTransactions({
-            addMeasurementBtn.background = btnBackground
-            addMeasurementBtn.text = getString(R.string.add_measurement)
-            addMeasurementBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
+        buttonTransactions(
+            {
+                addMeasurementBtn.background = btnBackground
+                addMeasurementBtn.text = getString(R.string.add_measurement)
+                addMeasurementBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorAccent
+                    )
                 )
-            )
-
-
-        }, {
-
-
-        })
+            },
+            {
+            }
+        )
 
         if (clientToBeEdited == null) {
             i(title, "No client found")
@@ -244,14 +227,11 @@ class MeasurementFragment : DaggerFragment() {
                             clientToBeEdited?.id.toString()
                         )
                     }
-                    //Get and set existing measurements
+                    // Get and set existing measurements
                     getAllMeasurement(getAllMeasurements, dialogTitleTv)
-
                 }
             }
         }
-
-
     }
 
     private fun setListOnMeasurementChange(
@@ -283,11 +263,10 @@ class MeasurementFragment : DaggerFragment() {
                         itemView.add_measurement_layout_dialog_input.hint = item?.label
                         itemView.add_measurement_layout_dialog_et.doAfterTextChanged { editable ->
                             item?.value = itemView.add_measurement_layout_dialog_et.text?.toString()
-
                         }
                         dialogAddMeasurementBtn.setOnClickListener {
                             i(title, "Longer ${measurementOptionList?.size}")
-                            //Collect filled measurement and add
+                            // Collect filled measurement and add
                             addMeasurementsRequest(parentList, parentAdapter, list, subAdapter)
                         }
                     }
@@ -308,17 +287,19 @@ class MeasurementFragment : DaggerFragment() {
         val filtered = list?.filter {
             !it?.value.isNullOrEmpty() && it?.value != ""
         }
-        filtered?.associateByTo(measurementValues, {
-            it?.key.toString()
-        }, {
-            it?.value.toString()
-        })
-
+        filtered?.associateByTo(
+            measurementValues,
+            {
+                it?.key.toString()
+            },
+            {
+                it?.value.toString()
+            }
+        )
 
         val name = dialogNameEditText.text.toString()
         val valuess = Valuess(measurementValues)
         val type = dialogSpinner.selectedItem as String
-
 
         val clientMeasurement = MeasurementValues(
             name,
@@ -337,21 +318,24 @@ class MeasurementFragment : DaggerFragment() {
         val parentFragment =
             navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
 
-
         val addMeasurementReq =
             authViewModel.addMeasurement(clientMeasurement)
-        observeRequest<ClientsList>(addMeasurementReq, null, null, true, { result ->
-            requireActivity().gdToast(
-                result.message.toString(),
-                Gravity.BOTTOM
-            )
+        observeRequest<ClientsList>(
+            addMeasurementReq, null, null, true,
+            { result ->
+                requireActivity().gdToast(
+                    result.message.toString(),
+                    Gravity.BOTTOM
+                )
 
-            parentList?.add(clientMeasurement)
-            dialog.dismiss()
-            parentAdapter.notifyDataSetChanged()
-        }, { err ->
-            i(title, "ClientListUpdateError $err")
-        })
+                parentList?.add(clientMeasurement)
+                dialog.dismiss()
+                parentAdapter.notifyDataSetChanged()
+            },
+            { err ->
+                i(title, "ClientListUpdateError $err")
+            }
+        )
         observeRequest<ClientMeasurement>(
             addMeasurementReq,
             dialogAddMeasurementProgressBar,
@@ -370,9 +354,9 @@ class MeasurementFragment : DaggerFragment() {
             },
             { err ->
                 i(title, "AddMeasurementReqError $err")
-            })
+            }
+        )
     }
-
 
     private suspend fun getAllMeasurement(
         getAllMeasurements: Deferred<Flow<ServicesResponseWrapper<ParentData>>>,
@@ -541,7 +525,7 @@ class MeasurementFragment : DaggerFragment() {
         itemView.setOnClickListener {
 
             val pos = parentList?.indexOf(parentItem)
-            i(title, "item ${parentItem} \n ParentID ${parentItem?.id} pos $pos")
+            i(title, "item $parentItem \n ParentID ${parentItem?.id} pos $pos")
             dialogEditTitleTv.text = getString(R.string.edit_measurement_str)
             dialogEditMeasurementBtn = dialogEditIncludeBtnLayout.findViewById<Button>(R.id.btn)
             dialogEditMeasurementProgressBar =
@@ -590,15 +574,18 @@ class MeasurementFragment : DaggerFragment() {
 
                         dialogEditMeasurementBtn.setOnClickListener {
 
-
                             val filtered = list?.filter {
                                 !it?.value.isNullOrEmpty() && it?.value != ""
                             }
-                            filtered?.associateByTo(measurementValues, {
-                                it?.title.toString()
-                            }, {
-                                it?.value.toString()
-                            })
+                            filtered?.associateByTo(
+                                measurementValues,
+                                {
+                                    it?.title.toString()
+                                },
+                                {
+                                    it?.value.toString()
+                                }
+                            )
 
                             val valuess = Valuess(measurementValues)
 
@@ -656,15 +643,10 @@ class MeasurementFragment : DaggerFragment() {
                         GlobalVariables.globalMeasuremenValues = null
                     }
                 }
-
-
             } else {
-
             }
-
         }
     }
-
 
     private fun <T> RecyclingAdapter<T>.delete(list: MutableList<T?>?): ItemTouchHelper {
 
@@ -706,16 +688,10 @@ class MeasurementFragment : DaggerFragment() {
 //                }
 
                 i("OnRemoved", " pos $pos itemId ${item.id}")
-
-
             }
-
         })
-
     }
-
 }
-
 
 data class MeasurementTypes(
     val id: Long,
@@ -727,4 +703,3 @@ data class MeasurementLabelValue(
     val label: String,
     var value: String?
 )
-

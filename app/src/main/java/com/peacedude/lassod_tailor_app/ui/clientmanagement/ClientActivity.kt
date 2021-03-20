@@ -1,6 +1,5 @@
 package com.peacedude.lassod_tailor_app.ui.clientmanagement
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -17,9 +16,9 @@ class ClientActivity : BaseActivity() {
     val title by lazy {
         getName()
     }
-    lateinit var adapter : ViewPagerAdapter
+    lateinit var adapter: ViewPagerAdapter
     private lateinit var navController: NavController
-    private lateinit var clientManagementViewPager:ViewPager2
+    private lateinit var clientManagementViewPager: ViewPager2
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_client)
@@ -31,13 +30,10 @@ class ClientActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
         toolbar.setNavigationOnClickListener {
             i(title, "Toolbar")
             GlobalVariables.globalClient = null
             goto(DashboardActivity::class.java)
         }
-
-
     }
 }

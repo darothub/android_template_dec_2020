@@ -9,9 +9,9 @@ data class SubscriptionResponse <T>(
     val message: String,
     val data: T,
     val meta: Meta
-):ParentData, Serializable
+) : ParentData, Serializable
 
-data class SubscriptionData (
+data class SubscriptionData(
     val subscriptions: List<Subscription>,
     val integration: Long,
     val domain: String,
@@ -32,9 +32,9 @@ data class SubscriptionData (
     val id: Long,
     val createdAt: String,
     val updatedAt: String
-):ParentData, Serializable
+) : ParentData, Serializable
 
-data class Subscription (
+data class Subscription(
     val customer: Long,
     val plan: Long,
     val integration: Long,
@@ -54,13 +54,13 @@ data class Subscription (
     val id: Long,
     val createdAt: String,
     val updatedAt: String
-):ParentData, Serializable
+) : ParentData, Serializable
 
-data class SubscribedData (
+data class SubscribedData(
     val id: String,
     val customerID: String,
     val tailorID: String,
     val planID: String,
     val createdAt: String,
     val updatedAt: String
-):ParentData, Serializable
+) : ParentData, Serializable

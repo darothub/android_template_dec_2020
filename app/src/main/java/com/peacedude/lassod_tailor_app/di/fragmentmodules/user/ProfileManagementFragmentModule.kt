@@ -5,7 +5,6 @@ import com.peacedude.lassod_tailor_app.ui.profile.ProfileManagementFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
-
 @Module
 abstract class ProfileManagementFragmentModule {
     /**

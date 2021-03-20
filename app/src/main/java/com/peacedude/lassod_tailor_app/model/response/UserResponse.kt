@@ -1,8 +1,6 @@
 package com.peacedude.lassod_tailor_app.model.response
 
-import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
-import com.peacedude.lassod_tailor_app.model.request.User
 import java.io.Serializable
 
 data class UserResponse<T>(
@@ -12,7 +10,4 @@ data class UserResponse<T>(
     val data: T?
 ) : ParentData, Serializable
 
-interface NothingExpected:ParentData
-
-
-
+interface NothingExpected : ParentData

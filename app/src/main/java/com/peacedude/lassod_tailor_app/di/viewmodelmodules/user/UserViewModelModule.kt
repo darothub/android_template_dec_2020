@@ -14,4 +14,3 @@ abstract class UserViewModelModule {
     @ViewModelKey(UserViewModel::class)
     abstract fun bindUserViewModel(registerUserViewModel: UserViewModel): ViewModel
 }
-

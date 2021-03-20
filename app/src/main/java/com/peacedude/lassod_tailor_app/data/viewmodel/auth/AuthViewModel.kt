@@ -1,11 +1,9 @@
 package com.peacedude.lassod_tailor_app.data.viewmodel.auth
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.GeneralViewModel
-import com.peacedude.lassod_tailor_app.helpers.SingleLiveEvent
 import com.peacedude.lassod_tailor_app.helpers.i
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
@@ -14,13 +12,11 @@ import com.peacedude.lassod_tailor_app.network.auth.AuthRequestInterface
 import com.peacedude.lassod_tailor_app.network.storage.StorageRequest
 import com.peacedude.lassod_tailor_app.network.user.ViewModelInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.*
-import java.lang.Exception
 import javax.inject.Inject
 
 open class AuthViewModel @Inject constructor(
@@ -38,13 +34,13 @@ open class AuthViewModel @Inject constructor(
     private val _videoState = MutableStateFlow<ServicesResponseWrapper<ParentData>>(ServicesResponseWrapper.Loading(message = "Loading"))
     val videoState: StateFlow<ServicesResponseWrapper<ParentData>>
         get() = _videoState
-    override fun getUserData(header:String): LiveData<ServicesResponseWrapper<ParentData>> {
+    override fun getUserData(header: String): LiveData<ServicesResponseWrapper<ParentData>> {
 
         val request = authRequestInterface.getUserData(header)
-       return enqueueRequest<User>(request)
+        return enqueueRequest<User>(request)
     }
 
-    var theUserData =netWorkLiveData.switchMap{
+    var theUserData = netWorkLiveData.switchMap {
         getTheUserData(it)
     }
 
@@ -57,8 +53,24 @@ open class AuthViewModel @Inject constructor(
         badNetworkServiceLiveData
     }
 
+    fun getUserDetailsFlow()= netWorkStateFlow.flatMapLatest { it ->
+        if (it) {
+            try {
+                val request = authRequestInterface.getUserDetailsFlow()
+                request.collectLatest {res->
+                    onSuccessStateFlow(res)
+                }
 
-    override fun  getUserData(): LiveData<ServicesResponseWrapper<ParentData>> {
+            } catch (e: HttpException) {
+                onErrorStateFlow(e)
+            }
+            uiState
+        } else {
+            i(title, "Bad Connection")
+            badNetworkState
+        }
+    }
+    override fun getUserData(): LiveData<ServicesResponseWrapper<ParentData>> {
         val request = authRequestInterface.getUserData()
         return enqueueRequest<User>(request)
 //        return netWorkLiveData.switchMap {
@@ -70,22 +82,20 @@ open class AuthViewModel @Inject constructor(
 //                responseObserver
 //            }
 //        }
-
     }
 
-   override fun updateUserData(user: User) = netWorkLiveData.switchMap {
-       if (it) {
-           var request: Call<UserResponse<User>> = authRequestInterface.updateUserData(user)
-           enqueueRequest(request)
-           responseObserver
-       } else {
-           i(title, "Bad Connection")
-           badNetworkServiceLiveData
-       }
-   }
+    override fun updateUserData(user: User) = netWorkLiveData.switchMap {
+        if (it) {
+            var request: Call<UserResponse<User>> = authRequestInterface.updateUserData(user)
+            enqueueRequest(request)
+            responseObserver
+        } else {
+            i(title, "Bad Connection")
+            badNetworkServiceLiveData
+        }
+    }
 
-
-    override fun forgetPassword(field: String)=netWorkLiveData.switchMap {
+    override fun forgetPassword(field: String) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.forgetPassword(field)
             enqueueRequest(request)
@@ -96,9 +106,7 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
-
-    override fun resetPassword(password:String?, cPassword:String?)=netWorkLiveData.switchMap {
+    override fun resetPassword(password: String?, cPassword: String?) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.resetPassword(header.toString(), password.toString(), cPassword.toString())
             enqueueRequest(request)
@@ -111,7 +119,7 @@ open class AuthViewModel @Inject constructor(
 
     override fun addClient(
         client: Client
-    )=netWorkLiveData.switchMap {
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.addClient(client)
             enqueueRequest(request)
@@ -120,12 +128,11 @@ open class AuthViewModel @Inject constructor(
             i(title, "Bad Connection")
             badNetworkServiceLiveData
         }
-
     }
 
     override fun editClient(
         client: Client
-    )=netWorkLiveData.switchMap {
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.editClient(client)
             enqueueRequest(request)
@@ -134,7 +141,6 @@ open class AuthViewModel @Inject constructor(
             i(title, "Bad Connection")
             badNetworkServiceLiveData
         }
-
     }
 
     override fun getAllClient(): LiveData<ServicesResponseWrapper<ParentData>> {
@@ -143,15 +149,12 @@ open class AuthViewModel @Inject constructor(
         return enqueueRequest<ClientsList>(request)
     }
 
-
-
-    override suspend fun getAllClientsTwo(): Flow<ServicesResponseWrapper<ParentData>> = netWorkStateFlow.flatMapLatest{
+    override suspend fun getAllClientsTwo(): Flow<ServicesResponseWrapper<ParentData>> = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllClients()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -161,10 +164,9 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
     override fun deleteClient(
         id: String?
-    )=netWorkLiveData.switchMap{
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.deleteClient(id)
             enqueueRequest(request)
@@ -177,7 +179,7 @@ open class AuthViewModel @Inject constructor(
 
     override fun addPhoto(
         body: RequestBody
-    )=netWorkLiveData.switchMap {
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.addPhoto(body)
             enqueueRequest(request)
@@ -190,7 +192,7 @@ open class AuthViewModel @Inject constructor(
 
     override fun addPhoto(
         photo: List<MultipartBody.Part>?
-    )=netWorkLiveData.switchMap {
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.addPhoto(photo)
             enqueueRequest(request)
@@ -204,7 +206,7 @@ open class AuthViewModel @Inject constructor(
     override fun editPhotoInfo(
         id: String,
         info: String
-    )=netWorkLiveData.switchMap{
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.editPhotoInfo(id, info)
             enqueueRequest(request)
@@ -217,7 +219,7 @@ open class AuthViewModel @Inject constructor(
 
     override fun uploadProfilePicture(
         body: RequestBody
-    )=netWorkLiveData.switchMap{
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.uploadProfilePicture(body)
             enqueueRequest(request)
@@ -230,7 +232,7 @@ open class AuthViewModel @Inject constructor(
 
     override fun addMeasurement(
         body: MeasurementValues
-    )=netWorkLiveData.switchMap{
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.addMeasurement(body)
             enqueueRequest(request)
@@ -241,55 +243,45 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
-
     var theClientsList = netWorkLiveData.switchMap {
 
-        if(it){
-            try{
-                viewModelScope.launch {
+        if (it) {
+            viewModelScope.launch {
+                try {
                     val r = authRequestInterface.getAllClients()
                     onSuccessStateFlow(r)
+                } catch (e: HttpException) {
+                    onErrorStateFlow(e)
                 }
             }
-            catch (e:HttpException){
-                onErrorStateFlow(e)
-            }
             uiState.asLiveData()
-        }
-        else{
+        } else {
             onNetworkStateFlow()
             uiState.asLiveData()
         }
-
     }
 
-
-    val allPhotos  = netWorkLiveData.switchMap{
-        if(it){
-            try{
+    val allPhotos = netWorkLiveData.switchMap {
+        if (it) {
+            try {
                 viewModelScope.launch {
                     val request = authRequestInterface.getAllPhoto()
                     onSuccessStateFlow(request)
                 }
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState.asLiveData()
-        }
-        else{
+        } else {
             badNetworkServiceLiveData
         }
-
     }
-    val photos = netWorkStateFlow.flatMapLatest{
+    val photos = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllPhoto()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -297,17 +289,15 @@ open class AuthViewModel @Inject constructor(
             i(title, "Bad Connection")
             badNetworkState
         }
-
     }
-    
+
     @ExperimentalCoroutinesApi
-    override suspend fun getAllPhoto()= netWorkStateFlow.flatMapLatest{
+    override suspend fun getAllPhoto() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllPhoto()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -315,17 +305,14 @@ open class AuthViewModel @Inject constructor(
             i(title, "Bad Connection")
             badNetworkState
         }
-
     }
 
-
-    val getClientStateFlow = netWorkStateFlow.flatMapLatest{
+    val getClientStateFlow = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllClients()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -333,7 +320,6 @@ open class AuthViewModel @Inject constructor(
             i(title, "Bad Connection")
             badNetworkState
         }
-
     }
 
     @ExperimentalCoroutinesApi
@@ -344,8 +330,7 @@ open class AuthViewModel @Inject constructor(
             try {
                 val request = authRequestInterface.deleteMeasurement(id)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -358,13 +343,12 @@ open class AuthViewModel @Inject constructor(
     @ExperimentalCoroutinesApi
     override suspend fun editMeasurement(
         measurementValues: MeasurementValues
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.editMeasurement(measurementValues)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -374,18 +358,15 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
-
     @ExperimentalCoroutinesApi
     override suspend fun verifyPayment(
         reference: String
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.verifyPayment(reference)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -409,7 +390,7 @@ open class AuthViewModel @Inject constructor(
 
     override fun deleteMedia(
         id: String?
-    )=netWorkLiveData.switchMap{
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.deleteMedia(id)
             enqueueRequest(request)
@@ -420,7 +401,7 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-    val articles =netWorkLiveData.switchMap{
+    val articles = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.getAllArticles()
             enqueueRequest(request)
@@ -435,8 +416,7 @@ open class AuthViewModel @Inject constructor(
             try {
                 val request = authRequestInterface.getArticles()
                 onSuccessStateFlow(_articleState, request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -446,13 +426,12 @@ open class AuthViewModel @Inject constructor(
         }
     }
     @ExperimentalCoroutinesApi
-    override suspend fun getArticles()= netWorkStateFlow.flatMapLatest {
+    override suspend fun getArticles() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getArticles()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -461,7 +440,7 @@ open class AuthViewModel @Inject constructor(
             badNetworkState
         }
     }
-    override fun getAllArticles()=netWorkLiveData.switchMap{
+    override fun getAllArticles() = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.getAllArticles()
             enqueueRequest(request)
@@ -472,14 +451,12 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
     var videosStateflow = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getVideos()
                 onSuccessStateFlow(_videoState, request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -493,8 +470,7 @@ open class AuthViewModel @Inject constructor(
             try {
                 val request = authRequestInterface.getVideos()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -504,13 +480,12 @@ open class AuthViewModel @Inject constructor(
         }
     }
     @ExperimentalCoroutinesApi
-    override suspend fun getVideos()= netWorkStateFlow.flatMapLatest {
+    override suspend fun getVideos() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getVideos()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -519,17 +494,13 @@ open class AuthViewModel @Inject constructor(
             badNetworkState
         }
     }
-
-
-
 
     var measurementTypes = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getMeasurementTypes()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -540,13 +511,12 @@ open class AuthViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getMeasurementTypes()= netWorkStateFlow.flatMapLatest {
+    override suspend fun getMeasurementTypes() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getMeasurementTypes()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -555,19 +525,17 @@ open class AuthViewModel @Inject constructor(
             badNetworkState
         }
     }
-
 
     @ExperimentalCoroutinesApi
     override suspend fun addDeliveryAddress(
         clientId: String?,
         deliveryAddress: String?
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.addDeliveryAddress(clientId, deliveryAddress)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -576,21 +544,17 @@ open class AuthViewModel @Inject constructor(
             badNetworkState
         }
     }
-
-
-
 
     @ExperimentalCoroutinesApi
     override suspend fun addCard(
         email: String?,
         amount: String?
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.addCard(email, amount)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -600,16 +564,13 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
-
     @ExperimentalCoroutinesApi
-    override suspend fun getAllClients()= netWorkStateFlow.flatMapLatest {
+    override suspend fun getAllClients() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllClients()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -619,20 +580,15 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
-
-
-
     @ExperimentalCoroutinesApi
     override fun getAllAddress(
         clientId: String
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllAddress(clientId)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -647,8 +603,7 @@ open class AuthViewModel @Inject constructor(
             try {
                 val request = authRequestInterface.getUserDetails()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -658,13 +613,12 @@ open class AuthViewModel @Inject constructor(
         }
     }
     @ExperimentalCoroutinesApi
-    override suspend fun getUserDetails()= netWorkStateFlow.flatMapLatest {
+    override suspend fun getUserDetails() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getUserDetails()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -674,9 +628,7 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
-
-    override fun getAllVideos()=netWorkLiveData.switchMap{
+    override fun getAllVideos() = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.getAllVideos()
             enqueueRequest(request)
@@ -687,10 +639,9 @@ open class AuthViewModel @Inject constructor(
         }
     }
 
-
     override fun uploadProfilePicture(
         body: MultipartBody.Part
-    )=netWorkLiveData.switchMap {
+    ) = netWorkLiveData.switchMap {
         if (it) {
             val request = authRequestInterface.uploadProfilePicture(body)
             enqueueRequest(request)
@@ -705,13 +656,12 @@ open class AuthViewModel @Inject constructor(
     override suspend fun changePassword(
         oldPassword: String?,
         newPassword: String?
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.changePassword(oldPassword, newPassword)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -722,15 +672,14 @@ open class AuthViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    override  fun getAllMeasurements(
+    override fun getAllMeasurements(
         clientId: String
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllMeasurements(clientId)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -739,20 +688,18 @@ open class AuthViewModel @Inject constructor(
             badNetworkState
         }
     }
-
 
     @ExperimentalCoroutinesApi
     override suspend fun addReviewAndRating(
         rate: Float,
         artisanId: String,
         comment: String
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.addReviewAndRating(rate, artisanId, comment)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -766,13 +713,12 @@ open class AuthViewModel @Inject constructor(
     override suspend fun subscribe(
         plan: String,
         customer: String
-    )= netWorkStateFlow.flatMapLatest {
+    ) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.subscribe(plan, customer)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -787,8 +733,7 @@ open class AuthViewModel @Inject constructor(
             try {
                 val request = authRequestInterface.getAllPlans()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -799,13 +744,12 @@ open class AuthViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getAllPlans()= netWorkStateFlow.flatMapLatest {
+    override suspend fun getAllPlans() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getAllPlans()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -820,8 +764,7 @@ open class AuthViewModel @Inject constructor(
             try {
                 val request = authRequestInterface.getUserAllSubscriptions()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -832,13 +775,12 @@ open class AuthViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getUserAllSubscriptions()= netWorkStateFlow.flatMapLatest {
+    override suspend fun getUserAllSubscriptions() = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getUserAllSubscriptions()
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -849,13 +791,12 @@ open class AuthViewModel @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun getSubscriptions(code: String)= netWorkStateFlow.flatMapLatest {
+    override suspend fun getSubscriptions(code: String) = netWorkStateFlow.flatMapLatest {
         if (it) {
             try {
                 val request = authRequestInterface.getSubscriptions(code)
                 onSuccessStateFlow(request)
-            }
-            catch (e:HttpException){
+            } catch (e: HttpException) {
                 onErrorStateFlow(e)
             }
             uiState
@@ -865,5 +806,3 @@ open class AuthViewModel @Inject constructor(
         }
     }
 }
-
-

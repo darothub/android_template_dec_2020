@@ -8,7 +8,7 @@ import com.peacedude.lassod_tailor_app.services.user.UserServices
 import retrofit2.Call
 import javax.inject.Inject
 
-class UserRequestRepository @Inject constructor(private val userServices: UserServices):UserRequestInterface {
+class UserRequestRepository @Inject constructor(private val userServices: UserServices) : UserRequestInterface {
     override fun registerUser(
         firstName: String,
         lastName: String,
@@ -22,7 +22,6 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
 
     override fun registerUser(user: User?): Call<UserResponse<User>> {
         return userServices.registerUser(user)
-
     }
 
     override fun registerUser(header: String, user: User?): Call<UserResponse<User>> {
@@ -99,6 +98,4 @@ class UserRequestRepository @Inject constructor(private val userServices: UserSe
     ): UserResponse<ArtisanSearchResponse> {
         return userServices.searchArtisan(keyword, location, specialty, category, page, size)
     }
-
-
 }

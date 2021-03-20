@@ -1,10 +1,8 @@
 package com.peacedude.lassod_tailor_app.di.fragmentmodules.auth
 
 import com.peacedude.lassod_tailor_app.ui.*
-import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientAccountFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-
 
 @Module
 abstract class MediaFragmentModule {
@@ -13,5 +11,4 @@ abstract class MediaFragmentModule {
      */
     @ContributesAndroidInjector()
     abstract fun provideMediaFragment(): MediaFragment
-
 }

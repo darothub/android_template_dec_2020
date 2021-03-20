@@ -3,21 +3,16 @@ package com.peacedude.lassod_tailor_app.ui
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.peacedude.gdtoast.gdToast
@@ -26,9 +21,6 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.User
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
-import com.peacedude.lassod_tailor_app.model.response.VideoList
-import com.peacedude.lassod_tailor_app.model.response.VideoResource
 import com.peacedude.lassod_tailor_app.utils.bearer
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
@@ -39,10 +31,7 @@ import kotlinx.android.synthetic.main.specialty_layout_item.view.*
 import kotlinx.android.synthetic.main.user_profile_name_item.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.collect
-import java.lang.Exception
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -75,7 +64,7 @@ class SpecialtyFragment : DaggerFragment() {
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT
             val window = this.window
             window?.attributes = lp
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
     private val dialogNameAndOtherLayout by lazy {
@@ -111,7 +100,8 @@ class SpecialtyFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -123,14 +113,17 @@ class SpecialtyFragment : DaggerFragment() {
         val saveBtnBackground =
             ContextCompat.getDrawable(requireContext(), R.drawable.rounded_corner_background)
         saveBtnBackground?.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-        buttonTransactions({
-            saveBtn = specialty_save_changes_btn.findViewById(R.id.btn)
-            progressBar = specialty_save_changes_btn.findViewById(R.id.progress_bar)
-        }, {
-            saveBtn.text = getString(R.string.save_changes)
-            saveBtn.background = saveBtnBackground
-            saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-        })
+        buttonTransactions(
+            {
+                saveBtn = specialty_save_changes_btn.findViewById(R.id.btn)
+                progressBar = specialty_save_changes_btn.findViewById(R.id.progress_bar)
+            },
+            {
+                saveBtn.text = getString(R.string.save_changes)
+                saveBtn.background = saveBtnBackground
+                saveBtn.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+            }
+        )
         getUserData()
 
         dialogCancelTv.setOnClickListener {
@@ -215,7 +208,7 @@ class SpecialtyFragment : DaggerFragment() {
     }
 
     private fun setupQaRecylerView(user: User?): ArrayList<UserNameClass> {
-        //List of fields to be filled with names and others
+        // List of fields to be filled with names and others
         val qaList = arrayListOf<UserNameClass>(
             UserNameClass(getString(R.string.obioma_trained_str), user?.obiomaCert.toString()),
             UserNameClass(
@@ -261,9 +254,9 @@ class SpecialtyFragment : DaggerFragment() {
                     }
 
                     dialogOkTv.setOnClickListener {
-                        //Update item in the list
+                        // Update item in the list
                         item?.value = dialogEditText.text.toString()
-                        //Update recycler view
+                        // Update recycler view
                         adapter.notifyDataSetChanged()
                         dialog.dismiss()
                     }
@@ -271,7 +264,6 @@ class SpecialtyFragment : DaggerFragment() {
                         dialogNameAndOtherLayout.hide()
                     }
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -292,7 +284,6 @@ class SpecialtyFragment : DaggerFragment() {
             } else {
                 RecyclerItemForCheckBox(text = str)
             }
-
         }
         specialty_rv.setupAdapter<RecyclerItemForCheckBox>(R.layout.specialty_layout_item) { adapter, context, list ->
             bind { itemView, position, item ->
@@ -314,7 +305,6 @@ class SpecialtyFragment : DaggerFragment() {
                         }
                         false -> item?.selected == isChecked
                     }
-
                 }
             }
             setLayoutManager(GridLayoutManager(context, 2))
@@ -351,7 +341,6 @@ class SpecialtyFragment : DaggerFragment() {
                         i(title, "genderFocus ${genderFocusList.toList()}")
                     }
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -427,14 +416,18 @@ class SpecialtyFragment : DaggerFragment() {
         user.specialty = specialtyValueList
         user.genderFocus = genderFocusList
         val request = authViewModel.updateUserData(user)
-        observeRequest<User>(request, progressBar, saveBtn, false, {response ->
-            val msg = response?.message
-            val profileData = response?.data
-            authViewModel.profileData = profileData
-            requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
-        }, {err->
-            i(title, "SpecialtyError $err")
-        })
+        observeRequest<User>(
+            request, progressBar, saveBtn, false,
+            { response ->
+                val msg = response?.message
+                val profileData = response?.data
+                authViewModel.profileData = profileData
+                requireActivity().gdToast(msg.toString(), Gravity.BOTTOM)
+            },
+            { err ->
+                i(title, "SpecialtyError $err")
+            }
+        )
 //        response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 //            val (bool, result) = it
 //            onRequestResponseTask<User>(bool, result) {
@@ -446,7 +439,6 @@ class SpecialtyFragment : DaggerFragment() {
 //            }
 //        })
     }
-
 }
 
 data class RecyclerItemForCheckBox(val text: String, var selected: Boolean = false)

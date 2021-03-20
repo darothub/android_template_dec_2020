@@ -30,8 +30,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import okhttp3.CacheControl
-import okhttp3.Interceptor
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -100,7 +98,7 @@ open class ActivityStaticModule {
     @Provides
     open fun provideokHttpInstance(loggingInterceptor: HttpLoggingInterceptor, storageRequest: StorageRequest): okhttp3.OkHttpClient {
         return okhttp3.OkHttpClient.Builder()
-            .addInterceptor{
+            .addInterceptor {
                 val user = storageRequest.checkData<User>(loggedInUserKey)
                 val header = "$bearer ${user?.token}"
                 var req = it.request()
@@ -137,7 +135,6 @@ open class ActivityStaticModule {
             .addConverterFactory(gson)
             .client(client)
             .build()
-
     }
 
     @Singleton
@@ -145,7 +142,6 @@ open class ActivityStaticModule {
     fun getContexts(application: Application): Context {
         return application.applicationContext
     }
-
 
     @Singleton
     @Provides
@@ -165,12 +161,10 @@ open class ActivityStaticModule {
     fun providePrefKeyEncryptionScheme(): EncryptedSharedPreferences.PrefKeyEncryptionScheme =
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV
 
-
     @Singleton
     @Provides
     fun providePrefValueEncryptionScheme(): EncryptedSharedPreferences.PrefValueEncryptionScheme =
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-
 
     @Singleton
     @Provides
@@ -217,7 +211,5 @@ open class ActivityStaticModule {
     @Singleton
     @Provides
     fun provideGoogleSigninClient(context: Context, gso: GoogleSignInOptions): GoogleSignInClient =
-        GoogleSignIn.getClient(context, gso);
-
-
+        GoogleSignIn.getClient(context, gso)
 }

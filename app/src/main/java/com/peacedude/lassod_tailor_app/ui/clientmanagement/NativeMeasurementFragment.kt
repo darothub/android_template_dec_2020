@@ -7,10 +7,10 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -24,18 +24,13 @@ import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.request.Client
-import com.peacedude.lassod_tailor_app.model.request.ClientMeasurement
 import com.peacedude.lassod_tailor_app.model.request.Measurement
-import com.peacedude.lassod_tailor_app.model.request.MeasurementValues
-import com.peacedude.lassod_tailor_app.model.response.NothingExpected
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import com.utsman.recycling.setupAdapter
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_native_measurement.*
 import kotlinx.android.synthetic.main.measurement_item.view.*
 import java.util.HashMap
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -105,62 +100,61 @@ class NativeMeasurementFragment : DaggerFragment() {
         HashMap<String, String> ()
     }
 
-        //    private val arg:NativeMeasurementFragmentArgs by navArgs()
-        @Inject
-        lateinit var viewModelProviderFactory: ViewModelFactory
-        private val authViewModel: AuthViewModel by lazy {
-            ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    //    private val arg:NativeMeasurementFragmentArgs by navArgs()
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelFactory
+    private val authViewModel: AuthViewModel by lazy {
+        ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
+    }
+    var client: Client? = Client("", "", "", "")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_native_measurement, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let {
         }
-        var client: Client? = Client("", "", "", "")
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-        }
+        val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
+        val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
+        val measurementValuesList = resources.getStringArray(R.array.measurement_values_list).toList() as ArrayList<String>
 
-        override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_native_measurement, container, false)
-        }
+        val measurementList = ArrayList<Measurement>()
 
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-
-            arguments?.let {
-
-            }
-            val navHostFragment = requireActivity().supportFragmentManager.fragments[0] as NavHostFragment
-            val parent = navHostFragment.childFragmentManager.primaryNavigationFragment as ClientFragment
-            val measurementValuesList = resources.getStringArray(R.array.measurement_values_list).toList() as ArrayList<String>
-
-            val measurementList = ArrayList<Measurement>()
-
-
-            val addMeasurementBtnBackground = addMeasurementButton.background
-            addMeasurementBtnBackground?.colorFilter = PorterDuffColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-                PorterDuff.Mode.SRC_IN
-            )
-
+        val addMeasurementBtnBackground = addMeasurementButton.background
+        addMeasurementBtnBackground?.colorFilter = PorterDuffColorFilter(
+            ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+            PorterDuff.Mode.SRC_IN
+        )
 
 //        val client:Client? = arg.client ?: emptyClient
 //        Log.i(title, "client name ${client?.name}")
-            native_measurement_fab.setOnClickListener {
-                setUpSpinnerWithList(getString(R.string.select_str), measurementValuesSpinner, measurementValuesList)
-                dialogTitle.text = getString(R.string.add_measurement)
+        native_measurement_fab.setOnClickListener {
+            setUpSpinnerWithList(getString(R.string.select_str), measurementValuesSpinner, measurementValuesList)
+            dialogTitle.text = getString(R.string.add_measurement)
 
-                addMeasurementLayout.show()
-                dialog.show{
-                    cornerRadius(10F)
-                }
+            addMeasurementLayout.show()
+            dialog.show {
+                cornerRadius(10F)
             }
-            addMeasurementButton.apply {
-                text = getString(R.string.add)
-                    background = addMeasurementBtnBackground
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-            }
-            buttonTransactions({
+        }
+        addMeasurementButton.apply {
+            text = getString(R.string.add)
+            background = addMeasurementBtnBackground
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+        }
+        buttonTransactions(
+            {
 
                 saveBtn = native_measurement_included_btn.findViewById(R.id.btn)
                 val saveBtnBackground = saveBtn.background
@@ -176,28 +170,28 @@ class NativeMeasurementFragment : DaggerFragment() {
                 }
 
                 progressBar = native_measurement_included_btn.findViewById(R.id.progress_bar)
+            },
+            {
 
-            }, {
-
-                authViewModel.netWorkLiveData.observe(viewLifecycleOwner, Observer {
-                    if (it) {
-                        saveBtn.show()
-
-                    } else {
-                        saveBtn.invisible()
+                authViewModel.netWorkLiveData.observe(
+                    viewLifecycleOwner,
+                    Observer {
+                        if (it) {
+                            saveBtn.show()
+                        } else {
+                            saveBtn.invisible()
+                        }
                     }
-                })
+                )
                 addMeasurementButton.setOnClickListener {
                     val measurementName = measurementValuesSpinner.selectedItem.toString().trim()
                     val measurementValue = dialogAddValueField.text.toString().trim()
                     val measurement = Measurement(measurementName, measurementValue)
-                    if(measurementList.contains(measurement)){
+                    if (measurementList.contains(measurement)) {
                         requireActivity().gdToast("${measurement.name} already exist", Gravity.BOTTOM)
-                    }
-                    else{
+                    } else {
                         measurementList.add(measurement)
                     }
-
 
                     native_measurement_rv.setupAdapter<Measurement>(R.layout.measurement_item) { adapter, context, list ->
                         bind { itemView, position, item ->
@@ -205,14 +199,12 @@ class NativeMeasurementFragment : DaggerFragment() {
                             itemView.measurement_value.text = item?.value
                             itemView.measurement_delete_btn.setOnClickListener {
                                 val m = Measurement(item?.name.toString(), item?.value.toString())
-                                if(measurementList.contains(m)){
+                                if (measurementList.contains(m)) {
                                     list?.removeAt(position)
                                     adapter.notifyDataSetChanged()
-                                }
-                                else{
+                                } else {
                                     requireActivity().gdToast("Measurement not found", Gravity.BOTTOM)
                                 }
-
                             }
                             itemView.setOnClickListener {
                                 dialogTitle.text = getString(R.string.edit_measurement_str)
@@ -221,7 +213,7 @@ class NativeMeasurementFragment : DaggerFragment() {
                                     background = addMeasurementBtnBackground
                                     setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
                                 }
-                                dialog.show{
+                                dialog.show {
                                     cornerRadius(10F)
                                 }
                                 setUpSpinnerWithList(item?.name.toString(), measurementValuesSpinner, measurementValuesList)
@@ -237,7 +229,7 @@ class NativeMeasurementFragment : DaggerFragment() {
                     }
                     dialog.dismiss()
                 }
-                val client =  GlobalVariables.globalClient
+                val client = GlobalVariables.globalClient
                 Log.i(title, "newclient $client")
 //                saveBtn.setOnClickListener {
 //                    measurementList.associateByTo(measurementValues, {
@@ -258,29 +250,24 @@ class NativeMeasurementFragment : DaggerFragment() {
 //                        onRequestResponseTask<ClientMeasurement>(bool, result) {
 //                            val res = result as UserResponse<ClientMeasurement>
 //                            requireActivity().gdToast("${res.message}", Gravity.BOTTOM)
-////                                        listOfClient.toMutableList().removeAt(position)
+// //                                        listOfClient.toMutableList().removeAt(position)
 //                        }
 //                    }
 //
 //                }
-            })
-
-
+            }
+        )
 
 //            dialogAddNameField.textCountListener(addTextCountTv)
 //            dialogEditNameField.textCountListener(editTextCountTv)
+    }
 
-
-
-        }
-
-
-        fun EditText.textCountListener(tv: TextView) {
-            this.doOnTextChanged { text, start, count, after ->
-                if (text != null) {
-                    tv.text = "${text.length}/15"
-                }
-                return@doOnTextChanged
+    fun EditText.textCountListener(tv: TextView) {
+        this.doOnTextChanged { text, start, count, after ->
+            if (text != null) {
+                tv.text = "${text.length}/15"
             }
+            return@doOnTextChanged
         }
+    }
 }

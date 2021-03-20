@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 
-
 /**
  * A class to provide retrofit instance for user api services
  *
@@ -29,5 +28,4 @@ class UserRequestsModule {
             userServices
         )
     }
-
 }

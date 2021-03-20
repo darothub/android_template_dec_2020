@@ -12,13 +12,13 @@ class SMSReceiver : BroadcastReceiver() {
         lateinit var editText: EditText
     }
 
-    fun setEditText(editText: EditText){
+    fun setEditText(editText: EditText) {
         SMSReceiver.editText = editText
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent)
-        for(sms in msgs){
+        for (sms in msgs) {
             val msgBody = sms.messageBody
             val otp = msgBody.split(" ").last()
             editText.setText(otp)

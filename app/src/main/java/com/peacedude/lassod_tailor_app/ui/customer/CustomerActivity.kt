@@ -1,8 +1,6 @@
 package com.peacedude.lassod_tailor_app.ui.customer
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
@@ -28,17 +26,17 @@ class CustomerActivity : BaseActivity() {
 
     val navListener =
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id){
+            when (destination.id) {
                 R.id.searchFragment -> {
                     customer_activity_appbar.hide()
                 }
-                R.id.reviewFragment ->{
+                R.id.reviewFragment -> {
                     customer_activity_appbar.show()
                     toolbar.setNavigationOnClickListener {
                         controller.popBackStack()
                     }
                 }
-                R.id.singleFashionistaFragment ->{
+                R.id.singleFashionistaFragment -> {
                     customer_activity_appbar.show()
                     toolbar.setNavigationOnClickListener {
                         controller.popBackStack()
@@ -51,7 +49,6 @@ class CustomerActivity : BaseActivity() {
         setContentView(R.layout.activity_customer)
         val activityTitle = customer_activity_appbar.findViewById<TextView>(R.id.reusable_appbar_title_tv)
         activityTitle.text = getString(R.string.review)
-
     }
 
     override fun onResume() {
@@ -62,7 +59,6 @@ class CustomerActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         i(title, "OnStart")
-
     }
 
     override fun onPause() {

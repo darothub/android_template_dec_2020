@@ -1,22 +1,18 @@
 package com.peacedude.lassod_tailor_app.ui
 
 import android.os.Bundle
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
@@ -33,10 +29,7 @@ import kotlinx.android.synthetic.main.measurement_items.view.*
 import kotlinx.android.synthetic.main.progressbar_review_item.view.*
 import kotlinx.android.synthetic.main.review_list_item.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -58,7 +51,8 @@ class ReviewFragment : DaggerFragment() {
     }
     val artisanDetails by navArgs<ReviewFragmentArgs>()
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -72,20 +66,20 @@ class ReviewFragment : DaggerFragment() {
         val artisan = artisanDetails.artisanDetails
         val artisanId = artisan?.id
 
-        buttonTransactions({
-            reviewPostBtn = review_fragment_post_btn.findViewById(R.id.btn)
-            reviewProgressBar = review_fragment_post_btn.findViewById(R.id.progress_bar)
-            reviewPostBtn.apply {
-                background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
-                text = getString(R.string.post)
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
-            }
-
-        }, {
-            reviewPostBtn.setOnClickListener {
-                val rate = review_fragment_rating_bar_rb.rating
-                val comment = review_fragment_describe_rate_et.text?.toString()?.trim()
-
+        buttonTransactions(
+            {
+                reviewPostBtn = review_fragment_post_btn.findViewById(R.id.btn)
+                reviewProgressBar = review_fragment_post_btn.findViewById(R.id.progress_bar)
+                reviewPostBtn.apply {
+                    background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+                    text = getString(R.string.post)
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.colorWhite))
+                }
+            },
+            {
+                reviewPostBtn.setOnClickListener {
+                    val rate = review_fragment_rating_bar_rb.rating
+                    val comment = review_fragment_describe_rate_et.text?.toString()?.trim()
 
 //                CoroutineScope(Main).launch {
 //                    supervisorScope {
@@ -114,11 +108,9 @@ class ReviewFragment : DaggerFragment() {
 //                    }
 //
 //                }
+                }
             }
-
-        })
-
-
+        )
 
         review_fragment_fashionista_iv.load(artisan?.profile?.avatar) {
             crossfade(true)
@@ -252,8 +244,6 @@ class ReviewFragment : DaggerFragment() {
 //            }
 //
 //        }
-
-
     }
 
     @ExperimentalCoroutinesApi
@@ -287,7 +277,6 @@ class ReviewFragment : DaggerFragment() {
 //            }
 //        }
     }
-
 }
 
 data class ProgressBarRating(var rating: Int = 0, var progress: Int = 0) {

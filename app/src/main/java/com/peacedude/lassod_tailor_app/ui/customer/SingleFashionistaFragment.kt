@@ -2,7 +2,6 @@ package com.peacedude.lassod_tailor_app.ui.customer
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,20 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.peacedude.gdtoast.gdToast
 import com.peacedude.lassod_tailor_app.R
 import com.peacedude.lassod_tailor_app.data.viewmodel.factory.ViewModelFactory
 import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.helpers.*
-import com.peacedude.lassod_tailor_app.model.response.Artisan
-import com.peacedude.lassod_tailor_app.model.response.Favourite
-import com.peacedude.lassod_tailor_app.model.response.PhotoList
-import com.peacedude.lassod_tailor_app.model.response.UserResponse
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_single_fashionista.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class SingleFashionistaFragment : DaggerFragment() {
@@ -44,12 +36,12 @@ class SingleFashionistaFragment : DaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -61,7 +53,6 @@ class SingleFashionistaFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         changeStatusBarColor(R.color.colorWhite)
 
-
         val artisan = artisanDetails.artisanDetails
 
         single_fashionista_fragment_name_tv.text = "${artisan?.firstName} ${artisan?.lastName}"
@@ -69,7 +60,7 @@ class SingleFashionistaFragment : DaggerFragment() {
             "${artisan?.profile?.workshopAddress?.street} ${artisan?.profile?.workshopAddress?.city} ${artisan?.profile?.workshopAddress?.state}"
 
         single_fashionista_fragment_info_tv.text = ""
-        artisan?.profile?.specialty?.forEach{
+        artisan?.profile?.specialty?.forEach {
             single_fashionista_fragment_info_tv.append(it)
         }
         single_fashionista_fragment_rating_value_tv.text = "${ artisan?.profile?.rating }"
@@ -80,20 +71,18 @@ class SingleFashionistaFragment : DaggerFragment() {
             placeholder(R.drawable.profile_image)
         }
 
+        buttonTransactions(
+            {
 
-
-
-        buttonTransactions({
-
-            galleryButton = single_fashionista_fragment_gallery_btn.findViewById(R.id.btn)
-            galleryButton.apply {
-                text = getString(R.string.goto_gallery)
-                background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+                galleryButton = single_fashionista_fragment_gallery_btn.findViewById(R.id.btn)
+                galleryButton.apply {
+                    text = getString(R.string.goto_gallery)
+                    background.changeBackgroundColor(requireContext(), R.color.colorPrimary)
+                }
+            },
+            {
             }
-
-        },{
-
-        })
+        )
 
         single_fashionista_fragment_favourite_iv.setOnClickListener {
 //             CoroutineScope(Dispatchers.Main).launch {
@@ -113,8 +102,6 @@ class SingleFashionistaFragment : DaggerFragment() {
 //                    }
 //                 }
 //             }
-
-
         }
         single_fashionista_fragment_favourite_fill_iv.setOnClickListener {
 //            single_fashionista_fragment_favourite_vf.showPrevious()
@@ -126,6 +113,4 @@ class SingleFashionistaFragment : DaggerFragment() {
             goto(action)
         }
     }
-
-
 }

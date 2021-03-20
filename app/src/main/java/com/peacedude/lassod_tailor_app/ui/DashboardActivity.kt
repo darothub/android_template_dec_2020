@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.android.synthetic.main.media_recycler_item.view.*
 import kotlinx.android.synthetic.main.search_filter_item.view.*
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class DashboardActivity : BaseActivity() {
@@ -82,20 +83,20 @@ class DashboardActivity : BaseActivity() {
                 }
                 R.id.messageFragment -> {
                     profile_header.show()
-                    profile_fab.show()
+                    profile_fab.hide()
                     bottomNav.show()
                 }
-                R.id.mediaFragment->{
+                R.id.mediaFragment -> {
+                    profile_header.show()
+                    profile_fab.hide()
+                    bottomNav.show()
+                }
+                R.id.profileFragment -> {
                     profile_header.show()
                     profile_fab.show()
                     bottomNav.show()
                 }
-                R.id.profileFragment ->{
-                    profile_header.show()
-                    profile_fab.show()
-                    bottomNav.show()
-                }
-                R.id.favouritesFragment ->{
+                R.id.favouritesFragment -> {
                     profile_header.show()
                     profile_fab.hide()
                     bottomNav.show()
@@ -104,11 +105,11 @@ class DashboardActivity : BaseActivity() {
         }
 
     private lateinit var editBtn: Button
-    private lateinit var drawerMenuRv:RecyclerView
+    private lateinit var drawerMenuRv: RecyclerView
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
-    private val authViewModel:AuthViewModel by viewModels{
+    private val authViewModel: AuthViewModel by viewModels {
         viewModelProviderFactory
     }
 
@@ -116,10 +117,9 @@ class DashboardActivity : BaseActivity() {
         Dialog(this, R.style.DialogTheme).apply {
             setContentView(R.layout.loader_layout)
             setCanceledOnTouchOutside(false)
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
-
 
     lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,46 +128,41 @@ class DashboardActivity : BaseActivity() {
         changeStatusBarColor(R.color.colorWhite)
         i(title, "Oncreate")
 
-
         navController = Navigation.findNavController(this, R.id.dashboard_fragment)
 
         bottomNav.setupWithNavController(navController)
         drawerMenuRv = profile_drawer_view.findViewById(R.id.drawer_menu_rv)
 
-
         Log.i(title, "currentUser ${currentUser?.loggedIn}")
-
-
 
         GlobalVariables.globalUser = currentUser
 
-
-        when(currentUser?.category){
+        when (currentUser?.category) {
             getString(R.string.tailor) -> bottomNav.menu.findItem(R.id.favouritesFragment).isVisible = false
-            getString(R.string.weaver) ->  bottomNav.menu.findItem(R.id.favouritesFragment).isVisible = false
+            getString(R.string.weaver) -> bottomNav.menu.findItem(R.id.favouritesFragment).isVisible = false
         }
-
 
         menuIcon?.setOnClickListener {
             drawer_layout.openDrawer(profile_drawer_view, true)
         }
 
-        buttonTransactions({
-            editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
-        }, {
-            editBtn.setOnClickListener {
-                drawer_layout.closeDrawer(profile_drawer_view, true)
-                startActivity(Intent(this, ProfileActivity::class.java))
+        buttonTransactions(
+            {
+                editBtn = profile_drawer_view.findViewById(R.id.edit_profile_btn)
+            },
+            {
+                editBtn.setOnClickListener {
+                    drawer_layout.closeDrawer(profile_drawer_view, true)
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                }
             }
-        })
+        )
         Log.i(title, "Oncreate")
 
         profile_fab.setOnClickListener {
             drawer_layout.closeDrawer(profile_drawer_view, true)
             startActivity(Intent(this, ClientActivity::class.java))
         }
-
-
 
         val listOfDrawerMenuItem = arrayListOf<DrawerMenuItem>(
             DrawerMenuItem(R.drawable.ic_contacts_24px, getString(R.string.clients)),
@@ -182,7 +177,7 @@ class DashboardActivity : BaseActivity() {
                 itemView.drawer_menu_tv.text = item?.title
 
                 itemView.setOnClickListener {
-                    when(item?.title){
+                    when (item?.title) {
                         getString(R.string.clients) -> {
                             drawer_layout.closeDrawer(profile_drawer_view, true)
                             navController.navigate(R.id.profileFragment)
@@ -194,17 +189,14 @@ class DashboardActivity : BaseActivity() {
                         getString(R.string.subscription) -> {
                             drawer_layout.closeDrawer(profile_drawer_view, true)
                             goto(SubscriptionActivity::class.java)
-
                         }
                         getString(R.string.logout) -> {
                             drawer_layout.closeDrawer(profile_drawer_view, true)
                             logoutRequest()
                         }
-
                     }
                 }
             }
-
 
             setLayoutManager(
                 LinearLayoutManager(
@@ -214,33 +206,26 @@ class DashboardActivity : BaseActivity() {
                 )
             )
 
-            if(currentUser?.category == "fashionista"){
+            if (currentUser?.category == "fashionista") {
                 submitList(listOfDrawerMenuItem.takeLast(2))
-            }
-            else{
+            } else {
                 submitList(listOfDrawerMenuItem)
             }
-
         }
 
-        try{
-            //goto the last visited fragment on the bottom navigation
+        try {
+            // goto the last visited fragment on the bottom navigation
             navController.navigate(authViewModel.lastFragmentId)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             i(title, "${e.message}")
 //            gdToast("Unexpected error occured kind re-install the app", Gravity.BOTTOM)
         }
 
-
-
     }
-
 
     private fun logoutRequest() {
         authViewModel.logout(this)
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -252,10 +237,7 @@ class DashboardActivity : BaseActivity() {
         super.onResume()
         getUserData()
         navController.addOnDestinationChangedListener(navListener)
-
-
     }
-
 
     override fun onPause() {
         super.onPause()
@@ -270,46 +252,49 @@ class DashboardActivity : BaseActivity() {
     override fun onRestart() {
         super.onRestart()
 
+
+
         i(title, "Restart")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         i(title, "onDestroy")
-
     }
 
     private fun getUserData() {
 
         i(title, "header $header")
-        observeRequest<User>(authViewModel.theUserData, null, null, false, {userDetails->
-            val user = userDetails?.data
-            greeting.text = "Hi ${user?.firstName}"
-            profileName.text = "${user?.firstName} ${user?.lastName}"
-            profileImage.load(user?.avatar) {
-                crossfade(true)
-                placeholder(R.drawable.profile_image)
-                transformations(CircleCropTransformation())
-            }
-            profileHeaderImage.load(user?.avatar) {
-                crossfade(true)
-                placeholder(R.drawable.profile_image)
-                transformations(CircleCropTransformation())
-            }
+        observeRequest<User>(
+            authViewModel.theUserData, null, null, false,
+            { userDetails ->
+                val user = userDetails?.data
+                greeting.text = "Hi ${user?.firstName}"
+                profileName.text = "${user?.firstName} ${user?.lastName}"
+                profileImage.load(user?.avatar) {
+                    crossfade(true)
+                    placeholder(R.drawable.profile_image)
+                    transformations(CircleCropTransformation())
+                }
+                profileHeaderImage.load(user?.avatar) {
+                    crossfade(true)
+                    placeholder(R.drawable.profile_image)
+                    transformations(CircleCropTransformation())
+                }
 
-            i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
-        },{err->
-            gdErrorToast(
-                err,
-                Gravity.BOTTOM
-            )
-            i(title, "DashActError $err")
-        })
+                i(title, "UserToken ${currentUser?.token} ID\n${user?.id}")
+            },
+            { err ->
+                gdErrorToast(
+                    err,
+                    Gravity.BOTTOM
+                )
+                i(title, "DashActError $err")
+            }
+        )
 
 
     }
-
-
 }
 
-data class DrawerMenuItem(var drawable:Int, var title:String)
+data class DrawerMenuItem(var drawable: Int, var title: String)

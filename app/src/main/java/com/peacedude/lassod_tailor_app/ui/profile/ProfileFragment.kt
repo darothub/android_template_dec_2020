@@ -18,14 +18,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.google.android.material.textfield.TextInputEditText
@@ -38,8 +33,6 @@ import com.peacedude.lassod_tailor_app.helpers.*
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import com.peacedude.lassod_tailor_app.model.request.*
 import com.peacedude.lassod_tailor_app.model.response.*
-import com.peacedude.lassod_tailor_app.ui.DashboardActivity
-import com.peacedude.lassod_tailor_app.ui.MainActivity
 import com.peacedude.lassod_tailor_app.ui.clientmanagement.ClientActivity
 import com.utsman.recycling.adapter.RecyclingAdapter
 import com.utsman.recycling.setupAdapter
@@ -48,14 +41,8 @@ import kotlinx.android.synthetic.main.client_list_item.view.*
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -64,12 +51,11 @@ import javax.inject.Inject
  */
 class ProfileFragment : DaggerFragment() {
 
-
     private val title by lazy {
         getName()
     }
 
-    //Get logged-in user
+    // Get logged-in user
     private val currentUser: User? by lazy {
         authViewModel.currentUser
     }
@@ -84,13 +70,11 @@ class ProfileFragment : DaggerFragment() {
         Dialog(requireContext(), R.style.DialogTheme).apply {
             setContentView(R.layout.loader_layout)
             setCanceledOnTouchOutside(false)
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 
-
     lateinit var dialogDeleteProgressBar: ProgressBar
-
 
     private val dialogNameInitialsTv by lazy {
         (dialog.findViewById(R.id.single_client_name_initials_tv) as TextView)
@@ -152,7 +136,6 @@ class ProfileFragment : DaggerFragment() {
         (dialog.findViewById(R.id.single_client_email_address_tv) as TextView)
     }
 
-
     lateinit var dialogEditBtn: Button
     lateinit var dialogDeleteBtn: Button
     lateinit var dialogUpdateBtn: Button
@@ -162,7 +145,6 @@ class ProfileFragment : DaggerFragment() {
     lateinit var recyclerView: RecyclerView
     lateinit var viewFlipper: ViewFlipper
 
-
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel: AuthViewModel by viewModels {
@@ -170,19 +152,19 @@ class ProfileFragment : DaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         i(title, "onviewcreated")
-        //Drawable background for resend code button
+        // Drawable background for resend code button
         val updateBtnBackground =
             ContextCompat.getDrawable(
                 requireContext(),
@@ -198,90 +180,90 @@ class ProfileFragment : DaggerFragment() {
 
         i(title, "Current user loggedIn ${authViewModel.currentUser?.loggedIn}")
 
-        buttonTransactions({
-            //Get included view for delete button
-            val includedViewForDeleteBtn =
-                (dialog.findViewById(R.id.single_client_deletes_btn) as View)
-            //Get included view for edit button
-            val includedViewForEditBtn = (dialog.findViewById(R.id.single_client_edits_btn) as View)
-            //Get included view for update button
-            val includedViewForUpdateBtn =
-                (dialog.findViewById(R.id.single_client_edit_update_btn) as View)
-            val includedViewForSendPhotoBtn =
-                (dialog.findViewById(R.id.single_client_send_photo_btn) as View)
+        buttonTransactions(
+            {
+                // Get included view for delete button
+                val includedViewForDeleteBtn =
+                    (dialog.findViewById(R.id.single_client_deletes_btn) as View)
+                // Get included view for edit button
+                val includedViewForEditBtn = (dialog.findViewById(R.id.single_client_edits_btn) as View)
+                // Get included view for update button
+                val includedViewForUpdateBtn =
+                    (dialog.findViewById(R.id.single_client_edit_update_btn) as View)
+                val includedViewForSendPhotoBtn =
+                    (dialog.findViewById(R.id.single_client_send_photo_btn) as View)
 
-            val includedViewForChatBtn = (dialog.findViewById(R.id.single_client_chat_btn) as View)
-            dialogDeleteBtn = includedViewForDeleteBtn.findViewById(R.id.btn)
-            val deleteBtnBackground = dialogDeleteBtn.background
-            deleteBtnBackground?.colorFilter = PorterDuffColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.colorRed),
-                PorterDuff.Mode.SRC_IN
-            )
-
-            dialogChatBtn = includedViewForChatBtn.findViewById(R.id.btn)
-            val chatBtnBackground = dialogChatBtn.background
-            chatBtnBackground?.colorFilter = PorterDuffColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.colorPrimary),
-                PorterDuff.Mode.SRC_IN
-            )
-            dialogEditBtn = includedViewForEditBtn.findViewById(R.id.btn)
-            val editBtnBackground = dialogEditBtn.background
-            editBtnBackground?.colorFilter = PorterDuffColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.colorGrayDark),
-                PorterDuff.Mode.SRC_IN
-            )
-            dialogUpdateBtn = includedViewForUpdateBtn.findViewById(R.id.btn)
-            dialogSendPhotoBtn = includedViewForSendPhotoBtn.findViewById(R.id.btn)
-            dialogDeleteProgressBar = includedViewForDeleteBtn.findViewById(R.id.progress_bar)
-            dialogUpdateProgressBar = includedViewForUpdateBtn.findViewById(R.id.progress_bar)
-            dialogDeleteBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
+                val includedViewForChatBtn = (dialog.findViewById(R.id.single_client_chat_btn) as View)
+                dialogDeleteBtn = includedViewForDeleteBtn.findViewById(R.id.btn)
+                val deleteBtnBackground = dialogDeleteBtn.background
+                deleteBtnBackground?.colorFilter = PorterDuffColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.colorRed),
+                    PorterDuff.Mode.SRC_IN
                 )
-            )
-            dialogUpdateBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorAccent
+
+                dialogChatBtn = includedViewForChatBtn.findViewById(R.id.btn)
+                val chatBtnBackground = dialogChatBtn.background
+                chatBtnBackground?.colorFilter = PorterDuffColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.colorPrimary),
+                    PorterDuff.Mode.SRC_IN
                 )
-            )
-            dialogEditBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorWhite
+                dialogEditBtn = includedViewForEditBtn.findViewById(R.id.btn)
+                val editBtnBackground = dialogEditBtn.background
+                editBtnBackground?.colorFilter = PorterDuffColorFilter(
+                    ContextCompat.getColor(requireContext(), R.color.colorGrayDark),
+                    PorterDuff.Mode.SRC_IN
                 )
-            )
-            //Set confirm button background
-            dialogEditBtn.background = editBtnBackground
-            //Set delete button background
-            dialogDeleteBtn.background = deleteBtnBackground
-
-            dialogUpdateBtn.background = updateBtnBackground
-
-            dialogChatBtn.background = chatBtnBackground
-
-            dialogSendPhotoBtn.background = sendPhotoBtnBackground
-
-            dialogEditBtn.text = getString(R.string.edit_str)
-            dialogDeleteBtn.text = getString(R.string.delete)
-            dialogUpdateBtn.text = getString(R.string.update_str)
-            dialogChatBtn.text = getString(R.string.chat_str)
-            dialogSendPhotoBtn.text = getString(R.string.send_photo_str)
-            dialogSendPhotoBtn.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.colorPrimary
+                dialogUpdateBtn = includedViewForUpdateBtn.findViewById(R.id.btn)
+                dialogSendPhotoBtn = includedViewForSendPhotoBtn.findViewById(R.id.btn)
+                dialogDeleteProgressBar = includedViewForDeleteBtn.findViewById(R.id.progress_bar)
+                dialogUpdateProgressBar = includedViewForUpdateBtn.findViewById(R.id.progress_bar)
+                dialogDeleteBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorAccent
+                    )
                 )
-            )
-            exitClientIv.setOnClickListener {
-                dialog.dismiss()
+                dialogUpdateBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorAccent
+                    )
+                )
+                dialogEditBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorWhite
+                    )
+                )
+                // Set confirm button background
+                dialogEditBtn.background = editBtnBackground
+                // Set delete button background
+                dialogDeleteBtn.background = deleteBtnBackground
+
+                dialogUpdateBtn.background = updateBtnBackground
+
+                dialogChatBtn.background = chatBtnBackground
+
+                dialogSendPhotoBtn.background = sendPhotoBtnBackground
+
+                dialogEditBtn.text = getString(R.string.edit_str)
+                dialogDeleteBtn.text = getString(R.string.delete)
+                dialogUpdateBtn.text = getString(R.string.update_str)
+                dialogChatBtn.text = getString(R.string.chat_str)
+                dialogSendPhotoBtn.text = getString(R.string.send_photo_str)
+                dialogSendPhotoBtn.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorPrimary
+                    )
+                )
+                exitClientIv.setOnClickListener {
+                    dialog.dismiss()
+                }
+            },
+            {
             }
-
-        }, {
-
-
-        })
+        )
 
 //        lifecycleScope.launchWhenStarted {
 //            authViewModel.getClientStateFlow.collect()
@@ -293,29 +275,26 @@ class ProfileFragment : DaggerFragment() {
             findNavController().popBackStack()
             finish()
         }
-
-
     }
 
     @ExperimentalCoroutinesApi
     override fun onResume() {
         super.onResume()
 
-
-        observeRequest<ClientsList>(authViewModel.theClientsList, null, null, true, {
-            val data = it?.data?.clients
-            i(title, "ClientState flow $data")
-            if (data?.isNotEmpty() == true) {
-                setUpClientListView(data)
+        observeRequest<ClientsList>(
+            authViewModel.theClientsList, null, null, true,
+            {
+                val data = it?.data?.clients
+                i(title, "ClientState flow $data")
+                if (data?.isNotEmpty() == true) {
+                    setUpClientListView(data)
+                } else {
+                    profile_fragment_recyclerview_vf.displayedChild = 1
+                }
+            },
+            { error ->
             }
-            else{
-                profile_fragment_recyclerview_vf.displayedChild = 1
-            }
-
-        }, { error ->
-
-        })
-
+        )
 
 //        observeResponseState<ClientsList>(
 //            authViewModel.uiState,
@@ -331,8 +310,6 @@ class ProfileFragment : DaggerFragment() {
 //            {
 //
 //            })
-
-
     }
 
     private fun setUpClientListView(listOfClient: List<Client?>?) {
@@ -353,14 +330,13 @@ class ProfileFragment : DaggerFragment() {
                 itemView.client_location_tv.text = item.deliveryAddress
                 itemView.client_name_tv.text = item.name
 
-                //Set on click listener for item view
+                // Set on click listener for item view
                 onItemViewClick(itemView, item, position, nameContainsSpace, clientList, adapter)
 
                 dialog.setOnDismissListener {
                     displayClientDialog.hide()
                     editClientDialog.hide()
                 }
-
             }
             setLayoutManager(
                 LinearLayoutManager(
@@ -370,7 +346,6 @@ class ProfileFragment : DaggerFragment() {
                 )
             )
             submitList(listOfClient)
-
         }
     }
 
@@ -402,7 +377,7 @@ class ProfileFragment : DaggerFragment() {
                 cornerRadius(10F)
             }
             onDialogEditTask(item)
-            //When dialog delete button is clicked
+            // When dialog delete button is clicked
             onDialogDeleteTask(clientList, item, adapter)
         }
     }
@@ -434,7 +409,6 @@ class ProfileFragment : DaggerFragment() {
                         Gravity.BOTTOM
                     )
                     i(title, "We are here ")
-
                 },
                 { err ->
                     clientList.add(item)
@@ -444,8 +418,8 @@ class ProfileFragment : DaggerFragment() {
                         Gravity.BOTTOM
                     )
                     i(title, "DeleteClientError $err")
-                })
-
+                }
+            )
         }
     }
 
@@ -470,28 +444,21 @@ class ProfileFragment : DaggerFragment() {
         }
     }
 
-
     @ExperimentalCoroutinesApi
     @SuppressLint("SetTextI18n")
     private suspend fun clientTransaction(): Flow<ServicesResponseWrapper<ParentData>> {
-        //Observer for get all clients request
+        // Observer for get all clients request
         return supervisorScope {
             val getAllClients = async {
                 authViewModel.getAllClients()
             }
             getAllClients.await()
-
         }
-
     }
-
 
     override fun onPause() {
         super.onPause()
         val c = GlobalVariables.globalClientList
         i(title, "CforClient $c")
     }
-
 }
-
-

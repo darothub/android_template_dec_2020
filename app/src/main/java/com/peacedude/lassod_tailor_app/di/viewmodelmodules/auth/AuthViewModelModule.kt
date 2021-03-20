@@ -2,7 +2,6 @@ package com.peacedude.lassod_tailor_app.di.viewmodelmodules.auth
 
 import androidx.lifecycle.ViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.auth.AuthViewModel
-import com.peacedude.lassod_tailor_app.data.viewmodel.user.UserViewModel
 import com.peacedude.lassod_tailor_app.data.viewmodel.viewmodelfactory.ViewModelKey
 import dagger.Binds
 import dagger.Module

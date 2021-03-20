@@ -18,6 +18,8 @@ interface AuthServices {
     fun getUserData(): Call<UserResponse<User>>
     @GET("auth/profile/me")
     suspend fun getUserDetails(): UserResponse<User>
+    @GET("auth/profile/me")
+    fun getUserDetailsFlow(): Flow<UserResponse<User>>
 
     @PATCH("auth/profile/me")
     fun updateUserData(

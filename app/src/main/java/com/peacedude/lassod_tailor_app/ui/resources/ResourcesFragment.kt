@@ -12,7 +12,6 @@ import android.widget.MediaController
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,11 +38,8 @@ import kotlinx.android.synthetic.main.resource_video_item.*
 import kotlinx.android.synthetic.main.resource_video_item.view.*
 import kotlinx.android.synthetic.main.resources_item_sublayout_layout.view.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
-
 
 /**
  * A simple [Fragment] subclass.
@@ -80,22 +76,20 @@ class ResourcesFragment : DaggerFragment() {
         resources_fragment_article_no_data_included_layout.findViewById<TextView>(R.id.no_data_text_tv)
     }
 
-
     @Inject
     lateinit var viewModelProviderFactory: ViewModelFactory
     private val authViewModel by viewModels<AuthViewModel> {
         viewModelProviderFactory
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         changeStatusBarColor(R.color.colorWhite)
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -105,7 +99,6 @@ class ResourcesFragment : DaggerFragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         noVideoDataFirstIcon.hide()
         noArticleDataFirstIcon.hide()
@@ -124,35 +117,27 @@ class ResourcesFragment : DaggerFragment() {
         )
         noArticleDataText.text = getString(R.string.no_article_available)
 
-
         lifecycleScope.launchWhenStarted {
             authViewModel.videosStateflow.collect()
-
         }
         observeGetVideosRequest()
 
         lifecycleScope.launchWhenStarted {
             authViewModel.articlesStateFlow.collect()
-
         }
         observeGetArticlesRequest()
-
 
         resource_fragment_view_all_video_tv.setOnClickListener {
             goto(R.id.allVideoFragment)
         }
         resource_fragment_view_all_publication_tv.setOnClickListener { goto(R.id.allArticlesFragment) }
-
     }
-
 
     override fun onResume() {
         super.onResume()
-
-
     }
 
-    private  fun observeGetArticlesRequest() {
+    private fun observeGetArticlesRequest() {
 
 //        observeRequest<ArticleList>(authViewModel.articles, null, null, true, {
 //            val data = it?.data?.article
@@ -185,13 +170,12 @@ class ResourcesFragment : DaggerFragment() {
                 i(title, "ArticlesList flow $data")
                 if (data?.isNotEmpty() == true) {
                     val newList = data.takeIf { it?.size!! > 5 }.let { it?.take(5) }
-                    val lm =   LinearLayoutManager(
+                    val lm = LinearLayoutManager(
                         requireContext(),
                         LinearLayoutManager.HORIZONTAL,
                         false
                     )
                     setUpRecyclerViewForArticles(resource_fragment_article_publications_rv, newList, lm)
-
                 } else {
                     resources_fragment_article_recycler_vf.displayedChild = 1
                 }
@@ -207,12 +191,9 @@ class ResourcesFragment : DaggerFragment() {
                         Gravity.BOTTOM
                     )
                 }
-
-            })
+            }
+        )
     }
-
-
-
 
     private fun observeGetVideosRequest() {
         observeResponseState<VideoList>(
@@ -224,7 +205,7 @@ class ResourcesFragment : DaggerFragment() {
                 i(title, "VideoList flow $data")
                 if (data?.isNotEmpty() == true) {
                     val newList = data.takeIf { it?.size!! > 5 }.let { it?.take(5) }
-                    val lm =   LinearLayoutManager(
+                    val lm = LinearLayoutManager(
                         requireContext(),
                         LinearLayoutManager.HORIZONTAL,
                         false
@@ -245,15 +226,12 @@ class ResourcesFragment : DaggerFragment() {
                         Gravity.BOTTOM
                     )
                 }
-
-            })
+            }
+        )
     }
-
-
-
 }
 
-fun Fragment.setUpRecyclerViewForArticles(rcv:RecyclerView, listOfArticles: List<Article>?, layoutManager:RecyclerView.LayoutManager) {
+fun Fragment.setUpRecyclerViewForArticles(rcv: RecyclerView, listOfArticles: List<Article>?, layoutManager: RecyclerView.LayoutManager) {
 
     rcv.setupAdapter<Article>(
         R.layout.article_publication_item_layout
@@ -286,7 +264,6 @@ fun Fragment.setUpRecyclerViewForArticles(rcv:RecyclerView, listOfArticles: List
                 GlobalVariables.globalArticle = item
                 goto(R.id.singleArticleFragment)
             }
-
         }
         setLayoutManager(
             layoutManager
@@ -295,7 +272,7 @@ fun Fragment.setUpRecyclerViewForArticles(rcv:RecyclerView, listOfArticles: List
     }
 }
 
-fun Fragment.setUpRecyclerViewForVideo(rcv:RecyclerView, listOfVideos: List<VideoResource>?, layoutManager:RecyclerView.LayoutManager) {
+fun Fragment.setUpRecyclerViewForVideo(rcv: RecyclerView, listOfVideos: List<VideoResource>?, layoutManager: RecyclerView.LayoutManager) {
 
     rcv.setupAdapter<VideoResource>(R.layout.resource_video_item) { _, _, _ ->
         bind { itemView, _, item ->
@@ -322,32 +299,28 @@ fun Fragment.setUpRecyclerViewForVideo(rcv:RecyclerView, listOfVideos: List<Vide
                 itemView.resource_video_item_ytpv.clipToOutline = true
                 val ext = item?.videoURL?.split("=")?.get(1).toString()
                 itemView.resource_video_item_ytpv.addYouTubePlayerListener(object :
-                    AbstractYouTubePlayerListener() {
-                    override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
-                        youTubePlayer.loadVideo(ext, 0F)
-                        youTubePlayer.pause()
-                    }
-
-                })
-
+                        AbstractYouTubePlayerListener() {
+                        override fun onReady(youTubePlayer: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer) {
+                            youTubePlayer.loadVideo(ext, 0F)
+                            youTubePlayer.pause()
+                        }
+                    })
             }
 
-
             rcv.addOnScrollListener(object :
-                RecyclerView.OnScrollListener() {
+                    RecyclerView.OnScrollListener() {
 
-                override fun onScrollStateChanged(
-                    recyclerView: RecyclerView,
-                    newState: Int
-                ) {
-                    super.onScrollStateChanged(
-                        recyclerView,
-                        newState
-                    )
-                    mediaController.hide()
-                }
-
-            })
+                    override fun onScrollStateChanged(
+                        recyclerView: RecyclerView,
+                        newState: Int
+                    ) {
+                        super.onScrollStateChanged(
+                            recyclerView,
+                            newState
+                        )
+                        mediaController.hide()
+                    }
+                })
             itemView.setOnClickListener {
                 GlobalVariables.globalVideo = item
                 goto(R.id.singleVideoFragment)
@@ -361,11 +334,10 @@ fun Fragment.setUpRecyclerViewForVideo(rcv:RecyclerView, listOfVideos: List<Vide
 //            }
         }
         setLayoutManager(
-          layoutManager
+            layoutManager
         )
         submitList(listOfVideos)
     }
-
 }
 private fun Fragment.actionToDisplaySingleVideo(item: VideoResource?) {
     val action = AllVideoFragmentDirections.actionAllVideoFragmentToSingleVideoFragment()
@@ -380,6 +352,3 @@ data class ResourceMediaRecyclerItem(
     val noDataText: String,
     var footer: String
 )
-
-
-

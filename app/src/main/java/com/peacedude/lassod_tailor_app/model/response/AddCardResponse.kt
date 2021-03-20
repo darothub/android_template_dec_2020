@@ -4,8 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.peacedude.lassod_tailor_app.model.parent.ParentData
 import java.io.Serializable
 
-
-data class AddCardResponse (
+data class AddCardResponse(
     val id: Long,
     val domain: String,
     val status: String,
@@ -34,11 +33,11 @@ data class AddCardResponse (
     val transactionDate: String,
     val planObject: Authorization,
     val subaccount: Authorization
-): Serializable, ParentData
+) : Serializable, ParentData
 
 class Authorization()
 
-data class Customer (
+data class Customer(
     val id: Long,
     val firstName: Any? = null,
     val lastName: Any? = null,
@@ -48,19 +47,18 @@ data class Customer (
     val metadata: Any? = null,
     val riskAction: String,
     val internationalFormatPhone: Any? = null
-):Serializable, ParentData
-
+) : Serializable, ParentData
 
 data class AddCardWrapper<T>(
     val status: Boolean,
     val message: String,
     val data: T
-):Serializable, ParentData
+) : Serializable, ParentData
 
-data class AddCardRes (
+data class AddCardRes(
     @SerializedName("authorization_url")
     val authorizationURL: String,
     @SerializedName("access_code")
     val accessCode: String,
     val reference: String
-):Serializable, ParentData
+) : Serializable, ParentData
